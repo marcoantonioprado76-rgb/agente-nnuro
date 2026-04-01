@@ -50,10 +50,9 @@ export async function POST(request: NextRequest) {
       .limit(1)
       .single()
 
-    // Block only if there's an active or pending-payment subscription
+    // Block only if there's an active subscription; cancel pending ones to allow retry
     if (existingSub) {
       const isActive = existingSub.status === 'active' && existingSub.approval_status === 'approved'
-      const isPending = existingSub.status === 'pending' && existingSub.approval_status === 'pending_review'
 
       if (isActive) {
         return NextResponse.json(
@@ -61,11 +60,19 @@ export async function POST(request: NextRequest) {
           { status: 409 }
         )
       }
-      if (isPending) {
-        return NextResponse.json(
-          { error: 'Ya tienes un pago pendiente de verificación' },
-          { status: 409 }
-        )
+
+      // Cancel any pending subscription so the user can retry with another method/plan
+      if (existingSub.status === 'pending') {
+        await service
+          .from('subscriptions')
+          .update({ status: 'cancelled', admin_notes: 'Cancelado automáticamente al reintentar pago', updated_at: new Date().toISOString() })
+          .eq('id', existingSub.id)
+
+        await service
+          .from('payments')
+          .update({ payment_status: 'failed' })
+          .eq('subscription_id', existingSub.id)
+          .eq('payment_status', 'pending')
       }
       // Expired, cancelled, rejected → allow renewal
     }

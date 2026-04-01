@@ -62,14 +62,32 @@ export async function POST(request: NextRequest) {
     // Verificar que no tenga suscripción activa
     const { data: existing } = await service
       .from('subscriptions')
-      .select('id')
+      .select('id, status, approval_status')
       .eq('user_id', user.id)
       .in('status', ['active', 'pending'])
       .limit(1)
       .single()
 
     if (existing) {
-      return NextResponse.json({ error: 'Ya tienes una suscripción activa o pendiente' }, { status: 409 })
+      const isActive = existing.status === 'active' && existing.approval_status === 'approved'
+
+      if (isActive) {
+        return NextResponse.json({ error: 'Ya tienes una suscripción activa' }, { status: 409 })
+      }
+
+      // Cancel pending subscription to allow retry with another method/plan
+      if (existing.status === 'pending') {
+        await service
+          .from('subscriptions')
+          .update({ status: 'cancelled', admin_notes: 'Cancelado automáticamente al reintentar pago', updated_at: new Date().toISOString() })
+          .eq('id', existing.id)
+
+        await service
+          .from('payments')
+          .update({ payment_status: 'failed' })
+          .eq('subscription_id', existing.id)
+          .eq('payment_status', 'pending')
+      }
     }
 
     // Crear suscripción en estado pending + pending_review
