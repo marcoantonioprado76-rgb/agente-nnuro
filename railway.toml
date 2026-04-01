@@ -1,0 +1,10 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "node server.mjs"
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "always"
+numReplicas = 1

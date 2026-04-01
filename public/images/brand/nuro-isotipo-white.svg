@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- NÜRO Isotipo White - Smiley face -->
+  <circle cx="72" cy="72" r="18" fill="white"/>
+  <circle cx="128" cy="72" r="18" fill="white"/>
+  <path d="M40 120 C40 165, 160 165, 160 120" stroke="white" stroke-width="36" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,0 +1,76 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import {
+  LayoutDashboard,
+  Users,
+  CreditCard,
+  DollarSign,
+  Settings,
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+const adminMobileNavItems = [
+  { label: 'Panel', href: '/admin/dashboard', icon: LayoutDashboard },
+  { label: 'Usuarios', href: '/admin/users', icon: Users },
+  { label: 'Planes', href: '/admin/subscriptions', icon: CreditCard },
+  { label: 'Pagos', href: '/admin/payments', icon: DollarSign },
+  { label: 'Config', href: '/admin/settings', icon: Settings },
+]
+
+export function AdminMobileNav() {
+  const pathname = usePathname()
+
+  return (
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
+      style={{
+        background: 'linear-gradient(180deg, rgba(10, 17, 34, 0.98), rgba(8, 13, 26, 0.99))',
+        borderTop: '1px solid rgba(91, 138, 255, 0.08)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
+      }}
+    >
+      <div className="flex items-stretch justify-around h-[56px]">
+        {adminMobileNavItems.map((item) => {
+          const isActive = pathname === item.href || pathname?.startsWith(item.href + '/')
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'relative flex flex-col items-center justify-center flex-1 gap-1 transition-colors duration-200',
+                isActive
+                  ? 'text-[#5B8AFF]'
+                  : 'text-[#8899B4]/50 active:text-[#8899B4]/80'
+              )}
+            >
+              {isActive && (
+                <div
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[2.5px] rounded-b-full"
+                  style={{ background: 'linear-gradient(90deg, rgba(91,138,255,0.3), #5B8AFF, rgba(91,138,255,0.3))' }}
+                />
+              )}
+              <item.icon
+                className={cn(
+                  'h-[22px] w-[22px] transition-all duration-200',
+                  isActive && 'drop-shadow-[0_0_8px_rgba(91,138,255,0.5)]'
+                )}
+                strokeWidth={isActive ? 2.2 : 1.8}
+              />
+              <span className={cn(
+                'text-[10px] leading-none tracking-wide',
+                isActive ? 'font-bold' : 'font-medium'
+              )}>
+                {item.label}
+              </span>
+            </Link>
+          )
+        })}
+      </div>
+    </nav>
+  )
+}
