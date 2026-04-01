@@ -31,7 +31,7 @@ function ResetPasswordContent() {
 
   // Supabase sends tokens as hash params — listen for auth state change
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
       if (event === 'PASSWORD_RECOVERY') {
         setSessionReady(true)
       }
