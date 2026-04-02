@@ -1947,6 +1947,44 @@ export function getWhatsAppManager(): WhatsAppManager {
 export async function initWhatsAppManager(): Promise<WhatsAppManager> {
   const mgr = getWhatsAppManager()
   if (!globalForWa.waManagerRestored) {
+    // Instance lock: prevent multiple workers from connecting simultaneously
+    try {
+      const supabase = await createServiceRoleClient()
+      const lockKey = 'wa_manager_lock'
+      const now = new Date()
+      const staleThreshold = new Date(now.getTime() - 60_000) // 60s = stale
+
+      // Check if another instance has the lock
+      const { data: existing } = await supabase
+        .from('system_settings')
+        .select('value')
+        .eq('key', lockKey)
+        .single()
+
+      if (existing?.value) {
+        const lockData = existing.value as { instance_id?: string; heartbeat?: string }
+        if (lockData.instance_id && lockData.instance_id !== INSTANCE_ID) {
+          const heartbeat = lockData.heartbeat ? new Date(lockData.heartbeat) : new Date(0)
+          if (heartbeat > staleThreshold) {
+            console.log(`[WA Manager] ⏭️ Otra instancia activa (${lockData.instance_id.substring(0, 8)}), esta instancia NO conectará bots`)
+            globalForWa.waManagerRestored = true
+            return mgr
+          }
+          console.log(`[WA Manager] Lock anterior stale, tomando el control...`)
+        }
+      }
+
+      // Acquire lock
+      await supabase.from('system_settings').upsert({
+        key: lockKey,
+        value: { instance_id: INSTANCE_ID, heartbeat: now.toISOString() },
+        updated_at: now.toISOString(),
+      }, { onConflict: 'key' })
+      console.log(`[WA Manager] 🔒 Lock adquirido: ${INSTANCE_ID.substring(0, 8)}`)
+    } catch (err) {
+      console.error('[WA Manager] Error en instance lock (continuando):', err)
+    }
+
     console.log('[WA Manager] Iniciando restauración de sesiones...')
     try {
       await mgr.restoreConnectedSessions()
@@ -1954,7 +1992,6 @@ export async function initWhatsAppManager(): Promise<WhatsAppManager> {
       console.log('[WA Manager] Restauración completada')
     } catch (err) {
       console.error('[WA Manager] Error en restauración inicial, health check reintentará:', err)
-      // No marcar como restored para que se pueda reintentar
     }
   }
   return mgr
