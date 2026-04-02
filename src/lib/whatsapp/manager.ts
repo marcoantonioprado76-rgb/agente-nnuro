@@ -102,14 +102,18 @@ async function getBot(botId: string) {
   return data
 }
 
-async function findOrCreateContact(phone: string, pushName: string, tenantId: string) {
+async function findOrCreateContact(phone: string, pushName: string, tenantId: string, botId: string) {
   const supabase = await createServiceRoleClient()
-  const { data: existing } = await supabase
+  const { data: existing, error: findError } = await supabase
     .from('contacts')
     .select('*')
     .eq('phone', phone)
-    .eq('tenant_id', tenantId)
+    .eq('bot_id', botId)
     .maybeSingle()
+
+  if (findError) {
+    console.error(`[WA] Error finding contact:`, findError.message)
+  }
 
   if (existing) {
     if (pushName && pushName !== existing.push_name) {
@@ -118,11 +122,15 @@ async function findOrCreateContact(phone: string, pushName: string, tenantId: st
     return existing
   }
 
-  const { data: created } = await supabase
+  const { data: created, error: createError } = await supabase
     .from('contacts')
-    .insert({ phone, push_name: pushName, name: pushName || phone, tenant_id: tenantId })
+    .insert({ phone, push_name: pushName, name: pushName || phone, tenant_id: tenantId, bot_id: botId })
     .select()
     .single()
+
+  if (createError) {
+    console.error(`[WA] Error creating contact:`, createError.message, `phone=${phone} bot=${botId}`)
+  }
   return created
 }
 
@@ -497,7 +505,7 @@ class WhatsAppManager {
     console.log(`[WA] Content extracted (${msgType}): ${content.substring(0, 100)}...`)
 
     // ── DB: Contact, Conversation, Save message ──
-    const contact = await findOrCreateContact(phone, pushName, bot.tenant_id)
+    const contact = await findOrCreateContact(phone, pushName, bot.tenant_id, botId)
     if (!contact) { console.error(`[WA] Failed to find/create contact for ${phone}`); return }
     const conversation = await findOrCreateConversation(botId, contact.id)
     if (!conversation) { console.error(`[WA] Failed to find/create conversation`); return }
