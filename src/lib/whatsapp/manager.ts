@@ -643,14 +643,26 @@ class WhatsAppManager {
 
         console.log(`[WA] Conversation ${conversation.id} closed (sale confirmed)`)
       } else {
-        // No sale — set pending_followup for automatic follow-ups
-        await supabaseUpdate.from('conversations').update({
+        // No sale — update timestamps and set pending_followup only if still active
+        const { data: currentConv } = await supabaseUpdate
+          .from('conversations')
+          .select('status')
+          .eq('id', conversation.id)
+          .single()
+
+        const updateData: Record<string, unknown> = {
           last_bot_message_at: new Date().toISOString(),
           last_message_at: new Date().toISOString(),
-          status: 'pending_followup',
-          followup_count: 0,
-          last_followup_at: null,
-        }).eq('id', conversation.id)
+        }
+
+        // Only change status if not paused or closed
+        if (currentConv?.status !== 'paused' && currentConv?.status !== 'closed') {
+          updateData.status = 'pending_followup'
+          updateData.followup_count = 0
+          updateData.last_followup_at = null
+        }
+
+        await supabaseUpdate.from('conversations').update(updateData).eq('id', conversation.id)
       }
     } catch (err) {
       console.error(`[WA] Error processing buffered messages for ${bufferKey}:`, err)
