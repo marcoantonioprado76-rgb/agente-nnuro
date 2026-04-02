@@ -593,7 +593,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  background: linear-gradient(135deg, #EEEDF5 20%, #C8C2D9 100%);
+  background: linear-gradient(135deg, #FFFFFF 20%, #CBD5E1 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -941,7 +941,7 @@
 
 /* Brand text gradient */
 .nav-brand-text {
-  background: linear-gradient(135deg, #EEEDF5 30%, #C8C2D9 100%);
+  background: linear-gradient(135deg, #FFFFFF 30%, #CBD5E1 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
