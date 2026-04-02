@@ -1074,6 +1074,19 @@ class WhatsAppManager {
       return
     }
 
+    // Check if bot is paused for this contact
+    const supabaseCheck = await createServiceRoleClient()
+    const { data: convStatus } = await supabaseCheck
+      .from('conversations')
+      .select('status')
+      .eq('id', conversationId)
+      .single()
+
+    if (convStatus?.status === 'paused') {
+      log('⏸️', 'Bot pausado para este contacto, no se responde')
+      return
+    }
+
     // Obtener el socket antes de generar IA (validar conexion)
     const session = this.sessions.get(botId)
     if (!session?.socket || session.state.status !== 'connected') {

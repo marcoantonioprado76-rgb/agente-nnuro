@@ -12,7 +12,11 @@ import {
   Trash2,
   User,
   RefreshCw,
+  Pause,
+  Play,
+  Eraser,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ConversationWithContact {
   id: string;
@@ -56,6 +60,13 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; b
     bg: 'rgba(245, 158, 11, 0.1)',
     border: 'rgba(245, 158, 11, 0.2)',
     icon: Clock,
+  },
+  paused: {
+    label: 'Pausado',
+    color: '#EC4899',
+    bg: 'rgba(236, 72, 153, 0.1)',
+    border: 'rgba(236, 72, 153, 0.2)',
+    icon: Pause,
   },
 };
 
@@ -130,6 +141,33 @@ export default function ConversationsPage() {
     if (selectedConv) loadMessages(selectedConv.id);
   };
 
+  const handleAction = async (convId: string, action: 'pause_bot' | 'resume_bot' | 'clear_memory') => {
+    try {
+      const res = await fetch(`/api/conversations/${convId}/actions`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(data.message);
+        // Update local state
+        const newStatus = action === 'pause_bot' ? 'paused' : action === 'resume_bot' ? 'active' : undefined;
+        if (newStatus) {
+          setConversations(prev => prev.map(c => c.id === convId ? { ...c, status: newStatus } : c));
+          if (selectedConv?.id === convId) setSelectedConv(prev => prev ? { ...prev, status: newStatus } : prev);
+        }
+        if (action === 'clear_memory' && selectedConv?.id === convId) {
+          setSelectedConv(prev => prev ? { ...prev, product_interest: undefined } : prev);
+        }
+      } else {
+        toast.error(data.error || 'Error');
+      }
+    } catch {
+      toast.error('Error de conexión');
+    }
+  };
+
   if (loading) {
     return (
       <>
@@ -194,6 +232,35 @@ export default function ConversationsPage() {
                 </div>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                {/* Pause / Resume bot */}
+                <button
+                  onClick={() => handleAction(selectedConv.id, selectedConv.status === 'paused' ? 'resume_bot' : 'pause_bot')}
+                  className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl transition-colors"
+                  style={{
+                    border: `1px solid ${selectedConv.status === 'paused' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(236, 72, 153, 0.15)'}`,
+                    background: selectedConv.status === 'paused' ? 'rgba(16, 185, 129, 0.05)' : 'transparent',
+                  }}
+                  title={selectedConv.status === 'paused' ? 'Reanudar bot' : 'Pausar bot'}
+                >
+                  {selectedConv.status === 'paused'
+                    ? <Play className="h-3.5 w-3.5 text-[#10B981]" />
+                    : <Pause className="h-3.5 w-3.5 text-[#EC4899]" />
+                  }
+                </button>
+                {/* Clear memory */}
+                <button
+                  onClick={() => {
+                    if (confirm('¿Eliminar la memoria de IA de este contacto?')) {
+                      handleAction(selectedConv.id, 'clear_memory');
+                    }
+                  }}
+                  className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl transition-colors hover:bg-amber-500/10"
+                  style={{ border: '1px solid rgba(245, 158, 11, 0.15)' }}
+                  title="Eliminar memoria"
+                >
+                  <Eraser className="h-3.5 w-3.5 text-[#F59E0B]" />
+                </button>
+                {/* Refresh */}
                 <button
                   onClick={refreshMessages}
                   className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl transition-colors hover:bg-white/[0.05]"
@@ -202,6 +269,7 @@ export default function ConversationsPage() {
                 >
                   <RefreshCw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#94A3B8] ${loadingMessages ? 'animate-spin' : ''}`} />
                 </button>
+                {/* Delete */}
                 <button
                   onClick={(e) => handleDelete(selectedConv.id, e)}
                   disabled={deleting === selectedConv.id}
