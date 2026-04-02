@@ -234,6 +234,7 @@ class WhatsAppManager {
   private connections = new Map<string, BaileysConnection>()
   private messageBuffers = new Map<string, BufferedMessage[]>()
   private processingKeys = new Set<string>()
+  private processedMessageIds = new Set<string>()
 
   // ── Connect ──
   async connect(botId: string): Promise<{ status: string; qrCode?: string; phone?: string }> {
@@ -417,10 +418,7 @@ class WhatsAppManager {
     if (msgTimestamp) {
       const msgTime = typeof msgTimestamp === 'number' ? msgTimestamp : Number(msgTimestamp)
       const now = Math.floor(Date.now() / 1000)
-      if (now - msgTime > 60) {
-        console.log(`[WA] Ignoring old message (${now - msgTime}s ago)`)
-        return
-      }
+      if (now - msgTime > 60) return
     }
     const jid = msg.key.remoteJid
     if (!jid || jid === 'status@broadcast' || jid.endsWith('@g.us') || jid.endsWith('@newsletter')) return
@@ -428,29 +426,31 @@ class WhatsAppManager {
     const message = msg.message
     if (!message) return
 
-    // Use remoteJid phone directly (works with both @s.whatsapp.net and @lid)
+    // Deduplication by message ID
+    if (msg.key.id) {
+      if (this.processedMessageIds.has(msg.key.id)) return
+      this.processedMessageIds.add(msg.key.id)
+      // Keep set from growing forever (max 1000)
+      if (this.processedMessageIds.size > 1000) {
+        const first = this.processedMessageIds.values().next().value
+        if (first) this.processedMessageIds.delete(first)
+      }
+    }
+
     const phone = phoneFromJid(jid)
     const pushName = msg.pushName || ''
     console.log(`[WA] Message from ${pushName || phone} (jid: ${jid})`)
 
     // Get bot info
     const bot = await getBot(botId)
-    if (!bot) { console.log(`[WA] Bot ${botId} not found in DB`); return }
-    if (!bot.is_active) { console.log(`[WA] Bot ${botId} is inactive`); return }
+    if (!bot) { console.log(`[WA] Bot ${botId} not found`); return }
+    if (!bot.is_active) { console.log(`[WA] Bot ${botId} inactive, ignoring`); return }
     const apiKey = bot.openai_api_key || process.env.OPENAI_API_KEY
-    if (!apiKey) {
-      console.error(`[WA] Bot ${botId} has no API key`)
-      return
-    }
-    console.log(`[WA] Bot found: ${bot.name}, active=${bot.is_active}, hasKey=${!!apiKey}`)
+    if (!apiKey) { console.error(`[WA] Bot ${botId} no API key`); return }
 
     // ── Extract content ──
     let content = ''
     let msgType: BufferedMessage['type'] = 'text'
-
-    // Log message structure for debugging
-    const msgKeys = message ? Object.keys(message).filter(k => !k.startsWith('_')) : []
-    console.log(`[WA] Message keys: ${msgKeys.join(', ')}`)
 
     if (message.conversation || message.extendedTextMessage?.text) {
       content = message.conversation || message.extendedTextMessage?.text || ''
@@ -576,11 +576,61 @@ class WhatsAppManager {
 
       // ── Generate AI Response ──
       console.log(`[WA] Generating response for bot ${botId}, phone ${phone}`)
-      const aiResponse = await generateBotResponse(botId, phone, combinedMessage, conversation.id, contactName)
+      let aiResponse
+      try {
+        aiResponse = await generateBotResponse(botId, phone, combinedMessage, conversation.id, contactName)
+      } catch (aiErr: unknown) {
+        const errMsg = aiErr instanceof Error ? aiErr.message : String(aiErr)
+        console.error(`[WA] AI error for bot ${botId}:`, errMsg)
+
+        // Auto-pause bot on quota/billing error
+        const isQuotaError = errMsg.includes('insufficient_quota') || errMsg.includes('429') || errMsg.includes('billing')
+        if (isQuotaError) {
+          const pauseDb = await createServiceRoleClient()
+          await pauseDb.from('bots').update({ is_active: false }).eq('id', botId)
+          // Notify bot owner
+          try {
+            const { data: profile } = await pauseDb.from('profiles').select('id').eq('tenant_id', bot.tenant_id).limit(1).single()
+            if (profile) {
+              await pauseDb.from('user_notifications').insert({
+                user_id: profile.id, type: 'bot_pausado',
+                title: 'Bot pausado — Sin saldo en OpenAI',
+                message: `El bot "${bot.name}" fue pausado automáticamente porque la API key de OpenAI no tiene saldo.`,
+                link: `/bots/${botId}`,
+              })
+            }
+          } catch { /* silent */ }
+          console.warn(`[WA] Bot ${botId} AUTO-PAUSED: OpenAI quota error`)
+        } else {
+          // Fallback message so client isn't left on read
+          try {
+            await socket.sendMessage(jid, { text: '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊' })
+          } catch { /* silent */ }
+        }
+        return
+      }
 
       if (!aiResponse) {
-        console.log(`[WA] No AI response for bot ${botId}`)
+        // Fallback if AI returned null
+        try {
+          await socket.sendMessage(jid, { text: '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊' })
+        } catch { /* silent */ }
+        console.log(`[WA] No AI response for bot ${botId}, fallback sent`)
         return
+      }
+
+      // ── Filter already-sent URLs to prevent repeats ──
+      const sentUrlsDb = await createServiceRoleClient()
+      const { data: botMsgs } = await sentUrlsDb
+        .from('messages')
+        .select('content')
+        .eq('conversation_id', conversation.id)
+        .eq('sender', 'bot')
+        .eq('type', 'image')
+      const sentUrls = new Set((botMsgs || []).map(m => m.content).filter(u => u?.startsWith('http')))
+
+      if (aiResponse.photos_message1) {
+        aiResponse.photos_message1 = aiResponse.photos_message1.filter(u => !sentUrls.has(u))
       }
 
       // ── Send responses with typing simulation ──
@@ -590,19 +640,17 @@ class WhatsAppManager {
         const text = messagesToSend[i]
 
         // Typing simulation
-        await socket.presenceSubscribe(jid)
+        try { await socket.presenceSubscribe(jid) } catch { /* silent */ }
         await sleep(1000)
-        await socket.sendPresenceUpdate('composing', jid)
-        // Typing duration: ~50ms per char, min 2s, max 6s
+        try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
         const typingMs = Math.min(6000, Math.max(2000, text.length * 50))
         await sleep(typingMs)
-        await socket.sendPresenceUpdate('paused', jid)
+        try { await socket.sendPresenceUpdate('paused', jid) } catch { /* silent */ }
 
         // Send message
         await socket.sendMessage(jid, { text })
         await saveMessage(conversation.id, 'bot', 'text', text)
 
-        // Delay between messages
         if (i < messagesToSend.length - 1) {
           await sleep(2000 + Math.random() * 3000)
         }
@@ -611,13 +659,29 @@ class WhatsAppManager {
       // ── Send photos if present ──
       if (aiResponse.photos_message1 && aiResponse.photos_message1.length > 0) {
         for (const photoUrl of aiResponse.photos_message1) {
+          if (!photoUrl.startsWith('http')) continue
           try {
             await socket.sendMessage(jid, { image: { url: photoUrl } })
             await saveMessage(conversation.id, 'bot', 'image', photoUrl)
-            await sleep(1000)
+            await sleep(800)
           } catch (err) {
             console.error(`[WA] Error sending photo:`, err)
           }
+        }
+      }
+
+      // ── Send videos if present ──
+      const videos: string[] = Array.isArray((aiResponse as unknown as Record<string, unknown>).videos_message1)
+        ? ((aiResponse as unknown as Record<string, unknown>).videos_message1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('http'))
+        : []
+      for (const videoUrl of videos) {
+        if (sentUrls.has(videoUrl)) continue
+        try {
+          await socket.sendMessage(jid, { video: { url: videoUrl } })
+          await saveMessage(conversation.id, 'bot', 'video', videoUrl)
+          await sleep(1000)
+        } catch (err) {
+          console.error(`[WA] Error sending video:`, err)
         }
       }
 
@@ -640,6 +704,19 @@ class WhatsAppManager {
           last_bot_message_at: new Date().toISOString(),
           last_message_at: new Date().toISOString(),
         }).eq('id', conversation.id)
+
+        // Notify bot owner about the sale
+        try {
+          const { data: ownerProfile } = await supabaseUpdate.from('profiles').select('id').eq('tenant_id', bot.tenant_id).limit(1).single()
+          if (ownerProfile) {
+            await supabaseUpdate.from('user_notifications').insert({
+              user_id: ownerProfile.id, type: 'venta_confirmada',
+              title: `Nueva venta — ${bot.name}`,
+              message: aiResponse.report?.slice(0, 150) || 'Venta confirmada',
+              link: '/sales',
+            })
+          }
+        } catch { /* silent */ }
 
         console.log(`[WA] Conversation ${conversation.id} closed (sale confirmed)`)
       } else {
