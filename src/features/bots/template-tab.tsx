@@ -421,7 +421,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             onChange={(e) => setSystemPrompt(e.target.value)}
             placeholder="Define el comportamiento, personalidad, reglas de venta, limites de caracteres, formato de respuesta y toda la logica de tu bot vendedor..."
             rows={12}
-            className="w-full rounded-xl px-4 md:px-5 py-3 md:py-4 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#06B6D4]/30 resize-y min-h-[240px] md:min-h-[420px] transition-all duration-200"
+            className="w-full rounded-xl px-4 md:px-5 py-3 md:py-4 text-[13px] leading-relaxed text-[#CBD5E1] focus:outline-none focus:ring-1 focus:ring-[#06B6D4]/30 resize-y min-h-[240px] md:min-h-[420px] transition-all duration-200"
             style={{
               background: 'rgba(255, 255, 255, 0.03)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -459,7 +459,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
               onChange={(e) => setShipping(prev => ({ ...prev, shipping_info: e.target.value }))}
               placeholder="Ej: Envio gratis a todo el pais, llega en 3-5 dias habiles, pago contra entrega..."
               rows={2}
-              className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+              className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#CBD5E1] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
               style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
             />
           </div>
@@ -471,7 +471,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
               onChange={(e) => setShipping(prev => ({ ...prev, coverage: e.target.value }))}
               placeholder="Ej: Cobertura nacional, envios a todo Bolivia, Mexico, Peru..."
               rows={2}
-              className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+              className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#CBD5E1] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
               style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
             />
           </div>
@@ -484,7 +484,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
                 onChange={(e) => setShipping(prev => ({ ...prev, sell_zones: e.target.value }))}
                 placeholder="Ciudades o regiones donde vendes..."
                 rows={2}
-                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#CBD5E1] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
                 style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
               />
             </div>
@@ -495,7 +495,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
                 onChange={(e) => setShipping(prev => ({ ...prev, delivery_zones: e.target.value }))}
                 placeholder="Zonas de entrega directa o express..."
                 rows={2}
-                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#CBD5E1] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
                 style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
               />
             </div>

@@ -122,7 +122,7 @@ export function ImageUpload({
           {value.map((url, i) => (
             <div
               key={url + i}
-              className="relative group aspect-square rounded-lg overflow-hidden border border-[#1E1A35] bg-[#080d1a]"
+              className="relative group aspect-square rounded-lg overflow-hidden border border-[#141420] bg-[#080d1a]"
             >
               <img
                 src={url}
@@ -171,7 +171,7 @@ export function ImageUpload({
             flex flex-col items-center justify-center py-8 px-4 text-center
             ${dragOver
               ? 'border-cyan-400 bg-cyan-400/10'
-              : 'border-[#1E1A35] bg-[#080d1a] hover:border-[#2E2550] hover:bg-[#0D0C16]'
+              : 'border-[#141420] bg-[#080d1a] hover:border-[#1A1A25] hover:bg-[#000000]'
             }
           `}
         >
@@ -207,7 +207,7 @@ export function ImageUpload({
             <Loader2 className="h-4 w-4 animate-spin" />
             <span>Subiendo imagen...</span>
           </div>
-          <div className="h-2 rounded-full bg-[#1E1A35] overflow-hidden">
+          <div className="h-2 rounded-full bg-[#141420] overflow-hidden">
             <div
               className="h-full bg-cyan-400 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
@@ -307,7 +307,7 @@ export function SingleImageUpload({
       )}
 
       {value ? (
-        <div className="relative group rounded-lg overflow-hidden border border-[#1E1A35] bg-[#080d1a] max-w-[200px]">
+        <div className="relative group rounded-lg overflow-hidden border border-[#141420] bg-[#080d1a] max-w-[200px]">
           <img
             src={value}
             alt="Preview"
@@ -343,7 +343,7 @@ export function SingleImageUpload({
             flex flex-col items-center justify-center py-6 px-4 text-center max-w-[200px]
             ${dragOver
               ? 'border-cyan-400 bg-cyan-400/10'
-              : 'border-[#1E1A35] bg-[#080d1a] hover:border-[#2E2550] hover:bg-[#0D0C16]'
+              : 'border-[#141420] bg-[#080d1a] hover:border-[#1A1A25] hover:bg-[#000000]'
             }
           `}
         >
@@ -359,7 +359,7 @@ export function SingleImageUpload({
             <Loader2 className="h-3 w-3 animate-spin" />
             <span>Subiendo...</span>
           </div>
-          <div className="h-1.5 rounded-full bg-[#1E1A35] overflow-hidden">
+          <div className="h-1.5 rounded-full bg-[#141420] overflow-hidden">
             <div
               className="h-full bg-cyan-400 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}

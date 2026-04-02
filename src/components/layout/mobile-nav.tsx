@@ -45,7 +45,7 @@ export function MobileNav() {
                 'relative flex flex-col items-center justify-center flex-1 gap-1 transition-colors duration-200',
                 isActive
                   ? 'text-[#8B5CF6]'
-                  : 'text-[#9189A8]/50 active:text-[#9189A8]/80'
+                  : 'text-[#64748B]/50 active:text-[#64748B]/80'
               )}
             >
               {isActive && (

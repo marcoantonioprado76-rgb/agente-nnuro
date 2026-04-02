@@ -73,9 +73,9 @@ function ResetPasswordContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#09090F] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#000000] px-4">
       <div className="w-full max-w-[420px]">
-        <div className="bg-[#12111C] border border-[#1A1726] rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[#0A0A0F] border border-[#0F0F17] rounded-2xl p-8 shadow-2xl">
           <div className="flex items-center gap-3 mb-8">
             <NuroSmile size={36} />
             <span className="text-white font-bold text-xl tracking-tight">Ventas AI</span>
@@ -85,12 +85,12 @@ function ResetPasswordContent() {
             <div className="text-center py-4">
               <CheckCircle2 className="h-12 w-12 text-green-400 mx-auto mb-4" />
               <h2 className="text-white text-xl font-bold mb-2">¡Contraseña actualizada!</h2>
-              <p className="text-[#B0A5C8] text-sm">Redirigiendo al inicio de sesión...</p>
+              <p className="text-[#94A3B8] text-sm">Redirigiendo al inicio de sesión...</p>
             </div>
           ) : (
             <>
               <h1 className="text-white text-2xl font-bold mb-2">Nueva contraseña</h1>
-              <p className="text-[#B0A5C8] text-sm mb-6">Elige una contraseña segura para tu cuenta.</p>
+              <p className="text-[#94A3B8] text-sm mb-6">Elige una contraseña segura para tu cuenta.</p>
 
               {!sessionReady && (
                 <div className="flex items-center gap-2 bg-yellow-400/10 text-yellow-400 text-sm rounded-lg px-3 py-2 mb-4">
@@ -101,7 +101,7 @@ function ResetPasswordContent() {
 
               <form onSubmit={handleReset} className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">
+                  <Label className="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-[0.15em]">
                     Nueva contraseña
                   </Label>
                   <div className="relative">
@@ -111,12 +111,12 @@ function ResetPasswordContent() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-12 rounded-xl pr-11 bg-[#1A1726] border-[#2A2540] text-white placeholder:text-[#9189A8]/45 text-[14px] focus:border-[#8B5CF6]"
+                      className="h-12 rounded-xl pr-11 bg-[#0F0F17] border-[#1A1A25] text-white placeholder:text-[#64748B]/45 text-[14px] focus:border-[#8B5CF6]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9189A8]/60 hover:text-white transition-colors"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B]/60 hover:text-white transition-colors"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -124,7 +124,7 @@ function ResetPasswordContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">
+                  <Label className="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-[0.15em]">
                     Confirmar contraseña
                   </Label>
                   <Input
@@ -133,7 +133,7 @@ function ResetPasswordContent() {
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                     required
-                    className="h-12 rounded-xl bg-[#1A1726] border-[#2A2540] text-white placeholder:text-[#9189A8]/45 text-[14px] focus:border-[#8B5CF6]"
+                    className="h-12 rounded-xl bg-[#0F0F17] border-[#1A1A25] text-white placeholder:text-[#64748B]/45 text-[14px] focus:border-[#8B5CF6]"
                   />
                 </div>
 

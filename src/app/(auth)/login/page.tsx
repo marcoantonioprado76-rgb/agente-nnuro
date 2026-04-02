@@ -192,7 +192,7 @@ function LoginContent() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #0C0B18 0%, #110F22 35%, #13102A 55%, #16112E 75%, #0D0C16 100%)',
+      background: 'linear-gradient(135deg, #000000 0%, #060610 35%, #0A0A14 55%, #0F0F1A 75%, #000000 100%)',
     }}>
       {/* Particle canvas */}
       <AuthBackground />
@@ -320,7 +320,7 @@ function LoginContent() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span
-                className="px-4 text-[#B0A5C8]/60 text-[10px] font-semibold tracking-[0.15em]"
+                className="px-4 text-[#94A3B8]/60 text-[10px] font-semibold tracking-[0.15em]"
                 style={{ background: 'linear-gradient(180deg, rgba(22, 38, 68, 0.72), rgba(16, 28, 52, 0.8))' }}
               >
                 O con email
@@ -331,7 +331,7 @@ function LoginContent() {
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2 auth-stagger-4">
-              <Label htmlFor="email" className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">
+              <Label htmlFor="email" className="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-[0.15em]">
                 Correo electronico
               </Label>
               <Input
@@ -341,12 +341,12 @@ function LoginContent() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-12 rounded-xl auth-input text-white placeholder:text-[#9189A8]/45 text-[14px]"
+                className="h-12 rounded-xl auth-input text-white placeholder:text-[#64748B]/45 text-[14px]"
               />
             </div>
 
             <div className="space-y-2 auth-stagger-5">
-              <Label htmlFor="password" className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">
+              <Label htmlFor="password" className="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-[0.15em]">
                 Contrasena
               </Label>
               <div className="relative">
@@ -357,12 +357,12 @@ function LoginContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-12 rounded-xl auth-input pr-11 text-white placeholder:text-[#9189A8]/45 text-[14px]"
+                  className="h-12 rounded-xl auth-input pr-11 text-white placeholder:text-[#64748B]/45 text-[14px]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9189A8]/60 hover:text-white transition-colors duration-200"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B]/60 hover:text-white transition-colors duration-200"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -397,7 +397,7 @@ function LoginContent() {
           </form>
 
           {/* Footer link */}
-          <p className="text-center text-[13px] text-[#B0A5C8]/70 mt-7 auth-stagger-6">
+          <p className="text-center text-[13px] text-[#94A3B8]/70 mt-7 auth-stagger-6">
             ¿No tienes cuenta?{' '}
             <Link
               href="/register"

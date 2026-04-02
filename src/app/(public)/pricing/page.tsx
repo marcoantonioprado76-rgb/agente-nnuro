@@ -223,7 +223,7 @@ export default function PricingPage() {
                 )}
 
                 <div className={`rounded-2xl p-8 h-full flex flex-col ${
-                  isPro(plan) ? 'bg-[#0B0A14]' : 'bg-[#0D0C16]'
+                  isPro(plan) ? 'bg-[#050508]' : 'bg-[#000000]'
                 }`}>
                   {/* Plan header */}
                   <div className="mb-6">

@@ -115,7 +115,7 @@ export default function BotDetailPage({
               </div>
               {/* Online indicator */}
               {bot?.is_active && (
-                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-[#12111C] flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-[#0A0A0F] flex items-center justify-center">
                   <div className="relative">
                     <span className="absolute inline-flex h-3 w-3 rounded-full bg-[#10B981] opacity-50 animate-ping" />
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-[#10B981]" />
@@ -133,11 +133,11 @@ export default function BotDetailPage({
                   className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-6 text-[10px] font-bold leading-none uppercase tracking-wider"
                   style={{
                     background: bot?.is_active ? 'rgba(16, 185, 129, 0.12)' : 'rgba(145, 137, 168, 0.08)',
-                    color: bot?.is_active ? '#10B981' : '#9189A8',
+                    color: bot?.is_active ? '#10B981' : '#64748B',
                     border: `1px solid ${bot?.is_active ? 'rgba(16, 185, 129, 0.2)' : 'rgba(145, 137, 168, 0.1)'}`,
                   }}
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${bot?.is_active ? 'bg-[#10B981]' : 'bg-[#9189A8]'}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full ${bot?.is_active ? 'bg-[#10B981]' : 'bg-[#64748B]'}`} />
                   {bot?.is_active ? 'Activo' : 'Inactivo'}
                 </span>
               </div>
@@ -189,7 +189,7 @@ function StatusChip({ icon: Icon, label, active, color }: { icon: React.ElementT
       className="inline-flex items-center gap-1.5 rounded-lg px-2.5 h-7 text-[10px] font-semibold transition-all"
       style={{
         background: active ? `${color}10` : 'rgba(255, 255, 255, 0.02)',
-        color: active ? color : '#9189A8',
+        color: active ? color : '#64748B',
         border: `1px solid ${active ? `${color}20` : 'rgba(255, 255, 255, 0.04)'}`,
       }}
     >

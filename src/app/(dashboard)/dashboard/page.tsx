@@ -44,9 +44,9 @@ function statusBadge(status: string) {
   const styles: Record<string, { bg: string; text: string; border: string; label: string }> = {
     active: { bg: 'rgba(16, 185, 129, 0.1)', text: '#10B981', border: 'rgba(16, 185, 129, 0.2)', label: 'Activa' },
     pending_followup: { bg: 'rgba(245, 158, 11, 0.1)', text: '#F59E0B', border: 'rgba(245, 158, 11, 0.2)', label: 'Seguimiento' },
-    closed: { bg: 'rgba(145, 137, 168, 0.08)', text: '#9189A8', border: 'rgba(145, 137, 168, 0.12)', label: 'Cerrada' },
+    closed: { bg: 'rgba(145, 137, 168, 0.08)', text: '#64748B', border: 'rgba(145, 137, 168, 0.12)', label: 'Cerrada' },
   };
-  const s = styles[status] || { bg: 'rgba(145, 137, 168, 0.08)', text: '#9189A8', border: 'rgba(145, 137, 168, 0.12)', label: status };
+  const s = styles[status] || { bg: 'rgba(145, 137, 168, 0.08)', text: '#64748B', border: 'rgba(145, 137, 168, 0.12)', label: status };
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-[22px] text-[10px] font-semibold leading-none"
@@ -256,7 +256,7 @@ export default function DashboardPage() {
                             {(conv.contacts?.name || conv.contacts?.push_name || 'D')[0].toUpperCase()}
                           </div>
                           {conv.status === 'active' && (
-                            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#10B981] border-2 border-[#12111C]" />
+                            <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-[#10B981] border-2 border-[#0A0A0F]" />
                           )}
                         </div>
                         <div className="min-w-0">
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                       className="text-[10px] font-bold px-2.5 py-1 rounded-full"
                       style={{
                         background: d.active_bots > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(145, 137, 168, 0.06)',
-                        color: d.active_bots > 0 ? '#10B981' : '#9189A8',
+                        color: d.active_bots > 0 ? '#10B981' : '#64748B',
                         border: `1px solid ${d.active_bots > 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(145, 137, 168, 0.08)'}`,
                       }}
                     >

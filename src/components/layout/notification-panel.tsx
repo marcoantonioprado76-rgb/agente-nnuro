@@ -244,7 +244,7 @@ export function NotificationBell() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <p className={`text-[12px] leading-tight ${notification.is_read ? 'text-[#C8C2D9]/80' : 'text-white font-medium'}`}>
+                          <p className={`text-[12px] leading-tight ${notification.is_read ? 'text-[#CBD5E1]/80' : 'text-white font-medium'}`}>
                             {notification.title}
                           </p>
                           <span className="text-[9px] text-[#94A3B8]/40 shrink-0 mt-0.5">

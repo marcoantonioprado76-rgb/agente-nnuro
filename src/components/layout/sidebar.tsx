@@ -59,7 +59,7 @@ export function Sidebar() {
           collapsed ? 'justify-center px-2 py-3' : 'gap-3.5 px-3.5 py-2.5',
           isActive
             ? 'sidebar-item-active text-white'
-            : 'text-[#9189A8] sidebar-item-hover hover:text-white'
+            : 'text-[#64748B] sidebar-item-hover hover:text-white'
         )}
       >
         <item.icon
@@ -68,7 +68,7 @@ export function Sidebar() {
             collapsed ? 'h-5 w-5' : 'h-[18px] w-[18px]',
             isActive
               ? 'text-[#8B5CF6] drop-shadow-[0_0_6px_rgba(139,92,246,0.35)]'
-              : 'text-[#9189A8]/50 group-hover:text-[#C8C2D9] group-hover:drop-shadow-[0_0_4px_rgba(139,92,246,0.12)]'
+              : 'text-[#64748B]/50 group-hover:text-[#CBD5E1] group-hover:drop-shadow-[0_0_4px_rgba(139,92,246,0.12)]'
           )}
         />
         {!collapsed && (
@@ -93,7 +93,7 @@ export function Sidebar() {
         collapsed ? 'w-[72px]' : 'w-[260px]'
       )}
       style={{
-        background: 'linear-gradient(180deg, #0D0C16 0%, #0E0C1A 50%, #0B0A14 100%)',
+        background: 'linear-gradient(180deg, #000000 0%, #050508 50%, #050508 100%)',
         borderColor: 'rgba(139, 92, 246, 0.08)',
       }}
     >
@@ -120,7 +120,7 @@ export function Sidebar() {
       <nav className="flex-1 flex flex-col px-3 py-4 overflow-y-auto">
         {/* Section label */}
         <div className={cn('mb-3 px-3.5', collapsed && 'hidden')}>
-          <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9189A8]/40">
+          <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#64748B]/40">
             Principal
           </span>
         </div>
@@ -134,7 +134,7 @@ export function Sidebar() {
         {isAdmin && (
           <>
             <div className={cn('px-3.5 mt-7 mb-3', collapsed && 'hidden')}>
-              <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#9189A8]/40">
+              <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#64748B]/40">
                 Admin
               </span>
             </div>
@@ -168,7 +168,7 @@ export function Sidebar() {
             <Link
               href="/profile"
               onClick={() => setUserMenuOpen(false)}
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[12px] font-medium text-[#9189A8] transition-all duration-200 hover:text-white hover:bg-white/[0.04]"
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[12px] font-medium text-[#64748B] transition-all duration-200 hover:text-white hover:bg-white/[0.04]"
             >
               <UserCircle className="h-4 w-4 text-[#8B5CF6]" />
               Ver perfil
@@ -176,7 +176,7 @@ export function Sidebar() {
             <Link
               href="/subscription"
               onClick={() => setUserMenuOpen(false)}
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[12px] font-medium text-[#9189A8] transition-all duration-200 hover:text-white hover:bg-white/[0.04]"
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[12px] font-medium text-[#64748B] transition-all duration-200 hover:text-white hover:bg-white/[0.04]"
             >
               <CreditCard className="h-4 w-4 text-[#A78BFA]" />
               Suscripcion
@@ -222,7 +222,7 @@ export function Sidebar() {
             </Avatar>
             <div
               className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full flex items-center justify-center"
-              style={{ background: '#0E0C1A', border: '2px solid #0E0C1A' }}
+              style={{ background: '#050508', border: '2px solid #050508' }}
             >
               <div className="h-1.5 w-1.5 rounded-full bg-[#10B981] animate-pulse" />
             </div>
@@ -250,7 +250,7 @@ export function Sidebar() {
 
               <ChevronUp
                 className={cn(
-                  'h-3.5 w-3.5 text-[#9189A8]/30 shrink-0 transition-transform duration-200',
+                  'h-3.5 w-3.5 text-[#64748B]/30 shrink-0 transition-transform duration-200',
                   userMenuOpen ? 'rotate-0' : 'rotate-180'
                 )}
               />
@@ -262,7 +262,7 @@ export function Sidebar() {
       {/* Collapse Button */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full text-[#9189A8] hover:text-white transition-all duration-200 hover:scale-110"
+        className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full text-[#64748B] hover:text-white transition-all duration-200 hover:scale-110"
         style={{
           background: '#142240',
           border: '1px solid rgba(139, 92, 246, 0.15)',

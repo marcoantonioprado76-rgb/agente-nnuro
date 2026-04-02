@@ -237,7 +237,7 @@ export default function LeadsPage() {
                         </span>
                       </div>
                       <p className="text-[13px] text-[#94A3B8]/60 truncate">{lead.contacts?.phone || '-'}</p>
-                      <p className="text-[13px] text-[#C8C2D9] truncate">{lead.products?.name || '-'}</p>
+                      <p className="text-[13px] text-[#CBD5E1] truncate">{lead.products?.name || '-'}</p>
                       <span
                         className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-6 text-[10px] font-semibold w-fit leading-none"
                         style={{ background: sc.bg, color: sc.color, border: `1px solid ${sc.border}` }}

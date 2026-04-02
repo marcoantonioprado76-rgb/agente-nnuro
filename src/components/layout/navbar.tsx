@@ -17,7 +17,7 @@ export function Navbar({ title, description }: NavbarProps) {
         <div>
           <h1 className="text-[17px] font-semibold text-white tracking-tight">{title}</h1>
           {description && (
-            <p className="text-[11px] text-[#9189A8]/60 font-medium">{description}</p>
+            <p className="text-[11px] text-[#64748B]/60 font-medium">{description}</p>
           )}
         </div>
 
@@ -31,7 +31,7 @@ export function Navbar({ title, description }: NavbarProps) {
       <div className="lg:hidden px-4 pt-4 pb-2">
         <h1 className="text-[18px] font-bold text-white tracking-tight">{title}</h1>
         {description && (
-          <p className="text-[11px] text-[#9189A8]/50 font-medium mt-0.5">{description}</p>
+          <p className="text-[11px] text-[#64748B]/50 font-medium mt-0.5">{description}</p>
         )}
       </div>
 

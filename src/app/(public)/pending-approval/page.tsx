@@ -37,7 +37,7 @@ export default function PendingApprovalPage() {
           </p>
         </div>
 
-        <div className="bg-[#0D0C16] border border-yellow-500/20 rounded-2xl p-5 text-left">
+        <div className="bg-[#000000] border border-yellow-500/20 rounded-2xl p-5 text-left">
           <div className="flex items-center gap-3 mb-3">
             <Zap className="h-5 w-5 text-yellow-400" />
             <span className="font-semibold text-white text-sm">Estado de tu suscripción</span>

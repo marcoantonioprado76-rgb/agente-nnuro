@@ -654,7 +654,7 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
           {/* Panel */}
           <div
             className="absolute bottom-0 left-0 right-0 max-h-[92vh] overflow-y-auto rounded-t-3xl anim-slide-up scrollbar-hide"
-            style={{ backgroundColor: isGradient ? '#0D0C16' : adjustBrightness(baseBgHex, isDark ? 5 : -3), borderTop: `1px solid ${border}` }}
+            style={{ backgroundColor: isGradient ? '#000000' : adjustBrightness(baseBgHex, isDark ? 5 : -3), borderTop: `1px solid ${border}` }}
             onClick={e => e.stopPropagation()}
           >
             <div className="p-5 sm:p-6 pb-8">

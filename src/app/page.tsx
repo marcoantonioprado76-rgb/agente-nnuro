@@ -1493,7 +1493,7 @@ function VirtualStoreSection() {
             <br className="hidden sm:block" />
             <span className="hero-gradient-text">vende solo</span>
           </h2>
-          <p className="text-[13px] sm:text-[18px] text-[#B0A5C8] max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[13px] sm:text-[18px] text-[#94A3B8] max-w-2xl mx-auto leading-relaxed">
             Tu tienda + WhatsApp + IA trabajando juntos. Mientras tú descansas,
             tu negocio muestra, responde, convence y cobra.
           </p>
@@ -1527,10 +1527,10 @@ function VirtualStoreSection() {
                 <div>
                   <p className="text-[14px] font-bold text-white">Tech Store Pro</p>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-[#B0A5C8]">6 productos</span>
-                    <span className="text-[10px] text-[#B0A5C8]">•</span>
+                    <span className="text-[10px] text-[#94A3B8]">6 productos</span>
+                    <span className="text-[10px] text-[#94A3B8]">•</span>
                     <span className="flex items-center gap-1 text-[10px] text-[#F59E0B]">⭐ 4.8</span>
-                    <span className="text-[10px] text-[#B0A5C8]">•</span>
+                    <span className="text-[10px] text-[#94A3B8]">•</span>
                     <span className="text-[10px] text-[#10B981] font-semibold">Verificada ✓</span>
                   </div>
                 </div>
@@ -1588,11 +1588,11 @@ function VirtualStoreSection() {
                     <p className="text-[11px] font-semibold text-white truncate mb-0.5">{p.name}</p>
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <span className="text-[10px] text-[#F59E0B]">{'★'.repeat(Math.round(Number(p.rating)))}</span>
-                      <span className="text-[9px] text-[#9189A8]/50">({p.reviews})</span>
+                      <span className="text-[9px] text-[#64748B]/50">({p.reviews})</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[15px] font-extrabold text-[#10B981]">{p.price}</span>
-                      {p.oldPrice && <span className="text-[10px] text-[#9189A8]/40 line-through">{p.oldPrice}</span>}
+                      {p.oldPrice && <span className="text-[10px] text-[#64748B]/40 line-through">{p.oldPrice}</span>}
                     </div>
                     <button className="w-full mt-2 h-7 rounded-lg text-[10px] font-bold text-white transition-all duration-300 group-hover:shadow-[0_4px_20px_rgba(139,92,246,0.35)]" style={{
                       background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
@@ -1618,7 +1618,7 @@ function VirtualStoreSection() {
                 border: '1px solid rgba(16, 185, 129, 0.1)',
               }}>
                 <span className="text-xs">👀</span>
-                <span className="text-[11px] text-[#B0A5C8]"><strong className="text-white">12 personas</strong> viendo tu tienda ahora</span>
+                <span className="text-[11px] text-[#94A3B8]"><strong className="text-white">12 personas</strong> viendo tu tienda ahora</span>
                 <span className="ml-auto text-[10px] font-bold text-[#10B981] tabular-nums">+$1,247 hoy</span>
               </div>
             </div>
@@ -1659,8 +1659,8 @@ function VirtualStoreSection() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <div className="h-7 w-7 rounded-full flex items-center justify-center text-[#9189A8]/50 hover:text-white transition-colors"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 12h.01" /></svg></div>
-                <div className="h-7 w-7 rounded-full flex items-center justify-center text-[#9189A8]/50 hover:text-white transition-colors"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 5v.01M12 12v.01M12 19v.01" /></svg></div>
+                <div className="h-7 w-7 rounded-full flex items-center justify-center text-[#64748B]/50 hover:text-white transition-colors"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 12h.01" /></svg></div>
+                <div className="h-7 w-7 rounded-full flex items-center justify-center text-[#64748B]/50 hover:text-white transition-colors"><svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 5v.01M12 12v.01M12 19v.01" /></svg></div>
               </div>
             </div>
 
@@ -1668,7 +1668,7 @@ function VirtualStoreSection() {
             <div className="flex-1 px-4 py-4 space-y-2.5 overflow-hidden relative">
               {/* Time stamp */}
               <div className="flex justify-center mb-2">
-                <span className="text-[10px] text-[#9189A8]/40 px-3 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.03)' }}>Hoy, 10:31 AM</span>
+                <span className="text-[10px] text-[#64748B]/40 px-3 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.03)' }}>Hoy, 10:31 AM</span>
               </div>
 
               {chatFlow.map((msg, i) => {
@@ -1708,11 +1708,11 @@ function VirtualStoreSection() {
                           <p className="text-[12px] font-bold text-white">Auriculares Pro Max</p>
                           <div className="flex items-center gap-1.5">
                             <span className="text-[10px] text-[#F59E0B]">⭐⭐⭐⭐⭐</span>
-                            <span className="text-[9px] text-[#9189A8]/50">(284)</span>
+                            <span className="text-[9px] text-[#64748B]/50">(284)</span>
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-[14px] font-extrabold text-[#10B981]">$149.99</span>
-                            <span className="text-[10px] text-[#9189A8]/40 line-through">$199.99</span>
+                            <span className="text-[10px] text-[#64748B]/40 line-through">$199.99</span>
                             <span className="text-[9px] font-bold text-[#EF4444] px-1.5 py-0.5 rounded" style={{ background: 'rgba(239, 68, 68, 0.1)' }}>-25%</span>
                           </div>
                         </div>
@@ -1723,7 +1723,7 @@ function VirtualStoreSection() {
                             background: 'linear-gradient(135deg, #25D366, #128C7E)',
                             boxShadow: '0 3px 12px rgba(37, 211, 102, 0.2)',
                           }}>Comprar ahora</button>
-                          <button className="h-8 px-3 rounded-lg text-[11px] font-semibold text-[#9189A8]" style={{
+                          <button className="h-8 px-3 rounded-lg text-[11px] font-semibold text-[#64748B]" style={{
                             background: 'rgba(255,255,255,0.04)',
                             border: '1px solid rgba(255,255,255,0.08)',
                           }}>Ver más</button>
@@ -1753,7 +1753,7 @@ function VirtualStoreSection() {
                         </div>
                         <span className="text-[10px] font-extrabold text-[#10B981]">$149.99</span>
                       </div>
-                      <p className="text-[9px] text-[#9189A8]/40 mt-1.5">10:32 AM</p>
+                      <p className="text-[9px] text-[#64748B]/40 mt-1.5">10:32 AM</p>
                     </div>
                   </div>
                 )
@@ -1770,7 +1770,7 @@ function VirtualStoreSection() {
                       borderBottomLeftRadius: msg.from === 'bot' ? '6px' : undefined,
                     }}>
                       <p className="text-[12px] text-white/90 leading-relaxed">{msg.text}</p>
-                      <p className={`text-[9px] mt-1 ${msg.from === 'user' ? 'text-right text-[#8B5CF6]/50' : 'text-[#9189A8]/40'}`}>
+                      <p className={`text-[9px] mt-1 ${msg.from === 'user' ? 'text-right text-[#8B5CF6]/50' : 'text-[#64748B]/40'}`}>
                         {msg.from === 'user' ? '10:31' : '10:31'} {msg.from === 'bot' && '✓✓'}
                       </p>
                     </div>
@@ -1787,9 +1787,9 @@ function VirtualStoreSection() {
                     borderBottomLeftRadius: '6px',
                   }}>
                     <div className="flex items-center gap-1">
-                      <span className="typing-dot h-2 w-2 rounded-full bg-[#9189A8]/60" />
-                      <span className="typing-dot h-2 w-2 rounded-full bg-[#9189A8]/60" />
-                      <span className="typing-dot h-2 w-2 rounded-full bg-[#9189A8]/60" />
+                      <span className="typing-dot h-2 w-2 rounded-full bg-[#64748B]/60" />
+                      <span className="typing-dot h-2 w-2 rounded-full bg-[#64748B]/60" />
+                      <span className="typing-dot h-2 w-2 rounded-full bg-[#64748B]/60" />
                     </div>
                   </div>
                 </div>
@@ -1802,8 +1802,8 @@ function VirtualStoreSection() {
                 background: 'rgba(255, 255, 255, 0.03)',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
               }}>
-                <span className="text-[#9189A8]/30 text-[13px]">Escribe un mensaje...</span>
-                <div className="ml-auto flex items-center gap-2 text-[#9189A8]/30">
+                <span className="text-[#64748B]/30 text-[13px]">Escribe un mensaje...</span>
+                <div className="ml-auto flex items-center gap-2 text-[#64748B]/30">
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15.172 7l-6.586 6.586a2 2 0 002.828 2.828L18 9.828a4 4 0 00-5.656-5.656L5.757 10.757a6 6 0 008.486 8.486L20.5 13" /></svg>
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
                 </div>
@@ -1832,7 +1832,7 @@ function VirtualStoreSection() {
                 <span className="text-sm">{n.icon}</span>
                 <span className="text-[11px] text-white/80 leading-snug">{n.text}</span>
               </div>
-              <p className="text-[9px] text-[#9189A8]/40 mt-1">Hace un momento</p>
+              <p className="text-[9px] text-[#64748B]/40 mt-1">Hace un momento</p>
             </div>
           ))}
         </div>
@@ -1885,7 +1885,7 @@ function VirtualStoreSection() {
             {/* Shimmer */}
             <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none"><div className="absolute top-0 left-[-100%] w-full h-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)', animation: 'auth-btn-shimmer 3s ease-in-out infinite 1s' }} /></div>
           </button>
-          <p className="text-[13px] text-[#B0A5C8]/60 mt-4">Gratis para empezar • Sin tarjeta • Listo en 5 minutos</p>
+          <p className="text-[13px] text-[#94A3B8]/60 mt-4">Gratis para empezar • Sin tarjeta • Listo en 5 minutos</p>
         </div>
       </div>
 
@@ -2095,7 +2095,7 @@ function TestimonialCard({ t, color }: { t: { n: string; r: string; t: string; m
           </div>
           <div>
             <p className="text-[11px] md:text-[13px] font-semibold text-white">{t.n}</p>
-            <p className="text-[10px] md:text-[11px] text-[#9189A8]">{t.r}</p>
+            <p className="text-[10px] md:text-[11px] text-[#64748B]">{t.r}</p>
           </div>
         </div>
       </div>
@@ -2389,10 +2389,10 @@ function Footer() {
             </div>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/login" className="text-[13px] text-[#9189A8]/50 hover:text-white transition-colors duration-300">Iniciar sesion</Link>
-            <Link href="/register" className="text-[13px] text-[#9189A8]/50 hover:text-white transition-colors duration-300">Crear cuenta</Link>
+            <Link href="/login" className="text-[13px] text-[#64748B]/50 hover:text-white transition-colors duration-300">Iniciar sesion</Link>
+            <Link href="/register" className="text-[13px] text-[#64748B]/50 hover:text-white transition-colors duration-300">Crear cuenta</Link>
           </div>
-          <p className="text-[11px] text-[#9189A8]/30">© {new Date().getFullYear()} Agente de Ventas</p>
+          <p className="text-[11px] text-[#64748B]/30">© {new Date().getFullYear()} Agente de Ventas</p>
         </div>
       </div>
     </footer>

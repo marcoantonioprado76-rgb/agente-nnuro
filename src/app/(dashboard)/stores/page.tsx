@@ -686,7 +686,7 @@ export default function StoresPage() {
                             type="button"
                             onClick={() => { updateFontConfig({ font: font.value }); setFontDropdownOpen(false) }}
                             className="flex w-full items-center justify-between px-3.5 py-2 text-sm transition-colors duration-150 hover:bg-white/5"
-                            style={{ fontFamily: font.family, color: fc.font === font.value ? '#A78BFA' : '#C8C2D9' }}
+                            style={{ fontFamily: font.family, color: fc.font === font.value ? '#A78BFA' : '#CBD5E1' }}
                           >
                             <span className="font-medium">{font.label}</span>
                             {fc.font === font.value && <Check className="h-4 w-4 text-[#A78BFA]" />}

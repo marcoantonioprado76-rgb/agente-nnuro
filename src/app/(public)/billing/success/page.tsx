@@ -89,7 +89,7 @@ function BillingSuccessContent() {
       </div>
 
       <div className="relative max-w-md w-full mx-auto px-6">
-        <div className="rounded-2xl border border-emerald-500/20 bg-[#0B0A14] p-8 text-center space-y-6">
+        <div className="rounded-2xl border border-emerald-500/20 bg-[#050508] p-8 text-center space-y-6">
           {status === 'checking' ? (
             <>
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 animate-pulse">
