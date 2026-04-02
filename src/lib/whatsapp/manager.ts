@@ -561,6 +561,19 @@ class WhatsAppManager {
       const combinedMessage = buffered.map(m => m.content).join('\n')
       const contactName = contact.name || contact.push_name || phone
 
+      // Re-check conversation status (may have been paused/closed during buffer wait)
+      const freshSupabase = await createServiceRoleClient()
+      const { data: freshConv } = await freshSupabase
+        .from('conversations')
+        .select('status')
+        .eq('id', conversation.id)
+        .single()
+
+      if (freshConv?.status === 'paused' || freshConv?.status === 'closed') {
+        console.log(`[WA] Conversation ${conversation.id} was ${freshConv.status} during buffer — not responding`)
+        return
+      }
+
       // ── Generate AI Response ──
       console.log(`[WA] Generating response for bot ${botId}, phone ${phone}`)
       const aiResponse = await generateBotResponse(botId, phone, combinedMessage, conversation.id, contactName)
