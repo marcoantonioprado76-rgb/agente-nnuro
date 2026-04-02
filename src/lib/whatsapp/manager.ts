@@ -226,6 +226,7 @@ class WhatsAppManager {
   private connections = new Map<string, BaileysConnection>()
   private messageBuffers = new Map<string, BufferedMessage[]>()
   private processingKeys = new Set<string>()
+  private lidToPhone = new Map<string, string>()
 
   // ── Connect ──
   async connect(botId: string): Promise<{ status: string; qrCode?: string; phone?: string }> {
@@ -380,6 +381,30 @@ class WhatsAppManager {
       backupCredentialsToDb(botId).catch(() => {})
     })
 
+    // ── LID Mapping ──
+    socket.ev.on('contacts.upsert', (contacts) => {
+      for (const c of contacts) {
+        const lid = c.lid?.split('@')[0] || (c.id?.endsWith('@lid') ? c.id.split('@')[0] : null)
+        const phone = (c as unknown as Record<string, unknown>).phoneNumber as string | undefined
+        if (lid && phone) {
+          const cleanPhone = phone.split('@')[0]
+          this.lidToPhone.set(lid, cleanPhone)
+          console.log(`[WA ${botId}] LID mapped: ${lid} → ${cleanPhone}`)
+        }
+      }
+    })
+
+    socket.ev.on('contacts.update', (contacts) => {
+      for (const c of contacts) {
+        if (c.id?.endsWith('@lid') && (c as unknown as Record<string, unknown>).phoneNumber) {
+          const lid = c.id.split('@')[0]
+          const phone = ((c as unknown as Record<string, unknown>).phoneNumber as string).split('@')[0]
+          this.lidToPhone.set(lid, phone)
+          console.log(`[WA ${botId}] LID updated: ${lid} → ${phone}`)
+        }
+      }
+    })
+
     // ── Messages ──
     socket.ev.on('messages.upsert', async ({ messages: msgs, type }) => {
       if (type !== 'notify') return
@@ -401,7 +426,16 @@ class WhatsAppManager {
     const message = msg.message
     if (!message) return
 
-    const phone = phoneFromJid(jid)
+    // Resolve LID to real phone number
+    const rawPhone = phoneFromJid(jid)
+    const isLid = jid.endsWith('@lid')
+    let phone = rawPhone
+    if (isLid && this.lidToPhone.has(rawPhone)) {
+      phone = this.lidToPhone.get(rawPhone)!
+      console.log(`[WA] LID ${rawPhone} resolved to ${phone}`)
+    } else if (isLid) {
+      console.log(`[WA] LID ${rawPhone} not mapped yet, using as-is`)
+    }
     const pushName = msg.pushName || ''
 
     // Get bot info
