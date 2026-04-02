@@ -69,8 +69,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         status,
         qr_code: qrCode,
-        phone_number: liveState.phoneNumber || dbSession?.phone_number || null,
-        last_connected_at: liveState.lastConnectedAt || dbSession?.last_connected_at || null,
+        phone_number: liveState.phone || dbSession?.phone_number || null,
+        last_connected_at: dbSession?.last_connected_at || null,
       })
     }
 
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
             message: qrCode ? 'QR listo para escanear' : 'Conexion iniciada',
             status,
             qr_code: qrCode,
-            phone_number: state.phoneNumber,
+            phone_number: state.phone,
             debug: { elapsed, hasQR: !!qrCode, finalStatus: state.status },
           })
         } catch (connectError) {
