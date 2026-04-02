@@ -583,24 +583,43 @@ class WhatsAppManager {
         const errMsg = aiErr instanceof Error ? aiErr.message : String(aiErr)
         console.error(`[WA] AI error for bot ${botId}:`, errMsg)
 
-        // Auto-pause bot on quota/billing error
-        const isQuotaError = errMsg.includes('insufficient_quota') || errMsg.includes('429') || errMsg.includes('billing')
-        if (isQuotaError) {
+        // Auto-pause bot on quota/billing/invalid key errors
+        const isFatalError = errMsg.includes('insufficient_quota')
+          || errMsg.includes('429')
+          || errMsg.includes('billing')
+          || errMsg.includes('404')
+          || errMsg.includes('invalid_api_key')
+          || errMsg.includes('401')
+          || errMsg.includes('Incorrect API key')
+          || errMsg.includes('exceeded')
+        if (isFatalError) {
           const pauseDb = await createServiceRoleClient()
           await pauseDb.from('bots').update({ is_active: false }).eq('id', botId)
+
+          // Determine notification message
+          let notifTitle = 'Bot desactivado — Error de API Key'
+          let notifMsg = `El bot "${bot.name}" fue desactivado automáticamente.`
+          if (errMsg.includes('insufficient_quota') || errMsg.includes('exceeded') || errMsg.includes('429') || errMsg.includes('billing')) {
+            notifTitle = 'Bot desactivado — Sin saldo en OpenAI'
+            notifMsg = `El bot "${bot.name}" fue desactivado porque tu API key de OpenAI no tiene saldo. Recarga créditos y reactívalo.`
+          } else if (errMsg.includes('404') || errMsg.includes('invalid_api_key') || errMsg.includes('401') || errMsg.includes('Incorrect API key')) {
+            notifTitle = 'Bot desactivado — API Key inválida'
+            notifMsg = `El bot "${bot.name}" fue desactivado porque la API key de OpenAI es inválida o fue eliminada. Configura una nueva API key.`
+          }
+
           // Notify bot owner
           try {
             const { data: profile } = await pauseDb.from('profiles').select('id').eq('tenant_id', bot.tenant_id).limit(1).single()
             if (profile) {
               await pauseDb.from('user_notifications').insert({
                 user_id: profile.id, type: 'bot_pausado',
-                title: 'Bot pausado — Sin saldo en OpenAI',
-                message: `El bot "${bot.name}" fue pausado automáticamente porque la API key de OpenAI no tiene saldo.`,
+                title: notifTitle,
+                message: notifMsg,
                 link: `/bots/${botId}`,
               })
             }
           } catch { /* silent */ }
-          console.warn(`[WA] Bot ${botId} AUTO-PAUSED: OpenAI quota error`)
+          console.warn(`[WA] Bot ${botId} AUTO-DISABLED: ${errMsg.substring(0, 100)}`)
         } else {
           // Fallback message so client isn't left on read
           try {
@@ -623,10 +642,10 @@ class WhatsAppManager {
       const sentUrlsDb = await createServiceRoleClient()
       const { data: botMsgs } = await sentUrlsDb
         .from('messages')
-        .select('content')
+        .select('content, type')
         .eq('conversation_id', conversation.id)
         .eq('sender', 'bot')
-        .eq('type', 'image')
+        .in('type', ['image', 'video'])
       const sentUrls = new Set((botMsgs || []).map(m => m.content).filter(u => u?.startsWith('http')))
 
       if (aiResponse.photos_message1) {

@@ -222,7 +222,16 @@ export async function generateBotResponse(
     // 11. PARSEAR RESPUESTA (sin truncar — el System Prompt controla todo)
     return parseAIResponse(responseContent)
   } catch (err) {
-    console.error(`[AI Engine] Error:`, err)
+    const errMsg = err instanceof Error ? err.message : String(err)
+    console.error(`[AI Engine] Error:`, errMsg)
+
+    // Re-throw fatal errors so the manager can auto-disable the bot
+    const isFatal = errMsg.includes('insufficient_quota') || errMsg.includes('429')
+      || errMsg.includes('404') || errMsg.includes('401')
+      || errMsg.includes('invalid_api_key') || errMsg.includes('Incorrect API key')
+      || errMsg.includes('billing') || errMsg.includes('exceeded')
+    if (isFatal) throw err
+
     return null
   }
 }
