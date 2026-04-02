@@ -48,7 +48,7 @@ const globalForWa = globalThis as typeof globalThis & {
 async function transcribeAudio(audioBuffer: Buffer, mimeType: string, apiKey: string): Promise<string> {
   try {
     const ext = mimeType.includes('mp4') ? 'mp4' : 'ogg'
-    const blob = new Blob([audioBuffer], { type: mimeType })
+    const blob = new Blob([new Uint8Array(audioBuffer)], { type: mimeType })
     const form = new FormData()
     form.append('file', blob, `audio.${ext}`)
     form.append('model', 'whisper-1')
@@ -407,7 +407,11 @@ class WhatsAppManager {
     // Get bot info
     const bot = await getBot(botId)
     if (!bot || !bot.is_active) return
-    const apiKey = bot.openai_api_key
+    const apiKey = bot.openai_api_key || process.env.OPENAI_API_KEY
+    if (!apiKey) {
+      console.error(`[WA] Bot ${botId} has no API key`)
+      return
+    }
 
     // ── Extract content ──
     let content = ''
