@@ -234,6 +234,12 @@ class WhatsAppManager {
       return { status: 'connected', phone: existing.phoneNumber || undefined }
     }
 
+    // Kill any existing socket before creating a new one
+    if (existing?.socket) {
+      try { existing.socket.ev.removeAllListeners(); (existing.socket as any).end() } catch { /* ignore */ }
+      existing.socket = null
+    }
+
     // Update DB status
     const supabase = await createServiceRoleClient()
     await supabase.from('whatsapp_sessions').upsert(
@@ -241,21 +247,22 @@ class WhatsAppManager {
       { onConflict: 'bot_id' }
     )
 
-    const conn: BaileysConnection = existing || {
+    const conn: BaileysConnection = {
       socket: null,
       status: 'connecting',
       qrCode: null,
       phoneNumber: null,
       retryCount: 0,
     }
-    conn.status = 'connecting'
-    conn.qrCode = null
     this.connections.set(botId, conn)
 
-    // Ensure session dir
+    // For fresh connections, clean old session to force new QR
     const sessionDir = path.join(SESSIONS_DIR, botId)
-    if (!fs.existsSync(sessionDir)) {
-      await restoreCredentialsFromDb(botId)
+    if (!existing) {
+      // First connection attempt — try restoring from DB
+      if (!fs.existsSync(path.join(sessionDir, 'creds.json'))) {
+        await restoreCredentialsFromDb(botId)
+      }
     }
     fs.mkdirSync(sessionDir, { recursive: true })
 
@@ -347,11 +354,12 @@ class WhatsAppManager {
             if (fs.existsSync(sessionDir2)) {
               fs.rmSync(sessionDir2, { recursive: true, force: true })
             }
+            console.log(`[WA] Bot ${botId} logged out — session cleaned, needs new QR`)
           }
 
           const supabase = await createServiceRoleClient()
           await supabase.from('whatsapp_sessions').upsert(
-            { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null },
+            { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
             { onConflict: 'bot_id' }
           )
         } else if (conn.retryCount < MAX_RETRIES) {
@@ -395,6 +403,17 @@ class WhatsAppManager {
   private async handleIncomingMessage(botId: string, msg: WAMessage, socket: WASocket): Promise<void> {
     // Ignore own messages, groups, status broadcast
     if (msg.key.fromMe) return
+
+    // Ignore old messages (older than 60 seconds) — these arrive on reconnect
+    const msgTimestamp = msg.messageTimestamp
+    if (msgTimestamp) {
+      const msgTime = typeof msgTimestamp === 'number' ? msgTimestamp : Number(msgTimestamp)
+      const now = Math.floor(Date.now() / 1000)
+      if (now - msgTime > 60) {
+        console.log(`[WA] Ignoring old message (${now - msgTime}s ago)`)
+        return
+      }
+    }
     const jid = msg.key.remoteJid
     if (!jid || jid === 'status@broadcast' || jid.endsWith('@g.us') || jid.endsWith('@newsletter')) return
 
@@ -605,7 +624,7 @@ class WhatsAppManager {
         await conn.socket.logout()
       } catch { /* ignore */ }
       try {
-        conn.socket.end(undefined)
+        (conn.socket as any).end()
       } catch { /* ignore */ }
     }
 
