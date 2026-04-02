@@ -665,6 +665,17 @@ class WhatsAppManager {
     }
   }
 
+  // ── Get Session State ──
+  getSessionState(botId: string): { status: string; qrCode?: string; phone?: string } {
+    const conn = this.connections.get(botId)
+    if (!conn) return { status: 'disconnected' }
+    return {
+      status: conn.status,
+      qrCode: conn.qrCode || undefined,
+      phone: conn.phoneNumber || undefined,
+    }
+  }
+
   // ── Diagnose ──
   diagnose(): object {
     const connections: Record<string, { status: string; phone: string | null; retryCount: number }> = {}

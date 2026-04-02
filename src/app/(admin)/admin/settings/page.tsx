@@ -16,7 +16,7 @@ import {
 import {
   Settings, CreditCard, Bot, MessageSquare, Smartphone, Loader2,
   Plus, Pencil, Trash2, Save, X, Package, DollarSign, Hash,
-  AlertCircle, Check, Landmark, Zap, FileText, Copy,
+  AlertCircle, Check, Landmark, Zap, FileText,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Plan } from '@/types'

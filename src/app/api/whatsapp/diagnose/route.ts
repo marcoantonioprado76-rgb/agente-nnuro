@@ -24,11 +24,10 @@ export async function GET() {
   }
 
   const manager = getWhatsAppManager()
-  const report = manager.diagnose()
+  const report = manager.diagnose() as Record<string, unknown>
   return NextResponse.json({
     timestamp: new Date().toISOString(),
-    sessions: report,
-    totalSessions: report.length,
+    ...report,
   })
 }
 
