@@ -511,6 +511,12 @@ class WhatsAppManager {
     if (!conversation) { console.error(`[WA] Failed to find/create conversation`); return }
     console.log(`[WA] Contact: ${contact.id}, Conversation: ${conversation.id}, Status: ${conversation.status}`)
 
+    // If conversation is paused, don't read or respond (invisible for client)
+    if (conversation.status === 'paused') {
+      console.log(`[WA] Conversation ${conversation.id} is paused — not reading, not responding`)
+      return
+    }
+
     // Save incoming message
     await saveMessage(conversation.id, 'client', msgType, content)
 
@@ -523,9 +529,9 @@ class WhatsAppManager {
       }
     }
 
-    // If conversation is paused, don't respond
-    if (conversation.status === 'paused') {
-      console.log(`[WA] Conversation ${conversation.id} is paused, skipping response`)
+    // If conversation is closed, don't respond
+    if (conversation.status === 'closed') {
+      console.log(`[WA] Conversation ${conversation.id} is closed, skipping response`)
       return
     }
 
@@ -607,24 +613,36 @@ class WhatsAppManager {
         }
       }
 
-      // ── Update conversation: last_bot_message_at + set pending_followup ──
+      // ── Send report if present (sale confirmed) ──
       const supabaseUpdate = await createServiceRoleClient()
-      await supabaseUpdate.from('conversations').update({
-        last_bot_message_at: new Date().toISOString(),
-        last_message_at: new Date().toISOString(),
-        status: 'pending_followup',
-        followup_count: 0,
-        last_followup_at: null,
-      }).eq('id', conversation.id)
 
-      // ── Send report if present ──
       if (aiResponse.report && bot.report_phone) {
+        // Sale confirmed — send report to seller and close conversation
         try {
           const reportJid = `${bot.report_phone}@s.whatsapp.net`
           await socket.sendMessage(reportJid, { text: aiResponse.report })
+          console.log(`[WA] Sale report sent to ${bot.report_phone}`)
         } catch (err) {
           console.error(`[WA] Error sending report:`, err)
         }
+
+        // Close conversation — bot stops responding to this client
+        await supabaseUpdate.from('conversations').update({
+          status: 'closed',
+          last_bot_message_at: new Date().toISOString(),
+          last_message_at: new Date().toISOString(),
+        }).eq('id', conversation.id)
+
+        console.log(`[WA] Conversation ${conversation.id} closed (sale confirmed)`)
+      } else {
+        // No sale — set pending_followup for automatic follow-ups
+        await supabaseUpdate.from('conversations').update({
+          last_bot_message_at: new Date().toISOString(),
+          last_message_at: new Date().toISOString(),
+          status: 'pending_followup',
+          followup_count: 0,
+          last_followup_at: null,
+        }).eq('id', conversation.id)
       }
     } catch (err) {
       console.error(`[WA] Error processing buffered messages for ${bufferKey}:`, err)
