@@ -25,10 +25,8 @@ const INSTANCE_ID = crypto.randomUUID()
 console.log(`[WA Manager] 🆔 Instance ID: ${INSTANCE_ID}`)
 
 // Directory to persist auth sessions
-// Priority: WHATSAPP_SESSIONS_DIR env (Railway volume) > /tmp (Vercel) > local
-const SESSIONS_DIR = process.env.WHATSAPP_SESSIONS_DIR
-  || (process.env.VERCEL ? path.join('/tmp', '.whatsapp-sessions')
-     : path.join(process.cwd(), '.whatsapp-sessions'))
+// Priority: WHATSAPP_SESSIONS_DIR env > /data/baileys-sessions (Render persistent disk) > local (dev)
+const SESSIONS_DIR = process.env.WHATSAPP_SESSIONS_DIR || '/data/baileys-sessions'
 
 // Buffer config: tiempo de espera para agrupar mensajes (en ms)
 const MESSAGE_BUFFER_TIMEOUT = 10_000 // 10 segundos
