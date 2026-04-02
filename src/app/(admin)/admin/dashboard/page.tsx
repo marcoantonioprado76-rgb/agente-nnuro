@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
     { key: 'total_bots', label: 'Total Bots', icon: Bot, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
     { key: '_disconnected_bots', label: 'Bots Desconectados', icon: WifiOff, color: 'text-red-400', bg: 'bg-red-500/10', computed: disconnectedBots },
     { key: 'total_products', label: 'Total Productos', icon: Package, color: 'text-violet-400', bg: 'bg-violet-500/10' },
-    { key: 'total_conversations', label: 'Total Conversaciones', icon: MessageSquare, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    { key: 'total_conversations', label: 'Total Conversaciones', icon: MessageSquare, color: 'text-violet-400', bg: 'bg-violet-500/10' },
     { key: 'total_leads', label: 'Oportunidades', icon: Target, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
     { key: 'total_stores', label: 'Tiendas', icon: Store, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
     { key: 'total_store_orders', label: 'Pedidos Tiendas', icon: ShoppingCart, color: 'text-pink-400', bg: 'bg-pink-500/10' },
@@ -163,7 +163,7 @@ export default function AdminDashboardPage() {
     { label: 'Ver Tiendas', href: '/admin/stores', icon: Store, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
     { label: 'Ver Suscripciones', href: '/admin/subscriptions', icon: CreditCard, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
     { label: 'Ver Pagos Pendientes', href: '/admin/payments', icon: DollarSign, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-    { label: 'Ver Auditoria', href: '/admin/audit', icon: Shield, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    { label: 'Ver Auditoria', href: '/admin/audit', icon: Shield, color: 'text-violet-400', bg: 'bg-violet-500/10' },
   ]
 
   return (
@@ -327,7 +327,7 @@ export default function AdminDashboardPage() {
                           className={
                             user.role === 'admin'
                               ? 'bg-purple-500/15 text-purple-400 border-purple-500/30'
-                              : 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+                              : 'bg-violet-500/15 text-violet-400 border-violet-500/30'
                           }
                         >
                           {user.role === 'admin' ? 'Admin' : 'Usuario'}
@@ -446,14 +446,14 @@ export default function AdminDashboardPage() {
                       ? 'bg-emerald-500/15'
                       : notif.type === 'pago_fallido'
                       ? 'bg-red-500/15'
-                      : 'bg-blue-500/15'
+                      : 'bg-violet-500/15'
                   }`}>
                     <DollarSign className={`h-4 w-4 ${
                       notif.type === 'pago_exitoso'
                         ? 'text-emerald-400'
                         : notif.type === 'pago_fallido'
                         ? 'text-red-400'
-                        : 'text-blue-400'
+                        : 'text-violet-400'
                     }`} />
                   </div>
                   <div className="flex-1 min-w-0">

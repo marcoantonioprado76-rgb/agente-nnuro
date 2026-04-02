@@ -533,7 +533,7 @@ export default function AdminUsersPage() {
                             <Badge variant="outline" className={
                               user.role === 'admin'
                                 ? 'bg-purple-500/15 text-purple-400 border-purple-500/30'
-                                : 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+                                : 'bg-violet-500/15 text-violet-400 border-violet-500/30'
                             }>
                               {user.role === 'admin' && <Shield className="h-3 w-3 mr-1" />}
                               {user.role === 'admin' ? 'Admin' : 'Usuario'}
@@ -956,7 +956,7 @@ export default function AdminUsersPage() {
                     <Badge variant="outline" className={
                       detailUser.role === 'admin'
                         ? 'bg-purple-500/15 text-purple-400 border-purple-500/30'
-                        : 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+                        : 'bg-violet-500/15 text-violet-400 border-violet-500/30'
                     }>
                       {detailUser.role === 'admin' && <Shield className="h-3 w-3 mr-1" />}
                       {detailUser.role === 'admin' ? 'Admin' : 'Usuario'}

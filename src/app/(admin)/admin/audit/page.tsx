@@ -124,7 +124,7 @@ function getActionColor(action: string): BadgeColor {
 const badgeStyles: Record<BadgeColor, string> = {
   green: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
   red: 'bg-red-500/15 text-red-400 border-red-500/30',
-  blue: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  blue: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
   yellow: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
   gray: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/30',
 }
@@ -166,7 +166,7 @@ function matchesCategory(action: string, category: string): boolean {
 function getEntityBadge(entityType?: string) {
   if (!entityType) return null
   const map: Record<string, string> = {
-    user: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+    user: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
     bot: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
     product: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
     subscription: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',

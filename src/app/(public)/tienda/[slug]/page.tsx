@@ -761,7 +761,7 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
                       <Label className="text-xs uppercase tracking-wider flex items-center gap-1.5" style={{ color: textMuted }}><Navigation className="h-3 w-3" /> Ubicacion (opcional)</Label>
                       {!customer.google_maps_url ? (
                         <div className="space-y-2">
-                          <Button type="button" onClick={handleGetLocation} disabled={geoLoading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold gap-2 h-12 rounded-xl text-sm active:scale-[0.98]">
+                          <Button type="button" onClick={handleGetLocation} disabled={geoLoading} className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold gap-2 h-12 rounded-xl text-sm active:scale-[0.98]">
                             {geoLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
                             {geoLoading ? 'Obteniendo...' : 'Obtener mi ubicacion'}
                           </Button>

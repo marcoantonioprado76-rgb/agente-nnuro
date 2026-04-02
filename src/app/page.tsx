@@ -678,7 +678,7 @@ function HeroMockup() {
 
   // Cycling floating notifications
   const notifs = [
-    { icon: '💬', text: 'Nuevo cliente', sub: 'Maria pregunto por precios', color: '#8B5CF6', border: 'border-blue-200' },
+    { icon: '💬', text: 'Nuevo cliente', sub: 'Maria pregunto por precios', color: '#8B5CF6', border: 'border-violet-200' },
     { icon: '💰', text: 'Venta confirmada', sub: '$149 USD — Pack Pro', color: '#10B981', border: 'border-green-200' },
     { icon: '🤖', text: 'Bot respondio en 2s', sub: 'Atencion automatica', color: '#7C3AED', border: 'border-violet-200' },
     { icon: '📈', text: '+12% conversiones', sub: 'vs semana anterior', color: '#F59E0B', border: 'border-amber-200' },
@@ -767,7 +767,7 @@ function HeroMockup() {
       </div>
 
       {/* Floating notification — bottom left */}
-      <div className="absolute -left-8 bottom-10 rounded-xl p-3 bg-white border border-blue-200 animate-float-delayed" style={{ boxShadow: '0 8px 28px rgba(79,124,255,0.15), 0 2px 6px rgba(0,0,0,0.06)' }}>
+      <div className="absolute -left-8 bottom-10 rounded-xl p-3 bg-white border border-violet-200 animate-float-delayed" style={{ boxShadow: '0 8px 28px rgba(79,124,255,0.15), 0 2px 6px rgba(0,0,0,0.06)' }}>
         <div className="flex items-center gap-2.5">
           <div className="h-7 w-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}>
             <Bot className="h-3.5 w-3.5 text-white" />
@@ -1056,7 +1056,7 @@ function ChatSection() {
                             <div className="rounded-lg overflow-hidden bg-white max-w-[78%] relative" style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
                               {/* WA tail */}
                               <div className="absolute -left-2 top-0 w-3 h-3" style={{ background: 'white', clipPath: 'polygon(100% 0, 100% 100%, 0 0)' }} />
-                              <div className="h-32 bg-gradient-to-br from-blue-50 via-violet-50 to-blue-100 flex items-center justify-center relative overflow-hidden">
+                              <div className="h-32 bg-gradient-to-br from-violet-50 via-violet-50 to-violet-100 flex items-center justify-center relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent" />
                                 <ShoppingBag className="h-10 w-10 text-[#7C3AED]/30" />
                               </div>
@@ -2329,9 +2329,9 @@ function FinalCTA() {
                 {chatTyping && chatStep < chatMsgs.length && (
                   <div className={`flex ${chatMsgs[chatStep].from === 'b' ? 'justify-start' : 'justify-end'}`}>
                     <div className="flex gap-1 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(79,124,255,0.1)' }}>
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-400/60 typing-dot" />
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-400/60 typing-dot" />
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-400/60 typing-dot" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-violet-400/60 typing-dot" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-violet-400/60 typing-dot" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-violet-400/60 typing-dot" />
                     </div>
                   </div>
                 )}

@@ -414,7 +414,7 @@ export default function AdminSettingsPage() {
                         <Badge variant="outline" className="bg-violet-500/15 text-violet-400 border-violet-500/30">{plan.max_products}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge variant="outline" className="bg-blue-500/15 text-blue-400 border-blue-500/30">
+                        <Badge variant="outline" className="bg-violet-500/15 text-violet-400 border-violet-500/30">
                           {plan.max_conversations === -1 ? 'Ilimitado' : plan.max_conversations}
                         </Badge>
                       </TableCell>
@@ -591,7 +591,7 @@ export default function AdminSettingsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 p-3 rounded-lg border border-border/50 bg-secondary/20">
-                  <MessageSquare className="h-4 w-4 text-blue-400 shrink-0" />
+                  <MessageSquare className="h-4 w-4 text-violet-400 shrink-0" />
                   <div className="flex-1">
                     <p className="text-[10px] text-muted-foreground">Conversaciones</p>
                     <Input
