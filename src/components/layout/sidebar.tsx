@@ -147,29 +147,6 @@ export function Sidebar() {
           </>
         )}
 
-        {/* AI Assistant Orb */}
-        <div className={cn('flex justify-center mt-auto pb-12')}>
-          <button
-            onClick={() => {
-              const event = new CustomEvent('toggle-ai-assistant')
-              window.dispatchEvent(event)
-            }}
-            className="group relative cursor-pointer ai-orb-container"
-            aria-label="Abrir asistente IA"
-          >
-            <div className="absolute -inset-4 ai-orb-ring border border-[#8B5CF6]/15 pointer-events-none" />
-            <div className="relative w-16 h-16 rounded-full overflow-hidden ai-orb-core">
-              <div className="absolute inset-0 ai-orb-energy opacity-50" />
-              <img
-                src="/images/ai-bubble.png"
-                alt="Asistente IA"
-                className="relative w-full h-full object-cover rounded-full z-[1]"
-              />
-              <div className="absolute inset-0 ai-orb-shimmer z-[2] pointer-events-none" />
-            </div>
-            <div className="absolute -inset-2 rounded-full bg-[#8B5CF6]/0 group-hover:bg-[#8B5CF6]/8 transition-all duration-500 pointer-events-none" />
-          </button>
-        </div>
       </nav>
 
       {/* Divider */}

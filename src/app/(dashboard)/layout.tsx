@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/layout/sidebar';
 import { MobileHeader } from '@/components/layout/mobile-header';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { SubscriptionGuard } from '@/components/subscription-guard';
-import { AIAssistantBubble } from '@/components/ai-assistant-bubble';
+
 import { useAuth } from '@/hooks/use-auth';
 
 export default function DashboardLayout({
@@ -37,7 +37,6 @@ export default function DashboardLayout({
         </SubscriptionGuard>
       </main>
       <MobileNav />
-      <AIAssistantBubble />
     </div>
   );
 }

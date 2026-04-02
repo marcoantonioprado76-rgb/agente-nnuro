@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/layout/admin-sidebar'
 import { MobileHeader } from '@/components/layout/mobile-header'
 import { AdminMobileNav } from '@/components/layout/admin-mobile-nav'
-import { AIAssistantBubble } from '@/components/ai-assistant-bubble'
+
 import { useAuth } from '@/hooks/use-auth'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,7 +30,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {children}
       </main>
       <AdminMobileNav />
-      <AIAssistantBubble />
     </div>
   )
 }
