@@ -236,7 +236,7 @@ class WhatsAppManager {
 
     // Kill any existing socket before creating a new one
     if (existing?.socket) {
-      try { existing.socket.ev.removeAllListeners(); (existing.socket as any).end() } catch { /* ignore */ }
+      try { (existing.socket.ev as any).removeAllListeners(); (existing.socket as any).end() } catch { /* ignore */ }
       existing.socket = null
     }
 
