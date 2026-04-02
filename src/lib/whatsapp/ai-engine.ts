@@ -380,6 +380,22 @@ ${sentUrls.map(u => `- ${u}`).join('\n')}`
 ${savedMemory}`
   }
 
+  // Shipping data from personality field
+  try {
+    const shippingData = JSON.parse((botPrompt.personality as string) || '{}')
+    const hasShipping = shippingData.shipping_info || shippingData.coverage || shippingData.sell_zones || shippingData.delivery_zones
+    if (hasShipping) {
+      dynamicContext += `
+
+═══ ENVIO Y COBERTURA ═══`
+      if (shippingData.shipping_info) dynamicContext += `\nInformacion de envio: ${shippingData.shipping_info}`
+      if (shippingData.coverage) dynamicContext += `\nCobertura: ${shippingData.coverage}`
+      if (shippingData.sell_zones) dynamicContext += `\nZonas de venta: ${shippingData.sell_zones}`
+      if (shippingData.delivery_zones) dynamicContext += `\nZonas de entrega: ${shippingData.delivery_zones}`
+      dynamicContext += `\nUSA esta informacion cuando el cliente pregunte por envios, cobertura, zonas de entrega o tiempos de envio. No inventes datos de envio.`
+    }
+  } catch { /* not JSON, ignore */ }
+
   dynamicContext += `
 
 ═══ CATALOGO DE PRODUCTOS ═══

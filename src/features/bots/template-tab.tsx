@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Save, Loader2, Wand2, FileText, Code2, Type } from 'lucide-react'
+import { Save, Loader2, Wand2, FileText, Code2, Type, Truck } from 'lucide-react'
 import { toast } from 'sonner'
 import type { BotPrompt } from '@/types'
 
@@ -227,12 +227,27 @@ Leer el historial completo y responder con coherencia y continuidad.
 "reporte": ""
 }`
 
+interface ShippingData {
+  shipping_info: string
+  coverage: string
+  sell_zones: string
+  delivery_zones: string
+}
+
+const emptyShipping: ShippingData = {
+  shipping_info: '',
+  coverage: '',
+  sell_zones: '',
+  delivery_zones: '',
+}
+
 export function TemplateTab({ botId }: TemplateTabProps) {
   const [loading, setLoading] = useState(true)
   const [systemPrompt, setSystemPrompt] = useState('')
   const [strictJson, setStrictJson] = useState(false)
   const [promptId, setPromptId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [shipping, setShipping] = useState<ShippingData>(emptyShipping)
 
   useEffect(() => {
     async function loadPrompt() {
@@ -245,6 +260,17 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             setPromptId(prompt.id)
             setSystemPrompt(prompt.system_prompt || '')
             setStrictJson(prompt.strict_json_output || false)
+            try {
+              const parsed = JSON.parse(prompt.personality || '{}')
+              if (parsed.shipping_info || parsed.coverage || parsed.sell_zones || parsed.delivery_zones) {
+                setShipping({
+                  shipping_info: parsed.shipping_info || '',
+                  coverage: parsed.coverage || '',
+                  sell_zones: parsed.sell_zones || '',
+                  delivery_zones: parsed.delivery_zones || '',
+                })
+              }
+            } catch { /* not JSON, ignore */ }
           }
         }
       } catch {
@@ -272,6 +298,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             id: promptId,
             system_prompt: systemPrompt,
             strict_json_output: strictJson,
+            personality: JSON.stringify(shipping),
           },
         }),
       })
@@ -358,6 +385,79 @@ export function TemplateTab({ botId }: TemplateTabProps) {
               border: '1px solid rgba(255, 255, 255, 0.08)',
             }}
           />
+        </div>
+      </div>
+
+      {/* ── Envío y Cobertura ── */}
+      <div
+        className="rounded-2xl p-4 md:p-5"
+        style={{
+          background: 'linear-gradient(180deg, rgba(17, 29, 53, 0.9) 0%, rgba(13, 21, 41, 0.95) 100%)',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+        }}
+      >
+        <div className="flex items-center gap-3 mb-4 md:mb-5">
+          <div
+            className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
+            style={{ background: 'rgba(236, 72, 153, 0.1)', border: '1px solid rgba(236, 72, 153, 0.15)' }}
+          >
+            <Truck className="h-4 w-4 text-[#EC4899]" />
+          </div>
+          <div>
+            <h2 className="text-[15px] font-semibold text-white">Envio y Cobertura</h2>
+            <p className="text-[11px] text-[#94A3B8]/60">Se inyecta automaticamente al prompt para que la IA maneje envios</p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Informacion de envio</label>
+            <textarea
+              value={shipping.shipping_info}
+              onChange={(e) => setShipping(prev => ({ ...prev, shipping_info: e.target.value }))}
+              placeholder="Ej: Envio gratis a todo el pais, llega en 3-5 dias habiles, pago contra entrega..."
+              rows={2}
+              className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+              style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Cobertura</label>
+            <textarea
+              value={shipping.coverage}
+              onChange={(e) => setShipping(prev => ({ ...prev, coverage: e.target.value }))}
+              placeholder="Ej: Cobertura nacional, envios a todo Bolivia, Mexico, Peru..."
+              rows={2}
+              className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+              style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Zonas de venta</label>
+              <textarea
+                value={shipping.sell_zones}
+                onChange={(e) => setShipping(prev => ({ ...prev, sell_zones: e.target.value }))}
+                placeholder="Ciudades o regiones donde vendes..."
+                rows={2}
+                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+                style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Zonas de entrega</label>
+              <textarea
+                value={shipping.delivery_zones}
+                onChange={(e) => setShipping(prev => ({ ...prev, delivery_zones: e.target.value }))}
+                placeholder="Zonas de entrega directa o express..."
+                rows={2}
+                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#EC4899]/30 resize-y transition-all duration-200"
+                style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
