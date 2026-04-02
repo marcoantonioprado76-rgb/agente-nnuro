@@ -98,6 +98,7 @@ export interface Product {
   sell_zones: string;
   delivery_zones: string;
   hooks: string[];
+  first_message?: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -163,7 +164,7 @@ export interface Conversation {
   id: string;
   bot_id: string;
   contact_id: string;
-  status: 'active' | 'closed' | 'pending_followup';
+  status: 'active' | 'closed' | 'pending_followup' | 'paused';
   product_interest?: string;
   last_message_at: string;
   created_at: string;
