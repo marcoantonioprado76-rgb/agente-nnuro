@@ -58,6 +58,10 @@ async function transcribeAudio(audioBuffer: Buffer, mimeType: string, apiKey: st
       headers: { Authorization: `Bearer ${apiKey}` },
       body: form,
     })
+    if (!res.ok) {
+      console.error(`[WA] Whisper API error: ${res.status} ${res.statusText}`)
+      return ''
+    }
     const data = await res.json()
     return data.text || ''
   } catch (err) {
@@ -86,6 +90,10 @@ async function analyzeImage(base64DataUrl: string, apiKey: string): Promise<stri
         max_tokens: 300,
       }),
     })
+    if (!res.ok) {
+      console.error(`[WA] Vision API error: ${res.status} ${res.statusText}`)
+      return '[Imagen no procesada]'
+    }
     const data = await res.json()
     return data.choices?.[0]?.message?.content || ''
   } catch (err) {
@@ -702,6 +710,14 @@ class WhatsAppManager {
         } catch (err) {
           console.error(`[WA] Error sending video:`, err)
         }
+      }
+
+      // ── Save AI memory (context) ──
+      if (aiResponse.context_memory) {
+        const memDb = await createServiceRoleClient()
+        await memDb.from('conversations').update({
+          product_interest: aiResponse.context_memory,
+        }).eq('id', conversation.id)
       }
 
       // ── Send report if present (sale confirmed) ──

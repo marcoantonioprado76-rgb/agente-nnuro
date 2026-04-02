@@ -45,7 +45,7 @@ export async function PATCH(
         // Set conversation status to 'paused' — bot will skip this contact
         await service
           .from('conversations')
-          .update({ status: 'paused', updated_at: new Date().toISOString() })
+          .update({ status: 'paused', last_message_at: new Date().toISOString() })
           .eq('id', id)
         return NextResponse.json({ success: true, message: 'Bot pausado para este contacto' })
       }
@@ -54,7 +54,7 @@ export async function PATCH(
         // Reactivate conversation
         await service
           .from('conversations')
-          .update({ status: 'active', updated_at: new Date().toISOString() })
+          .update({ status: 'active', last_message_at: new Date().toISOString() })
           .eq('id', id)
         return NextResponse.json({ success: true, message: 'Bot reactivado para este contacto' })
       }
@@ -63,7 +63,7 @@ export async function PATCH(
         // Clear product_interest (AI memory) for this conversation
         await service
           .from('conversations')
-          .update({ product_interest: null, updated_at: new Date().toISOString() })
+          .update({ product_interest: null, last_message_at: new Date().toISOString() })
           .eq('id', id)
         return NextResponse.json({ success: true, message: 'Memoria del contacto eliminada' })
       }
