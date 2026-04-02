@@ -961,6 +961,16 @@ class WhatsAppManager {
 
     console.log(`[WA ${botId}] 💾 Mensaje guardado en DB. conversationId=${conversationId}, contactId=${contactId}`)
 
+    // Check if bot is paused for this contact BEFORE buffering
+    if (conversationId) {
+      const pauseCheck = await createServiceRoleClient()
+      const { data: convCheck } = await pauseCheck.from('conversations').select('status').eq('id', conversationId).single()
+      if (convCheck?.status === 'paused') {
+        console.log(`[WA ${botId}] ⏸️ Bot pausado para ${contactPhone}, mensaje guardado pero no se responde`)
+        return
+      }
+    }
+
     // Agregar al buffer (pasamos el JID original y el ID de Baileys para read receipts)
     const baileysMessageId = msg.key.id || ''
     if (conversationId && contactId) {
@@ -1074,19 +1084,6 @@ class WhatsAppManager {
       return
     }
 
-    // Check if bot is paused for this contact
-    const supabaseCheck = await createServiceRoleClient()
-    const { data: convStatus } = await supabaseCheck
-      .from('conversations')
-      .select('status')
-      .eq('id', conversationId)
-      .single()
-
-    if (convStatus?.status === 'paused') {
-      log('⏸️', 'Bot pausado para este contacto, no se responde')
-      return
-    }
-
     // Obtener el socket antes de generar IA (validar conexion)
     const session = this.sessions.get(botId)
     if (!session?.socket || session.state.status !== 'connected') {
@@ -1143,7 +1140,11 @@ class WhatsAppManager {
     // ══════════════════════════════════════════════════
     const t = aiResponse.timing
     // Clamp helper: ensures timing values stay within safe bounds (0-120 seconds)
-    const clampMs = (val: number, min: number, max: number) => Math.max(min, Math.min(max, val))
+    const safeMs = (val: unknown): number => {
+      const n = Number(val)
+      return (isNaN(n) || !isFinite(n)) ? 0 : n
+    }
+    const clampMs = (val: number, min: number, max: number) => Math.max(min, Math.min(max, safeMs(val)))
     const MAX_DELAY = 120_000 // 2 minutes absolute max
 
     const readDelay = t?.delay_read !== null && t?.delay_read !== undefined
@@ -1495,6 +1496,10 @@ class WhatsAppManager {
     // Mantener presencia como "en linea" (el health check la refresca cada 30s)
     log('✅', 'Flujo humano completado exitosamente')
 
+    } catch (err) {
+      console.error(`[Buffer ${bufferKey}] Error fatal en processBuffer:`, err)
+      // Cleanup buffer in case of error to prevent memory leak
+      this.messageBuffers.delete(bufferKey)
     } finally {
       // SIEMPRE liberar el lock, pase lo que pase (error, return temprano, etc.)
       this.processingBuffers.delete(bufferKey)

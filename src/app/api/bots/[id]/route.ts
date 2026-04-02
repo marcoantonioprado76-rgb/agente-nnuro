@@ -94,6 +94,10 @@ export async function PUT(
     const botFields: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(rawBotFields)) {
       if (ALLOWED_BOT_FIELDS.has(key)) {
+        // Prevent saving masked API key back to DB
+        if (key === 'openai_api_key' && typeof value === 'string' && value.startsWith('••')) {
+          continue;
+        }
         botFields[key] = value;
       }
     }
@@ -178,6 +182,9 @@ export async function PATCH(
     const safeBody: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(body)) {
       if (ALLOWED_PATCH_FIELDS.has(key)) {
+        if (key === 'openai_api_key' && typeof value === 'string' && value.startsWith('••')) {
+          continue;
+        }
         safeBody[key] = value;
       }
     }

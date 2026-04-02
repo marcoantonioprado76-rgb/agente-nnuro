@@ -382,9 +382,11 @@ ${savedMemory}`
 
   // Shipping data from personality field
   try {
-    const shippingData = JSON.parse((botPrompt.personality as string) || '{}')
+    const personalityRaw = (botPrompt.personality as string) || '{}'
+    const shippingData = JSON.parse(personalityRaw)
     const hasShipping = shippingData.shipping_info || shippingData.coverage || shippingData.sell_zones || shippingData.delivery_zones
     if (hasShipping) {
+      console.log(`[AI Engine] Shipping data cargado: ${Object.keys(shippingData).filter(k => shippingData[k]).join(', ')}`)
       dynamicContext += `
 
 ═══ ENVIO Y COBERTURA ═══`
@@ -394,7 +396,9 @@ ${savedMemory}`
       if (shippingData.delivery_zones) dynamicContext += `\nZonas de entrega: ${shippingData.delivery_zones}`
       dynamicContext += `\nUSA esta informacion cuando el cliente pregunte por envios, cobertura, zonas de entrega o tiempos de envio. No inventes datos de envio.`
     }
-  } catch { /* not JSON, ignore */ }
+  } catch (err) {
+    console.error(`[AI Engine] Error parseando personality/shipping JSON:`, err)
+  }
 
   dynamicContext += `
 
@@ -662,11 +666,14 @@ function parseAIResponse(responseContent: string): AIResponse {
     // Extraer datos de pedido si hay reporte de venta
     const orderData = extractOrderData(parsed)
 
-    // Si no hay ningun mensaje, usar respuesta cruda como texto
+    // Si no hay ningun mensaje, NO enviar JSON crudo al cliente
     if (!msg1 && !msg2 && !msg3) {
-      console.log(`[AI Engine] JSON sin mensajes reconocidos, usando respuesta como texto`)
+      console.error(`[AI Engine] ⚠️ JSON válido pero sin campos de mensaje. Keys: ${Object.keys(parsed).join(', ')}`)
+      console.error(`[AI Engine] Respuesta cruda (500ch): ${responseContent.substring(0, 500)}`)
+      // Si la respuesta no parece JSON, usarla como texto plano
+      const looksLikeJson = responseContent.trim().startsWith('{') || responseContent.trim().startsWith('[')
       return {
-        message1: responseContent,
+        message1: looksLikeJson ? 'Hola, ¿en qué puedo ayudarte?' : responseContent,
         message2: null,
         message3: null,
         photos_message1: null,
