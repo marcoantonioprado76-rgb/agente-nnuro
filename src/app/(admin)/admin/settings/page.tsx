@@ -16,7 +16,7 @@ import {
 import {
   Settings, CreditCard, Bot, MessageSquare, Smartphone, Loader2,
   Plus, Pencil, Trash2, Save, X, Package, DollarSign, Hash,
-  AlertCircle, Check, Landmark, Zap,
+  AlertCircle, Check, Landmark, Zap, FileText, Copy,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Plan } from '@/types'
@@ -69,6 +69,14 @@ export default function AdminSettingsPage() {
   // Inline editing for quick toggles
   const [togglingId, setTogglingId] = useState<string | null>(null)
 
+  // Prompt templates
+  const [templates, setTemplates] = useState<Array<{ id: string; name: string; description: string; system_prompt: string; category: string; is_active: boolean; sort_order: number }>>([])
+  const [templateDialog, setTemplateDialog] = useState(false)
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null)
+  const [templateForm, setTemplateForm] = useState({ name: '', description: '', system_prompt: '', category: 'general', is_active: true, sort_order: 1 })
+  const [savingTemplate, setSavingTemplate] = useState(false)
+  const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null)
+
   const fetchPlans = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/plans')
@@ -114,7 +122,64 @@ export default function AdminSettingsPage() {
     handleSavePaymentMethods(updated)
   }
 
-  useEffect(() => { fetchPlans(); fetchSettings() }, [fetchPlans, fetchSettings])
+  const fetchTemplates = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/prompt-templates')
+      if (res.ok) setTemplates(await res.json())
+    } catch { /* silent */ }
+  }, [])
+
+  const openCreateTemplate = () => {
+    setEditingTemplateId(null)
+    setTemplateForm({ name: '', description: '', system_prompt: '', category: 'general', is_active: true, sort_order: 1 })
+    setTemplateDialog(true)
+  }
+
+  const openEditTemplate = (t: typeof templates[0]) => {
+    setEditingTemplateId(t.id)
+    setTemplateForm({ name: t.name, description: t.description, system_prompt: t.system_prompt, category: t.category, is_active: t.is_active, sort_order: t.sort_order })
+    setTemplateDialog(true)
+  }
+
+  const handleSaveTemplate = async () => {
+    if (!templateForm.name.trim() || !templateForm.system_prompt.trim()) { toast.error('Nombre y prompt son requeridos'); return }
+    setSavingTemplate(true)
+    try {
+      const url = editingTemplateId ? `/api/admin/prompt-templates/${editingTemplateId}` : '/api/admin/prompt-templates'
+      const res = await fetch(url, {
+        method: editingTemplateId ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(templateForm),
+      })
+      if (res.ok) {
+        toast.success(editingTemplateId ? 'Plantilla actualizada' : 'Plantilla creada')
+        setTemplateDialog(false)
+        fetchTemplates()
+      } else { const d = await res.json(); toast.error(d.error || 'Error') }
+    } catch { toast.error('Error de conexión') } finally { setSavingTemplate(false) }
+  }
+
+  const handleDeleteTemplate = async (id: string) => {
+    if (!confirm('¿Eliminar esta plantilla?')) return
+    setDeletingTemplateId(id)
+    try {
+      const res = await fetch(`/api/admin/prompt-templates/${id}`, { method: 'DELETE' })
+      if (res.ok) { toast.success('Plantilla eliminada'); fetchTemplates() }
+    } catch { /* silent */ } finally { setDeletingTemplateId(null) }
+  }
+
+  const handleToggleTemplate = async (t: typeof templates[0]) => {
+    try {
+      await fetch(`/api/admin/prompt-templates/${t.id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !t.is_active }),
+      })
+      fetchTemplates()
+      toast.success(t.is_active ? 'Plantilla desactivada' : 'Plantilla activada')
+    } catch { /* silent */ }
+  }
+
+  useEffect(() => { fetchPlans(); fetchSettings(); fetchTemplates() }, [fetchPlans, fetchSettings, fetchTemplates])
 
   const openCreateDialog = () => {
     setEditingPlanId(null)
@@ -691,6 +756,130 @@ export default function AdminSettingsPage() {
             <Button onClick={handleSavePlan} className="flex-1 gap-1.5" disabled={saving}>
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               {editingPlanId ? 'Guardar Cambios' : 'Crear Plan'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ===== PLANTILLAS DE PROMPT ===== */}
+      <Card className="glow-card bg-gradient-card border-border/50">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <FileText className="h-5 w-5 text-[#EC4899]" />
+              Plantillas de Prompt
+            </CardTitle>
+            <Button onClick={openCreateTemplate} size="sm" className="gap-1.5">
+              <Plus className="h-4 w-4" />
+              Nueva Plantilla
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            Los usuarios pueden seleccionar estas plantillas al configurar su bot.
+          </p>
+        </CardHeader>
+        <CardContent>
+          {templates.length === 0 ? (
+            <div className="text-center py-12 space-y-3">
+              <FileText className="h-10 w-10 text-muted-foreground/50 mx-auto" />
+              <p className="text-muted-foreground">No hay plantillas creadas</p>
+              <Button onClick={openCreateTemplate} variant="outline" size="sm" className="gap-1.5">
+                <Plus className="h-4 w-4" /> Crear primera plantilla
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {templates.map((t) => (
+                <div key={t.id} className="flex items-start gap-4 p-4 rounded-xl border border-border/50 bg-secondary/20">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EC4899]/10 border border-[#EC4899]/15 shrink-0">
+                    <FileText className="h-5 w-5 text-[#EC4899]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-semibold text-foreground text-sm">{t.name}</p>
+                      <Badge variant="outline" className={t.is_active
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30 text-[10px]'
+                        : 'bg-red-500/15 text-red-400 border-red-500/30 text-[10px]'
+                      }>
+                        {t.is_active ? 'Activa' : 'Inactiva'}
+                      </Badge>
+                      {t.category !== 'general' && (
+                        <Badge variant="outline" className="text-[10px]">{t.category}</Badge>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{t.description || 'Sin descripcion'}</p>
+                    <p className="text-[10px] text-muted-foreground/40 mt-1 font-mono">{t.system_prompt.length} caracteres</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => handleToggleTemplate(t)} className="p-1.5 rounded-lg hover:bg-secondary/50 text-muted-foreground hover:text-foreground transition-colors" title={t.is_active ? 'Desactivar' : 'Activar'}>
+                      <Badge variant="outline" className={`cursor-pointer text-[10px] ${t.is_active ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-red-500/15 text-red-400 border-red-500/30'}`}>
+                        {t.is_active ? 'On' : 'Off'}
+                      </Badge>
+                    </button>
+                    <button onClick={() => openEditTemplate(t)} className="p-1.5 rounded-lg hover:bg-secondary/50 text-muted-foreground hover:text-foreground transition-colors" title="Editar">
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button onClick={() => handleDeleteTemplate(t.id)} disabled={deletingTemplateId === t.id} className="p-1.5 rounded-lg hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-colors" title="Eliminar">
+                      {deletingTemplateId === t.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ===== DIALOG: CREAR/EDITAR PLANTILLA ===== */}
+      <Dialog open={templateDialog} onOpenChange={setTemplateDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {editingTemplateId ? <Pencil className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+              {editingTemplateId ? 'Editar Plantilla' : 'Nueva Plantilla'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Nombre *</Label>
+                <Input value={templateForm.name} onChange={(e) => setTemplateForm(f => ({ ...f, name: e.target.value }))} placeholder="Ej: Vendedor Agresivo" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Categoria</Label>
+                <Input value={templateForm.category} onChange={(e) => setTemplateForm(f => ({ ...f, category: e.target.value }))} placeholder="general" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Descripcion</Label>
+              <Input value={templateForm.description} onChange={(e) => setTemplateForm(f => ({ ...f, description: e.target.value }))} placeholder="Breve descripcion de la plantilla..." />
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs text-muted-foreground">System Prompt *</Label>
+                <span className="text-[10px] text-muted-foreground/40 font-mono">{templateForm.system_prompt.length} chars</span>
+              </div>
+              <textarea
+                value={templateForm.system_prompt}
+                onChange={(e) => setTemplateForm(f => ({ ...f, system_prompt: e.target.value }))}
+                placeholder="Define el comportamiento del bot..."
+                rows={15}
+                className="w-full rounded-xl px-4 py-3 text-[13px] leading-relaxed text-foreground bg-secondary/30 border border-border/50 focus:outline-none focus:ring-1 focus:ring-primary/30 resize-y min-h-[300px]"
+              />
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-secondary/20">
+              <div>
+                <p className="text-sm font-medium text-foreground">Plantilla activa</p>
+                <p className="text-xs text-muted-foreground">Las plantillas activas aparecen para los usuarios</p>
+              </div>
+              <Switch checked={templateForm.is_active} onCheckedChange={(v) => setTemplateForm(f => ({ ...f, is_active: v }))} />
+            </div>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button variant="outline" onClick={() => setTemplateDialog(false)} className="flex-1" disabled={savingTemplate}>Cancelar</Button>
+            <Button onClick={handleSaveTemplate} className="flex-1 gap-1.5" disabled={savingTemplate}>
+              {savingTemplate ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {editingTemplateId ? 'Guardar' : 'Crear'}
             </Button>
           </div>
         </DialogContent>

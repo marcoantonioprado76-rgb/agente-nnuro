@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Save, Loader2, Wand2, FileText, Code2, Type, Truck } from 'lucide-react'
+import { Save, Loader2, Wand2, FileText, Code2, Type, Truck, BookOpen, ChevronDown } from 'lucide-react'
 import { toast } from 'sonner'
 import type { BotPrompt } from '@/types'
 
@@ -248,6 +248,8 @@ export function TemplateTab({ botId }: TemplateTabProps) {
   const [promptId, setPromptId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [shipping, setShipping] = useState<ShippingData>(emptyShipping)
+  const [templates, setTemplates] = useState<Array<{ id: string; name: string; description: string; system_prompt: string; category: string }>>([])
+  const [showTemplates, setShowTemplates] = useState(false)
 
   useEffect(() => {
     async function loadPrompt() {
@@ -280,6 +282,8 @@ export function TemplateTab({ botId }: TemplateTabProps) {
       }
     }
     loadPrompt()
+    // Load available templates
+    fetch('/api/prompt-templates').then(r => r.ok ? r.json() : []).then(setTemplates).catch(() => {})
   }, [botId])
 
   const loadExampleTemplate = () => {
@@ -355,19 +359,57 @@ export function TemplateTab({ botId }: TemplateTabProps) {
               <p className="text-[11px] text-[#94A3B8]/60">Todo el comportamiento del bot se controla desde aqui</p>
             </div>
           </div>
-          <button
-            onClick={loadExampleTemplate}
-            className="flex items-center gap-2 rounded-lg px-3.5 h-8 text-[11px] font-medium transition-all duration-200 hover:opacity-80 self-start sm:self-auto shrink-0"
-            style={{
-              background: 'rgba(6, 182, 212, 0.08)',
-              color: '#06B6D4',
-              border: '1px solid rgba(6, 182, 212, 0.12)',
-            }}
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            {templates.length > 0 && (
+              <button
+                onClick={() => setShowTemplates(!showTemplates)}
+                className="flex items-center gap-2 rounded-lg px-3.5 h-8 text-[11px] font-medium transition-all duration-200 hover:opacity-80"
+                style={{
+                  background: 'rgba(236, 72, 153, 0.08)',
+                  color: '#EC4899',
+                  border: '1px solid rgba(236, 72, 153, 0.12)',
+                }}
+              >
+                <BookOpen className="h-3.5 w-3.5" />
+                Plantillas
+                <ChevronDown className={`h-3 w-3 transition-transform ${showTemplates ? 'rotate-180' : ''}`} />
+              </button>
+            )}
+            <button
+              onClick={loadExampleTemplate}
+              className="flex items-center gap-2 rounded-lg px-3.5 h-8 text-[11px] font-medium transition-all duration-200 hover:opacity-80"
+              style={{
+                background: 'rgba(6, 182, 212, 0.08)',
+                color: '#06B6D4',
+                border: '1px solid rgba(6, 182, 212, 0.12)',
+              }}
           >
             <Wand2 className="h-3.5 w-3.5" />
             Cargar ejemplo
           </button>
+          </div>
         </div>
+
+        {/* Template selector dropdown */}
+        {showTemplates && templates.length > 0 && (
+          <div className="mb-4 rounded-xl p-3 space-y-2" style={{ background: 'rgba(236, 72, 153, 0.04)', border: '1px solid rgba(236, 72, 153, 0.1)' }}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#EC4899]/60">Selecciona una plantilla</p>
+            {templates.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => { setSystemPrompt(t.system_prompt); setShowTemplates(false); toast.success(`Plantilla "${t.name}" cargada`) }}
+                className="w-full flex items-start gap-3 rounded-lg p-3 text-left transition-all hover:bg-white/[0.03]"
+                style={{ border: '1px solid rgba(255, 255, 255, 0.04)' }}
+              >
+                <FileText className="h-4 w-4 text-[#EC4899] shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                  <p className="text-[13px] font-medium text-white">{t.name}</p>
+                  <p className="text-[10px] text-[#94A3B8]/50 line-clamp-1">{t.description || 'Sin descripcion'}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
