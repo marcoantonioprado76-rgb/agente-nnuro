@@ -46,10 +46,10 @@ export async function GET(request: NextRequest) {
       liveState.status === 'disconnected' &&
       dbSession?.status === 'connected'
     ) {
-      console.log(`[API WhatsApp GET] Bot ${botId}: DB dice connected pero manager no tiene sesion. Auto-restaurando...`)
-      // Fire-and-forget: attempt to restore this session
-      manager.restoreConnectedSessions().catch(err => {
-        console.error(`[API WhatsApp GET] Error restaurando sesion:`, err)
+      console.log(`[API WhatsApp GET] Bot ${botId}: DB dice connected pero manager no tiene sesion. Reconectando...`)
+      // Fire-and-forget: attempt to reconnect this specific bot
+      manager.connect(botId).catch(err => {
+        console.error(`[API WhatsApp GET] Error reconectando bot:`, err)
       })
 
       // Return "connecting" to the frontend so it starts polling

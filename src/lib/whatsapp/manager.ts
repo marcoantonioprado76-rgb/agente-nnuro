@@ -705,12 +705,6 @@ class WhatsAppManager {
 
   // ── Restore Connected Sessions ──
   async restoreConnectedSessions(): Promise<void> {
-    if (globalForWa.waManagerRestored) {
-      console.log('[WA] Sessions already restored, skipping')
-      return
-    }
-    globalForWa.waManagerRestored = true
-
     console.log('[WA] Restoring connected sessions...')
     try {
       const supabase = await createServiceRoleClient()
@@ -725,6 +719,13 @@ class WhatsAppManager {
       }
 
       for (const session of sessions) {
+        // Skip if already connected in memory
+        const existing = this.connections.get(session.bot_id)
+        if (existing?.status === 'connected') {
+          console.log(`[WA] Bot ${session.bot_id} already connected, skipping`)
+          continue
+        }
+
         console.log(`[WA] Restoring session for bot ${session.bot_id}...`)
         try {
           await this.connect(session.bot_id)
@@ -732,7 +733,7 @@ class WhatsAppManager {
           console.error(`[WA] Failed to restore bot ${session.bot_id}:`, err)
         }
       }
-      console.log(`[WA] Restored ${sessions.length} sessions`)
+      console.log(`[WA] Restore completed`)
     } catch (err) {
       console.error('[WA] Error restoring sessions:', err)
     }
