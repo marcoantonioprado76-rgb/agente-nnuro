@@ -511,9 +511,9 @@ class WhatsAppManager {
     if (!conversation) { console.error(`[WA] Failed to find/create conversation`); return }
     console.log(`[WA] Contact: ${contact.id}, Conversation: ${conversation.id}, Status: ${conversation.status}`)
 
-    // If conversation is paused, don't read or respond (invisible for client)
-    if (conversation.status === 'paused') {
-      console.log(`[WA] Conversation ${conversation.id} is paused — not reading, not responding`)
+    // If conversation is paused or closed (sold), don't read, don't save, don't respond
+    if (conversation.status === 'paused' || conversation.status === 'closed') {
+      console.log(`[WA] Conversation ${conversation.id} is ${conversation.status} — ignoring completely`)
       return
     }
 
@@ -529,11 +529,6 @@ class WhatsAppManager {
       }
     }
 
-    // If conversation is closed, don't respond
-    if (conversation.status === 'closed') {
-      console.log(`[WA] Conversation ${conversation.id} is closed, skipping response`)
-      return
-    }
 
     // ── Buffer messages ──
     const bufferKey = `${botId}:${phone}`
