@@ -141,7 +141,7 @@ async function findOrCreateConversation(botId: string, contactId: string) {
     .select('*')
     .eq('bot_id', botId)
     .eq('contact_id', contactId)
-    .in('status', ['active', 'paused'])
+    .in('status', ['active', 'paused', 'closed', 'pending_followup'])
     .order('created_at', { ascending: false })
     .maybeSingle()
 
