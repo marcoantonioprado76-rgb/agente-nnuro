@@ -408,16 +408,22 @@ class WhatsAppManager {
 
     // Get bot info
     const bot = await getBot(botId)
-    if (!bot || !bot.is_active) return
+    if (!bot) { console.log(`[WA] Bot ${botId} not found in DB`); return }
+    if (!bot.is_active) { console.log(`[WA] Bot ${botId} is inactive`); return }
     const apiKey = bot.openai_api_key || process.env.OPENAI_API_KEY
     if (!apiKey) {
       console.error(`[WA] Bot ${botId} has no API key`)
       return
     }
+    console.log(`[WA] Bot found: ${bot.name}, active=${bot.is_active}, hasKey=${!!apiKey}`)
 
     // ── Extract content ──
     let content = ''
     let msgType: BufferedMessage['type'] = 'text'
+
+    // Log message structure for debugging
+    const msgKeys = message ? Object.keys(message).filter(k => !k.startsWith('_')) : []
+    console.log(`[WA] Message keys: ${msgKeys.join(', ')}`)
 
     if (message.conversation || message.extendedTextMessage?.text) {
       content = message.conversation || message.extendedTextMessage?.text || ''
@@ -465,13 +471,18 @@ class WhatsAppManager {
       return
     }
 
-    if (!content.trim()) return
+    if (!content.trim()) {
+      console.log(`[WA] Empty content after extraction, skipping`)
+      return
+    }
+    console.log(`[WA] Content extracted (${msgType}): ${content.substring(0, 100)}...`)
 
     // ── DB: Contact, Conversation, Save message ──
     const contact = await findOrCreateContact(phone, pushName, bot.tenant_id)
-    if (!contact) return
+    if (!contact) { console.error(`[WA] Failed to find/create contact for ${phone}`); return }
     const conversation = await findOrCreateConversation(botId, contact.id)
-    if (!conversation) return
+    if (!conversation) { console.error(`[WA] Failed to find/create conversation`); return }
+    console.log(`[WA] Contact: ${contact.id}, Conversation: ${conversation.id}, Status: ${conversation.status}`)
 
     // Save incoming message
     await saveMessage(conversation.id, 'client', msgType, content)
