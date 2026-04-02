@@ -514,6 +514,15 @@ class WhatsAppManager {
     // Save incoming message
     await saveMessage(conversation.id, 'client', msgType, content)
 
+    // Mark message as read (blue ticks)
+    if (msg.key) {
+      try {
+        await socket.readMessages([msg.key])
+      } catch (err) {
+        console.error('[WA] Error marking as read:', err)
+      }
+    }
+
     // If conversation is paused, don't respond
     if (conversation.status === 'paused') {
       console.log(`[WA] Conversation ${conversation.id} is paused, skipping response`)
