@@ -213,7 +213,7 @@ export function SearchDialog() {
                     style={{ border: '1px solid rgba(255, 255, 255, 0.04)' }}
                   >
                     <item.icon className="h-3.5 w-3.5 shrink-0" style={{ color: item.color }} />
-                    <span className="text-[12px] text-[#CBD5E8]">{item.label}</span>
+                    <span className="text-[12px] text-[#C8C2D9]">{item.label}</span>
                   </button>
                 ))}
               </div>

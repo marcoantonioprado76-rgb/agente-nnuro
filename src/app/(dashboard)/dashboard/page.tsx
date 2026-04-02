@@ -42,9 +42,9 @@ function statusBadge(status: string) {
   const styles: Record<string, { bg: string; text: string; border: string; label: string }> = {
     active: { bg: 'rgba(16, 185, 129, 0.08)', text: '#10B981', border: 'rgba(16, 185, 129, 0.15)', label: 'Activa' },
     pending_followup: { bg: 'rgba(245, 158, 11, 0.08)', text: '#F59E0B', border: 'rgba(245, 158, 11, 0.15)', label: 'Seguimiento' },
-    closed: { bg: 'rgba(136, 153, 180, 0.06)', text: '#8899B4', border: 'rgba(136, 153, 180, 0.1)', label: 'Cerrada' },
+    closed: { bg: 'rgba(136, 153, 180, 0.06)', text: '#9189A8', border: 'rgba(136, 153, 180, 0.1)', label: 'Cerrada' },
   };
-  const s = styles[status] || { bg: 'rgba(136, 153, 180, 0.06)', text: '#8899B4', border: 'rgba(136, 153, 180, 0.1)', label: status };
+  const s = styles[status] || { bg: 'rgba(136, 153, 180, 0.06)', text: '#9189A8', border: 'rgba(136, 153, 180, 0.1)', label: status };
   return (
     <span
       className="inline-flex items-center gap-1 rounded-full px-2.5 h-5 text-[10px] font-semibold leading-none"
@@ -100,7 +100,7 @@ export default function DashboardPage() {
               />
               <Zap className="absolute inset-0 m-auto h-4 w-4 text-[#8B5CF6]" />
             </div>
-            <p className="text-sm text-[#8899B4]/60">Cargando panel...</p>
+            <p className="text-sm text-[#9189A8]/60">Cargando panel...</p>
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
                   <h1 className="text-base sm:text-xl font-bold text-white tracking-tight">
                     Bienvenido de vuelta
                   </h1>
-                  <p className="text-[12px] sm:text-[13px] text-[#8899B4]/60 mt-0.5">
+                  <p className="text-[12px] sm:text-[13px] text-[#9189A8]/60 mt-0.5">
                     Centro de control de ventas con IA
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-lg sm:text-2xl font-bold text-white leading-none">{m.value}</p>
-                    <p className="text-[9px] sm:text-[10px] text-[#8899B4]/50 uppercase tracking-[0.08em] sm:tracking-[0.1em] font-semibold mt-0.5 sm:mt-1.5 truncate">{m.label}</p>
+                    <p className="text-[9px] sm:text-[10px] text-[#9189A8]/50 uppercase tracking-[0.08em] sm:tracking-[0.1em] font-semibold mt-0.5 sm:mt-1.5 truncate">{m.label}</p>
                   </div>
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function DashboardPage() {
                 </div>
                 <button
                   onClick={() => window.location.href = '/conversations'}
-                  className="text-[11px] font-medium text-[#8899B4]/50 hover:text-[#38BDF8] transition-colors duration-200 flex items-center gap-1"
+                  className="text-[11px] font-medium text-[#9189A8]/50 hover:text-[#38BDF8] transition-colors duration-200 flex items-center gap-1"
                 >
                   Ver todo <ArrowUpRight className="h-3 w-3" />
                 </button>
@@ -232,8 +232,8 @@ export default function DashboardPage() {
                         <MessageSquare className="h-6 w-6 text-[#38BDF8]/50" />
                       </div>
                     </div>
-                    <p className="text-sm font-medium text-[#8899B4]/60">Sin conversaciones aun</p>
-                    <p className="text-[11px] text-[#8899B4]/35 mt-1 max-w-xs mx-auto">
+                    <p className="text-sm font-medium text-[#9189A8]/60">Sin conversaciones aun</p>
+                    <p className="text-[11px] text-[#9189A8]/35 mt-1 max-w-xs mx-auto">
                       Las conversaciones apareceran cuando tus clientes escriban al WhatsApp conectado
                     </p>
                   </div>
@@ -257,12 +257,12 @@ export default function DashboardPage() {
                           <p className="text-[13px] font-medium text-white truncate">
                             {conv.contacts?.name || conv.contacts?.push_name || conv.contacts?.phone || 'Desconocido'}
                           </p>
-                          <p className="text-[11px] text-[#8899B4]/40">{conv.bot_name}</p>
+                          <p className="text-[11px] text-[#9189A8]/40">{conv.bot_name}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 shrink-0">
                         {statusBadge(conv.status)}
-                        <span className="text-[11px] text-[#8899B4]/35 w-8 text-right font-medium">
+                        <span className="text-[11px] text-[#9189A8]/35 w-8 text-right font-medium">
                           {conv.last_message_at ? timeAgo(conv.last_message_at) : '-'}
                         </span>
                       </div>
@@ -289,7 +289,7 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => window.location.href = '/bots'}
-                    className="text-[11px] font-medium text-[#8899B4]/50 hover:text-[#8B5CF6] transition-colors duration-200 flex items-center gap-1"
+                    className="text-[11px] font-medium text-[#9189A8]/50 hover:text-[#8B5CF6] transition-colors duration-200 flex items-center gap-1"
                   >
                     Ver <ArrowUpRight className="h-3 w-3" />
                   </button>
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                     >
                       <Brain className="h-5 w-5 text-[#8B5CF6]/40" />
                     </div>
-                    <p className="text-[13px] text-[#8899B4]/45">Sin agentes creados</p>
+                    <p className="text-[13px] text-[#9189A8]/45">Sin agentes creados</p>
                   </div>
                 ) : (
                   <div className="divide-y" style={{ borderColor: 'rgba(255, 255, 255, 0.03)' }}>
@@ -322,7 +322,7 @@ export default function DashboardPage() {
                           </div>
                           <p className="text-[13px] font-medium text-white">{bot.name}</p>
                         </div>
-                        <ArrowRight className="h-3.5 w-3.5 text-[#8899B4]/15 group-hover:text-[#8B5CF6] group-hover:translate-x-0.5 transition-all duration-200" />
+                        <ArrowRight className="h-3.5 w-3.5 text-[#9189A8]/15 group-hover:text-[#8B5CF6] group-hover:translate-x-0.5 transition-all duration-200" />
                       </div>
                     ))}
                   </div>
@@ -355,7 +355,7 @@ export default function DashboardPage() {
                     >
                       <div className="flex items-center gap-2.5">
                         <item.icon className="h-3.5 w-3.5" style={{ color: item.color }} />
-                        <span className="text-[12px] text-[#8899B4]/60">{item.label}</span>
+                        <span className="text-[12px] text-[#9189A8]/60">{item.label}</span>
                       </div>
                       <span className="text-[13px] font-bold text-white">{item.value}</span>
                     </div>
@@ -377,19 +377,19 @@ export default function DashboardPage() {
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-[#8899B4]/50">Agentes activos</span>
+                    <span className="text-[12px] text-[#9189A8]/50">Agentes activos</span>
                     <div className="flex items-center gap-1.5">
-                      <span className={`h-2 w-2 rounded-full ${d.active_bots > 0 ? 'bg-[#10B981] animate-pulse' : 'bg-[#8899B4]/25'}`} />
+                      <span className={`h-2 w-2 rounded-full ${d.active_bots > 0 ? 'bg-[#10B981] animate-pulse' : 'bg-[#9189A8]/25'}`} />
                       <span className="text-[12px] font-semibold text-white">{d.active_bots}/{d.total_bots}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-[#8899B4]/50">Automatizacion</span>
+                    <span className="text-[12px] text-[#9189A8]/50">Automatizacion</span>
                     <span
                       className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
                       style={{
                         background: d.active_bots > 0 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(136, 153, 180, 0.06)',
-                        color: d.active_bots > 0 ? '#10B981' : '#8899B4',
+                        color: d.active_bots > 0 ? '#10B981' : '#9189A8',
                         border: `1px solid ${d.active_bots > 0 ? 'rgba(16, 185, 129, 0.12)' : 'rgba(136, 153, 180, 0.08)'}`,
                       }}
                     >
@@ -397,7 +397,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[12px] text-[#8899B4]/50">Plataforma</span>
+                    <span className="text-[12px] text-[#9189A8]/50">Plataforma</span>
                     <div className="flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full bg-[#10B981]" />
                       <span className="text-[12px] font-semibold text-[#10B981]">Online</span>

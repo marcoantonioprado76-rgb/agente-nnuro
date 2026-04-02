@@ -364,7 +364,7 @@ export default function SalesPage() {
                           </p>
                         </div>
                       </div>
-                      <p className="text-[13px] text-[#CBD5E8] truncate">{order.products?.name || '-'}</p>
+                      <p className="text-[13px] text-[#C8C2D9] truncate">{order.products?.name || '-'}</p>
                       <p className="text-[13px] text-[#94A3B8]/70 truncate">{order.bots?.name || '-'}</p>
                       <p className="text-[13px] font-semibold text-white">
                         {order.total_amount?.toLocaleString()} <span className="text-[10px] text-[#94A3B8]/50 font-normal">{order.currency}</span>
@@ -493,21 +493,21 @@ function OrderDetail({
           {/* Shipping info */}
           {order.shipping_address && (
             <DetailSection title="Entrega" icon={MapPin} color="#F59E0B">
-              <p className="text-[12px] text-[#CBD5E8] leading-relaxed whitespace-pre-wrap">{order.shipping_address}</p>
+              <p className="text-[12px] text-[#C8C2D9] leading-relaxed whitespace-pre-wrap">{order.shipping_address}</p>
             </DetailSection>
           )}
 
           {/* Notes */}
           {order.notes && (
             <DetailSection title="Notas del Reporte" icon={FileText} color="#8B5CF6">
-              <p className="text-[12px] text-[#CBD5E8] leading-relaxed whitespace-pre-wrap">{order.notes}</p>
+              <p className="text-[12px] text-[#C8C2D9] leading-relaxed whitespace-pre-wrap">{order.notes}</p>
             </DetailSection>
           )}
 
           {/* AI Summary */}
           {order.conversation_summary && (
             <DetailSection title="Resumen IA" icon={Bot} color="#06B6D4">
-              <p className="text-[12px] text-[#CBD5E8] leading-relaxed whitespace-pre-wrap">{order.conversation_summary}</p>
+              <p className="text-[12px] text-[#C8C2D9] leading-relaxed whitespace-pre-wrap">{order.conversation_summary}</p>
             </DetailSection>
           )}
 

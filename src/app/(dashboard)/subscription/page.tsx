@@ -272,7 +272,7 @@ export default function SubscriptionPage() {
                           style={{ background: 'rgba(16, 185, 129, 0.04)', border: '1px solid rgba(16, 185, 129, 0.06)' }}
                         >
                           <CheckCircle2 className="h-3.5 w-3.5 text-[#10B981] shrink-0" />
-                          <span className="text-[12px] text-[#CBD5E8]">{benefit}</span>
+                          <span className="text-[12px] text-[#C8C2D9]">{benefit}</span>
                         </div>
                       ))}
                     </div>

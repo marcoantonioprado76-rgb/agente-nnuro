@@ -75,7 +75,7 @@ export function AdminSidebar() {
     <aside
       className="fixed left-0 top-0 z-40 hidden lg:flex h-screen w-[280px] flex-col"
       style={{
-        background: 'linear-gradient(180deg, #0E1830 0%, #0C152A 50%, #0A1224 100%)',
+        background: 'linear-gradient(180deg, #0D0C16 0%, #0E0C1A 50%, #0B0A14 100%)',
         borderRight: '1px solid rgba(139, 92, 246, 0.08)',
       }}
     >
@@ -95,7 +95,7 @@ export function AdminSidebar() {
           </div>
           {/* Notification bell */}
           <Link href="/admin/dashboard" className="relative shrink-0">
-            <Bell className="h-5 w-5 text-[#8899B4]/60 hover:text-white transition-colors duration-200" />
+            <Bell className="h-5 w-5 text-[#9189A8]/60 hover:text-white transition-colors duration-200" />
             {notifData && notifData.unread_count > 0 && (
               <span
                 className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold text-white animate-pulse"
@@ -127,7 +127,7 @@ export function AdminSidebar() {
               >
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <span className="h-1.5 w-1.5 rounded-full" style={{ background: stat.color }} />
-                  <span className="text-[9px] font-medium text-[#8899B4]/70">{stat.label}</span>
+                  <span className="text-[9px] font-medium text-[#9189A8]/70">{stat.label}</span>
                 </div>
                 <span className="text-sm font-bold text-white">{stat.value}</span>
               </div>
@@ -142,7 +142,7 @@ export function AdminSidebar() {
       {/* Navigation */}
       <nav className="flex-1 flex flex-col overflow-y-auto px-3 py-4 space-y-0.5">
         <div className="mb-3 px-3">
-          <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#8899B4]/50">
+          <span className="text-[9px] font-semibold uppercase tracking-[0.15em] text-[#9189A8]/50">
             Navegación
           </span>
         </div>
@@ -157,7 +157,7 @@ export function AdminSidebar() {
                 'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-250',
                 isActive
                   ? 'sidebar-item-active text-white'
-                  : 'text-[#8899B4] sidebar-item-hover hover:text-white'
+                  : 'text-[#9189A8] sidebar-item-hover hover:text-white'
               )}
             >
               {isActive && (
@@ -170,7 +170,7 @@ export function AdminSidebar() {
               <item.icon
                 className={cn(
                   'h-[17px] w-[17px] shrink-0 transition-colors duration-200',
-                  isActive ? 'text-[#8B5CF6]' : 'text-[#8899B4]/50 group-hover:text-[#CBD5E8]'
+                  isActive ? 'text-[#8B5CF6]' : 'text-[#9189A8]/50 group-hover:text-[#C8C2D9]'
                 )}
               />
               <div className="flex flex-col min-w-0 flex-1">
@@ -180,7 +180,7 @@ export function AdminSidebar() {
                 <span
                   className={cn(
                     'text-[10px] leading-tight truncate transition-colors duration-200',
-                    isActive ? 'text-[#8B5CF6]/50' : 'text-[#8899B4]/30 group-hover:text-[#8899B4]/50'
+                    isActive ? 'text-[#8B5CF6]/50' : 'text-[#9189A8]/30 group-hover:text-[#9189A8]/50'
                   )}
                 >
                   {item.description}
@@ -231,7 +231,7 @@ export function AdminSidebar() {
       <div className="px-3 py-3">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#8899B4]/60 transition-all duration-200 sidebar-item-hover hover:text-[#CBD5E8]"
+          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#9189A8]/60 transition-all duration-200 sidebar-item-hover hover:text-[#C8C2D9]"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Ir al Dashboard de Usuario</span>
@@ -262,7 +262,7 @@ export function AdminSidebar() {
             <span className="truncate text-xs font-semibold text-white">
               {profile?.full_name || 'Administrador'}
             </span>
-            <span className="truncate text-[10px] text-[#8899B4]/50">
+            <span className="truncate text-[10px] text-[#9189A8]/50">
               {profile?.email || ''}
             </span>
             <Badge
@@ -280,7 +280,7 @@ export function AdminSidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 shrink-0 text-[#8899B4]/50 hover:text-red-400 hover:bg-red-500/8 transition-colors duration-200"
+            className="h-8 w-8 shrink-0 text-[#9189A8]/50 hover:text-red-400 hover:bg-red-500/8 transition-colors duration-200"
             onClick={signOut}
             title="Cerrar sesión"
           >

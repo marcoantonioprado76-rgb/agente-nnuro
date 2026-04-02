@@ -91,13 +91,13 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
           <div className="flex items-center gap-1">
             <Link
               href={variant === 'admin' ? '/admin/dashboard' : '/dashboard'}
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-[#8899B4]/50 active:bg-white/5 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-[#9189A8]/50 active:bg-white/5 transition-colors"
             >
               <Bell className="h-[18px] w-[18px]" />
             </Link>
             <button
               onClick={() => setDrawerOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-[#8899B4]/70 active:bg-white/5 transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-[#9189A8]/70 active:bg-white/5 transition-colors"
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -135,7 +135,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
           <span className="text-[13px] font-semibold text-white/80">Menu</span>
           <button
             onClick={() => setDrawerOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-[#8899B4]/60 active:bg-white/5 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-[#9189A8]/60 active:bg-white/5 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -166,7 +166,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
               <p className="text-[13px] font-semibold text-white truncate leading-tight">
                 {profile?.full_name || 'Usuario'}
               </p>
-              <p className="text-[11px] text-[#8899B4]/50 truncate mt-0.5">
+              <p className="text-[11px] text-[#9189A8]/50 truncate mt-0.5">
                 {profile?.email}
               </p>
               <div
@@ -198,10 +198,10 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
                   'flex items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-medium transition-all duration-200 active:scale-[0.98]',
                   isActive
                     ? 'bg-[#8B5CF6]/8 text-white'
-                    : 'text-[#8899B4]/70 active:bg-white/[0.03]'
+                    : 'text-[#9189A8]/70 active:bg-white/[0.03]'
                 )}
               >
-                <item.icon className={cn('h-[18px] w-[18px] shrink-0', isActive ? 'text-[#8B5CF6]' : 'text-[#8899B4]/40')} />
+                <item.icon className={cn('h-[18px] w-[18px] shrink-0', isActive ? 'text-[#8B5CF6]' : 'text-[#9189A8]/40')} />
                 {item.label}
               </Link>
             )
@@ -229,7 +229,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
               <Link
                 href="/dashboard"
                 onClick={() => setDrawerOpen(false)}
-                className="flex items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-medium text-[#8899B4]/60 active:bg-white/[0.03] transition-all active:scale-[0.98]"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-medium text-[#9189A8]/60 active:bg-white/[0.03] transition-all active:scale-[0.98]"
               >
                 <ArrowLeft className="h-[18px] w-[18px] shrink-0" />
                 Dashboard Usuario

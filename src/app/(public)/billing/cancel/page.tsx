@@ -16,7 +16,7 @@ export default function BillingCancelPage() {
       </div>
 
       <div className="relative max-w-md w-full mx-auto px-6">
-        <div className="rounded-2xl border border-red-500/20 bg-[#0a0f1e] p-8 text-center space-y-6">
+        <div className="rounded-2xl border border-red-500/20 bg-[#0B0A14] p-8 text-center space-y-6">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
             <XCircle className="h-8 w-8 text-red-400" />
           </div>

@@ -352,7 +352,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             onChange={(e) => setSystemPrompt(e.target.value)}
             placeholder="Define el comportamiento, personalidad, reglas de venta, limites de caracteres, formato de respuesta y toda la logica de tu bot vendedor..."
             rows={12}
-            className="w-full rounded-xl px-4 md:px-5 py-3 md:py-4 text-[13px] leading-relaxed text-[#CBD5E8] focus:outline-none focus:ring-1 focus:ring-[#06B6D4]/30 resize-y min-h-[240px] md:min-h-[420px] transition-all duration-200"
+            className="w-full rounded-xl px-4 md:px-5 py-3 md:py-4 text-[13px] leading-relaxed text-[#C8C2D9] focus:outline-none focus:ring-1 focus:ring-[#06B6D4]/30 resize-y min-h-[240px] md:min-h-[420px] transition-all duration-200"
             style={{
               background: 'rgba(255, 255, 255, 0.03)',
               border: '1px solid rgba(255, 255, 255, 0.08)',

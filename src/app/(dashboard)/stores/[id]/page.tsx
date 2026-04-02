@@ -639,7 +639,7 @@ export default function StoreInventoryPage({
                 variant="outline"
                 onClick={() => setDialogOpen(false)}
                 disabled={saving}
-                className="text-[#CBD5E8] border-0 rounded-xl"
+                className="text-[#C8C2D9] border-0 rounded-xl"
                 style={{ border: '1px solid rgba(255, 255, 255, 0.06)' }}
               >
                 Cancelar
@@ -773,7 +773,7 @@ function ProductCard({
         <div className="flex items-center gap-2 pt-1">
           <button
             onClick={() => onEdit(product)}
-            className="flex-1 flex items-center justify-center gap-2 h-9 rounded-xl text-[12px] font-semibold text-[#CBD5E8] transition-all duration-200 hover:text-white hover:bg-white/[0.06]"
+            className="flex-1 flex items-center justify-center gap-2 h-9 rounded-xl text-[12px] font-semibold text-[#C8C2D9] transition-all duration-200 hover:text-white hover:bg-white/[0.06]"
             style={{ border: '1px solid rgba(255, 255, 255, 0.06)' }}
           >
             <Pencil className="h-3 w-3" />

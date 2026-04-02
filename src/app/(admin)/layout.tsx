@@ -22,7 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen" style={{
-      background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.12), transparent), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124, 58, 237, 0.06), transparent), linear-gradient(180deg, #0C1529 0%, #10203E 50%, #0E1830 100%)',
+      background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.12), transparent), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124, 58, 237, 0.06), transparent), linear-gradient(180deg, #0C0B18 0%, #110F22 50%, #0D0C16 100%)',
     }}>
       <AdminSidebar />
       <MobileHeader variant="admin" />

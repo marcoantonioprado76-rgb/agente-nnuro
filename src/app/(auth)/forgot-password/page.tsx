@@ -41,9 +41,9 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f1117] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#09090F] px-4">
       <div className="w-full max-w-[420px]">
-        <div className="bg-[#1a1d27] border border-[#242736] rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[#12111C] border border-[#1A1726] rounded-2xl p-8 shadow-2xl">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
             <NuroSmile size={36} />
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
             <div className="text-center py-4">
               <CheckCircle2 className="h-12 w-12 text-green-400 mx-auto mb-4" />
               <h2 className="text-white text-xl font-bold mb-2">Correo enviado</h2>
-              <p className="text-[#a0b0c8] text-sm leading-relaxed mb-6">
+              <p className="text-[#B0A5C8] text-sm leading-relaxed mb-6">
                 Si <strong className="text-white">{email}</strong> está registrado, recibirás un enlace para restablecer tu contraseña en los próximos minutos.
               </p>
               <Link
@@ -68,17 +68,17 @@ export default function ForgotPasswordPage() {
           ) : (
             <>
               <h1 className="text-white text-2xl font-bold mb-2">¿Olvidaste tu contraseña?</h1>
-              <p className="text-[#a0b0c8] text-sm mb-6 leading-relaxed">
+              <p className="text-[#B0A5C8] text-sm mb-6 leading-relaxed">
                 Ingresa tu correo y te enviaremos un enlace para restablecerla.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">
+                  <Label htmlFor="email" className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">
                     Correo electrónico
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8899B4]/60" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#9189A8]/60" />
                     <Input
                       id="email"
                       type="email"
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="h-12 rounded-xl pl-10 bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#8B5CF6]"
+                      className="h-12 rounded-xl pl-10 bg-[#1A1726] border-[#2A2540] text-white placeholder:text-[#9189A8]/45 text-[14px] focus:border-[#8B5CF6]"
                     />
                   </div>
                 </div>

@@ -158,7 +158,7 @@ export default function RegisterPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4 overflow-hidden" style={{
-      background: 'linear-gradient(135deg, #0C1529 0%, #10203E 35%, #151A3A 55%, #181640 75%, #0E1830 100%)',
+      background: 'linear-gradient(135deg, #0C0B18 0%, #110F22 35%, #13102A 55%, #16112E 75%, #0D0C16 100%)',
     }}>
       <AuthBackground />
 
@@ -227,7 +227,7 @@ export default function RegisterPage() {
               <div className="w-full" style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.2), rgba(167,139,250,0.12), rgba(139,92,246,0.2), transparent)' }} />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="px-4 text-[#A0B0C8]/60 text-[10px] font-semibold tracking-[0.15em]" style={{ background: 'linear-gradient(180deg, rgba(22, 38, 68, 0.72), rgba(16, 28, 52, 0.8))' }}>
+              <span className="px-4 text-[#B0A5C8]/60 text-[10px] font-semibold tracking-[0.15em]" style={{ background: 'linear-gradient(180deg, rgba(22, 38, 68, 0.72), rgba(16, 28, 52, 0.8))' }}>
                 O registrate con email
               </span>
             </div>
@@ -235,42 +235,42 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-2 auth-stagger-3">
-              <Label className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">Nombre completo</Label>
+              <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">Nombre completo</Label>
               <Input type="text" placeholder="Tu nombre completo" value={form.fullName}
                 onChange={(e) => updateField('fullName', e.target.value)} required
-                className="h-12 rounded-xl auth-input text-white placeholder:text-[#8899B4]/45 text-[14px]" />
+                className="h-12 rounded-xl auth-input text-white placeholder:text-[#9189A8]/45 text-[14px]" />
             </div>
 
             <div className="space-y-2 auth-stagger-4">
-              <Label className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">Correo electronico</Label>
+              <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">Correo electronico</Label>
               <Input type="email" placeholder="tu@email.com" value={form.email}
                 onChange={(e) => updateField('email', e.target.value)} required
-                className="h-12 rounded-xl auth-input text-white placeholder:text-[#8899B4]/45 text-[14px]" />
+                className="h-12 rounded-xl auth-input text-white placeholder:text-[#9189A8]/45 text-[14px]" />
             </div>
 
             <div className="grid grid-cols-2 gap-3 auth-stagger-4">
               <div className="space-y-2">
-                <Label className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">Contraseña</Label>
+                <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">Contraseña</Label>
                 <div className="relative">
                   <Input type={showPassword ? 'text' : 'password'} placeholder="Min. 6 caracteres" value={form.password}
                     onChange={(e) => updateField('password', e.target.value)} required minLength={6}
-                    className="h-12 rounded-xl auth-input pr-10 text-white placeholder:text-[#8899B4]/45 text-[14px]" />
+                    className="h-12 rounded-xl auth-input pr-10 text-white placeholder:text-[#9189A8]/45 text-[14px]" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8899B4]/60 hover:text-white transition-colors duration-200">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9189A8]/60 hover:text-white transition-colors duration-200">
                     {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                   </button>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">Confirmar</Label>
+                <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">Confirmar</Label>
                 <Input type={showPassword ? 'text' : 'password'} placeholder="Repetir" value={form.confirmPassword}
                   onChange={(e) => updateField('confirmPassword', e.target.value)} required
-                  className="h-12 rounded-xl auth-input text-white placeholder:text-[#8899B4]/45 text-[14px]" />
+                  className="h-12 rounded-xl auth-input text-white placeholder:text-[#9189A8]/45 text-[14px]" />
               </div>
             </div>
 
             <div className="space-y-2 auth-stagger-5">
-              <Label className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">Pais</Label>
+              <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">Pais</Label>
               <Select value={form.country} onValueChange={(v) => {
                 if (v) { updateField('country', v); const m = countryCodes.find(c => c.country === v); if (m) updateField('countryCode', m.code); }
               }}>
@@ -282,7 +282,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2 auth-stagger-5">
-              <Label className="text-[11px] font-semibold text-[#A0B0C8] uppercase tracking-[0.15em]">Numero de celular</Label>
+              <Label className="text-[11px] font-semibold text-[#B0A5C8] uppercase tracking-[0.15em]">Numero de celular</Label>
               <div className="flex gap-2">
                 <Select value={form.countryCode} onValueChange={(v) => { if (v) updateField('countryCode', v) }}>
                   <SelectTrigger className="w-[130px] h-12 rounded-xl auth-input text-white">
@@ -292,7 +292,7 @@ export default function RegisterPage() {
                 </Select>
                 <Input type="tel" placeholder="67534487" value={form.phoneNumber}
                   onChange={(e) => updateField('phoneNumber', e.target.value.replace(/[^0-9]/g, ''))} required
-                  className="flex-1 h-12 rounded-xl auth-input text-white placeholder:text-[#8899B4]/45 text-[14px]" />
+                  className="flex-1 h-12 rounded-xl auth-input text-white placeholder:text-[#9189A8]/45 text-[14px]" />
               </div>
             </div>
 
@@ -306,7 +306,7 @@ export default function RegisterPage() {
             </div>
           </form>
 
-          <p className="text-center text-[13px] text-[#A0B0C8]/70 mt-7 auth-stagger-6">
+          <p className="text-center text-[13px] text-[#B0A5C8]/70 mt-7 auth-stagger-6">
             ¿Ya tienes cuenta?{' '}
             <Link href="/login" className="font-semibold text-[#8B5CF6] hover:text-[#7CA0FF] transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]">
               Inicia sesion
