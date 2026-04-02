@@ -171,7 +171,7 @@ export default function BotsPage() {
 
   const statusConfig = {
     connected: { label: 'Conectado', color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.2)' },
-    active: { label: 'Activo', color: '#4F7CFF', bg: 'rgba(79, 124, 255, 0.1)', border: 'rgba(79, 124, 255, 0.2)' },
+    active: { label: 'Activo', color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.1)', border: 'rgba(139, 92, 246, 0.2)' },
     pending: { label: 'Pendiente', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)', border: 'rgba(245, 158, 11, 0.2)' },
     inactive: { label: 'Inactivo', color: '#94A3B8', bg: 'rgba(148, 163, 184, 0.08)', border: 'rgba(148, 163, 184, 0.12)' },
   };
@@ -185,9 +185,9 @@ export default function BotsPage() {
             <div className="relative">
               <div
                 className="w-16 h-16 rounded-full border-2 animate-spin"
-                style={{ borderColor: 'rgba(79, 124, 255, 0.15)', borderTopColor: '#4F7CFF' }}
+                style={{ borderColor: 'rgba(139, 92, 246, 0.15)', borderTopColor: '#8B5CF6' }}
               />
-              <Brain className="absolute inset-0 m-auto h-6 w-6 text-[#4F7CFF]" />
+              <Brain className="absolute inset-0 m-auto h-6 w-6 text-[#8B5CF6]" />
             </div>
             <p className="text-sm text-[#94A3B8]">Cargando agentes...</p>
           </div>
@@ -206,12 +206,12 @@ export default function BotsPage() {
           className="relative overflow-hidden rounded-2xl p-4 md:p-6 animate-fade-in-up"
           style={{
             background: 'linear-gradient(135deg, rgba(17, 29, 53, 0.9), rgba(22, 32, 51, 0.7))',
-            border: '1px solid rgba(79, 124, 255, 0.08)',
+            border: '1px solid rgba(139, 92, 246, 0.08)',
           }}
         >
           <div
             className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.3), transparent)' }}
+            style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent)' }}
           />
           <div
             className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none"
@@ -223,8 +223,8 @@ export default function BotsPage() {
               <div
                 className="flex h-14 w-14 items-center justify-center rounded-2xl shrink-0"
                 style={{
-                  background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)',
-                  boxShadow: '0 6px 24px rgba(79, 124, 255, 0.3)',
+                  background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                  boxShadow: '0 6px 24px rgba(139, 92, 246, 0.3)',
                 }}
               >
                 <Brain className="h-7 w-7 text-white" />
@@ -234,7 +234,7 @@ export default function BotsPage() {
                   Mis Agentes IA
                   <span
                     className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full"
-                    style={{ background: 'rgba(79, 124, 255, 0.12)', color: '#4F7CFF', border: '1px solid rgba(79, 124, 255, 0.15)' }}
+                    style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8B5CF6', border: '1px solid rgba(139, 92, 246, 0.15)' }}
                   >
                     {bots.length}
                   </span>
@@ -245,7 +245,7 @@ export default function BotsPage() {
             <Button
               onClick={() => setDialogOpen(true)}
               className="h-11 px-6 text-sm font-semibold text-white rounded-xl shrink-0"
-              style={{ background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)', boxShadow: '0 4px 16px rgba(79, 124, 255, 0.3)' }}
+              style={{ background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)' }}
             >
               <Plus className="mr-2 h-4 w-4" />
               Crear Agente
@@ -256,7 +256,7 @@ export default function BotsPage() {
           <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
             {[
               { label: 'Agentes Activos', value: `${activeBots}/${bots.length}`, icon: Bot, color: '#10B981' },
-              { label: 'Conversaciones', value: metrics.totalConversations, icon: MessageSquare, color: '#4F7CFF' },
+              { label: 'Conversaciones', value: metrics.totalConversations, icon: MessageSquare, color: '#8B5CF6' },
               { label: 'Ventas', value: metrics.totalSales, icon: ShoppingBag, color: '#A78BFA' },
               { label: 'Seguimientos', value: metrics.activeFollowups, icon: Activity, color: '#F59E0B' },
             ].map((stat) => (
@@ -292,23 +292,23 @@ export default function BotsPage() {
           >
             <div
               className="absolute top-0 right-0 w-72 h-72 rounded-full blur-[100px] opacity-25"
-              style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.2), transparent)' }}
+              style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent)' }}
             />
             <div
               className="absolute bottom-0 left-0 w-72 h-72 rounded-full blur-[100px] opacity-15"
-              style={{ background: 'radial-gradient(circle, rgba(86, 204, 242, 0.15), transparent)' }}
+              style={{ background: 'radial-gradient(circle, rgba(6, 182, 212, 0.15), transparent)' }}
             />
 
             <div className="relative text-center space-y-5">
               <div
                 className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(79, 124, 255, 0.15), rgba(86, 204, 242, 0.08))',
-                  border: '1px solid rgba(79, 124, 255, 0.15)',
-                  boxShadow: '0 0 32px rgba(79, 124, 255, 0.1)',
+                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.08))',
+                  border: '1px solid rgba(139, 92, 246, 0.15)',
+                  boxShadow: '0 0 32px rgba(139, 92, 246, 0.1)',
                 }}
               >
-                <Brain className="h-10 w-10 text-[#4F7CFF]" />
+                <Brain className="h-10 w-10 text-[#8B5CF6]" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white">
@@ -323,8 +323,8 @@ export default function BotsPage() {
                 onClick={() => setDialogOpen(true)}
                 className="h-12 px-6 text-sm font-semibold text-white rounded-xl"
                 style={{
-                  background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)',
-                  boxShadow: '0 4px 16px rgba(79, 124, 255, 0.3)',
+                  background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                  boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)',
                 }}
               >
                 <Plus className="mr-2 h-5 w-5" />
@@ -359,7 +359,7 @@ export default function BotsPage() {
                     className="relative h-44 overflow-hidden"
                     style={{
                       background: bot.is_active
-                        ? 'linear-gradient(160deg, rgba(79, 124, 255, 0.1) 0%, rgba(86, 204, 242, 0.06) 50%, rgba(22, 32, 51, 0.9) 100%)'
+                        ? 'linear-gradient(160deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.06) 50%, rgba(22, 32, 51, 0.9) 100%)'
                         : 'linear-gradient(160deg, rgba(148, 163, 184, 0.06) 0%, rgba(22, 32, 51, 0.9) 100%)',
                     }}
                   >
@@ -409,7 +409,7 @@ export default function BotsPage() {
                           className="relative flex h-[96px] w-[96px] items-center justify-center rounded-3xl transition-transform duration-300 group-hover:scale-105"
                           style={{
                             background: bot.is_active
-                              ? `linear-gradient(145deg, ${sc.color}18, rgba(79, 124, 255, 0.06))`
+                              ? `linear-gradient(145deg, ${sc.color}18, rgba(139, 92, 246, 0.06))`
                               : 'rgba(148, 163, 184, 0.06)',
                             border: `1.5px solid ${bot.is_active ? `${sc.color}30` : 'rgba(148, 163, 184, 0.1)'}`,
                             boxShadow: bot.is_active
@@ -419,7 +419,7 @@ export default function BotsPage() {
                           }}
                         >
                           <Brain
-                            className="h-11 w-11 transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(79,124,255,0.4)]"
+                            className="h-11 w-11 transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(139,92,246,0.4)]"
                             style={{ color: bot.is_active ? sc.color : '#94A3B8' }}
                           />
                         </div>
@@ -544,9 +544,9 @@ export default function BotsPage() {
                       <span
                         className="inline-flex items-center gap-1.5 rounded-lg px-2.5 h-7 text-[11px] font-medium"
                         style={{
-                          background: bot.gpt_model ? 'rgba(79, 124, 255, 0.08)' : 'rgba(255, 255, 255, 0.025)',
-                          color: bot.gpt_model ? '#4F7CFF' : '#94A3B8',
-                          border: `1px solid ${bot.gpt_model ? 'rgba(79, 124, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)'}`,
+                          background: bot.gpt_model ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.025)',
+                          color: bot.gpt_model ? '#8B5CF6' : '#94A3B8',
+                          border: `1px solid ${bot.gpt_model ? 'rgba(139, 92, 246, 0.12)' : 'rgba(255, 255, 255, 0.04)'}`,
                         }}
                       >
                         <Brain className="h-3 w-3" />
@@ -571,8 +571,8 @@ export default function BotsPage() {
                         <Button
                           className="w-full h-10 text-[13px] font-semibold text-white rounded-xl gap-2"
                           style={{
-                            background: 'linear-gradient(135deg, rgba(79, 124, 255, 0.15), rgba(86, 204, 242, 0.1))',
-                            border: '1px solid rgba(79, 124, 255, 0.15)',
+                            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.1))',
+                            border: '1px solid rgba(139, 92, 246, 0.15)',
                           }}
                         >
                           <Settings className="h-4 w-4" />
@@ -585,7 +585,7 @@ export default function BotsPage() {
                           style={{ border: '1px solid rgba(255, 255, 255, 0.06)' }}
                           title="Conversaciones"
                         >
-                          <MessageSquare className="h-4 w-4 text-[#56CCF2]" />
+                          <MessageSquare className="h-4 w-4 text-[#06B6D4]" />
                         </button>
                       </Link>
                       <button
@@ -613,34 +613,34 @@ export default function BotsPage() {
               className="group flex flex-col items-center justify-center rounded-2xl p-8 transition-all duration-300 cursor-pointer min-h-[440px]"
               style={{
                 background: 'rgba(255, 255, 255, 0.012)',
-                border: '2px dashed rgba(79, 124, 255, 0.1)',
+                border: '2px dashed rgba(139, 92, 246, 0.1)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(79, 124, 255, 0.3)'
-                e.currentTarget.style.background = 'rgba(79, 124, 255, 0.025)'
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)'
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.025)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(79, 124, 255, 0.1)'
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.1)'
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.012)'
               }}
             >
               <div className="relative mb-5">
                 <div
                   className="absolute -inset-4 rounded-full opacity-20 blur-[16px] pointer-events-none"
-                  style={{ background: 'radial-gradient(circle, #4F7CFF, transparent)' }}
+                  style={{ background: 'radial-gradient(circle, #8B5CF6, transparent)' }}
                 />
                 <div
                   className="relative flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110"
                   style={{
-                    background: 'rgba(79, 124, 255, 0.08)',
-                    border: '1.5px solid rgba(79, 124, 255, 0.12)',
-                    boxShadow: '0 0 24px rgba(79, 124, 255, 0.06)',
+                    background: 'rgba(139, 92, 246, 0.08)',
+                    border: '1.5px solid rgba(139, 92, 246, 0.12)',
+                    boxShadow: '0 0 24px rgba(139, 92, 246, 0.06)',
                   }}
                 >
-                  <Plus className="h-7 w-7 text-[#4F7CFF]" />
+                  <Plus className="h-7 w-7 text-[#8B5CF6]" />
                 </div>
               </div>
-              <p className="text-sm font-semibold text-[#4F7CFF]">Nuevo Agente</p>
+              <p className="text-sm font-semibold text-[#8B5CF6]">Nuevo Agente</p>
               <p className="text-[11px] text-[#94A3B8]/50 mt-1">Crea un nuevo agente IA</p>
             </button>
           </div>
@@ -653,14 +653,14 @@ export default function BotsPage() {
           className="sm:max-w-md"
           style={{
             background: 'linear-gradient(135deg, #111D35, #162033)',
-            border: '1px solid rgba(79, 124, 255, 0.12)',
+            border: '1px solid rgba(139, 92, 246, 0.12)',
           }}
         >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-white">
               <div
                 className="flex h-8 w-8 items-center justify-center rounded-lg"
-                style={{ background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)' }}
+                style={{ background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)' }}
               >
                 <Brain className="h-4 w-4 text-white" />
               </div>
@@ -717,8 +717,8 @@ export default function BotsPage() {
               disabled={creating}
               className="text-white rounded-xl"
               style={{
-                background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)',
-                boxShadow: '0 4px 12px rgba(79, 124, 255, 0.3)',
+                background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
               }}
             >
               {creating && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}

@@ -112,8 +112,8 @@ function extractPhoneFromNotes(notes?: string | null, summary?: string | null, b
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string; icon: typeof CheckCircle2 }> = {
   pending: { label: 'Pendiente', color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)', border: 'rgba(245, 158, 11, 0.2)', icon: Clock },
   confirmed: { label: 'Confirmada', color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.2)', icon: CheckCircle2 },
-  shipped: { label: 'Enviada', color: '#4F7CFF', bg: 'rgba(79, 124, 255, 0.1)', border: 'rgba(79, 124, 255, 0.2)', icon: Truck },
-  delivered: { label: 'Entregada', color: '#56CCF2', bg: 'rgba(86, 204, 242, 0.1)', border: 'rgba(86, 204, 242, 0.2)', icon: CheckCircle2 },
+  shipped: { label: 'Enviada', color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.1)', border: 'rgba(139, 92, 246, 0.2)', icon: Truck },
+  delivered: { label: 'Entregada', color: '#06B6D4', bg: 'rgba(6, 182, 212, 0.1)', border: 'rgba(6, 182, 212, 0.2)', icon: CheckCircle2 },
   cancelled: { label: 'Cancelada', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.2)', icon: XCircle },
 };
 
@@ -212,7 +212,7 @@ export default function SalesPage() {
           }}
         >
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(16, 185, 129, 0.3), transparent)' }} />
-          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.25), transparent)' }} />
+          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent)' }} />
 
           <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
             <div className="flex items-center gap-4">
@@ -244,7 +244,7 @@ export default function SalesPage() {
           <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
             {[
               { label: 'Total Ventas', value: orders.length, icon: Receipt, color: '#10B981' },
-              { label: 'Confirmadas', value: confirmedOrders.length, icon: CheckCircle2, color: '#56CCF2' },
+              { label: 'Confirmadas', value: confirmedOrders.length, icon: CheckCircle2, color: '#06B6D4' },
               { label: 'Productos Vendidos', value: totalProducts, icon: Package, color: '#A78BFA' },
               { label: 'Ingresos', value: `${totalRevenue.toLocaleString()} ${orders[0]?.currency || 'BOB'}`, icon: DollarSign, color: '#F59E0B' },
             ].map((stat) => (
@@ -270,7 +270,7 @@ export default function SalesPage() {
                 Todos
               </button>
               {botNames.map(name => (
-                <button key={name} onClick={() => setFilterBot(name)} className="h-7 px-3 rounded-lg text-[11px] font-medium transition-all duration-200" style={{ background: filterBot === name ? 'rgba(79, 124, 255, 0.12)' : 'rgba(255, 255, 255, 0.025)', color: filterBot === name ? '#4F7CFF' : '#94A3B8', border: `1px solid ${filterBot === name ? 'rgba(79, 124, 255, 0.2)' : 'rgba(255, 255, 255, 0.04)'}` }}>
+                <button key={name} onClick={() => setFilterBot(name)} className="h-7 px-3 rounded-lg text-[11px] font-medium transition-all duration-200" style={{ background: filterBot === name ? 'rgba(139, 92, 246, 0.12)' : 'rgba(255, 255, 255, 0.025)', color: filterBot === name ? '#8B5CF6' : '#94A3B8', border: `1px solid ${filterBot === name ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255, 255, 255, 0.04)'}` }}>
                   {name}
                 </button>
               ))}
@@ -499,14 +499,14 @@ function OrderDetail({
 
           {/* Notes */}
           {order.notes && (
-            <DetailSection title="Notas del Reporte" icon={FileText} color="#4F7CFF">
+            <DetailSection title="Notas del Reporte" icon={FileText} color="#8B5CF6">
               <p className="text-[12px] text-[#CBD5E8] leading-relaxed whitespace-pre-wrap">{order.notes}</p>
             </DetailSection>
           )}
 
           {/* AI Summary */}
           {order.conversation_summary && (
-            <DetailSection title="Resumen IA" icon={Bot} color="#56CCF2">
+            <DetailSection title="Resumen IA" icon={Bot} color="#06B6D4">
               <p className="text-[12px] text-[#CBD5E8] leading-relaxed whitespace-pre-wrap">{order.conversation_summary}</p>
             </DetailSection>
           )}
@@ -601,11 +601,11 @@ function ChatBubble({ message }: { message: ChatMessage }) {
         {/* Sender label */}
         <div className="flex items-center gap-1.5 mb-1">
           {isBot ? (
-            <Bot className="h-3 w-3 text-[#4F7CFF]" />
+            <Bot className="h-3 w-3 text-[#8B5CF6]" />
           ) : (
             <User className="h-3 w-3 text-[#10B981]" />
           )}
-          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isBot ? 'text-[#4F7CFF]/70' : 'text-[#10B981]/70'}`}>
+          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isBot ? 'text-[#8B5CF6]/70' : 'text-[#10B981]/70'}`}>
             {isBot ? 'Bot' : 'Cliente'}
           </span>
           <span className="text-[9px] text-[#94A3B8]/30 ml-auto">{time}</span>

@@ -111,7 +111,7 @@ function ResetPasswordContent() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-12 rounded-xl pr-11 bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#5B8AFF]"
+                      className="h-12 rounded-xl pr-11 bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#8B5CF6]"
                     />
                     <button
                       type="button"
@@ -133,7 +133,7 @@ function ResetPasswordContent() {
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                     required
-                    className="h-12 rounded-xl bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#5B8AFF]"
+                    className="h-12 rounded-xl bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#8B5CF6]"
                   />
                 </div>
 

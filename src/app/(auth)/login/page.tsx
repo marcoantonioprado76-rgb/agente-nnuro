@@ -202,7 +202,7 @@ function LoginContent() {
         {/* Primary blue glow — top center */}
         <div
           className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full blur-[160px]"
-          style={{ background: 'radial-gradient(circle, rgba(91,138,255,0.25), transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.25), transparent 70%)' }}
         />
         {/* Purple glow — bottom left */}
         <div
@@ -217,12 +217,12 @@ function LoginContent() {
         {/* Center spotlight behind card — key illumination */}
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[180px]"
-          style={{ background: 'radial-gradient(circle, rgba(91,138,255,0.18), rgba(124,58,237,0.06) 50%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.18), rgba(124,58,237,0.06) 50%, transparent 70%)' }}
         />
         {/* Extra warm glow — behind card for depth */}
         <div
           className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[500px] h-[400px] rounded-full blur-[120px]"
-          style={{ background: 'radial-gradient(ellipse, rgba(91,138,255,0.12), transparent 70%)' }}
+          style={{ background: 'radial-gradient(ellipse, rgba(139,92,246,0.12), transparent 70%)' }}
         />
       </div>
 
@@ -232,11 +232,11 @@ function LoginContent() {
           className="auth-card-float rounded-3xl p-8 sm:p-10 relative overflow-hidden"
           style={{
             background: 'linear-gradient(180deg, rgba(22, 38, 68, 0.72) 0%, rgba(16, 28, 52, 0.8) 100%)',
-            border: '1px solid rgba(91, 138, 255, 0.18)',
+            border: '1px solid rgba(139, 92, 246, 0.18)',
             boxShadow: `
               0 32px 80px rgba(0, 0, 0, 0.35),
               0 0 0 1px rgba(255,255,255,0.06),
-              0 0 100px rgba(91, 138, 255, 0.1),
+              0 0 100px rgba(139, 92, 246, 0.1),
               0 0 40px rgba(124, 58, 237, 0.05),
               inset 0 1px 0 rgba(255,255,255,0.08)
             `,
@@ -245,7 +245,7 @@ function LoginContent() {
         >
           {/* Card inner glow line */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] h-[1.5px]" style={{
-            background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.4), rgba(167,139,250,0.3), rgba(91,138,255,0.4), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.4), rgba(167,139,250,0.3), rgba(139,92,246,0.4), transparent)',
           }} />
 
           {/* Logo */}
@@ -257,16 +257,16 @@ function LoginContent() {
               <div
                 className="relative flex h-16 w-16 items-center justify-center rounded-2xl auth-logo-float"
                 style={{
-                  background: 'linear-gradient(145deg, rgba(91,138,255,0.28), rgba(124,58,237,0.16))',
-                  border: '1px solid rgba(91,138,255,0.35)',
-                  boxShadow: '0 8px 40px rgba(91,138,255,0.25), 0 0 60px rgba(91,138,255,0.1), inset 0 1px 0 rgba(255,255,255,0.12)',
+                  background: 'linear-gradient(145deg, rgba(139,92,246,0.28), rgba(124,58,237,0.16))',
+                  border: '1px solid rgba(139,92,246,0.35)',
+                  boxShadow: '0 8px 40px rgba(139,92,246,0.25), 0 0 60px rgba(139,92,246,0.1), inset 0 1px 0 rgba(255,255,255,0.12)',
                 }}
               >
                 <NuroSmile size={38} />
               </div>
             </div>
             <h1 className="text-[32px] font-extrabold text-white tracking-tight leading-none" style={{
-              textShadow: '0 0 30px rgba(91, 138, 255, 0.15)',
+              textShadow: '0 0 30px rgba(139, 92, 246, 0.15)',
             }}>
               Bienvenido
             </h1>
@@ -315,7 +315,7 @@ function LoginContent() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full" style={{
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.2), rgba(167,139,250,0.12), rgba(91,138,255,0.2), transparent)',
+                background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.2), rgba(167,139,250,0.12), rgba(139,92,246,0.2), transparent)',
               }} />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
@@ -372,7 +372,7 @@ function LoginContent() {
             <div className="flex justify-end -mt-1 auth-stagger-6">
               <Link
                 href="/forgot-password"
-                className="text-[12px] text-[#5B8AFF] hover:text-[#7CA0FF] transition-colors duration-200"
+                className="text-[12px] text-[#8B5CF6] hover:text-[#7CA0FF] transition-colors duration-200"
               >
                 ¿Olvidaste tu contraseña?
               </Link>
@@ -401,7 +401,7 @@ function LoginContent() {
             ¿No tienes cuenta?{' '}
             <Link
               href="/register"
-              className="font-semibold text-[#5B8AFF] hover:text-[#7CA0FF] transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(91,138,255,0.3)]"
+              className="font-semibold text-[#8B5CF6] hover:text-[#7CA0FF] transition-all duration-300 hover:drop-shadow-[0_0_8px_rgba(139,92,246,0.3)]"
             >
               Registrate
             </Link>

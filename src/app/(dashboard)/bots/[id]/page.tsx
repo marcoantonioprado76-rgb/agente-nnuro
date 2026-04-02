@@ -62,8 +62,8 @@ export default function BotDetailPage({
       <div className="flex-1 flex items-center justify-center py-20">
         <div className="flex flex-col items-center gap-3">
           <div className="relative">
-            <div className="w-14 h-14 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(79, 124, 255, 0.15)', borderTopColor: '#4F7CFF' }} />
-            <Brain className="absolute inset-0 m-auto h-5 w-5 text-[#4F7CFF]" />
+            <div className="w-14 h-14 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(139, 92, 246, 0.15)', borderTopColor: '#8B5CF6' }} />
+            <Brain className="absolute inset-0 m-auto h-5 w-5 text-[#8B5CF6]" />
           </div>
           <p className="text-sm text-[#94A3B8]">Cargando agente...</p>
         </div>
@@ -79,10 +79,10 @@ export default function BotDetailPage({
         className="relative overflow-hidden rounded-2xl p-4 md:p-6 animate-fade-in-up"
         style={{
           background: 'linear-gradient(135deg, rgba(17, 29, 53, 0.9), rgba(22, 32, 51, 0.7))',
-          border: '1px solid rgba(79, 124, 255, 0.08)',
+          border: '1px solid rgba(139, 92, 246, 0.08)',
         }}
       >
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.3), transparent)' }} />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent)' }} />
         <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(167, 139, 250, 0.25), transparent)' }} />
 
         <div className="relative">
@@ -100,9 +100,9 @@ export default function BotDetailPage({
                 className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-2xl shrink-0"
                 style={{
                   background: bot?.is_active
-                    ? 'linear-gradient(135deg, #4F7CFF, #56CCF2)'
+                    ? 'linear-gradient(135deg, #8B5CF6, #06B6D4)'
                     : 'rgba(148, 163, 184, 0.1)',
-                  boxShadow: bot?.is_active ? '0 4px 16px rgba(79, 124, 255, 0.3)' : 'none',
+                  boxShadow: bot?.is_active ? '0 4px 16px rgba(139, 92, 246, 0.3)' : 'none',
                 }}
               >
                 <Brain className="h-5 w-5 md:h-6 md:w-6 text-white" />
@@ -154,9 +154,9 @@ export default function BotDetailPage({
             <span
               className="inline-flex items-center gap-1.5 rounded-lg px-3 h-8 text-[11px] font-medium"
               style={{
-                background: bot?.gpt_model ? 'rgba(79, 124, 255, 0.08)' : 'rgba(255, 255, 255, 0.025)',
-                color: bot?.gpt_model ? '#4F7CFF' : '#94A3B8',
-                border: `1px solid ${bot?.gpt_model ? 'rgba(79, 124, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)'}`,
+                background: bot?.gpt_model ? 'rgba(139, 92, 246, 0.08)' : 'rgba(255, 255, 255, 0.025)',
+                color: bot?.gpt_model ? '#8B5CF6' : '#94A3B8',
+                border: `1px solid ${bot?.gpt_model ? 'rgba(139, 92, 246, 0.12)' : 'rgba(255, 255, 255, 0.04)'}`,
               }}
             >
               <Brain className="h-3 w-3" />
@@ -214,10 +214,10 @@ function DesktopTabs({ botId }: { botId: string }) {
 /* ── Mobile Section Selector (visible only on mobile) ── */
 const SECTIONS = [
   { value: 'credentials', label: 'Credenciales', desc: 'API Keys y modelo de IA', icon: Key, color: '#F59E0B' },
-  { value: 'template', label: 'Plantilla', desc: 'System prompt del bot', icon: FileText, color: '#56CCF2' },
+  { value: 'template', label: 'Plantilla', desc: 'System prompt del bot', icon: FileText, color: '#06B6D4' },
   { value: 'products', label: 'Productos', desc: 'Productos que vende el bot', icon: Package, color: '#A78BFA' },
   { value: 'followups', label: 'Seguimientos', desc: 'Intervalos de seguimiento', icon: Clock, color: '#10B981' },
-  { value: 'whatsapp', label: 'WhatsApp', desc: 'Conexion y estado', icon: Smartphone, color: '#4F7CFF' },
+  { value: 'whatsapp', label: 'WhatsApp', desc: 'Conexion y estado', icon: Smartphone, color: '#8B5CF6' },
 ] as const;
 
 type SectionValue = typeof SECTIONS[number]['value'];

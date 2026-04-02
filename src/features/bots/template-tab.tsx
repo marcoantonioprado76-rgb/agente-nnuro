@@ -293,8 +293,8 @@ export function TemplateTab({ botId }: TemplateTabProps) {
       <div className="flex items-center justify-center py-20">
         <div className="flex flex-col items-center gap-3">
           <div className="relative">
-            <div className="w-12 h-12 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(86, 204, 242, 0.15)', borderTopColor: '#56CCF2' }} />
-            <FileText className="absolute inset-0 m-auto h-4 w-4 text-[#56CCF2]" />
+            <div className="w-12 h-12 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(6, 182, 212, 0.15)', borderTopColor: '#06B6D4' }} />
+            <FileText className="absolute inset-0 m-auto h-4 w-4 text-[#06B6D4]" />
           </div>
           <p className="text-sm text-[#94A3B8]">Cargando plantilla...</p>
         </div>
@@ -319,9 +319,9 @@ export function TemplateTab({ botId }: TemplateTabProps) {
           <div className="flex items-center gap-3">
             <div
               className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
-              style={{ background: 'rgba(86, 204, 242, 0.1)', border: '1px solid rgba(86, 204, 242, 0.15)' }}
+              style={{ background: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.15)' }}
             >
-              <Type className="h-4 w-4 text-[#56CCF2]" />
+              <Type className="h-4 w-4 text-[#06B6D4]" />
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-white">System Prompt</h2>
@@ -332,9 +332,9 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             onClick={loadExampleTemplate}
             className="flex items-center gap-2 rounded-lg px-3.5 h-8 text-[11px] font-medium transition-all duration-200 hover:opacity-80 self-start sm:self-auto shrink-0"
             style={{
-              background: 'rgba(86, 204, 242, 0.08)',
-              color: '#56CCF2',
-              border: '1px solid rgba(86, 204, 242, 0.12)',
+              background: 'rgba(6, 182, 212, 0.08)',
+              color: '#06B6D4',
+              border: '1px solid rgba(6, 182, 212, 0.12)',
             }}
           >
             <Wand2 className="h-3.5 w-3.5" />
@@ -352,7 +352,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             onChange={(e) => setSystemPrompt(e.target.value)}
             placeholder="Define el comportamiento, personalidad, reglas de venta, limites de caracteres, formato de respuesta y toda la logica de tu bot vendedor..."
             rows={12}
-            className="w-full rounded-xl px-4 md:px-5 py-3 md:py-4 text-[13px] leading-relaxed text-[#CBD5E8] focus:outline-none focus:ring-1 focus:ring-[#56CCF2]/30 resize-y min-h-[240px] md:min-h-[420px] transition-all duration-200"
+            className="w-full rounded-xl px-4 md:px-5 py-3 md:py-4 text-[13px] leading-relaxed text-[#CBD5E8] focus:outline-none focus:ring-1 focus:ring-[#06B6D4]/30 resize-y min-h-[240px] md:min-h-[420px] transition-all duration-200"
             style={{
               background: 'rgba(255, 255, 255, 0.03)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -373,9 +373,9 @@ export function TemplateTab({ botId }: TemplateTabProps) {
           <div className="flex items-center gap-3">
             <div
               className="flex h-9 w-9 items-center justify-center rounded-lg"
-              style={{ background: 'rgba(86, 204, 242, 0.1)', border: '1px solid rgba(86, 204, 242, 0.15)' }}
+              style={{ background: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.15)' }}
             >
-              <Code2 className="h-4 w-4 text-[#56CCF2]" />
+              <Code2 className="h-4 w-4 text-[#06B6D4]" />
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-white">Strict / JSON</h2>
@@ -386,9 +386,9 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             <span
               className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-6 text-[10px] font-semibold"
               style={{
-                background: strictJson ? 'rgba(86, 204, 242, 0.1)' : 'rgba(255, 255, 255, 0.025)',
-                color: strictJson ? '#56CCF2' : '#94A3B8',
-                border: `1px solid ${strictJson ? 'rgba(86, 204, 242, 0.15)' : 'rgba(255, 255, 255, 0.04)'}`,
+                background: strictJson ? 'rgba(6, 182, 212, 0.1)' : 'rgba(255, 255, 255, 0.025)',
+                color: strictJson ? '#06B6D4' : '#94A3B8',
+                border: `1px solid ${strictJson ? 'rgba(6, 182, 212, 0.15)' : 'rgba(255, 255, 255, 0.04)'}`,
               }}
             >
               {strictJson ? 'Activo' : 'Inactivo'}
@@ -396,7 +396,7 @@ export function TemplateTab({ botId }: TemplateTabProps) {
             <button
               onClick={() => setStrictJson(!strictJson)}
               className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200"
-              style={{ background: strictJson ? '#56CCF2' : 'rgba(148, 163, 184, 0.2)' }}
+              style={{ background: strictJson ? '#06B6D4' : 'rgba(148, 163, 184, 0.2)' }}
             >
               <span
                 className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200"
@@ -413,8 +413,8 @@ export function TemplateTab({ botId }: TemplateTabProps) {
         disabled={saving}
         className="flex w-full items-center justify-center gap-2.5 rounded-xl h-12 text-white font-semibold text-[14px] transition-all duration-200 hover:opacity-90 disabled:opacity-50"
         style={{
-          background: 'linear-gradient(135deg, #56CCF2, #4F7CFF)',
-          boxShadow: '0 4px 16px rgba(86, 204, 242, 0.25)',
+          background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)',
+          boxShadow: '0 4px 16px rgba(6, 182, 212, 0.25)',
         }}
       >
         {saving ? (

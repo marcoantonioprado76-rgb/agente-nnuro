@@ -111,10 +111,10 @@ export function FollowupsTab({ botId }: FollowupsTabProps) {
         <div className="hidden md:flex items-center justify-center gap-3 my-6 px-4">
           <div
             className="flex flex-col items-center gap-1.5 rounded-xl px-4 py-3"
-            style={{ background: 'rgba(86, 204, 242, 0.06)', border: '1px solid rgba(86, 204, 242, 0.1)' }}
+            style={{ background: 'rgba(6, 182, 212, 0.06)', border: '1px solid rgba(6, 182, 212, 0.1)' }}
           >
             <span className="text-[10px] text-[#94A3B8]/50 uppercase tracking-wider font-medium">Ultimo mensaje</span>
-            <span className="text-[11px] font-medium text-[#56CCF2]">Bot envia</span>
+            <span className="text-[11px] font-medium text-[#06B6D4]">Bot envia</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-8 h-px bg-[#10B981]/30" />
@@ -145,7 +145,7 @@ export function FollowupsTab({ botId }: FollowupsTabProps) {
         {/* Mobile timeline - vertical steps */}
         <div className="flex md:hidden flex-col gap-2 my-4">
           {[
-            { label: 'Bot envia mensaje', time: '', color: '#56CCF2', bg: 'rgba(86, 204, 242, 0.06)', border: 'rgba(86, 204, 242, 0.1)' },
+            { label: 'Bot envia mensaje', time: '', color: '#06B6D4', bg: 'rgba(6, 182, 212, 0.06)', border: 'rgba(6, 182, 212, 0.1)' },
             { label: '1er seguimiento', time: formatTime(firstFollowup), color: '#10B981', bg: 'rgba(16, 185, 129, 0.06)', border: 'rgba(16, 185, 129, 0.1)' },
             { label: '2do seguimiento', time: formatTime(secondFollowup), color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.06)', border: 'rgba(245, 158, 11, 0.1)' },
           ].map((step, i) => (

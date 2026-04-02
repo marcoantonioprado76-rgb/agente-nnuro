@@ -76,7 +76,7 @@ export function AdminSidebar() {
       className="fixed left-0 top-0 z-40 hidden lg:flex h-screen w-[280px] flex-col"
       style={{
         background: 'linear-gradient(180deg, #0E1830 0%, #0C152A 50%, #0A1224 100%)',
-        borderRight: '1px solid rgba(91, 138, 255, 0.08)',
+        borderRight: '1px solid rgba(139, 92, 246, 0.08)',
       }}
     >
       {/* Brand Header */}
@@ -114,7 +114,7 @@ export function AdminSidebar() {
           <div className="grid grid-cols-3 gap-2">
             {[
               { label: 'Usuarios', value: metrics.total_users, color: '#10B981' },
-              { label: 'Bots', value: metrics.active_bots, color: '#5B8AFF' },
+              { label: 'Bots', value: metrics.active_bots, color: '#8B5CF6' },
               { label: 'Pendientes', value: metrics.pending_subscriptions, color: '#F59E0B' },
             ].map((stat) => (
               <div
@@ -137,7 +137,7 @@ export function AdminSidebar() {
       )}
 
       {/* Divider */}
-      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.1), transparent)' }} />
+      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.1), transparent)' }} />
 
       {/* Navigation */}
       <nav className="flex-1 flex flex-col overflow-y-auto px-3 py-4 space-y-0.5">
@@ -163,14 +163,14 @@ export function AdminSidebar() {
               {isActive && (
                 <span
                   className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full"
-                  style={{ background: '#5B8AFF' }}
+                  style={{ background: '#8B5CF6' }}
                 />
               )}
 
               <item.icon
                 className={cn(
                   'h-[17px] w-[17px] shrink-0 transition-colors duration-200',
-                  isActive ? 'text-[#5B8AFF]' : 'text-[#8899B4]/50 group-hover:text-[#CBD5E8]'
+                  isActive ? 'text-[#8B5CF6]' : 'text-[#8899B4]/50 group-hover:text-[#CBD5E8]'
                 )}
               />
               <div className="flex flex-col min-w-0 flex-1">
@@ -180,7 +180,7 @@ export function AdminSidebar() {
                 <span
                   className={cn(
                     'text-[10px] leading-tight truncate transition-colors duration-200',
-                    isActive ? 'text-[#5B8AFF]/50' : 'text-[#8899B4]/30 group-hover:text-[#8899B4]/50'
+                    isActive ? 'text-[#8B5CF6]/50' : 'text-[#8899B4]/30 group-hover:text-[#8899B4]/50'
                   )}
                 >
                   {item.description}
@@ -209,7 +209,7 @@ export function AdminSidebar() {
             className="group relative cursor-pointer ai-orb-container"
             aria-label="Abrir asistente IA"
           >
-            <div className="absolute -inset-2 ai-orb-ring border border-[#5B8AFF]/15 pointer-events-none" />
+            <div className="absolute -inset-2 ai-orb-ring border border-[#8B5CF6]/15 pointer-events-none" />
             <div className="relative w-12 h-12 rounded-full overflow-hidden ai-orb-core">
               <div className="absolute inset-0 ai-orb-energy opacity-50" />
               <img
@@ -219,13 +219,13 @@ export function AdminSidebar() {
               />
               <div className="absolute inset-0 ai-orb-shimmer z-[2] pointer-events-none" />
             </div>
-            <div className="absolute -inset-1 rounded-full bg-[#5B8AFF]/0 group-hover:bg-[#5B8AFF]/8 transition-all duration-500 pointer-events-none" />
+            <div className="absolute -inset-1 rounded-full bg-[#8B5CF6]/0 group-hover:bg-[#8B5CF6]/8 transition-all duration-500 pointer-events-none" />
           </button>
         </div>
       </nav>
 
       {/* Divider */}
-      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.1), transparent)' }} />
+      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.1), transparent)' }} />
 
       {/* Back to user dashboard */}
       <div className="px-3 py-3">
@@ -239,7 +239,7 @@ export function AdminSidebar() {
       </div>
 
       {/* Divider */}
-      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.1), transparent)' }} />
+      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.1), transparent)' }} />
 
       {/* User Profile */}
       <div className="p-3">
@@ -250,10 +250,10 @@ export function AdminSidebar() {
             border: '1px solid rgba(255, 255, 255, 0.04)',
           }}
         >
-          <Avatar className="h-9 w-9 border border-[#5B8AFF]/20 shadow-sm">
+          <Avatar className="h-9 w-9 border border-[#8B5CF6]/20 shadow-sm">
             <AvatarFallback
               className="text-xs font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #5B8AFF, #7C3AED)' }}
+              style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}
             >
               {profile?.full_name?.charAt(0)?.toUpperCase() || 'A'}
             </AvatarFallback>
@@ -269,9 +269,9 @@ export function AdminSidebar() {
               variant="secondary"
               className="mt-1 w-fit text-[9px] px-1.5 py-0 h-4"
               style={{
-                background: 'rgba(91, 138, 255, 0.1)',
+                background: 'rgba(139, 92, 246, 0.1)',
                 color: '#38BDF8',
-                border: '1px solid rgba(91, 138, 255, 0.12)',
+                border: '1px solid rgba(139, 92, 246, 0.12)',
               }}
             >
               Administrador

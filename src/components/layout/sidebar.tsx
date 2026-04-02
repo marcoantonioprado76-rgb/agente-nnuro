@@ -67,8 +67,8 @@ export function Sidebar() {
             'shrink-0 transition-all duration-[250ms]',
             collapsed ? 'h-5 w-5' : 'h-[18px] w-[18px]',
             isActive
-              ? 'text-[#5B8AFF] drop-shadow-[0_0_6px_rgba(91,138,255,0.35)]'
-              : 'text-[#8899B4]/50 group-hover:text-[#CBD5E8] group-hover:drop-shadow-[0_0_4px_rgba(91,138,255,0.12)]'
+              ? 'text-[#8B5CF6] drop-shadow-[0_0_6px_rgba(139,92,246,0.35)]'
+              : 'text-[#8899B4]/50 group-hover:text-[#CBD5E8] group-hover:drop-shadow-[0_0_4px_rgba(139,92,246,0.12)]'
           )}
         />
         {!collapsed && (
@@ -94,7 +94,7 @@ export function Sidebar() {
       )}
       style={{
         background: 'linear-gradient(180deg, #0E1830 0%, #0C152A 50%, #0A1224 100%)',
-        borderColor: 'rgba(91, 138, 255, 0.08)',
+        borderColor: 'rgba(139, 92, 246, 0.08)',
       }}
     >
       {/* Brand Header */}
@@ -157,7 +157,7 @@ export function Sidebar() {
             className="group relative cursor-pointer ai-orb-container"
             aria-label="Abrir asistente IA"
           >
-            <div className="absolute -inset-4 ai-orb-ring border border-[#5B8AFF]/15 pointer-events-none" />
+            <div className="absolute -inset-4 ai-orb-ring border border-[#8B5CF6]/15 pointer-events-none" />
             <div className="relative w-16 h-16 rounded-full overflow-hidden ai-orb-core">
               <div className="absolute inset-0 ai-orb-energy opacity-50" />
               <img
@@ -167,13 +167,13 @@ export function Sidebar() {
               />
               <div className="absolute inset-0 ai-orb-shimmer z-[2] pointer-events-none" />
             </div>
-            <div className="absolute -inset-2 rounded-full bg-[#5B8AFF]/0 group-hover:bg-[#5B8AFF]/8 transition-all duration-500 pointer-events-none" />
+            <div className="absolute -inset-2 rounded-full bg-[#8B5CF6]/0 group-hover:bg-[#8B5CF6]/8 transition-all duration-500 pointer-events-none" />
           </button>
         </div>
       </nav>
 
       {/* Divider */}
-      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.1), transparent)' }} />
+      <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.1), transparent)' }} />
 
       {/* User Identity Panel */}
       <div className="p-3 relative">
@@ -183,8 +183,8 @@ export function Sidebar() {
             className="absolute bottom-full left-3 right-3 mb-1 rounded-xl p-1.5 z-50 animate-fade-in-up"
             style={{
               background: 'linear-gradient(180deg, rgba(18, 32, 58, 0.98), rgba(14, 24, 48, 0.98))',
-              border: '1px solid rgba(91, 138, 255, 0.12)',
-              boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.3), 0 0 30px rgba(91, 138, 255, 0.04)',
+              border: '1px solid rgba(139, 92, 246, 0.12)',
+              boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.3), 0 0 30px rgba(139, 92, 246, 0.04)',
               backdropFilter: 'blur(24px)',
             }}
           >
@@ -193,7 +193,7 @@ export function Sidebar() {
               onClick={() => setUserMenuOpen(false)}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[12px] font-medium text-[#8899B4] transition-all duration-200 hover:text-white hover:bg-white/[0.04]"
             >
-              <UserCircle className="h-4 w-4 text-[#5B8AFF]" />
+              <UserCircle className="h-4 w-4 text-[#8B5CF6]" />
               Ver perfil
             </Link>
             <Link
@@ -224,21 +224,21 @@ export function Sidebar() {
           )}
           style={{
             background: userMenuOpen
-              ? 'linear-gradient(135deg, rgba(91, 138, 255, 0.06), rgba(167, 139, 250, 0.04))'
+              ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.06), rgba(167, 139, 250, 0.04))'
               : 'rgba(255, 255, 255, 0.02)',
-            border: `1px solid ${userMenuOpen ? 'rgba(91, 138, 255, 0.12)' : 'rgba(255, 255, 255, 0.03)'}`,
+            border: `1px solid ${userMenuOpen ? 'rgba(139, 92, 246, 0.12)' : 'rgba(255, 255, 255, 0.03)'}`,
           }}
         >
           {/* Avatar */}
           <div className="relative shrink-0">
             <Avatar
               className="h-9 w-9 shadow-md transition-transform duration-200 group-hover:scale-105"
-              style={{ border: '2px solid rgba(91, 138, 255, 0.2)' }}
+              style={{ border: '2px solid rgba(139, 92, 246, 0.2)' }}
             >
               {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile?.full_name || ''} />}
               <AvatarFallback
                 className="text-xs font-bold text-white"
-                style={{ background: 'linear-gradient(135deg, #5B8AFF, #A78BFA)' }}
+                style={{ background: 'linear-gradient(135deg, #8B5CF6, #A78BFA)' }}
               >
                 {initials}
               </AvatarFallback>
@@ -261,8 +261,8 @@ export function Sidebar() {
                   <span
                     className="inline-flex items-center gap-1 rounded-full px-1.5 h-4 text-[8px] font-bold uppercase tracking-wider"
                     style={{
-                      background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(91, 138, 255, 0.08)',
-                      color: profile?.role === 'admin' ? '#F59E0B' : '#5B8AFF',
+                      background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(139, 92, 246, 0.08)',
+                      color: profile?.role === 'admin' ? '#F59E0B' : '#8B5CF6',
                     }}
                   >
                     <Shield className="h-2 w-2" />
@@ -288,8 +288,8 @@ export function Sidebar() {
         className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full text-[#8899B4] hover:text-white transition-all duration-200 hover:scale-110"
         style={{
           background: '#142240',
-          border: '1px solid rgba(91, 138, 255, 0.15)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2), 0 0 12px rgba(91, 138, 255, 0.05)',
+          border: '1px solid rgba(139, 92, 246, 0.15)',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2), 0 0 12px rgba(139, 92, 246, 0.05)',
         }}
       >
         {collapsed ? (

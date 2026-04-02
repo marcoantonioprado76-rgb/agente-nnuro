@@ -27,7 +27,7 @@ export function MobileNav() {
       className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
       style={{
         background: 'linear-gradient(180deg, rgba(10, 17, 34, 0.98), rgba(8, 13, 26, 0.99))',
-        borderTop: '1px solid rgba(91, 138, 255, 0.08)',
+        borderTop: '1px solid rgba(139, 92, 246, 0.08)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
@@ -44,20 +44,20 @@ export function MobileNav() {
               className={cn(
                 'relative flex flex-col items-center justify-center flex-1 gap-1 transition-colors duration-200',
                 isActive
-                  ? 'text-[#5B8AFF]'
+                  ? 'text-[#8B5CF6]'
                   : 'text-[#8899B4]/50 active:text-[#8899B4]/80'
               )}
             >
               {isActive && (
                 <div
                   className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[2.5px] rounded-b-full"
-                  style={{ background: 'linear-gradient(90deg, rgba(91,138,255,0.3), #5B8AFF, rgba(91,138,255,0.3))' }}
+                  style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), #8B5CF6, rgba(139,92,246,0.3))' }}
                 />
               )}
               <item.icon
                 className={cn(
                   'h-[22px] w-[22px] transition-all duration-200',
-                  isActive && 'drop-shadow-[0_0_8px_rgba(91,138,255,0.5)]'
+                  isActive && 'drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]'
                 )}
                 strokeWidth={isActive ? 2.2 : 1.8}
               />

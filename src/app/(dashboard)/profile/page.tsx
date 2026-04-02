@@ -233,7 +233,7 @@ export default function ProfilePage() {
           }}
         >
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(167, 139, 250, 0.3), transparent)' }} />
-          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.25), transparent)' }} />
+          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent)' }} />
 
           <div className="relative flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6">
             {/* Avatar */}
@@ -242,7 +242,7 @@ export default function ProfilePage() {
                 {avatarUrl && <AvatarImage src={avatarUrl} alt={fullName} />}
                 <AvatarFallback
                   className="text-2xl font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, #A78BFA, #4F7CFF)' }}
+                  style={{ background: 'linear-gradient(135deg, #A78BFA, #8B5CF6)' }}
                 >
                   {initials}
                 </AvatarFallback>
@@ -278,9 +278,9 @@ export default function ProfilePage() {
                 <span
                   className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-6 text-[10px] font-semibold"
                   style={{
-                    background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(79, 124, 255, 0.1)',
-                    color: profile?.role === 'admin' ? '#F59E0B' : '#4F7CFF',
-                    border: `1px solid ${profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(79, 124, 255, 0.2)'}`,
+                    background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(139, 92, 246, 0.1)',
+                    color: profile?.role === 'admin' ? '#F59E0B' : '#8B5CF6',
+                    border: `1px solid ${profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(139, 92, 246, 0.2)'}`,
                   }}
                 >
                   <Shield className="h-2.5 w-2.5" />
@@ -335,9 +335,9 @@ export default function ProfilePage() {
           <div className="flex items-center gap-3 mb-6">
             <div
               className="flex h-9 w-9 items-center justify-center rounded-lg"
-              style={{ background: 'rgba(79, 124, 255, 0.1)', border: '1px solid rgba(79, 124, 255, 0.15)' }}
+              style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.15)' }}
             >
-              <User className="h-4 w-4 text-[#4F7CFF]" />
+              <User className="h-4 w-4 text-[#8B5CF6]" />
             </div>
             <div>
               <h2 className="text-[15px] font-semibold text-white">Informacion personal</h2>
@@ -449,8 +449,8 @@ export default function ProfilePage() {
               disabled={saving}
               className="flex items-center gap-2.5 rounded-xl px-6 h-11 text-white text-[13px] font-semibold transition-all duration-200 hover:opacity-90 disabled:opacity-50"
               style={{
-                background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)',
-                boxShadow: '0 4px 16px rgba(79, 124, 255, 0.25)',
+                background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)',
               }}
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
@@ -600,7 +600,7 @@ export default function ProfilePage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { label: 'Rol', value: profile?.role === 'admin' ? 'Administrador' : 'Usuario', color: '#4F7CFF' },
+              { label: 'Rol', value: profile?.role === 'admin' ? 'Administrador' : 'Usuario', color: '#8B5CF6' },
               { label: 'Estado', value: profile?.is_active ? 'Activo' : 'Inactivo', color: '#10B981' },
               { label: 'Proveedor', value: profile?.login_provider === 'google' ? 'Google' : 'Email', color: '#F59E0B' },
               { label: 'Miembro desde', value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('es-MX', { month: 'short', year: 'numeric' }) : '-', color: '#A78BFA' },

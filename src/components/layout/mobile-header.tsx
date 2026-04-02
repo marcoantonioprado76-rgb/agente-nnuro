@@ -61,7 +61,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
         className="sticky top-0 z-40 lg:hidden"
         style={{
           background: 'rgba(10, 17, 34, 0.92)',
-          borderBottom: '1px solid rgba(91, 138, 255, 0.06)',
+          borderBottom: '1px solid rgba(139, 92, 246, 0.06)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
         }}
@@ -71,8 +71,8 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
               style={{
-                background: 'linear-gradient(135deg, rgba(91,138,255,0.12), rgba(56,189,248,0.08))',
-                border: '1px solid rgba(91,138,255,0.1)',
+                background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(56,189,248,0.08))',
+                border: '1px solid rgba(139,92,246,0.1)',
               }}
             >
               <NuroSmile size={20} />
@@ -81,7 +81,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
               <span className="text-[13px] font-bold text-white leading-tight tracking-tight">
                 {variant === 'admin' ? 'Admin' : 'Agente'}
               </span>
-              <span className="text-[9px] font-medium text-[#5B8AFF]/60 leading-none tracking-wider uppercase">
+              <span className="text-[9px] font-medium text-[#8B5CF6]/60 leading-none tracking-wider uppercase">
                 {variant === 'admin' ? 'Panel de control' : 'de Ventas'}
               </span>
             </div>
@@ -124,13 +124,13 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
         )}
         style={{
           background: 'linear-gradient(180deg, #0B1424 0%, #091120 100%)',
-          borderLeft: '1px solid rgba(91, 138, 255, 0.08)',
+          borderLeft: '1px solid rgba(139, 92, 246, 0.08)',
           boxShadow: drawerOpen ? '-20px 0 60px rgba(0,0,0,0.5)' : 'none',
         }}
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 h-[52px] shrink-0"
-          style={{ borderBottom: '1px solid rgba(91, 138, 255, 0.06)' }}
+          style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.06)' }}
         >
           <span className="text-[13px] font-semibold text-white/80">Menu</span>
           <button
@@ -146,18 +146,18 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
           <div
             className="flex items-center gap-3 rounded-2xl p-3.5"
             style={{
-              background: 'linear-gradient(135deg, rgba(91,138,255,0.06), rgba(167,139,250,0.03))',
-              border: '1px solid rgba(91, 138, 255, 0.08)',
+              background: 'linear-gradient(135deg, rgba(139,92,246,0.06), rgba(167,139,250,0.03))',
+              border: '1px solid rgba(139, 92, 246, 0.08)',
             }}
           >
             <Avatar
               className="h-11 w-11 shrink-0"
-              style={{ border: '2px solid rgba(91, 138, 255, 0.15)' }}
+              style={{ border: '2px solid rgba(139, 92, 246, 0.15)' }}
             >
               {profile?.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile?.full_name || ''} />}
               <AvatarFallback
                 className="text-sm font-bold text-white"
-                style={{ background: 'linear-gradient(135deg, #5B8AFF, #A78BFA)' }}
+                style={{ background: 'linear-gradient(135deg, #8B5CF6, #A78BFA)' }}
               >
                 {initials}
               </AvatarFallback>
@@ -172,8 +172,8 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
               <div
                 className="inline-flex items-center mt-1.5 rounded-full px-2 h-[18px] text-[9px] font-bold uppercase tracking-wider"
                 style={{
-                  background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(91, 138, 255, 0.08)',
-                  color: profile?.role === 'admin' ? '#F59E0B' : '#5B8AFF',
+                  background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(139, 92, 246, 0.08)',
+                  color: profile?.role === 'admin' ? '#F59E0B' : '#8B5CF6',
                 }}
               >
                 {profile?.role === 'admin' ? 'Admin' : 'Usuario'}
@@ -183,7 +183,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
         </div>
 
         {/* Divider */}
-        <div className="mx-5 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(91,138,255,0.08), transparent)' }} />
+        <div className="mx-5 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.08), transparent)' }} />
 
         {/* Nav items */}
         <nav className="flex-1 px-3 pt-3 pb-2 space-y-0.5 overflow-y-auto">
@@ -197,11 +197,11 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
                 className={cn(
                   'flex items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-medium transition-all duration-200 active:scale-[0.98]',
                   isActive
-                    ? 'bg-[#5B8AFF]/8 text-white'
+                    ? 'bg-[#8B5CF6]/8 text-white'
                     : 'text-[#8899B4]/70 active:bg-white/[0.03]'
                 )}
               >
-                <item.icon className={cn('h-[18px] w-[18px] shrink-0', isActive ? 'text-[#5B8AFF]' : 'text-[#8899B4]/40')} />
+                <item.icon className={cn('h-[18px] w-[18px] shrink-0', isActive ? 'text-[#8B5CF6]' : 'text-[#8899B4]/40')} />
                 {item.label}
               </Link>
             )
@@ -239,7 +239,7 @@ export function MobileHeader({ variant = 'user' }: MobileHeaderProps) {
         </nav>
 
         {/* Logout */}
-        <div className="px-3 py-3 shrink-0" style={{ borderTop: '1px solid rgba(91, 138, 255, 0.06)' }}>
+        <div className="px-3 py-3 shrink-0" style={{ borderTop: '1px solid rgba(139, 92, 246, 0.06)' }}>
           <button
             onClick={() => { setDrawerOpen(false); signOut() }}
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-medium text-red-400/60 active:text-red-400 active:bg-red-500/5 transition-all active:scale-[0.98]"

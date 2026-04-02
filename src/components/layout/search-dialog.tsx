@@ -41,14 +41,14 @@ const iconMap: Record<string, typeof Bot> = {
 }
 
 const typeColors: Record<string, string> = {
-  Agentes: '#4F7CFF',
-  Bots: '#4F7CFF',
+  Agentes: '#8B5CF6',
+  Bots: '#8B5CF6',
   Productos: '#A78BFA',
   Leads: '#F59E0B',
   Tiendas: '#10B981',
   Ventas: '#10B981',
   Suscripciones: '#F59E0B',
-  Usuarios: '#4F7CFF',
+  Usuarios: '#8B5CF6',
   Planes: '#A78BFA',
   Secciones: '#94A3B8',
 }
@@ -172,7 +172,7 @@ export function SearchDialog() {
           className="flex items-center gap-3 px-5 h-14"
           style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}
         >
-          <Search className="h-4.5 w-4.5 text-[#4F7CFF] shrink-0" />
+          <Search className="h-4.5 w-4.5 text-[#8B5CF6] shrink-0" />
           <input
             ref={inputRef}
             value={query}
@@ -181,7 +181,7 @@ export function SearchDialog() {
             placeholder="Buscar bots, productos, conversaciones, tiendas..."
             className="flex-1 bg-transparent text-[14px] text-white placeholder:text-[#94A3B8]/40 outline-none"
           />
-          {loading && <Loader2 className="h-4 w-4 text-[#4F7CFF] animate-spin shrink-0" />}
+          {loading && <Loader2 className="h-4 w-4 text-[#8B5CF6] animate-spin shrink-0" />}
           <kbd
             className="hidden md:flex items-center gap-0.5 rounded-md px-1.5 h-5 text-[9px] font-medium text-[#94A3B8]/40 shrink-0"
             style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
@@ -200,8 +200,8 @@ export function SearchDialog() {
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: 'Dashboard', link: '/dashboard', icon: LayoutDashboard, color: '#4F7CFF' },
-                  { label: 'Mis Agentes', link: '/bots', icon: Bot, color: '#56CCF2' },
+                  { label: 'Dashboard', link: '/dashboard', icon: LayoutDashboard, color: '#8B5CF6' },
+                  { label: 'Mis Agentes', link: '/bots', icon: Bot, color: '#06B6D4' },
                   { label: 'Leads', link: '/leads', icon: Target, color: '#F59E0B' },
                   { label: 'Tienda Virtual', link: '/stores', icon: Store, color: '#10B981' },
                   { label: 'Configuración', link: '/settings', icon: Settings, color: '#94A3B8' },

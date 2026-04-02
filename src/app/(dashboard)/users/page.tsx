@@ -79,7 +79,7 @@ const roleConfig: Record<string, { label: string; className: string }> = {
   },
   user: {
     label: 'Usuario',
-    className: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+    className: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
   },
 };
 

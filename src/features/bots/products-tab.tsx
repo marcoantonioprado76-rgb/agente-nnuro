@@ -1030,7 +1030,7 @@ export function ProductsTab({ botId }: ProductsTabProps) {
 
               {/* ── TAB: Envio ── */}
               <TabsContent value="shipping" className="mt-0 space-y-5">
-                <SectionHeader icon={<Truck className="h-4 w-4 text-[#56CCF2]" />} title="Envio y cobertura" subtitle="Zonas de envio y entrega" />
+                <SectionHeader icon={<Truck className="h-4 w-4 text-[#06B6D4]" />} title="Envio y cobertura" subtitle="Zonas de envio y entrega" />
 
                 <div className="space-y-2">
                   <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Informacion de envio</Label>
@@ -1260,7 +1260,7 @@ function ImageSection({
                 <Button
                   variant="ghost" size="sm"
                   onClick={() => setPreviewUrl(img.url)}
-                  className="h-7 w-7 p-0 text-white hover:text-[#56CCF2]"
+                  className="h-7 w-7 p-0 text-white hover:text-[#06B6D4]"
                   title="Ampliar"
                 >
                   <ZoomIn className="h-3.5 w-3.5" />
@@ -1268,7 +1268,7 @@ function ImageSection({
                 <Button
                   variant="ghost" size="sm"
                   onClick={() => window.open(img.url, '_blank')}
-                  className="h-7 w-7 p-0 text-white hover:text-[#56CCF2]"
+                  className="h-7 w-7 p-0 text-white hover:text-[#06B6D4]"
                   title="Abrir en nueva pestaña"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -1402,12 +1402,12 @@ function ImageSection({
 // ── Mobile section selector for product dialog ──
 const PRODUCT_SECTIONS = [
   { value: 'basic', label: 'Basico', desc: 'Nombre, categoria, estado', icon: FileText, color: '#A78BFA' },
-  { value: 'info', label: 'Informacion', desc: 'Descripcion y beneficios', icon: MessageSquare, color: '#56CCF2' },
+  { value: 'info', label: 'Informacion', desc: 'Descripcion y beneficios', icon: MessageSquare, color: '#06B6D4' },
   { value: 'prices', label: 'Precios', desc: 'Precios y ofertas', icon: DollarSign, color: '#10B981' },
   { value: 'images', label: 'Imagenes', desc: 'Fotos del producto', icon: ImageIcon, color: '#A78BFA' },
   { value: 'offer-images', label: 'Imgs. Oferta', desc: 'Fotos de promocion', icon: Sparkles, color: '#F59E0B' },
   { value: 'testimonials', label: 'Testimonios', desc: 'Prueba social', icon: Star, color: '#FBBF24' },
-  { value: 'shipping', label: 'Envio', desc: 'Zonas y cobertura', icon: Truck, color: '#56CCF2' },
+  { value: 'shipping', label: 'Envio', desc: 'Zonas y cobertura', icon: Truck, color: '#06B6D4' },
   { value: 'hooks', label: 'Keywords', desc: 'Palabras de activacion', icon: Tag, color: '#A78BFA' },
 ]
 

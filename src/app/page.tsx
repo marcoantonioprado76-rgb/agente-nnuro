@@ -432,7 +432,7 @@ function Nav({ scrolled, menu, setMenu }: { scrolled: boolean; menu: boolean; se
           ? 'linear-gradient(180deg, rgba(8,13,26,0.88) 0%, rgba(8,13,26,0.82) 100%)'
           : 'linear-gradient(180deg, rgba(8,13,26,0.4) 0%, transparent 100%)',
         backdropFilter: scrolled ? 'blur(28px) saturate(1.5)' : 'blur(8px)',
-        borderBottom: scrolled ? '1px solid rgba(91,138,255,0.06)' : '1px solid transparent',
+        borderBottom: scrolled ? '1px solid rgba(139,92,246,0.06)' : '1px solid transparent',
         boxShadow: scrolled ? '0 8px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.02)' : 'none',
       }}
     >
@@ -457,7 +457,7 @@ function Nav({ scrolled, menu, setMenu }: { scrolled: boolean; menu: boolean; se
                 Ventas
               </span>
             </div>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#5B8AFF]/50 mt-[-1px]">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#8B5CF6]/50 mt-[-1px]">
               Automatización con IA
             </span>
           </div>
@@ -492,7 +492,7 @@ function Nav({ scrolled, menu, setMenu }: { scrolled: boolean; menu: boolean; se
           style={{
             background: 'linear-gradient(180deg, rgba(8,13,26,0.98), rgba(10,17,34,0.98))',
             backdropFilter: 'blur(28px)',
-            borderTop: '1px solid rgba(91,138,255,0.06)',
+            borderTop: '1px solid rgba(139,92,246,0.06)',
           }}
         >
           <div className="flex gap-3">
@@ -566,7 +566,7 @@ function Hero() {
                 <div className="absolute h-2 w-2 rounded-full bg-green-400 animate-ping" />
               </div>
               <span className="text-[11px] md:text-[12px] font-semibold text-[#6B9AFF]">Inteligencia Artificial para ventas</span>
-              <Sparkles className="h-3 w-3 text-[#5B8AFF]" />
+              <Sparkles className="h-3 w-3 text-[#8B5CF6]" />
             </div>
 
             {/* Title */}
@@ -585,7 +585,7 @@ function Hero() {
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2.5 md:gap-3 mb-5 md:mb-10">
-              <Link href="/register" className="group hero-btn-primary relative flex items-center justify-center gap-2.5 rounded-2xl px-8 h-12 md:h-14 text-[14px] md:text-[15px] font-bold text-white overflow-hidden" style={{ background: 'linear-gradient(135deg, #5B8AFF, #7C3AED)' }}>
+              <Link href="/register" className="group hero-btn-primary relative flex items-center justify-center gap-2.5 rounded-2xl px-8 h-12 md:h-14 text-[14px] md:text-[15px] font-bold text-white overflow-hidden" style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}>
                 <span className="relative z-10 flex items-center gap-2.5">
                   Crear cuenta gratis <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1.5" />
                 </span>
@@ -603,7 +603,7 @@ function Hero() {
             <div className="flex items-center gap-5">
               <div className="flex -space-x-2.5">
                 {[
-                  { img: '/images/testimonials/t1.jpg', color: '#5B8AFF' },
+                  { img: '/images/testimonials/t1.jpg', color: '#8B5CF6' },
                   { img: '/images/testimonials/t2.jpg', color: '#7C3AED' },
                   { img: '/images/testimonials/t4.jpg', color: '#10B981' },
                   { img: '/images/testimonials/t6.jpg', color: '#F59E0B' },
@@ -649,7 +649,7 @@ function Hero() {
 function HeroMockup() {
   const [metrics, setMetrics] = useState([
     { v: 0, target: 12450, l: 'Ingresos', c: '#10B981', ch: '+23%', bg: '#ECFDF5', prefix: '$' },
-    { v: 0, target: 1247, l: 'Conversaciones', c: '#5B8AFF', ch: '+18%', bg: '#EFF6FF', prefix: '' },
+    { v: 0, target: 1247, l: 'Conversaciones', c: '#8B5CF6', ch: '+18%', bg: '#EFF6FF', prefix: '' },
     { v: 0, target: 342, l: 'Ventas', c: '#7C3AED', ch: '+34%', bg: '#F5F3FF', prefix: '' },
   ])
   const [chartAnim, setChartAnim] = useState(false)
@@ -678,7 +678,7 @@ function HeroMockup() {
 
   // Cycling floating notifications
   const notifs = [
-    { icon: '💬', text: 'Nuevo cliente', sub: 'Maria pregunto por precios', color: '#5B8AFF', border: 'border-blue-200' },
+    { icon: '💬', text: 'Nuevo cliente', sub: 'Maria pregunto por precios', color: '#8B5CF6', border: 'border-blue-200' },
     { icon: '💰', text: 'Venta confirmada', sub: '$149 USD — Pack Pro', color: '#10B981', border: 'border-green-200' },
     { icon: '🤖', text: 'Bot respondio en 2s', sub: 'Atencion automatica', color: '#7C3AED', border: 'border-violet-200' },
     { icon: '📈', text: '+12% conversiones', sub: 'vs semana anterior', color: '#F59E0B', border: 'border-amber-200' },
@@ -727,7 +727,7 @@ function HeroMockup() {
               <div key={i} className="flex-1 rounded-t-sm transition-all duration-700 ease-out" style={{
                 height: chartAnim ? `${h}%` : '4%',
                 transitionDelay: `${i * 60}ms`,
-                background: i >= 10 ? 'linear-gradient(180deg, #5B8AFF, #7C3AED)' : `linear-gradient(180deg, rgba(79,124,255,${0.2 + i * 0.06}), rgba(124,58,237,${0.1 + i * 0.03}))`,
+                background: i >= 10 ? 'linear-gradient(180deg, #8B5CF6, #7C3AED)' : `linear-gradient(180deg, rgba(79,124,255,${0.2 + i * 0.06}), rgba(124,58,237,${0.1 + i * 0.03}))`,
               }} />
             ))}
           </div>
@@ -735,7 +735,7 @@ function HeroMockup() {
           <div className="space-y-2">
             {[
               { n: 'Maria Garcia', m: 'Compro Pack Premium', t: '2m', c: '#10B981' },
-              { n: 'Juan Rodriguez', m: 'Pregunto por precios', t: '5m', c: '#5B8AFF' },
+              { n: 'Juan Rodriguez', m: 'Pregunto por precios', t: '5m', c: '#8B5CF6' },
             ].map(r => (
               <div key={r.n} className="flex items-center gap-3 rounded-xl p-2.5 bg-gray-50 border border-gray-100">
                 <div className="h-8 w-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ background: `linear-gradient(135deg, ${r.c}, ${r.c}dd)` }}>{r.n[0]}</div>
@@ -769,7 +769,7 @@ function HeroMockup() {
       {/* Floating notification — bottom left */}
       <div className="absolute -left-8 bottom-10 rounded-xl p-3 bg-white border border-blue-200 animate-float-delayed" style={{ boxShadow: '0 8px 28px rgba(79,124,255,0.15), 0 2px 6px rgba(0,0,0,0.06)' }}>
         <div className="flex items-center gap-2.5">
-          <div className="h-7 w-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #5B8AFF, #7C3AED)' }}>
+          <div className="h-7 w-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}>
             <Bot className="h-3.5 w-3.5 text-white" />
           </div>
           <div>
@@ -798,7 +798,7 @@ function HeroMockup() {
 function VideoSection() {
   const rev = useReveal()
   const steps = [
-    { icon: MessageSquare, label: 'Cliente escribe', color: '#5B8AFF' },
+    { icon: MessageSquare, label: 'Cliente escribe', color: '#8B5CF6' },
     { icon: Bot, label: 'Bot responde', color: '#7C3AED' },
     { icon: ImageIcon, label: 'Muestra producto', color: '#F59E0B' },
     { icon: ShoppingBag, label: 'Cliente compra', color: '#10B981' },
@@ -899,7 +899,7 @@ function ChatSection() {
   // Floating notifications
   const notifs = [
     { icon: '💰', text: 'Venta realizada', color: '#10B981' },
-    { icon: '👤', text: 'Cliente activo', color: '#5B8AFF' },
+    { icon: '👤', text: 'Cliente activo', color: '#8B5CF6' },
     { icon: '💬', text: 'Nuevo mensaje', color: '#7C3AED' },
   ]
   const [notifIdx, setNotifIdx] = useState(0)
@@ -919,7 +919,7 @@ function ChatSection() {
     { icon: Zap, text: 'Respuesta inmediata', desc: 'Atiende en menos de 2 segundos', color: '#F59E0B' },
     { icon: ShoppingBag, text: 'Muestra productos automaticamente', desc: 'Con imagen, precio y descuento', color: '#A78BFA' },
     { icon: DollarSign, text: 'Cierra ventas sin intervencion', desc: 'Registra pedido y envia link de pago', color: '#10B981' },
-    { icon: MessageSquare, text: 'Atiende 100+ clientes a la vez', desc: 'Sin esperas, sin errores', color: '#5B8AFF' },
+    { icon: MessageSquare, text: 'Atiende 100+ clientes a la vez', desc: 'Sin esperas, sin errores', color: '#8B5CF6' },
   ]
 
   const times = ['10:30', '10:30', '10:30', '10:31', '10:31', '10:32', '10:32']
@@ -1227,14 +1227,14 @@ function ProblemSolution() {
           </span>
           <h2 className="text-[22px] sm:text-4xl md:text-[44px] font-extrabold leading-[1.1] tracking-tight text-white mb-2 md:mb-4">
             Convierte cada mensaje en{' '}
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #5B8AFF, #A78BFA)' }}>una venta</span>
+            <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #8B5CF6, #A78BFA)' }}>una venta</span>
           </h2>
           <p className="text-[13px] md:text-[16px] text-gray-300 max-w-xl mx-auto leading-relaxed">
             Mientras otros responden tarde... tu ya estas vendiendo automaticamente.
           </p>
           <div className="flex items-center justify-center gap-2 mt-3 md:mt-5">
             <div className="flex -space-x-1.5">
-              {['#5B8AFF','#7C3AED','#10B981'].map((c,i) => (
+              {['#8B5CF6','#7C3AED','#10B981'].map((c,i) => (
                 <div key={i} className="h-5 w-5 rounded-full border-2 border-[#0F172A]" style={{ background: c }} />
               ))}
             </div>
@@ -1361,7 +1361,7 @@ function ProblemSolution() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-5">
           {[
             { icon: Timer, title: 'Cupos limitados', desc: 'Solo 50 cuentas disponibles este mes', color: '#EF4444', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.3)' },
-            { icon: Brain, title: 'IA avanzada', desc: 'Aprende y mejora cada conversacion', color: '#5B8AFF', bg: 'rgba(79,124,255,0.12)', border: 'rgba(79,124,255,0.3)' },
+            { icon: Brain, title: 'IA avanzada', desc: 'Aprende y mejora cada conversacion', color: '#8B5CF6', bg: 'rgba(79,124,255,0.12)', border: 'rgba(79,124,255,0.3)' },
             { icon: Zap, title: 'Activacion inmediata', desc: 'Tu bot listo en menos de 5 minutos', color: '#10B981', bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)' },
           ].map((t, i) => (
             <div
@@ -1441,7 +1441,7 @@ function VirtualStoreSection() {
 
   const products = [
     { name: 'Auriculares Pro Max', price: '$149.99', oldPrice: '$199.99', emoji: '🎧', badge: 'TOP', badgeColor: '#10B981', rating: '4.9', reviews: 284, highlight: true },
-    { name: 'Smartwatch Elite S3', price: '$299.99', emoji: '⌚', badge: 'NUEVO', badgeColor: '#5B8AFF', rating: '4.8', reviews: 156, highlight: false },
+    { name: 'Smartwatch Elite S3', price: '$299.99', emoji: '⌚', badge: 'NUEVO', badgeColor: '#8B5CF6', rating: '4.8', reviews: 156, highlight: false },
     { name: 'Cámara 4K Ultra HD', price: '$449.99', oldPrice: '$599.99', emoji: '📷', badge: '-25%', badgeColor: '#EF4444', rating: '4.7', reviews: 412, highlight: false },
     { name: 'Teclado Mecánico RGB', price: '$89.99', emoji: '⌨️', badge: 'HOT 🔥', badgeColor: '#F59E0B', rating: '4.6', reviews: 89, highlight: false },
     { name: 'Altavoz Bluetooth Pro', price: '$79.99', oldPrice: '$129.99', emoji: '🔊', badge: '-38%', badgeColor: '#EF4444', rating: '4.5', reviews: 203, highlight: false },
@@ -1460,7 +1460,7 @@ function VirtualStoreSection() {
 
   const liveNotifications = [
     { icon: '🟢', text: 'María G. está viendo tu tienda', color: '#10B981' },
-    { icon: '🛒', text: 'Carlos R. agregó 2 productos', color: '#5B8AFF' },
+    { icon: '🛒', text: 'Carlos R. agregó 2 productos', color: '#8B5CF6' },
     { icon: '✅', text: '¡Venta confirmada! +$299.99', color: '#10B981' },
   ]
 
@@ -1470,7 +1470,7 @@ function VirtualStoreSection() {
       <div className="absolute inset-0 pointer-events-none hidden md:block" style={{
         background: 'radial-gradient(ellipse 100% 60% at 50% 40%, rgba(16, 185, 129, 0.06), transparent 70%)',
       }}>
-        <div className="absolute top-[5%] left-[10%] w-[600px] h-[600px] rounded-full blur-[180px]" style={{ background: 'radial-gradient(circle, rgba(91,138,255,0.12), transparent 70%)' }} />
+        <div className="absolute top-[5%] left-[10%] w-[600px] h-[600px] rounded-full blur-[180px]" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.12), transparent 70%)' }} />
         <div className="absolute bottom-[5%] right-[10%] w-[500px] h-[500px] rounded-full blur-[160px]" style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.1), transparent 70%)' }} />
         <div className="absolute top-[30%] right-[20%] w-[400px] h-[400px] rounded-full blur-[150px]" style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%)' }} />
       </div>
@@ -1480,7 +1480,7 @@ function VirtualStoreSection() {
         {/* Header */}
         <div className="text-center mb-5 md:mb-14" style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(30px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
           <div className="inline-flex items-center gap-2 rounded-full px-4 md:px-5 py-1.5 md:py-2 mb-3 md:mb-6" style={{
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(91, 138, 255, 0.06))',
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(139, 92, 246, 0.06))',
             border: '1px solid rgba(16, 185, 129, 0.2)',
             boxShadow: '0 4px 20px rgba(16, 185, 129, 0.08)',
           }}>
@@ -1510,13 +1510,13 @@ function VirtualStoreSection() {
               transform: visible ? 'translateY(0)' : 'translateY(30px)',
               transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s',
               background: 'linear-gradient(180deg, rgba(20, 35, 65, 0.75) 0%, rgba(14, 26, 50, 0.85) 100%)',
-              border: '1px solid rgba(91, 138, 255, 0.15)',
-              boxShadow: '0 30px 80px rgba(0, 0, 0, 0.3), 0 0 80px rgba(91, 138, 255, 0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
+              border: '1px solid rgba(139, 92, 246, 0.15)',
+              boxShadow: '0 30px 80px rgba(0, 0, 0, 0.3), 0 0 80px rgba(139, 92, 246, 0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
               backdropFilter: 'blur(24px)',
             }}
           >
             {/* Store top bar */}
-            <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: '1px solid rgba(91, 138, 255, 0.1)' }}>
+            <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.1)' }}>
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl" style={{
                   background: 'linear-gradient(135deg, #10B981, #059669)',
@@ -1564,9 +1564,9 @@ function VirtualStoreSection() {
                 >
                   {/* Image area */}
                   <div className="relative h-18 md:h-24 flex items-center justify-center overflow-hidden" style={{
-                    background: 'linear-gradient(180deg, rgba(91, 138, 255, 0.03), transparent)',
+                    background: 'linear-gradient(180deg, rgba(139, 92, 246, 0.03), transparent)',
                   }}>
-                    <span className="text-3xl sm:text-4xl transition-all duration-300 group-hover:scale-115 group-hover:drop-shadow-[0_0_12px_rgba(91,138,255,0.2)]">{p.emoji}</span>
+                    <span className="text-3xl sm:text-4xl transition-all duration-300 group-hover:scale-115 group-hover:drop-shadow-[0_0_12px_rgba(139,92,246,0.2)]">{p.emoji}</span>
                     {p.badge && (
                       <span className="absolute top-1.5 left-1.5 text-[8px] font-black text-white px-2 py-0.5 rounded-md tracking-wide" style={{
                         background: p.badgeColor,
@@ -1594,9 +1594,9 @@ function VirtualStoreSection() {
                       <span className="text-[15px] font-extrabold text-[#10B981]">{p.price}</span>
                       {p.oldPrice && <span className="text-[10px] text-[#8899B4]/40 line-through">{p.oldPrice}</span>}
                     </div>
-                    <button className="w-full mt-2 h-7 rounded-lg text-[10px] font-bold text-white transition-all duration-300 group-hover:shadow-[0_4px_20px_rgba(91,138,255,0.35)]" style={{
-                      background: 'linear-gradient(135deg, #5B8AFF, #7C3AED)',
-                      boxShadow: '0 2px 8px rgba(91, 138, 255, 0.2)',
+                    <button className="w-full mt-2 h-7 rounded-lg text-[10px] font-bold text-white transition-all duration-300 group-hover:shadow-[0_4px_20px_rgba(139,92,246,0.35)]" style={{
+                      background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
+                      boxShadow: '0 2px 8px rgba(139, 92, 246, 0.2)',
                     }}>
                       Comprar
                     </button>
@@ -1604,8 +1604,8 @@ function VirtualStoreSection() {
 
                   {/* Hover glow overlay */}
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
-                    boxShadow: '0 12px 40px rgba(91, 138, 255, 0.12)',
-                    border: '1px solid rgba(91, 138, 255, 0.2)',
+                    boxShadow: '0 12px 40px rgba(139, 92, 246, 0.12)',
+                    border: '1px solid rgba(139, 92, 246, 0.2)',
                   }} />
                 </div>
               ))}
@@ -1632,15 +1632,15 @@ function VirtualStoreSection() {
               transform: visible ? 'translateY(0)' : 'translateY(30px)',
               transition: 'all 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s',
               background: 'linear-gradient(180deg, rgba(20, 35, 65, 0.75) 0%, rgba(14, 26, 50, 0.85) 100%)',
-              border: '1px solid rgba(91, 138, 255, 0.15)',
-              boxShadow: '0 30px 80px rgba(0, 0, 0, 0.3), 0 0 80px rgba(91, 138, 255, 0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
+              border: '1px solid rgba(139, 92, 246, 0.15)',
+              boxShadow: '0 30px 80px rgba(0, 0, 0, 0.3), 0 0 80px rgba(139, 92, 246, 0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
               backdropFilter: 'blur(24px)',
               minHeight: '400px',
             }}
           >
             {/* Chat header */}
             <div className="flex items-center justify-between px-4 py-3" style={{
-              borderBottom: '1px solid rgba(91, 138, 255, 0.1)',
+              borderBottom: '1px solid rgba(139, 92, 246, 0.1)',
               background: 'linear-gradient(180deg, rgba(37, 211, 102, 0.06), transparent)',
             }}>
               <div className="flex items-center gap-3">
@@ -1700,7 +1700,7 @@ function VirtualStoreSection() {
                     }}>
                       <div className="flex items-center gap-3 p-3">
                         <div className="h-14 w-14 rounded-xl flex items-center justify-center shrink-0" style={{
-                          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(91, 138, 255, 0.06))',
+                          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(139, 92, 246, 0.06))',
                         }}>
                           <span className="text-2xl">🎧</span>
                         </div>
@@ -1743,13 +1743,13 @@ function VirtualStoreSection() {
                     }}>
                       <p className="text-[12px] text-white/90 mb-2">🔒 Link de pago seguro:</p>
                       <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{
-                        background: 'linear-gradient(135deg, rgba(91, 138, 255, 0.08), rgba(124, 58, 237, 0.05))',
-                        border: '1px solid rgba(91, 138, 255, 0.15)',
+                        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(124, 58, 237, 0.05))',
+                        border: '1px solid rgba(139, 92, 246, 0.15)',
                       }}>
                         <span className="text-sm">💳</span>
                         <div className="min-w-0 flex-1">
                           <p className="text-[11px] font-semibold text-white truncate">pay.agente.com/order/38f7k</p>
-                          <p className="text-[9px] text-[#5B8AFF]">Pago 100% seguro • SSL</p>
+                          <p className="text-[9px] text-[#8B5CF6]">Pago 100% seguro • SSL</p>
                         </div>
                         <span className="text-[10px] font-extrabold text-[#10B981]">$149.99</span>
                       </div>
@@ -1763,14 +1763,14 @@ function VirtualStoreSection() {
                   <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
                     <div className="max-w-[80%] rounded-2xl px-3.5 py-2.5" style={{
                       background: msg.from === 'user'
-                        ? 'linear-gradient(135deg, rgba(91, 138, 255, 0.2), rgba(124, 58, 237, 0.12))'
+                        ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.12))'
                         : 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${msg.from === 'user' ? 'rgba(91, 138, 255, 0.18)' : 'rgba(255, 255, 255, 0.06)'}`,
+                      border: `1px solid ${msg.from === 'user' ? 'rgba(139, 92, 246, 0.18)' : 'rgba(255, 255, 255, 0.06)'}`,
                       borderBottomRightRadius: msg.from === 'user' ? '6px' : undefined,
                       borderBottomLeftRadius: msg.from === 'bot' ? '6px' : undefined,
                     }}>
                       <p className="text-[12px] text-white/90 leading-relaxed">{msg.text}</p>
-                      <p className={`text-[9px] mt-1 ${msg.from === 'user' ? 'text-right text-[#5B8AFF]/50' : 'text-[#8899B4]/40'}`}>
+                      <p className={`text-[9px] mt-1 ${msg.from === 'user' ? 'text-right text-[#8B5CF6]/50' : 'text-[#8899B4]/40'}`}>
                         {msg.from === 'user' ? '10:31' : '10:31'} {msg.from === 'bot' && '✓✓'}
                       </p>
                     </div>
@@ -1851,7 +1851,7 @@ function VirtualStoreSection() {
           ].map((b, i) => (
             <div key={i} className="group rounded-xl p-4 transition-all duration-300 hover:translate-y-[-3px]" style={{
               background: 'linear-gradient(180deg, rgba(20, 35, 65, 0.6), rgba(14, 26, 50, 0.7))',
-              border: '1px solid rgba(91, 138, 255, 0.1)',
+              border: '1px solid rgba(139, 92, 246, 0.1)',
               backdropFilter: 'blur(12px)',
             }}>
               <div className="flex items-center justify-between mb-2">
@@ -1914,7 +1914,7 @@ function Testimonials() {
   const liveActivities = [
     { icon: '💰', text: '+1 venta hace 30s', color: '#10B981' },
     { icon: '⭐', text: 'Nuevo testimonio agregado', color: '#F59E0B' },
-    { icon: '👤', text: '12 usuarios activos ahora', color: '#5B8AFF' },
+    { icon: '👤', text: '12 usuarios activos ahora', color: '#8B5CF6' },
     { icon: '🔥', text: '+3 negocios se unieron hoy', color: '#EF4444' },
   ]
   useEffect(() => {
@@ -1950,7 +1950,7 @@ function Testimonials() {
     { n: 'Daniela O.', r: 'Marketing', t: 'Les instalo Agente de Ventas a mis clientes. Todos ven resultados en la primera semana.', m: '100% satisfaccion', e: '🎯', img: '/images/testimonials/t20.jpg' },
   ]
 
-  const colors = ['#5B8AFF', '#7C3AED', '#10B981', '#F59E0B', '#EF4444', '#06B6D4', '#8B5CF6', '#EC4899']
+  const colors = ['#8B5CF6', '#7C3AED', '#10B981', '#F59E0B', '#EF4444', '#06B6D4', '#8B5CF6', '#EC4899']
 
   return (
     <section ref={sectionRef} className="relative py-8 md:py-28 overflow-hidden">
@@ -1982,7 +1982,7 @@ function Testimonials() {
           {/* Stats row */}
           <div className="flex items-center justify-center gap-5 md:gap-8 mt-4 md:mt-8">
             {[
-              { v: '500+', l: 'Negocios activos', c: '#5B8AFF' },
+              { v: '500+', l: 'Negocios activos', c: '#8B5CF6' },
               { v: '4.9', l: 'Calificacion', c: '#F59E0B' },
               { v: '24/7', l: 'Ventas automaticas', c: '#10B981' },
             ].map((s, i) => (
@@ -2182,11 +2182,11 @@ function FinalCTA() {
   // Live activity notifications
   const activities = [
     { icon: '💰', text: '+1 venta hace 2 min', color: '#10B981' },
-    { icon: '👤', text: 'Cliente activo ahora', color: '#5B8AFF' },
+    { icon: '👤', text: 'Cliente activo ahora', color: '#8B5CF6' },
     { icon: '🛒', text: '3 usuarios comprando', color: '#F59E0B' },
     { icon: '🤖', text: 'Bot respondio 8 clientes', color: '#7C3AED' },
     { icon: '✅', text: 'Pedido confirmado $149', color: '#10B981' },
-    { icon: '📈', text: '+23% ventas esta semana', color: '#5B8AFF' },
+    { icon: '📈', text: '+23% ventas esta semana', color: '#8B5CF6' },
   ]
 
   const [actIdx, setActIdx] = useState(0)
@@ -2255,11 +2255,11 @@ function FinalCTA() {
           <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-3 md:mb-6" style={{ background: 'rgba(79,124,255,0.12)', border: '1px solid rgba(79,124,255,0.25)' }}>
               <div className="h-2 w-2 rounded-full bg-green-400 cta-live-dot" />
-              <span className="text-[11px] font-semibold text-[#5B8AFF]">Sistema activo ahora</span>
+              <span className="text-[11px] font-semibold text-[#8B5CF6]">Sistema activo ahora</span>
             </div>
 
             <h2 className="text-[22px] sm:text-4xl md:text-[44px] font-extrabold leading-[1.1] tracking-tight text-white mb-2 md:mb-4">
-              Empieza a vender mientras <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #5B8AFF, #A78BFA, #38BDF8)' }}>otros duermen</span>
+              Empieza a vender mientras <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #8B5CF6, #A78BFA, #38BDF8)' }}>otros duermen</span>
             </h2>
             <p className="text-[13px] md:text-[16px] text-gray-400 max-w-lg mb-4 md:mb-8 leading-relaxed mx-auto lg:mx-0">
               Tu agente trabaja 24/7, responde clientes y cierra ventas automaticamente. Sin descanso, sin errores, sin limites.
@@ -2277,7 +2277,7 @@ function FinalCTA() {
 
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2.5 justify-center lg:justify-start mb-4 md:mb-6">
-              <Link href="/register" className="group cta-btn-primary flex items-center justify-center gap-2.5 rounded-2xl px-7 md:px-8 h-12 md:h-14 text-[14px] md:text-[16px] font-bold text-white" style={{ background: 'linear-gradient(135deg, #5B8AFF, #7C3AED)' }}>
+              <Link href="/register" className="group cta-btn-primary flex items-center justify-center gap-2.5 rounded-2xl px-7 md:px-8 h-12 md:h-14 text-[14px] md:text-[16px] font-bold text-white" style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}>
                 Crear mi agente ahora <ArrowRight className="h-4.5 w-4.5 transition-transform group-hover:translate-x-1.5" />
               </Link>
               <Link href="#como-funciona" className="flex items-center justify-center gap-2 rounded-2xl px-7 h-12 md:h-14 text-[14px] md:text-[15px] font-medium text-gray-300 transition-all duration-300 hover:text-white" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -2307,7 +2307,7 @@ function FinalCTA() {
             {/* Mini chat */}
             <div className="w-full max-w-[320px] rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', boxShadow: '0 8px 40px rgba(0,0,0,0.3)' }}>
               <div className="flex items-center gap-2.5 px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="h-7 w-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #5B8AFF, #7C3AED)' }}>
+                <div className="h-7 w-7 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}>
                   <Bot className="h-3.5 w-3.5 text-white" />
                 </div>
                 <div className="flex-1">
@@ -2349,7 +2349,7 @@ function FinalCTA() {
             <div className="grid grid-cols-2 gap-3 w-full max-w-[320px]">
               {[
                 { icon: CheckCircle2, label: 'Pedido registrado', color: '#10B981' },
-                { icon: Users, label: 'Cliente satisfecho', color: '#5B8AFF' },
+                { icon: Users, label: 'Cliente satisfecho', color: '#8B5CF6' },
               ].map((s, i) => (
                 <div key={i} className="flex items-center gap-2 rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
                   <s.icon className="h-4 w-4 shrink-0" style={{ color: s.color }} />
@@ -2378,7 +2378,7 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer style={{ borderTop: '1px solid rgba(91,138,255,0.06)' }}>
+    <footer style={{ borderTop: '1px solid rgba(139,92,246,0.06)' }}>
       <div className="max-w-5xl mx-auto px-5 md:px-6 py-6 md:py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">

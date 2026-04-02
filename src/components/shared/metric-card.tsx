@@ -52,18 +52,18 @@ export function MetricCard({
         <div
           className="flex h-11 w-11 items-center justify-center rounded-xl metric-icon-glow"
           style={{
-            background: 'linear-gradient(135deg, rgba(79, 124, 255, 0.15), rgba(86, 204, 242, 0.08))',
-            border: '1px solid rgba(79, 124, 255, 0.12)',
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.08))',
+            border: '1px solid rgba(139, 92, 246, 0.12)',
           }}
         >
-          <Icon className="h-5 w-5 text-[#4F7CFF]" />
+          <Icon className="h-5 w-5 text-[#8B5CF6]" />
         </div>
       </div>
 
       {/* Bottom accent line */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[2px] opacity-40"
-        style={{ background: 'linear-gradient(90deg, transparent, #4F7CFF, transparent)' }}
+        style={{ background: 'linear-gradient(90deg, transparent, #8B5CF6, transparent)' }}
       />
     </div>
   );

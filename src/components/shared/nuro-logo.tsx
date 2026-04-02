@@ -81,7 +81,7 @@ export function NuroLogo({
       <div>
         <NuroWordmark variant={variant} height={s.wordmarkH} />
         {showTagline && tagline && (
-          <p className={`${s.tag} font-semibold uppercase tracking-[0.15em] text-[#56CCF2] mt-0.5`}>
+          <p className={`${s.tag} font-semibold uppercase tracking-[0.15em] text-[#06B6D4] mt-0.5`}>
             {tagline}
           </p>
         )}

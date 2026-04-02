@@ -67,8 +67,8 @@ export default function SettingsPage() {
         <div className="flex-1 flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(79, 124, 255, 0.15)', borderTopColor: '#4F7CFF' }} />
-              <Settings className="absolute inset-0 m-auto h-4 w-4 text-[#4F7CFF]" />
+              <div className="w-12 h-12 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(139, 92, 246, 0.15)', borderTopColor: '#8B5CF6' }} />
+              <Settings className="absolute inset-0 m-auto h-4 w-4 text-[#8B5CF6]" />
             </div>
             <p className="text-sm text-[#94A3B8]">Cargando configuracion...</p>
           </div>
@@ -94,9 +94,9 @@ export default function SettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <div
               className="flex h-9 w-9 items-center justify-center rounded-lg"
-              style={{ background: 'rgba(79, 124, 255, 0.1)', border: '1px solid rgba(79, 124, 255, 0.15)' }}
+              style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.15)' }}
             >
-              <User className="h-4 w-4 text-[#4F7CFF]" />
+              <User className="h-4 w-4 text-[#8B5CF6]" />
             </div>
             <div>
               <h3 className="text-[15px] font-semibold text-white">Cuenta</h3>
@@ -133,8 +133,8 @@ export default function SettingsPage() {
               <span
                 className="inline-flex items-center gap-1 rounded-full px-2 h-5 text-[9px] font-bold uppercase"
                 style={{
-                  background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(79, 124, 255, 0.1)',
-                  color: profile?.role === 'admin' ? '#F59E0B' : '#4F7CFF',
+                  background: profile?.role === 'admin' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(139, 92, 246, 0.1)',
+                  color: profile?.role === 'admin' ? '#F59E0B' : '#8B5CF6',
                 }}
               >
                 {profile?.role === 'admin' ? 'Administrador' : 'Usuario'}
@@ -147,7 +147,7 @@ export default function SettingsPage() {
               onClick={handleSaveAccount}
               disabled={saving === 'cuenta'}
               className="flex items-center gap-2 rounded-xl px-5 h-10 text-white text-[13px] font-semibold transition-all duration-200 hover:opacity-90 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)', boxShadow: '0 4px 16px rgba(79, 124, 255, 0.2)' }}
+              style={{ background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', boxShadow: '0 4px 16px rgba(139, 92, 246, 0.2)' }}
             >
               {saving === 'cuenta' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               Guardar cuenta
@@ -194,7 +194,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => item.setter(!item.state)}
                   className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200"
-                  style={{ background: item.state ? '#4F7CFF' : 'rgba(148, 163, 184, 0.2)' }}
+                  style={{ background: item.state ? '#8B5CF6' : 'rgba(148, 163, 184, 0.2)' }}
                 >
                   <span
                     className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200"

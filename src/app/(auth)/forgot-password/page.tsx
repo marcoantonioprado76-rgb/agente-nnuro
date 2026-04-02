@@ -59,7 +59,7 @@ export default function ForgotPasswordPage() {
               </p>
               <Link
                 href="/login"
-                className="text-[#5B8AFF] hover:text-[#7CA0FF] text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                className="text-[#8B5CF6] hover:text-[#7CA0FF] text-sm font-semibold transition-colors flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Volver al inicio de sesión
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="h-12 rounded-xl pl-10 bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#5B8AFF]"
+                      className="h-12 rounded-xl pl-10 bg-[#242736] border-[#313548] text-white placeholder:text-[#8899B4]/45 text-[14px] focus:border-[#8B5CF6]"
                     />
                   </div>
                 </div>
@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
               <div className="mt-6 text-center">
                 <Link
                   href="/login"
-                  className="text-[#5B8AFF] hover:text-[#7CA0FF] text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                  className="text-[#8B5CF6] hover:text-[#7CA0FF] text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Volver al inicio de sesión

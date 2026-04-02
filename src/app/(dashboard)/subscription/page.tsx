@@ -97,7 +97,7 @@ export default function SubscriptionPage() {
           }}
         >
           <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(167, 139, 250, 0.3), transparent)' }} />
-          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.25), transparent)' }} />
+          <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full blur-[100px] opacity-15 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25), transparent)' }} />
 
           <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
             <div className="flex items-center gap-4">
@@ -231,9 +231,9 @@ export default function SubscriptionPage() {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#94A3B8]/50 mb-3">Limites de tu plan</p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {[
-                        { label: 'Bots', value: subscription.plan.max_bots, icon: Bot, color: '#4F7CFF' },
+                        { label: 'Bots', value: subscription.plan.max_bots, icon: Bot, color: '#8B5CF6' },
                         { label: 'Productos', value: subscription.plan.max_products, icon: Package, color: '#A78BFA' },
-                        { label: 'Conversaciones', value: subscription.plan.max_conversations, icon: MessageSquare, color: '#56CCF2' },
+                        { label: 'Conversaciones', value: subscription.plan.max_conversations, icon: MessageSquare, color: '#06B6D4' },
                         { label: 'WhatsApp', value: subscription.plan.max_whatsapp_numbers, icon: Smartphone, color: '#10B981' },
                       ].map((item) => (
                         <div
@@ -296,9 +296,9 @@ export default function SubscriptionPage() {
                   <div className="flex items-center gap-2.5">
                     <div
                       className="flex h-7 w-7 items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(86, 204, 242, 0.1)', border: '1px solid rgba(86, 204, 242, 0.12)' }}
+                      style={{ background: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.12)' }}
                     >
-                      <Shield className="h-3.5 w-3.5 text-[#56CCF2]" />
+                      <Shield className="h-3.5 w-3.5 text-[#06B6D4]" />
                     </div>
                     <h3 className="text-[14px] font-semibold text-white">Estado</h3>
                   </div>

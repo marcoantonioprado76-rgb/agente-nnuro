@@ -96,9 +96,9 @@ export default function DashboardPage() {
             <div className="relative">
               <div
                 className="w-12 h-12 rounded-full border-2 animate-spin"
-                style={{ borderColor: 'rgba(91, 138, 255, 0.12)', borderTopColor: '#5B8AFF' }}
+                style={{ borderColor: 'rgba(139, 92, 246, 0.12)', borderTopColor: '#8B5CF6' }}
               />
-              <Zap className="absolute inset-0 m-auto h-4 w-4 text-[#5B8AFF]" />
+              <Zap className="absolute inset-0 m-auto h-4 w-4 text-[#8B5CF6]" />
             </div>
             <p className="text-sm text-[#8899B4]/60">Cargando panel...</p>
           </div>
@@ -121,15 +121,15 @@ export default function DashboardPage() {
             className="relative overflow-hidden rounded-2xl p-4 sm:p-6 animate-fade-in-up card-premium"
           >
             {/* Ambient glow */}
-            <div className="absolute top-0 right-0 w-80 h-80 rounded-full blur-[120px] opacity-[0.06] pointer-events-none hidden sm:block" style={{ background: '#5B8AFF' }} />
+            <div className="absolute top-0 right-0 w-80 h-80 rounded-full blur-[120px] opacity-[0.06] pointer-events-none hidden sm:block" style={{ background: '#8B5CF6' }} />
 
             <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-5">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div
                   className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl shrink-0"
                   style={{
-                    background: 'linear-gradient(135deg, #5B8AFF, #38BDF8)',
-                    boxShadow: '0 4px 16px rgba(91, 138, 255, 0.2)',
+                    background: 'linear-gradient(135deg, #8B5CF6, #38BDF8)',
+                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.2)',
                   }}
                 >
                   <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
@@ -157,7 +157,7 @@ export default function DashboardPage() {
           {/* METRICS GRID */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 animate-fade-in-up-delay-1">
             {[
-              { label: 'Total Bots', value: d.total_bots, icon: Bot, color: '#5B8AFF' },
+              { label: 'Total Bots', value: d.total_bots, icon: Bot, color: '#8B5CF6' },
               { label: 'Bots Activos', value: d.active_bots, icon: Zap, color: '#10B981' },
               { label: 'Conversaciones', value: d.total_conversations, icon: MessageSquare, color: '#38BDF8' },
               { label: 'Leads', value: d.total_leads, icon: Target, color: '#F59E0B' },
@@ -281,15 +281,15 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2.5">
                     <div
                       className="flex h-7 w-7 items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(91, 138, 255, 0.08)', border: '1px solid rgba(91, 138, 255, 0.1)' }}
+                      style={{ background: 'rgba(139, 92, 246, 0.08)', border: '1px solid rgba(139, 92, 246, 0.1)' }}
                     >
-                      <Brain className="h-3.5 w-3.5 text-[#5B8AFF]" />
+                      <Brain className="h-3.5 w-3.5 text-[#8B5CF6]" />
                     </div>
                     <h3 className="text-[14px] font-semibold text-white">Mis Agentes</h3>
                   </div>
                   <button
                     onClick={() => window.location.href = '/bots'}
-                    className="text-[11px] font-medium text-[#8899B4]/50 hover:text-[#5B8AFF] transition-colors duration-200 flex items-center gap-1"
+                    className="text-[11px] font-medium text-[#8899B4]/50 hover:text-[#8B5CF6] transition-colors duration-200 flex items-center gap-1"
                   >
                     Ver <ArrowUpRight className="h-3 w-3" />
                   </button>
@@ -299,9 +299,9 @@ export default function DashboardPage() {
                   <div className="py-10 text-center">
                     <div
                       className="flex h-11 w-11 items-center justify-center rounded-xl mx-auto mb-3"
-                      style={{ background: 'rgba(91, 138, 255, 0.06)', border: '1px solid rgba(91, 138, 255, 0.08)' }}
+                      style={{ background: 'rgba(139, 92, 246, 0.06)', border: '1px solid rgba(139, 92, 246, 0.08)' }}
                     >
-                      <Brain className="h-5 w-5 text-[#5B8AFF]/40" />
+                      <Brain className="h-5 w-5 text-[#8B5CF6]/40" />
                     </div>
                     <p className="text-[13px] text-[#8899B4]/45">Sin agentes creados</p>
                   </div>
@@ -316,13 +316,13 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-3">
                           <div
                             className="flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-200"
-                            style={{ background: 'rgba(91, 138, 255, 0.06)', border: '1px solid rgba(91, 138, 255, 0.08)' }}
+                            style={{ background: 'rgba(139, 92, 246, 0.06)', border: '1px solid rgba(139, 92, 246, 0.08)' }}
                           >
-                            <Brain className="h-3.5 w-3.5 text-[#5B8AFF]" />
+                            <Brain className="h-3.5 w-3.5 text-[#8B5CF6]" />
                           </div>
                           <p className="text-[13px] font-medium text-white">{bot.name}</p>
                         </div>
-                        <ArrowRight className="h-3.5 w-3.5 text-[#8899B4]/15 group-hover:text-[#5B8AFF] group-hover:translate-x-0.5 transition-all duration-200" />
+                        <ArrowRight className="h-3.5 w-3.5 text-[#8899B4]/15 group-hover:text-[#8B5CF6] group-hover:translate-x-0.5 transition-all duration-200" />
                       </div>
                     ))}
                   </div>

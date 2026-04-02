@@ -281,7 +281,7 @@ export default function StoreInventoryPage({
         >
           {/* Decorative glow */}
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-20 blur-[100px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(167, 139, 250, 0.3), transparent 70%)' }} />
-          <div className="absolute bottom-0 left-0 w-60 h-60 rounded-full opacity-15 blur-[80px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(91, 138, 255, 0.3), transparent 70%)' }} />
+          <div className="absolute bottom-0 left-0 w-60 h-60 rounded-full opacity-15 blur-[80px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent 70%)' }} />
 
           <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1.5">
@@ -339,8 +339,8 @@ export default function StoreInventoryPage({
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'rgba(91, 138, 255, 0.08)' }}>
-                  <Tag className="h-3.5 w-3.5 text-[#5B8AFF]" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'rgba(139, 92, 246, 0.08)' }}>
+                  <Tag className="h-3.5 w-3.5 text-[#8B5CF6]" />
                 </div>
                 <div>
                   <p className="text-[11px] text-[#94A3B8]/40 uppercase tracking-wider font-medium">Valor inventario</p>
@@ -385,7 +385,7 @@ export default function StoreInventoryPage({
                 </div>
                 {/* Floating particles */}
                 <div className="absolute -top-2 -right-2 h-3 w-3 rounded-full bg-[#A78BFA]/20 animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }} />
-                <div className="absolute -bottom-1 -left-3 h-2 w-2 rounded-full bg-[#5B8AFF]/20 animate-bounce" style={{ animationDelay: '1s', animationDuration: '3.5s' }} />
+                <div className="absolute -bottom-1 -left-3 h-2 w-2 rounded-full bg-[#8B5CF6]/20 animate-bounce" style={{ animationDelay: '1s', animationDuration: '3.5s' }} />
                 <div className="absolute top-1/2 -right-5 h-1.5 w-1.5 rounded-full bg-[#A78BFA]/15 animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '4s' }} />
               </div>
 

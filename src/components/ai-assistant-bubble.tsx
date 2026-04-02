@@ -363,7 +363,7 @@ export function AIAssistantBubble() {
               <div
                 className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-br-md'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-md'
                     : 'bg-[oklch(0.16_0.025_270)] text-gray-200 border border-purple-500/10 rounded-bl-md'
                 }`}
               >
@@ -393,7 +393,7 @@ export function AIAssistantBubble() {
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                   <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
                 {isTranscribing && (
@@ -460,7 +460,7 @@ export function AIAssistantBubble() {
           <button
             type="submit"
             disabled={!input.trim() || loading || isRecording}
-            className="p-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white disabled:opacity-30 hover:from-purple-500 hover:to-blue-500 transition-all"
+            className="p-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white disabled:opacity-30 hover:from-purple-500 hover:to-indigo-500 transition-all"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

@@ -304,10 +304,10 @@ export function WhatsAppTab({ botId }: WhatsAppTabProps) {
                     className="w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] rounded-xl"
                   />
                   {/* Corner accents */}
-                  <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-[#4F7CFF]/40 rounded-tl-lg" />
-                  <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-[#4F7CFF]/40 rounded-tr-lg" />
-                  <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-[#4F7CFF]/40 rounded-bl-lg" />
-                  <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-[#4F7CFF]/40 rounded-br-lg" />
+                  <div className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-[#8B5CF6]/40 rounded-tl-lg" />
+                  <div className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-[#8B5CF6]/40 rounded-tr-lg" />
+                  <div className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-[#8B5CF6]/40 rounded-bl-lg" />
+                  <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-[#8B5CF6]/40 rounded-br-lg" />
                 </div>
 
                 <h3 className="text-[15px] sm:text-[16px] font-bold text-white text-center">
@@ -325,7 +325,7 @@ export function WhatsAppTab({ botId }: WhatsAppTabProps) {
                     <div key={i} className="flex items-center gap-2.5 sm:gap-3">
                       <div
                         className="flex h-5 w-5 items-center justify-center rounded-full shrink-0 text-[9px] font-bold"
-                        style={{ background: 'rgba(79, 124, 255, 0.12)', color: '#4F7CFF' }}
+                        style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8B5CF6' }}
                       >
                         {i + 1}
                       </div>
@@ -364,18 +364,18 @@ export function WhatsAppTab({ botId }: WhatsAppTabProps) {
               <div
                 className="flex h-20 w-20 items-center justify-center rounded-2xl"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(79, 124, 255, 0.1), rgba(86, 204, 242, 0.1))',
-                  border: '1px solid rgba(79, 124, 255, 0.12)',
+                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1))',
+                  border: '1px solid rgba(139, 92, 246, 0.12)',
                 }}
               >
-                <QrCode className="h-9 w-9 text-[#4F7CFF]" />
+                <QrCode className="h-9 w-9 text-[#8B5CF6]" />
               </div>
               {/* Floating accent */}
               <div
                 className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full"
-                style={{ background: 'rgba(86, 204, 242, 0.15)', border: '1px solid rgba(86, 204, 242, 0.2)' }}
+                style={{ background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.2)' }}
               >
-                <Smartphone className="h-3 w-3 text-[#56CCF2]" />
+                <Smartphone className="h-3 w-3 text-[#06B6D4]" />
               </div>
             </div>
 
@@ -391,8 +391,8 @@ export function WhatsAppTab({ botId }: WhatsAppTabProps) {
               disabled={isConnecting}
               className="flex items-center gap-2.5 rounded-xl px-8 h-11 text-white text-[13px] font-semibold transition-all duration-200 hover:opacity-90 disabled:opacity-50"
               style={{
-                background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)',
-                boxShadow: '0 4px 16px rgba(79, 124, 255, 0.3)',
+                background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)',
               }}
             >
               {isConnecting ? (
@@ -459,7 +459,7 @@ export function WhatsAppTab({ botId }: WhatsAppTabProps) {
               {[
                 { icon: Zap, label: 'Respuestas IA', color: '#F59E0B' },
                 { icon: Shield, label: 'Conexion segura', color: '#10B981' },
-                { icon: Smartphone, label: 'Multi-dispositivo', color: '#4F7CFF' },
+                { icon: Smartphone, label: 'Multi-dispositivo', color: '#8B5CF6' },
               ].map((feat) => (
                 <div
                   key={feat.label}

@@ -137,8 +137,8 @@ export default function ConversationsPage() {
         <div className="flex-1 flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
-              <div className="w-14 h-14 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(79, 124, 255, 0.15)', borderTopColor: '#4F7CFF' }} />
-              <MessageSquare className="absolute inset-0 m-auto h-5 w-5 text-[#4F7CFF]" />
+              <div className="w-14 h-14 rounded-full border-2 animate-spin" style={{ borderColor: 'rgba(139, 92, 246, 0.15)', borderTopColor: '#8B5CF6' }} />
+              <MessageSquare className="absolute inset-0 m-auto h-5 w-5 text-[#8B5CF6]" />
             </div>
             <p className="text-sm text-[#94A3B8]">Cargando conversaciones...</p>
           </div>
@@ -161,7 +161,7 @@ export default function ConversationsPage() {
             className="rounded-2xl p-4 md:p-5"
             style={{
               background: 'linear-gradient(135deg, rgba(17, 29, 53, 0.9), rgba(22, 32, 51, 0.7))',
-              border: '1px solid rgba(79, 124, 255, 0.08)',
+              border: '1px solid rgba(139, 92, 246, 0.08)',
             }}
           >
             <div className="flex items-start sm:items-center justify-between gap-3">
@@ -175,7 +175,7 @@ export default function ConversationsPage() {
                 </button>
                 <div
                   className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)', boxShadow: '0 6px 24px rgba(79, 124, 255, 0.3)' }}
+                  style={{ background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', boxShadow: '0 6px 24px rgba(139, 92, 246, 0.3)' }}
                 >
                   <User className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
@@ -221,9 +221,9 @@ export default function ConversationsPage() {
             {selectedConv.product_interest && (
               <div
                 className="mt-4 rounded-xl p-3"
-                style={{ background: 'rgba(79, 124, 255, 0.05)', border: '1px solid rgba(79, 124, 255, 0.08)' }}
+                style={{ background: 'rgba(139, 92, 246, 0.05)', border: '1px solid rgba(139, 92, 246, 0.08)' }}
               >
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#4F7CFF]/60 mb-1">Contexto IA</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#8B5CF6]/60 mb-1">Contexto IA</p>
                 <p className="text-[12px] text-[#94A3B8]/70 leading-relaxed">{selectedConv.product_interest}</p>
               </div>
             )}
@@ -239,7 +239,7 @@ export default function ConversationsPage() {
           >
             {loadingMessages ? (
               <div className="flex items-center justify-center py-16">
-                <Loader2 className="h-6 w-6 text-[#4F7CFF] animate-spin" />
+                <Loader2 className="h-6 w-6 text-[#8B5CF6] animate-spin" />
               </div>
             ) : messages.length === 0 ? (
               <div className="text-center py-16">
@@ -256,18 +256,18 @@ export default function ConversationsPage() {
                         className="max-w-[75%] rounded-2xl px-4 py-2.5"
                         style={{
                           background: isBot
-                            ? 'rgba(79, 124, 255, 0.08)'
+                            ? 'rgba(139, 92, 246, 0.08)'
                             : 'rgba(16, 185, 129, 0.08)',
-                          border: `1px solid ${isBot ? 'rgba(79, 124, 255, 0.12)' : 'rgba(16, 185, 129, 0.12)'}`,
+                          border: `1px solid ${isBot ? 'rgba(139, 92, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)'}`,
                         }}
                       >
                         <div className="flex items-center gap-2 mb-1">
                           {isBot ? (
-                            <Bot className="h-3 w-3 text-[#4F7CFF]" />
+                            <Bot className="h-3 w-3 text-[#8B5CF6]" />
                           ) : (
                             <User className="h-3 w-3 text-emerald-400" />
                           )}
-                          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isBot ? 'text-[#4F7CFF]/60' : 'text-emerald-400/60'}`}>
+                          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isBot ? 'text-[#8B5CF6]/60' : 'text-emerald-400/60'}`}>
                             {isBot ? 'Bot' : 'Cliente'}
                           </span>
                           <span className="text-[9px] text-[#94A3B8]/30">
@@ -302,15 +302,15 @@ export default function ConversationsPage() {
           className="relative overflow-hidden rounded-2xl p-6 animate-fade-in-up"
           style={{
             background: 'linear-gradient(135deg, rgba(17, 29, 53, 0.9), rgba(22, 32, 51, 0.7))',
-            border: '1px solid rgba(79, 124, 255, 0.08)',
+            border: '1px solid rgba(139, 92, 246, 0.08)',
           }}
         >
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(79, 124, 255, 0.3), transparent)' }} />
+          <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent)' }} />
 
           <div className="relative flex items-center gap-4">
             <div
               className="flex h-14 w-14 items-center justify-center rounded-2xl shrink-0"
-              style={{ background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)', boxShadow: '0 6px 24px rgba(79, 124, 255, 0.3)' }}
+              style={{ background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', boxShadow: '0 6px 24px rgba(139, 92, 246, 0.3)' }}
             >
               <MessageSquare className="h-7 w-7 text-white" />
             </div>
@@ -319,7 +319,7 @@ export default function ConversationsPage() {
                 Conversaciones
                 <span
                   className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full"
-                  style={{ background: 'rgba(79, 124, 255, 0.12)', color: '#4F7CFF', border: '1px solid rgba(79, 124, 255, 0.15)' }}
+                  style={{ background: 'rgba(139, 92, 246, 0.12)', color: '#8B5CF6', border: '1px solid rgba(139, 92, 246, 0.15)' }}
                 >
                   {conversations.length}
                 </span>
@@ -340,9 +340,9 @@ export default function ConversationsPage() {
           >
             <div
               className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl mb-4"
-              style={{ background: 'rgba(79, 124, 255, 0.08)', border: '1px solid rgba(79, 124, 255, 0.1)' }}
+              style={{ background: 'rgba(139, 92, 246, 0.08)', border: '1px solid rgba(139, 92, 246, 0.1)' }}
             >
-              <MessageSquare className="h-7 w-7 text-[#4F7CFF]" />
+              <MessageSquare className="h-7 w-7 text-[#8B5CF6]" />
             </div>
             <h3 className="text-lg font-bold text-white">Aun no hay conversaciones</h3>
             <p className="text-[13px] text-[#94A3B8]/50 max-w-md mx-auto mt-2">
@@ -351,7 +351,7 @@ export default function ConversationsPage() {
             <button
               onClick={() => window.location.href = '/bots'}
               className="mt-5 inline-flex items-center gap-2 rounded-xl px-5 h-10 text-[13px] font-semibold text-white transition-all duration-200 hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #4F7CFF, #56CCF2)', boxShadow: '0 4px 16px rgba(79, 124, 255, 0.25)' }}
+              style={{ background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)' }}
             >
               <Bot className="h-4 w-4" />
               Configurar un bot
@@ -377,9 +377,9 @@ export default function ConversationsPage() {
                   >
                     <div
                       className="flex h-10 w-10 items-center justify-center rounded-xl shrink-0"
-                      style={{ background: 'rgba(79, 124, 255, 0.1)', border: '1px solid rgba(79, 124, 255, 0.12)' }}
+                      style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.12)' }}
                     >
-                      <MessageSquare className="h-4 w-4 text-[#4F7CFF]" />
+                      <MessageSquare className="h-4 w-4 text-[#8B5CF6]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
@@ -440,9 +440,9 @@ export default function ConversationsPage() {
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           className="flex h-9 w-9 items-center justify-center rounded-xl shrink-0"
-                          style={{ background: 'rgba(79, 124, 255, 0.1)', border: '1px solid rgba(79, 124, 255, 0.12)' }}
+                          style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.12)' }}
                         >
-                          <MessageSquare className="h-4 w-4 text-[#4F7CFF]" />
+                          <MessageSquare className="h-4 w-4 text-[#8B5CF6]" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-[13px] font-medium text-white truncate">
