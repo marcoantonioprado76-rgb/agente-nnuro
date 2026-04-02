@@ -26,8 +26,6 @@ import {
   Package,
   Image as ImageIcon,
   MessageSquare,
-  Truck,
-  Tag,
   Save,
   X,
   Loader2,
@@ -667,8 +665,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                 { value: 'images', label: 'Imagenes', icon: ImageIcon },
                 { value: 'offer-images', label: 'Oferta', icon: Sparkles },
                 { value: 'testimonials', label: 'Testimonios', icon: Star },
-                { value: 'shipping', label: 'Envio', icon: Truck },
-                { value: 'hooks', label: 'Keywords', icon: Tag },
               ].map((tab) => (
                 <TabsTrigger
                   key={tab.value}
@@ -1028,97 +1024,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                 </Button>
               </TabsContent>
 
-              {/* ── TAB: Envio ── */}
-              <TabsContent value="shipping" className="mt-0 space-y-5">
-                <SectionHeader icon={<Truck className="h-4 w-4 text-[#06B6D4]" />} title="Envio y cobertura" subtitle="Zonas de envio y entrega" />
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Informacion de envio</Label>
-                  <Textarea
-                    value={form.shipping_info}
-                    onChange={(e) => updateField('shipping_info', e.target.value)}
-                    placeholder="Ej: Envio gratis a todo el pais, llega en 3-5 dias habiles..."
-                    rows={3}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Cobertura</Label>
-                  <Textarea
-                    value={form.coverage}
-                    onChange={(e) => updateField('coverage', e.target.value)}
-                    placeholder="Ej: Cobertura nacional, envios a todo Mexico, Bolivia, Peru..."
-                    rows={2}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Zonas de venta</Label>
-                    <Textarea
-                      value={form.sell_zones}
-                      onChange={(e) => updateField('sell_zones', e.target.value)}
-                      placeholder="Zonas donde se vende el producto..."
-                      rows={3}
-                      className="text-white rounded-xl"
-                      style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                    />
-                    <p className="text-xs text-[#94A3B8]/40">Ciudades o regiones donde el bot puede ofrecer este producto.</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Zonas de entrega</Label>
-                    <Textarea
-                      value={form.delivery_zones}
-                      onChange={(e) => updateField('delivery_zones', e.target.value)}
-                      placeholder="Zonas de entrega directa..."
-                      rows={3}
-                      className="text-white rounded-xl"
-                      style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                    />
-                    <p className="text-xs text-[#94A3B8]/40">Zonas donde se realiza entrega directa o express.</p>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* ── TAB: Hooks ── */}
-              <TabsContent value="hooks" className="mt-0 space-y-5">
-                <SectionHeader icon={<Tag className="h-4 w-4 text-[#A78BFA]" />} title="Keywords / Hooks" subtitle="Palabras clave de activacion" />
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Palabras clave</Label>
-                  <Textarea
-                    value={form.hooks}
-                    onChange={(e) => updateField('hooks', e.target.value)}
-                    placeholder="detox, limpieza, bajar de peso, natural, salud (separados por coma)"
-                    rows={3}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                  <p className="text-xs text-[#94A3B8]/40">
-                    Palabras clave separadas por coma. Cuando un cliente mencione alguna de estas palabras, el bot activara este producto en la conversacion.
-                  </p>
-                </div>
-
-                {form.hooks && (
-                  <div
-                    className="rounded-xl p-4"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50 mb-3">Vista previa de keywords</p>
-                    <div className="flex flex-wrap gap-2">
-                      {form.hooks.split(',').map(h => h.trim()).filter(Boolean).map((keyword, i) => (
-                        <Badge key={i} className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-6 text-[10px] font-semibold border-0" style={{ background: 'rgba(167, 139, 250, 0.12)', color: '#A78BFA' }}>
-                          {keyword}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </TabsContent>
             </div>
           </Tabs>
 
@@ -1407,8 +1312,6 @@ const PRODUCT_SECTIONS = [
   { value: 'images', label: 'Imagenes', desc: 'Fotos del producto', icon: ImageIcon, color: '#A78BFA' },
   { value: 'offer-images', label: 'Imgs. Oferta', desc: 'Fotos de promocion', icon: Sparkles, color: '#F59E0B' },
   { value: 'testimonials', label: 'Testimonios', desc: 'Prueba social', icon: Star, color: '#FBBF24' },
-  { value: 'shipping', label: 'Envio', desc: 'Zonas y cobertura', icon: Truck, color: '#06B6D4' },
-  { value: 'hooks', label: 'Keywords', desc: 'Palabras de activacion', icon: Tag, color: '#A78BFA' },
 ]
 
 function MobileProductSections({ activeTab, onSelect }: { activeTab: string; onSelect: (v: string) => void }) {
