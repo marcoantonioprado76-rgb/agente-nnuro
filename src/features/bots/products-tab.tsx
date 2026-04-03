@@ -137,6 +137,14 @@ const categoryOptions = [
   'Otro',
 ]
 
+// ── METO Design Tokens ────────────────────────────────────────
+
+const inputClass = 'w-full bg-[#0B0B12]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-violet-400/40 transition-colors'
+const textareaClass = `${inputClass} resize-y`
+const labelClass = 'block text-xs font-medium text-white/50 mb-1.5'
+const sectionClass = 'bg-white/5 border border-white/10 p-5 rounded-2xl space-y-4'
+const sectionHeaderClass = 'flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider'
+
 // ── Main Component ─────────────────────────────────────────────
 
 export function ProductsTab({ botId }: ProductsTabProps) {
@@ -454,11 +462,9 @@ export function ProductsTab({ botId }: ProductsTabProps) {
     if (url) {
       const current = [...form[key]]
       const newItem: ImageItem = { url, sort_order: slotIndex, is_primary: slotIndex === 0 && current.length === 0 }
-      // Replace at slot index or push
       if (slotIndex < current.length) {
         current[slotIndex] = newItem
       } else {
-        // Fill gaps if needed
         while (current.length < slotIndex) {
           current.push({ url: '', sort_order: current.length, is_primary: false })
         }
@@ -485,35 +491,19 @@ export function ProductsTab({ botId }: ProductsTabProps) {
     )
   }
 
-  // ── Styles helpers ──
-  const sectionStyle = {
-    background: '#0A0A0F',
-    border: '1px solid rgba(139, 92, 246, 0.1)',
-    borderRadius: '16px',
-  }
-
-  const inputStyle = {
-    background: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-  }
-
-  const labelClass = "text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50"
-
-  // ── Image slot component ──
+  // ── Image slot component (METO style) ──
   const ImageSlot = ({ index, image, type, label }: { index: number; image?: ImageItem; type: 'product' | 'offer'; label: string }) => (
     <div className="space-y-1.5">
-      <p className="text-[10px] text-[#94A3B8]/40 font-medium">{label}</p>
       {image?.url ? (
         <div className="relative group">
           <img
             src={image.url}
             alt={label}
-            className="w-full aspect-square rounded-lg object-cover"
-            style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}
+            className="w-full aspect-square rounded-xl object-cover border border-white/10"
           />
           <button
             onClick={() => removeImage(type, index)}
-            className="absolute top-1 right-1 h-6 w-6 rounded-full flex items-center justify-center bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full flex items-center justify-center bg-red-500/90 text-white opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <X className="h-3 w-3" />
           </button>
@@ -528,95 +518,88 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               if (e.target.files?.[0]) handleSingleSlotUpload(e.target.files[0], type, index)
             }}
           />
-          <div
-            className="w-full aspect-square rounded-lg flex flex-col items-center justify-center gap-1 transition-all hover:border-[#8B5CF6]/40"
-            style={{ background: 'rgba(255, 255, 255, 0.02)', border: '2px dashed rgba(255, 255, 255, 0.08)' }}
-          >
-            <Upload className="h-5 w-5 text-[#94A3B8]/30" />
-            <span className="text-[9px] text-[#94A3B8]/30">Subir</span>
+          <div className="w-full aspect-square rounded-xl flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-pink-400/30 bg-white/[0.02] hover:border-pink-400/50 hover:bg-white/[0.04] transition-all">
+            <Upload className="h-5 w-5 text-white/25" />
+            <span className="text-[10px] text-white/25 text-center px-1">{label}</span>
           </div>
         </label>
       )}
     </div>
   )
 
-  // ── Testimonial image slot ──
-  const TestimonialImageSlot = ({ index }: { index: number }) => {
+  // ── Testimonial image slot (METO style with row layout) ──
+  const TestimonialRow = ({ index }: { index: number }) => {
     const testimonial = form.testimonials[index]
     const hasImage = testimonial?.url
 
-    const ensureTestimonialExists = (idx: number) => {
-      const current = [...form.testimonials]
-      while (current.length <= idx) {
-        current.push({ type: 'image', url: '', content: '', description: '' })
-      }
-      if (current.length !== form.testimonials.length) {
-        updateField('testimonials', current)
-      }
-      return current
-    }
-
     return (
-      <div className="space-y-1.5">
-        <p className="text-[10px] text-[#94A3B8]/40 font-medium">
-          {hasImage ? `Testimonio ${index + 1}` : `Testimonio inactivo ${index + 1}`}
-        </p>
-        {hasImage ? (
-          <div className="relative group">
-            <img
-              src={testimonial.url}
-              alt={`Testimonio ${index + 1}`}
-              className="w-full aspect-square rounded-lg object-cover"
-              style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}
-            />
-            <button
-              onClick={() => {
-                if (testimonial) updateTestimonial(index, 'url', '')
-              }}
-              className="absolute top-1 right-1 h-6 w-6 rounded-full flex items-center justify-center bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <X className="h-3 w-3" />
-            </button>
-          </div>
-        ) : (
-          <label className="cursor-pointer block">
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={async (e) => {
-                if (e.target.files?.[0]) {
-                  ensureTestimonialExists(index)
-                  // Need to ensure the testimonial exists before uploading
-                  const current = [...form.testimonials]
-                  while (current.length <= index) {
-                    current.push({ type: 'image', url: '', content: '', description: '' })
-                  }
-                  updateField('testimonials', current)
-                  // Upload
-                  setUploadingImage(true)
-                  const url = await uploadFile(e.target.files[0], 'product-testimonials')
-                  if (url) {
-                    const updated = [...form.testimonials]
-                    while (updated.length <= index) {
-                      updated.push({ type: 'image', url: '', content: '', description: '' })
-                    }
-                    updated[index] = { ...updated[index], type: 'image', url }
-                    updateField('testimonials', updated)
-                  }
-                  setUploadingImage(false)
-                }
-              }}
-            />
-            <div
-              className="w-full aspect-square rounded-lg flex flex-col items-center justify-center gap-1 transition-all hover:border-[#FBBF24]/40"
-              style={{ background: 'rgba(255, 255, 255, 0.02)', border: '2px dashed rgba(255, 255, 255, 0.08)' }}
-            >
-              <Upload className="h-5 w-5 text-[#94A3B8]/30" />
-              <span className="text-[9px] text-[#94A3B8]/30">Subir</span>
+      <div className="grid grid-cols-2 gap-3 items-center">
+        <input
+          type="text"
+          value={testimonial?.description || ''}
+          onChange={(e) => {
+            const current = [...form.testimonials]
+            while (current.length <= index) {
+              current.push({ type: 'image', url: '', content: '', description: '' })
+            }
+            current[index] = { ...current[index], description: e.target.value }
+            updateField('testimonials', current)
+          }}
+          placeholder={index < 3 ? `Ej: Testimonio manchas ${index + 1}` : `Testimonio inactivo ${index + 1}`}
+          className={inputClass}
+        />
+        <div>
+          {hasImage ? (
+            <div className="flex items-center gap-2">
+              <img
+                src={testimonial.url}
+                alt={`Testimonio ${index + 1}`}
+                className="h-10 w-10 rounded-lg object-cover border border-white/10"
+              />
+              <span className="text-xs text-emerald-400 flex-1 truncate">Subido</span>
+              <button
+                onClick={() => {
+                  if (testimonial) updateTestimonial(index, 'url', '')
+                }}
+                className="h-7 w-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-400/10 transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
             </div>
-          </label>
-        )}
+          ) : (
+            <label className="cursor-pointer block">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  if (e.target.files?.[0]) {
+                    const current = [...form.testimonials]
+                    while (current.length <= index) {
+                      current.push({ type: 'image', url: '', content: '', description: '' })
+                    }
+                    updateField('testimonials', current)
+                    setUploadingImage(true)
+                    const url = await uploadFile(e.target.files[0], 'product-testimonials')
+                    if (url) {
+                      const updated = [...form.testimonials]
+                      while (updated.length <= index) {
+                        updated.push({ type: 'image', url: '', content: '', description: '' })
+                      }
+                      updated[index] = { ...updated[index], type: 'image', url }
+                      updateField('testimonials', updated)
+                    }
+                    setUploadingImage(false)
+                  }
+                }}
+              />
+              <div className="flex items-center justify-center gap-2 h-10 rounded-xl border border-dashed border-white/10 bg-white/[0.02] hover:border-violet-400/30 hover:bg-white/[0.04] transition-all cursor-pointer">
+                <Upload className="h-3.5 w-3.5 text-white/30" />
+                <span className="text-xs text-white/30">Subir foto</span>
+              </div>
+            </label>
+          )}
+        </div>
       </div>
     )
   }
@@ -694,7 +677,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    {/* Thumbnail */}
                     {product.product_images && product.product_images.length > 0 ? (
                       <img
                         src={product.product_images.find(i => i.is_primary)?.url || product.product_images[0].url}
@@ -796,19 +778,19 @@ export function ProductsTab({ botId }: ProductsTabProps) {
             boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)',
           }}
         >
-          {/* Dialog Header with close button */}
-          <DialogHeader className="px-5 md:px-6 pt-4 md:pt-5 pb-3 shrink-0 relative" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.1)' }}>
+          {/* Dialog Header */}
+          <DialogHeader className="px-5 md:px-6 pt-4 md:pt-5 pb-3 shrink-0 relative" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
             <DialogTitle className="flex items-center gap-3 pr-8">
-              <div className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
-                <Package className="h-[18px] w-[18px] text-[#8B5CF6]" />
+              <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-amber-400/10">
+                <Package className="h-[18px] w-[18px] text-amber-400" />
               </div>
               <span className="text-[15px] font-semibold text-white">
-                {editingId ? 'Editar Producto' : 'Nuevo Producto'}
+                {editingId ? 'Editar producto' : 'Nuevo producto'}
               </span>
             </DialogTitle>
             <button
               onClick={() => setDialogOpen(false)}
-              className="absolute top-4 right-4 h-8 w-8 rounded-lg flex items-center justify-center text-[#94A3B8]/50 hover:text-white hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-4 h-8 w-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -817,49 +799,47 @@ export function ProductsTab({ botId }: ProductsTabProps) {
           {/* Scrollable form content */}
           <div className="flex-1 overflow-y-auto px-5 md:px-6 py-5 space-y-5">
 
-            {/* ── SECTION 1: INFORMACION BASICA ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
-                  <FileText className="h-4 w-4" style={{ color: '#8B5CF6' }} />
+            {/* ── SECTION 1: INFORMACION BASICA (barra violeta) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-violet-400/70 rounded-full" />
+                INFORMACION BASICA
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Nombre del producto *</label>
+                  <input
+                    type="text"
+                    value={form.name}
+                    onChange={(e) => updateField('name', e.target.value)}
+                    placeholder="Ej: Super Detox Natural 500ml"
+                    className={inputClass}
+                  />
                 </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#8B5CF6' }}>INFORMACION BASICA</h3>
+                <div>
+                  <label className={labelClass}>Categoria</label>
+                  <Select value={form.category} onValueChange={(v) => { if (v) updateField('category', v) }}>
+                    <SelectTrigger className="w-full bg-[#0B0B12]/50 border border-white/10 rounded-xl h-[42px] text-sm text-white focus:border-violet-400/40">
+                      <SelectValue placeholder="Seleccionar categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categoryOptions.map((cat) => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className={labelClass}>Nombre del producto *</Label>
-                <Input
-                  value={form.name}
-                  onChange={(e) => updateField('name', e.target.value)}
-                  placeholder="Ej: Super Detox Natural 500ml"
-                  className="h-11 text-white rounded-xl"
-                  style={inputStyle}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className={labelClass}>Categoria</Label>
-                <Select value={form.category} onValueChange={(v) => { if (v) updateField('category', v) }}>
-                  <SelectTrigger className="h-11 text-white rounded-xl" style={inputStyle}>
-                    <SelectValue placeholder="Seleccionar categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categoryOptions.map((cat) => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className={labelClass}>Primer mensaje del producto</Label>
-                <Textarea
+              <div>
+                <label className={labelClass}>Primer mensaje</label>
+                <textarea
                   value={form.description}
                   onChange={(e) => updateField('description', e.target.value)}
-                  placeholder="Descripcion o primer mensaje que el bot enviara sobre este producto..."
+                  placeholder="Hola! Te presento nuestro increible producto..."
                   rows={3}
-                  className="text-white rounded-xl"
-                  style={inputStyle}
+                  className={textareaClass}
                 />
               </div>
 
@@ -868,74 +848,64 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                   checked={form.is_active}
                   onCheckedChange={(checked) => updateField('is_active', checked)}
                 />
-                <span className={`text-sm font-medium ${form.is_active ? 'text-[#10B981]' : 'text-red-400'}`}>
+                <span className={`text-sm font-medium ${form.is_active ? 'text-emerald-400' : 'text-white/40'}`}>
                   {form.is_active ? 'Producto activo' : 'Producto inactivo'}
                 </span>
               </div>
             </div>
 
-            {/* ── SECTION 2: DESCRIPCION ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.12)' }}>
-                  <MessageSquare className="h-4 w-4" style={{ color: '#F59E0B' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#F59E0B' }}>DESCRIPCION</h3>
+            {/* ── SECTION 2: DESCRIPCION (barra indigo) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-indigo-400/70 rounded-full" />
+                DESCRIPCION
               </div>
 
-              <div className="space-y-2">
-                <Label className={labelClass}>Beneficios</Label>
-                <Textarea
+              <div>
+                <label className={labelClass}>Beneficios</label>
+                <textarea
                   value={form.benefits}
                   onChange={(e) => updateField('benefits', e.target.value)}
                   placeholder="Lista los beneficios principales del producto..."
-                  rows={4}
-                  className="text-white rounded-xl"
-                  style={inputStyle}
+                  rows={3}
+                  className={textareaClass}
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className={labelClass}>Modo de uso</Label>
-                <Textarea
+              <div>
+                <label className={labelClass}>Modo de uso</label>
+                <textarea
                   value={form.usage_instructions}
                   onChange={(e) => updateField('usage_instructions', e.target.value)}
                   placeholder="Instrucciones de uso del producto..."
-                  rows={3}
-                  className="text-white rounded-xl"
-                  style={inputStyle}
+                  rows={2}
+                  className={textareaClass}
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className={`${labelClass} flex items-center gap-2`}>
-                  <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
-                  Advertencias
-                </Label>
-                <Textarea
+              <div>
+                <label className={labelClass}>Advertencias</label>
+                <textarea
                   value={form.warnings}
                   onChange={(e) => updateField('warnings', e.target.value)}
                   placeholder="Advertencias, contraindicaciones o precauciones..."
                   rows={2}
-                  className="text-white rounded-xl"
-                  style={inputStyle}
+                  className={textareaClass}
                 />
               </div>
             </div>
 
-            {/* ── SECTION 3: PRECIOS ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.12)' }}>
-                  <DollarSign className="h-4 w-4" style={{ color: '#10B981' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#10B981' }}>PRECIOS</h3>
+            {/* ── SECTION 3: PRECIOS (barra violeta) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-violet-400/70 rounded-full" />
+                PRECIOS
               </div>
 
-              <div className="space-y-2">
-                <Label className={labelClass}>Moneda</Label>
+              <div>
+                <label className={labelClass}>Moneda</label>
                 <Select value={form.currency} onValueChange={(v) => { if (v) updateField('currency', v) }}>
-                  <SelectTrigger className="h-11 text-white rounded-xl" style={inputStyle}>
+                  <SelectTrigger className="w-full bg-[#0B0B12]/50 border border-white/10 rounded-xl h-[42px] text-sm text-white focus:border-violet-400/40">
                     <SelectValue placeholder="Selecciona moneda" />
                   </SelectTrigger>
                   <SelectContent>
@@ -946,74 +916,35 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <div className="space-y-2">
-                  <Label className={labelClass}>Precio unitario</Label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]/40" />
-                    <Input
-                      type="number"
-                      value={form.price_unit || ''}
-                      onChange={(e) => updateField('price_unit', parseFloat(e.target.value) || 0)}
-                      placeholder="0.00"
-                      className="pl-9 h-11 text-white rounded-xl"
-                      style={inputStyle}
-                    />
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className={labelClass}>Precio unitario</label>
+                  <input
+                    type="number"
+                    value={form.price_unit || ''}
+                    onChange={(e) => updateField('price_unit', parseFloat(e.target.value) || 0)}
+                    placeholder="0.00"
+                    className={inputClass}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label className={`${labelClass} flex items-center gap-1`}>
-                    <Sparkles className="h-3 w-3 text-amber-400" /> Precio oferta
-                  </Label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500" />
-                    <Input
-                      type="number"
-                      value={form.offer_price ?? ''}
-                      onChange={(e) => updateField('offer_price', e.target.value ? parseFloat(e.target.value) : null)}
-                      placeholder="Opcional"
-                      className="pl-9 h-11 text-white rounded-xl"
-                      style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(251, 191, 36, 0.2)' }}
-                    />
-                  </div>
-                  <p className="text-xs text-[#94A3B8]/40">Precio especial de oferta (opcional).</p>
+                <div>
+                  <label className={labelClass}>Precio oferta</label>
+                  <input
+                    type="number"
+                    value={form.offer_price ?? ''}
+                    onChange={(e) => updateField('offer_price', e.target.value ? parseFloat(e.target.value) : null)}
+                    placeholder="Opcional"
+                    className={inputClass}
+                  />
                 </div>
               </div>
-
-              {form.price_unit > 0 && (
-                <div
-                  className="rounded-xl p-4 space-y-2"
-                  style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
-                >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Vista previa</p>
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <p className={`text-lg font-bold ${form.offer_price ? 'text-[#94A3B8]/40 line-through' : 'text-white'}`}>
-                        {form.currency} {form.price_unit.toLocaleString()}
-                      </p>
-                    </div>
-                    {form.offer_price && (
-                      <div>
-                        <p className="text-lg font-bold text-amber-400">
-                          {form.currency} {form.offer_price.toLocaleString()}
-                        </p>
-                        <p className="text-xs text-[#10B981]">
-                          Ahorra {Math.round(((form.price_unit - form.offer_price) / form.price_unit) * 100)}%
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* ── SECTION 4: IMAGENES PRINCIPALES ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
-                  <ImageIcon className="h-4 w-4" style={{ color: '#EC4899' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#EC4899' }}>IMAGENES PRINCIPALES</h3>
+            {/* ── SECTION 4: IMAGENES PRINCIPALES (barra ambar) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-amber-400/70 rounded-full" />
+                IMAGENES PRINCIPALES
               </div>
 
               <div className="grid grid-cols-3 gap-3">
@@ -1023,78 +954,74 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                     index={i}
                     image={form.product_images[i]}
                     type="product"
-                    label={`Foto principal ${i + 1}`}
+                    label={`Subir foto principal`}
                   />
                 ))}
               </div>
             </div>
 
-            {/* ── SECTION 5: MAS FOTOS DEL PRODUCTO ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
-                  <Camera className="h-4 w-4" style={{ color: '#EC4899' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#EC4899' }}>MAS FOTOS DEL PRODUCTO</h3>
+            {/* ── SECTION 5: MAS FOTOS DEL PRODUCTO (barra ambar) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-amber-400/70 rounded-full" />
+                MAS FOTOS DEL PRODUCTO
               </div>
 
-              <div className="grid grid-cols-5 gap-2 sm:gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {[3, 4, 5, 6, 7].map((i) => (
                   <ImageSlot
                     key={`extra-${i}`}
                     index={i}
                     image={form.product_images[i]}
                     type="product"
-                    label={`Foto ${i + 1}`}
+                    label={`Foto adicional ${i - 2}`}
                   />
                 ))}
               </div>
             </div>
 
-            {/* ── SECTION 6: VIDEOS DEL PRODUCTO ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.12)' }}>
-                  <Video className="h-4 w-4" style={{ color: '#3B82F6' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#3B82F6' }}>VIDEOS DEL PRODUCTO</h3>
+            {/* ── SECTION 6: VIDEOS DEL PRODUCTO (barra indigo) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-indigo-400/70 rounded-full" />
+                VIDEOS DEL PRODUCTO
               </div>
 
-              <p className="text-xs text-[#94A3B8]/50">
-                Agrega URLs de videos del producto. El bot los enviara al cliente cuando sea relevante.
+              <p className="text-xs text-white/40">
+                El agente enviara estos videos cuando sea relevante durante la conversacion.
               </p>
 
-              {/* Video URL inputs - use hooks field to store comma-separated URLs for now */}
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Label className={labelClass}>URLs de videos (separadas por coma)</Label>
-                  <Textarea
-                    value={form.hooks}
-                    onChange={(e) => updateField('hooks', e.target.value)}
-                    placeholder="https://youtube.com/watch?v=..., https://vimeo.com/..."
-                    rows={3}
-                    className="text-white rounded-xl"
-                    style={inputStyle}
-                  />
-                  <p className="text-xs text-[#94A3B8]/40">Pega las URLs de los videos separadas por comas.</p>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[0, 1].map((i) => {
+                  const urls = form.hooks.split(',').map(h => h.trim()).filter(Boolean)
+                  return (
+                    <div key={`video-${i}`} className="relative">
+                      <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/25" />
+                      <input
+                        type="text"
+                        value={urls[i] || ''}
+                        onChange={(e) => {
+                          const newUrls = [...urls]
+                          newUrls[i] = e.target.value
+                          updateField('hooks', newUrls.filter(Boolean).join(', '))
+                        }}
+                        placeholder={`Video del producto ${i + 1}`}
+                        className={`${inputClass} pl-10`}
+                      />
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
-            {/* ── SECTION 7: IMAGENES DE OFERTA ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
-                  <Sparkles className="h-4 w-4" style={{ color: '#EC4899' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#EC4899' }}>IMAGENES DE OFERTA</h3>
+            {/* ── SECTION 7: IMAGENES DE OFERTA (barra rosa) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-pink-400/70 rounded-full" />
+                IMAGENES DE OFERTA
               </div>
 
-              <p className="text-xs text-[#94A3B8]/50">
-                Imagenes especiales de oferta/promocion que el bot usara al negociar precios.
-              </p>
-
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {[0, 1, 2, 3].map((i) => (
                   <ImageSlot
                     key={`offer-${i}`}
@@ -1107,42 +1034,43 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               </div>
             </div>
 
-            {/* ── SECTION 8: FOTOS DE TESTIMONIOS ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.12)' }}>
-                  <Star className="h-4 w-4" style={{ color: '#FBBF24' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#FBBF24' }}>FOTOS DE TESTIMONIOS</h3>
+            {/* ── SECTION 8: FOTOS DE TESTIMONIOS (barra indigo) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-indigo-400/70 rounded-full" />
+                FOTOS DE TESTIMONIOS
               </div>
+              <p className="text-xs text-white/40">(el agente las envia ante dudas)</p>
 
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
+              <div className="space-y-3">
                 {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                  <TestimonialImageSlot key={`test-img-${i}`} index={i} />
+                  <TestimonialRow key={`test-row-${i}`} index={i} />
                 ))}
               </div>
             </div>
 
-            {/* ── SECTION 9: VIDEOS DE TESTIMONIOS ── */}
-            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
-              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.12)' }}>
-                  <Video className="h-4 w-4" style={{ color: '#FBBF24' }} />
-                </div>
-                <h3 className="text-[14px] font-semibold" style={{ color: '#FBBF24' }}>VIDEOS DE TESTIMONIOS</h3>
+            {/* ── SECTION 9: VIDEOS DE TESTIMONIOS (barra ambar, badge NUEVO) ── */}
+            <div className={sectionClass}>
+              <div className={sectionHeaderClass}>
+                <span className="w-1 h-3.5 bg-amber-400/70 rounded-full" />
+                VIDEOS DE TESTIMONIOS
+                <span className="ml-1 px-1.5 py-0.5 text-[9px] font-bold bg-amber-400/20 text-amber-400 rounded">NUEVO</span>
               </div>
 
-              <div className="space-y-3">
+              <p className="text-xs text-white/40">
+                Agrega URLs de videos de testimonios. El agente los enviara cuando el cliente tenga dudas.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[0, 1, 2, 3].map((i) => {
-                  // Video testimonials are stored with type='video' in the testimonials array
-                  // We offset by 7 (after the 7 image testimonial slots)
                   const videoIndex = 7 + i
                   const testimonial = form.testimonials[videoIndex]
 
                   return (
-                    <div key={`test-video-${i}`} className="space-y-1.5">
-                      <Label className={labelClass}>URL Video testimonial {i + 1}</Label>
-                      <Input
+                    <div key={`test-video-${i}`} className="relative">
+                      <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/25" />
+                      <input
+                        type="text"
                         value={testimonial?.url || ''}
                         onChange={(e) => {
                           const current = [...form.testimonials]
@@ -1152,9 +1080,8 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                           current[videoIndex] = { ...current[videoIndex], type: 'video', url: e.target.value }
                           updateField('testimonials', current)
                         }}
-                        placeholder="https://youtube.com/watch?v=... o URL del video"
-                        className="h-10 text-white rounded-xl"
-                        style={inputStyle}
+                        placeholder={`Video testimonial ${i + 1}`}
+                        className={`${inputClass} pl-10`}
                       />
                     </div>
                   )
@@ -1165,27 +1092,26 @@ export function ProductsTab({ botId }: ProductsTabProps) {
           </div>
 
           {/* Footer */}
-          <div className="px-5 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0" style={{ borderTop: '1px solid rgba(139, 92, 246, 0.1)' }}>
+          <div className="px-5 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
             <Button
               variant="ghost"
               onClick={() => setDialogOpen(false)}
               disabled={saving}
-              className="gap-1 text-[#94A3B8]/70 hover:text-white rounded-xl"
+              className="gap-1 text-white/50 hover:text-white rounded-xl"
             >
-              <X className="h-4 w-4" />
               Cancelar
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="gap-2 text-white min-w-[160px] border-0 rounded-xl h-10 text-[13px] font-semibold"
+              className="gap-2 text-white min-w-[140px] border-0 rounded-xl h-10 text-[13px] font-semibold"
               style={{
-                background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                background: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%)',
+                boxShadow: '0 4px 15px rgba(167, 139, 250, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
               }}
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              {editingId ? 'Actualizar producto' : 'Crear producto'}
+              Guardar
             </Button>
           </div>
         </DialogContent>
