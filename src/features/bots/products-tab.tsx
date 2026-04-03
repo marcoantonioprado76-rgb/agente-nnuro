@@ -55,6 +55,7 @@ interface ProductFormState {
   name: string
   category: string
   is_active: boolean
+  first_message: string
   description: string
   benefits: string
   usage_instructions: string
@@ -62,6 +63,8 @@ interface ProductFormState {
   currency: string
   price_unit: number
   offer_price: number | null
+  price_promo_x2: number | null
+  price_super_x6: number | null
   shipping_info: string
   coverage: string
   sell_zones: string
@@ -95,6 +98,7 @@ const emptyForm: ProductFormState = {
   name: '',
   category: '',
   is_active: true,
+  first_message: '',
   description: '',
   benefits: '',
   usage_instructions: '',
@@ -102,6 +106,8 @@ const emptyForm: ProductFormState = {
   currency: 'USD',
   price_unit: 0,
   offer_price: null,
+  price_promo_x2: null,
+  price_super_x6: null,
   shipping_info: '',
   coverage: '',
   sell_zones: '',
@@ -210,6 +216,7 @@ export function ProductsTab({ botId }: ProductsTabProps) {
       name: product.name || '',
       category: product.category || '',
       is_active: product.is_active,
+      first_message: product.first_message || '',
       description: product.description || '',
       benefits: product.benefits || '',
       usage_instructions: product.usage_instructions || '',
@@ -217,6 +224,8 @@ export function ProductsTab({ botId }: ProductsTabProps) {
       currency: product.currency || 'USD',
       price_unit: product.price_unit || 0,
       offer_price: product.offer_price ?? null,
+      price_promo_x2: product.price_promo_x2 ?? null,
+      price_super_x6: product.price_super_x6 ?? null,
       shipping_info: product.shipping_info || '',
       coverage: product.coverage || '',
       sell_zones: product.sell_zones || '',
@@ -360,6 +369,7 @@ export function ProductsTab({ botId }: ProductsTabProps) {
       name: form.name.trim(),
       category: form.category.trim(),
       is_active: form.is_active,
+      first_message: form.first_message.trim(),
       description: form.description.trim(),
       benefits: form.benefits.trim(),
       usage_instructions: form.usage_instructions.trim(),
@@ -367,6 +377,8 @@ export function ProductsTab({ botId }: ProductsTabProps) {
       currency: form.currency,
       price_unit: form.price_unit,
       offer_price: form.offer_price || null,
+      price_promo_x2: form.price_promo_x2 || null,
+      price_super_x6: form.price_super_x6 || null,
       shipping_info: form.shipping_info.trim(),
       coverage: form.coverage.trim(),
       sell_zones: form.sell_zones.trim(),
@@ -833,10 +845,10 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               </div>
 
               <div>
-                <label className={labelClass}>Primer mensaje</label>
+                <label className={labelClass}>Primer mensaje del producto identificado</label>
                 <textarea
-                  value={form.description}
-                  onChange={(e) => updateField('description', e.target.value)}
+                  value={form.first_message}
+                  onChange={(e) => updateField('first_message', e.target.value)}
                   placeholder="Hola! Te presento nuestro increible producto..."
                   rows={3}
                   className={textareaClass}
@@ -859,6 +871,17 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               <div className={sectionHeaderClass}>
                 <span className="w-1 h-3.5 bg-indigo-400/70 rounded-full" />
                 DESCRIPCION
+              </div>
+
+              <div>
+                <label className={labelClass}>Descripcion del producto</label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => updateField('description', e.target.value)}
+                  placeholder="Descripcion general del producto..."
+                  rows={2}
+                  className={textareaClass}
+                />
               </div>
 
               <div>
@@ -923,17 +946,27 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                     type="number"
                     value={form.price_unit || ''}
                     onChange={(e) => updateField('price_unit', parseFloat(e.target.value) || 0)}
-                    placeholder="0.00"
+                    placeholder="25.00"
                     className={inputClass}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Precio oferta</label>
+                  <label className={labelClass}>Precio promo ×2</label>
                   <input
                     type="number"
-                    value={form.offer_price ?? ''}
-                    onChange={(e) => updateField('offer_price', e.target.value ? parseFloat(e.target.value) : null)}
-                    placeholder="Opcional"
+                    value={form.price_promo_x2 ?? ''}
+                    onChange={(e) => updateField('price_promo_x2', e.target.value ? parseFloat(e.target.value) : null)}
+                    placeholder="45.00"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Precio súper ×6</label>
+                  <input
+                    type="number"
+                    value={form.price_super_x6 ?? ''}
+                    onChange={(e) => updateField('price_super_x6', e.target.value ? parseFloat(e.target.value) : null)}
+                    placeholder="120.00"
                     className={inputClass}
                   />
                 </div>
