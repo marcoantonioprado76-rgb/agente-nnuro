@@ -988,26 +988,46 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               </div>
 
               <p className="text-xs text-white/40">
-                El agente enviara estos videos cuando sea relevante durante la conversacion.
+                El agente enviara estos videos cuando sea relevante durante la conversacion. Sube desde tu dispositivo.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[0, 1].map((i) => {
                   const urls = form.hooks.split(',').map(h => h.trim()).filter(Boolean)
+                  const videoUrl = urls[i] || ''
                   return (
-                    <div key={`video-${i}`} className="relative">
-                      <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/25" />
-                      <input
-                        type="text"
-                        value={urls[i] || ''}
-                        onChange={(e) => {
-                          const newUrls = [...urls]
-                          newUrls[i] = e.target.value
-                          updateField('hooks', newUrls.filter(Boolean).join(', '))
-                        }}
-                        placeholder={`Video del producto ${i + 1}`}
-                        className={`${inputClass} pl-10`}
-                      />
+                    <div key={`video-${i}`}>
+                      {videoUrl ? (
+                        <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                          <video src={videoUrl} controls className="w-full max-h-32 rounded-xl" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newUrls = [...urls]
+                              newUrls[i] = ''
+                              updateField('hooks', newUrls.filter(Boolean).join(', '))
+                            }}
+                            className="absolute top-1.5 right-1.5 bg-black/70 hover:bg-red-500 text-white rounded-full p-1 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center gap-1.5 py-5 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.02]" style={{ border: '2px dashed rgba(99, 102, 241, 0.3)' }}>
+                          <Upload className="h-5 w-5 text-indigo-400/40" />
+                          <span className="text-[11px] text-white/30">Video del producto {i + 1}</span>
+                          <input type="file" accept="video/*" className="hidden" onChange={async (e) => {
+                            const file = e.target.files?.[0]
+                            if (!file) return
+                            const url = await uploadFile(file, 'product-testimonials')
+                            if (url) {
+                              const newUrls = [...urls]
+                              newUrls[i] = url
+                              updateField('hooks', newUrls.filter(Boolean).join(', '))
+                            }
+                          }} />
+                        </label>
+                      )}
                     </div>
                   )
                 })}
@@ -1058,31 +1078,67 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               </div>
 
               <p className="text-xs text-white/40">
-                Agrega URLs de videos de testimonios. El agente los enviara cuando el cliente tenga dudas.
+                Sube videos de testimonios desde tu dispositivo. El agente los enviara cuando el cliente tenga dudas.
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[0, 1, 2, 3].map((i) => {
+              <div className="space-y-3">
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => {
                   const videoIndex = 7 + i
                   const testimonial = form.testimonials[videoIndex]
+                  const videoUrl = testimonial?.url || ''
 
                   return (
-                    <div key={`test-video-${i}`} className="relative">
-                      <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/25" />
+                    <div key={`test-video-${i}`} className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-2 items-start">
                       <input
                         type="text"
-                        value={testimonial?.url || ''}
+                        value={testimonial?.description || ''}
                         onChange={(e) => {
                           const current = [...form.testimonials]
                           while (current.length <= videoIndex) {
-                            current.push({ type: 'image', url: '', content: '', description: '' })
+                            current.push({ type: 'video', url: '', content: '', description: '' })
                           }
-                          current[videoIndex] = { ...current[videoIndex], type: 'video', url: e.target.value }
+                          current[videoIndex] = { ...current[videoIndex], type: 'video', description: e.target.value }
                           updateField('testimonials', current)
                         }}
-                        placeholder={`Video testimonial ${i + 1}`}
-                        className={`${inputClass} pl-10`}
+                        placeholder={`Video testimonio ${i + 1}`}
+                        className={inputClass}
                       />
+                      {videoUrl ? (
+                        <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+                          <video src={videoUrl} controls className="w-full max-h-24 rounded-xl" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const current = [...form.testimonials]
+                              if (current[videoIndex]) {
+                                current[videoIndex] = { ...current[videoIndex], url: '' }
+                                updateField('testimonials', current)
+                              }
+                            }}
+                            className="absolute top-1 right-1 bg-black/70 hover:bg-red-500 text-white rounded-full p-0.5 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.02]" style={{ border: '2px dashed rgba(251, 191, 36, 0.25)' }}>
+                          <Upload className="h-4 w-4 text-amber-400/40" />
+                          <span className="text-[11px] text-white/30">Subir video testimonio {i + 1}</span>
+                          <input type="file" accept="video/*" className="hidden" onChange={async (e) => {
+                            const file = e.target.files?.[0]
+                            if (!file) return
+                            const url = await uploadFile(file, 'product-testimonials')
+                            if (url) {
+                              const current = [...form.testimonials]
+                              while (current.length <= videoIndex) {
+                                current.push({ type: 'video', url: '', content: '', description: '' })
+                              }
+                              current[videoIndex] = { ...current[videoIndex], type: 'video', url }
+                              updateField('testimonials', current)
+                            }
+                          }} />
+                        </label>
+                      )}
                     </div>
                   )
                 })}
