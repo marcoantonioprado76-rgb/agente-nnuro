@@ -359,26 +359,28 @@ class WhatsAppManager {
 
         console.log(`[WA] Bot ${botId} disconnected. Code: ${statusCode}, loggedOut: ${isLoggedOut}`)
 
-        if (isLoggedOut || isReplaced) {
-          // Clean up session completely
+        if (isLoggedOut) {
+          // WhatsApp closed session — clean everything, needs new QR
           conn.status = 'disconnected'
           conn.socket = null
           conn.phoneNumber = null
           conn.qrCode = null
-
-          if (isLoggedOut) {
-            const sessionDir2 = path.join(SESSIONS_DIR, botId)
-            if (fs.existsSync(sessionDir2)) {
-              fs.rmSync(sessionDir2, { recursive: true, force: true })
-            }
-            console.log(`[WA] Bot ${botId} logged out — session cleaned, needs new QR`)
+          const sessionDir2 = path.join(SESSIONS_DIR, botId)
+          if (fs.existsSync(sessionDir2)) {
+            fs.rmSync(sessionDir2, { recursive: true, force: true })
           }
-
+          console.log(`[WA] Bot ${botId} logged out — session cleaned, needs new QR`)
           const supabase = await createServiceRoleClient()
           await supabase.from('whatsapp_sessions').upsert(
             { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
             { onConflict: 'bot_id' }
           )
+        } else if (isReplaced) {
+          // Connection replaced by another instance — reconnect after delay
+          console.log(`[WA] Bot ${botId} connection replaced (440), reconnecting in 10s...`)
+          conn.status = 'connecting'
+          conn.socket = null
+          setTimeout(() => this.createSocket(botId).catch(console.error), 10_000)
         } else if (conn.retryCount < MAX_RETRIES) {
           // Reconnect
           conn.retryCount++
