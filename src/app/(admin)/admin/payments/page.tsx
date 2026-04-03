@@ -408,7 +408,7 @@ export default function AdminPaymentsPage() {
 
       {/* Proof Image Viewer Dialog */}
       <Dialog open={!!proofViewUrl} onOpenChange={() => setProofViewUrl(null)}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden bg-black/95 border-border/30">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl p-0 overflow-hidden bg-black/95 border-border/30">
           <div className="relative">
             <button
               onClick={() => setProofViewUrl(null)}

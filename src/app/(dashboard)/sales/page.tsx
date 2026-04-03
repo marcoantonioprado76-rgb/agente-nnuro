@@ -392,7 +392,7 @@ export default function SalesPage() {
       <Dialog open={!!selectedOrder} onOpenChange={(open) => { if (!open) setSelectedOrder(null); }}>
         <DialogContent
           showCloseButton={false}
-          className="!max-w-4xl max-h-[90vh] p-0 overflow-hidden border-0"
+          className="!max-w-[95vw] sm:!max-w-4xl max-h-[90vh] p-0 overflow-hidden border-0"
           style={{
             background: 'linear-gradient(180deg, #0F1A2E 0%, #0B1222 100%)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
