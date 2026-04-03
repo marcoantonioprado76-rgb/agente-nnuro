@@ -297,12 +297,13 @@ export default function ConversationsPage() {
             )}
           </div>
 
-          {/* Messages */}
+          {/* Messages — WhatsApp Style */}
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: 'linear-gradient(180deg, rgba(17, 29, 53, 0.9) 0%, rgba(13, 21, 41, 0.95) 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              background: '#0B141A',
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.02\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+              border: '1px solid rgba(255, 255, 255, 0.04)',
             }}
           >
             {loadingMessages ? (
@@ -315,36 +316,70 @@ export default function ConversationsPage() {
                 <p className="text-[13px] text-[#94A3B8]/40">No hay mensajes</p>
               </div>
             ) : (
-              <div className="p-3 sm:p-4 space-y-3 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
-                {messages.map((msg) => {
+              <div className="px-3 sm:px-6 py-4 space-y-1 max-h-[55vh] sm:max-h-[65vh] overflow-y-auto">
+                {messages.map((msg, idx) => {
                   const isBot = msg.sender === 'bot';
+                  const time = new Date(msg.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+                  const prevMsg = messages[idx - 1];
+                  const showDate = !prevMsg || new Date(msg.created_at).toDateString() !== new Date(prevMsg.created_at).toDateString();
+
                   return (
-                    <div key={msg.id} className={`flex ${isBot ? 'justify-start' : 'justify-end'}`}>
-                      <div
-                        className="max-w-[75%] rounded-2xl px-4 py-2.5"
-                        style={{
-                          background: isBot
-                            ? 'rgba(139, 92, 246, 0.08)'
-                            : 'rgba(16, 185, 129, 0.08)',
-                          border: `1px solid ${isBot ? 'rgba(139, 92, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)'}`,
-                        }}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          {isBot ? (
-                            <Bot className="h-3 w-3 text-[#8B5CF6]" />
-                          ) : (
-                            <User className="h-3 w-3 text-emerald-400" />
-                          )}
-                          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isBot ? 'text-[#8B5CF6]/60' : 'text-emerald-400/60'}`}>
-                            {isBot ? 'Bot' : 'Cliente'}
-                          </span>
-                          <span className="text-[9px] text-[#94A3B8]/30">
-                            {new Date(msg.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+                    <div key={msg.id}>
+                      {/* Date separator */}
+                      {showDate && (
+                        <div className="flex justify-center my-3">
+                          <span className="text-[10px] font-medium px-3 py-1 rounded-lg bg-[#1A2A35] text-[#8696A0]">
+                            {new Date(msg.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </span>
                         </div>
-                        <p className="text-[13px] text-white/80 leading-relaxed whitespace-pre-wrap break-words">
-                          {msg.content}
-                        </p>
+                      )}
+
+                      {/* Message bubble */}
+                      <div className={`flex ${isBot ? 'justify-start' : 'justify-end'} mb-0.5`}>
+                        <div
+                          className={`relative max-w-[80%] sm:max-w-[65%] px-3 py-2 ${
+                            isBot
+                              ? 'rounded-tl-sm rounded-tr-2xl rounded-br-2xl rounded-bl-2xl'
+                              : 'rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl'
+                          }`}
+                          style={{
+                            backgroundColor: isBot ? '#1A2C36' : '#054640',
+                          }}
+                        >
+                          {/* Sender label (first message only) */}
+                          {isBot && (idx === 0 || messages[idx - 1]?.sender !== 'bot') && (
+                            <p className="text-[11px] font-semibold text-[#8B5CF6] mb-0.5 flex items-center gap-1">
+                              <Bot className="h-3 w-3" /> Bot
+                            </p>
+                          )}
+                          {!isBot && (idx === 0 || messages[idx - 1]?.sender !== 'client') && (
+                            <p className="text-[11px] font-semibold text-[#25D366] mb-0.5">
+                              {contactDisplay}
+                            </p>
+                          )}
+
+                          {/* Content */}
+                          {msg.type === 'image' && msg.content.startsWith('http') ? (
+                            <img src={msg.content} alt="" className="rounded-lg max-w-full max-h-48 mb-1" />
+                          ) : msg.type === 'video' && msg.content.startsWith('http') ? (
+                            <video src={msg.content} controls className="rounded-lg max-w-full max-h-48 mb-1" />
+                          ) : (
+                            <p className="text-[13px] text-[#E9EDEF] leading-relaxed whitespace-pre-wrap break-words">
+                              {msg.content}
+                            </p>
+                          )}
+
+                          {/* Time + ticks */}
+                          <div className={`flex items-center gap-1 mt-0.5 ${isBot ? 'justify-start' : 'justify-end'}`}>
+                            <span className="text-[10px] text-[#8696A0]">{time}</span>
+                            {isBot && (
+                              <svg viewBox="0 0 16 11" className="w-4 h-3 text-[#53BDEB]" fill="currentColor">
+                                <path d="M11.071.653a.457.457 0 0 0-.304-.102.493.493 0 0 0-.381.178l-6.19 7.636-2.011-2.095a.463.463 0 0 0-.336-.153.457.457 0 0 0-.344.153.458.458 0 0 0 0 .611l2.357 2.457a.456.456 0 0 0 .34.178h.013a.458.458 0 0 0 .34-.153l6.516-8.07a.457.457 0 0 0 0-.64z" />
+                                <path d="M15.071.653a.457.457 0 0 0-.304-.102.493.493 0 0 0-.381.178l-6.19 7.636-1.2-1.249-.34.424 1.521 1.587a.456.456 0 0 0 .34.178h.013a.458.458 0 0 0 .34-.153l6.516-8.07a.457.457 0 0 0-.315-.429z" />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
