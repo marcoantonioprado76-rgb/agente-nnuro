@@ -50,6 +50,7 @@ interface StoreData {
   background_type?: string | null
   background_value?: string | null
   cover_image_url?: string | null
+  cover_images?: string[] | null
   favicon_url?: string | null
 }
 
@@ -284,13 +285,13 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
   /* ── Dynamic favicon ── */
   useEffect(() => {
     if (!store?.favicon_url) return
-    let link = document.querySelector("link[rel='icon']") as HTMLLinkElement
-    if (!link) {
-      link = document.createElement('link')
-      link.rel = 'icon'
-      document.head.appendChild(link)
-    }
+    // Remove ALL existing favicon links (Next.js static ones)
+    document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach(el => el.remove())
+    // Add custom favicon
+    const link = document.createElement('link')
+    link.rel = 'icon'
     link.href = store.favicon_url
+    document.head.appendChild(link)
   }, [store?.favicon_url])
 
   /* ── Dynamic page title ── */
@@ -385,17 +386,32 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
         </div>
       </nav>
 
-      {/* ═══════════════ COVER IMAGE ═══════════════ */}
-      {store.cover_image_url && (
-        <div className="relative w-full h-40 sm:h-56 overflow-hidden">
-          <img
-            src={store.cover_image_url}
-            alt={`Portada de ${store.name}`}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${isGradient ? 'rgba(0,0,0,0.7)' : baseBgHex})` }} />
-        </div>
-      )}
+      {/* ═══════════════ COVER IMAGES CAROUSEL ═══════════════ */}
+      {(() => {
+        const coverImgs = store.cover_images?.length ? store.cover_images : (store.cover_image_url ? [store.cover_image_url] : [])
+        if (coverImgs.length === 0) return null
+        return (
+          <div className="relative w-full h-44 sm:h-60 overflow-hidden">
+            {coverImgs.length === 1 ? (
+              <img src={coverImgs[0]} alt={store.name} className="w-full h-full object-cover" />
+            ) : (
+              <div className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                {coverImgs.map((url, i) => (
+                  <img key={i} src={url} alt={`${store.name} ${i + 1}`} className="w-full h-full object-cover flex-shrink-0 snap-center" />
+                ))}
+              </div>
+            )}
+            <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${isGradient ? 'rgba(0,0,0,0.7)' : baseBgHex})` }} />
+            {coverImgs.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {coverImgs.map((_, i) => (
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })()}
 
       {/* ═══════════════ HERO SECTION ═══════════════ */}
       <section className="relative overflow-hidden">

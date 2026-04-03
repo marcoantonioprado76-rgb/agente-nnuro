@@ -147,6 +147,7 @@ interface StoreItem {
   font_config?: FontConfig | null
   bg_config?: BgConfig | null
   cover_image_url?: string
+  cover_images?: string[]
   favicon_url?: string
   created_at: string
 }
@@ -161,6 +162,7 @@ interface StoreForm {
   font_config: FontConfig
   bg_config: BgConfig
   cover_image_url: string
+  cover_images: string[]
   favicon_url: string
 }
 
@@ -174,6 +176,7 @@ const emptyForm: StoreForm = {
   font_config: { ...defaultFontConfig },
   bg_config: { ...defaultBgConfig },
   cover_image_url: '',
+  cover_images: [],
   favicon_url: '',
 }
 
@@ -276,6 +279,7 @@ export default function StoresPage() {
       font_config: store.font_config || { ...defaultFontConfig },
       bg_config: store.bg_config || { ...defaultBgConfig },
       cover_image_url: store.cover_image_url || '',
+      cover_images: store.cover_images || [],
       favicon_url: store.favicon_url || '',
     })
     setDialogOpen(true)
@@ -666,38 +670,53 @@ export default function StoresPage() {
             <div className="space-y-4 mb-6">
               <SectionLabel icon={ImageIcon} label="Portada e Icono" color="#EC4899" />
 
-              {/* Cover Image */}
+              {/* Cover Images (2-3 fotos para carrusel) */}
               <div className="space-y-2">
-                <Label className="text-[11px] text-[#94A3B8]/80 font-medium">Foto de portada</Label>
-                {form.cover_image_url ? (
-                  <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <img src={form.cover_image_url} alt="Portada" className="w-full h-32 object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => setForm(prev => ({ ...prev, cover_image_url: '' }))}
-                      className="absolute top-2 right-2 bg-black/70 hover:bg-red-500 text-white rounded-full p-1 transition-colors"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <label className="flex flex-col items-center justify-center gap-2 py-6 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.02]" style={{ border: '2px dashed rgba(236, 72, 153, 0.2)' }}>
-                    <Upload className="h-6 w-6 text-[#EC4899]/40" />
-                    <span className="text-xs text-[#94A3B8]/60">Subir imagen de portada</span>
-                    <span className="text-[10px] text-[#94A3B8]/30">Recomendado: 1200x400px</span>
-                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                      const file = e.target.files?.[0]
-                      if (!file) return
-                      const fd = new FormData()
-                      fd.append('file', file)
-                      fd.append('bucket', 'store-covers')
-                      const res = await fetch('/api/upload', { method: 'POST', body: fd })
-                      const data = await res.json()
-                      if (res.ok) setForm(prev => ({ ...prev, cover_image_url: data.url }))
-                      else toast.error('Error al subir portada')
-                    }} />
-                  </label>
-                )}
+                <Label className="text-[11px] text-[#94A3B8]/80 font-medium">Fotos de portada (2-3 fotos para carrusel)</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[0, 1, 2].map((i) => {
+                    const imgUrl = form.cover_images[i] || ''
+                    return (
+                      <div key={`cover-${i}`}>
+                        {imgUrl ? (
+                          <div className="relative rounded-xl overflow-hidden aspect-[3/1]" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                            <img src={imgUrl} alt={`Portada ${i + 1}`} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...form.cover_images]
+                                updated.splice(i, 1)
+                                setForm(prev => ({ ...prev, cover_images: updated }))
+                              }}
+                              className="absolute top-1 right-1 bg-black/70 hover:bg-red-500 text-white rounded-full p-0.5 transition-colors"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="flex flex-col items-center justify-center gap-1 py-4 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.02] aspect-[3/1]" style={{ border: '2px dashed rgba(236, 72, 153, 0.2)' }}>
+                            <Upload className="h-4 w-4 text-[#EC4899]/40" />
+                            <span className="text-[9px] text-[#94A3B8]/40">Portada {i + 1}</span>
+                            <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                              const file = e.target.files?.[0]
+                              if (!file) return
+                              const fd = new FormData()
+                              fd.append('file', file)
+                              fd.append('bucket', 'store-covers')
+                              const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                              const data = await res.json()
+                              if (res.ok) {
+                                const updated = [...form.cover_images]
+                                updated[i] = data.url
+                                setForm(prev => ({ ...prev, cover_images: updated.filter(Boolean) }))
+                              } else toast.error('Error al subir portada')
+                            }} />
+                          </label>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
 
               {/* Favicon */}
