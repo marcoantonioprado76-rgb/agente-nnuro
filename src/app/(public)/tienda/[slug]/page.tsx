@@ -15,6 +15,49 @@ import {
 } from 'lucide-react'
 
 /* ============================================================
+   COVER CAROUSEL (auto-rotate infinite)
+   ============================================================ */
+function CoverCarousel({ images, storeName, gradientTo }: { images: string[]; storeName: string; gradientTo: string }) {
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    if (images.length <= 1) return
+    const timer = setInterval(() => {
+      setCurrent(prev => (prev + 1) % images.length)
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [images.length])
+
+  if (images.length === 0) return null
+
+  return (
+    <div className="relative w-full h-44 sm:h-60 overflow-hidden">
+      {images.map((url, i) => (
+        <img
+          key={i}
+          src={url}
+          alt={`${storeName} ${i + 1}`}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+          style={{ opacity: i === current ? 1 : 0 }}
+        />
+      ))}
+      <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${gradientTo})` }} />
+      {images.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {images.map((_, i) => (
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full transition-all duration-300"
+              style={{ backgroundColor: i === current ? '#fff' : 'rgba(255,255,255,0.35)', transform: i === current ? 'scale(1.2)' : 'scale(1)' }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ============================================================
    CONSTANTS
    ============================================================ */
 const SPACING_CSS: Record<string, string> = {
@@ -282,22 +325,46 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
     )
   }
 
-  /* ── Dynamic favicon ── */
+  /* ── Dynamic favicon + OG meta tags ── */
   useEffect(() => {
-    if (!store?.favicon_url) return
-    // Remove ALL existing favicon links (Next.js static ones)
-    document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach(el => el.remove())
-    // Add custom favicon
-    const link = document.createElement('link')
-    link.rel = 'icon'
-    link.href = store.favicon_url
-    document.head.appendChild(link)
-  }, [store?.favicon_url])
+    if (!store) return
 
-  /* ── Dynamic page title ── */
-  useEffect(() => {
-    if (store?.name) document.title = store.name
-  }, [store?.name])
+    // Favicon
+    if (store.favicon_url) {
+      document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']").forEach(el => el.remove())
+      const link = document.createElement('link')
+      link.rel = 'icon'
+      link.href = store.favicon_url
+      document.head.appendChild(link)
+
+      // Apple touch icon (for iOS share)
+      const appleLink = document.createElement('link')
+      appleLink.rel = 'apple-touch-icon'
+      appleLink.href = store.favicon_url
+      document.head.appendChild(appleLink)
+    }
+
+    // Title
+    if (store.name) document.title = store.name
+
+    // OG meta tags for sharing (WhatsApp, Facebook, etc.)
+    const setMeta = (property: string, content: string) => {
+      let meta = document.querySelector(`meta[property='${property}']`) as HTMLMetaElement
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.setAttribute('property', property)
+        document.head.appendChild(meta)
+      }
+      meta.content = content
+    }
+
+    setMeta('og:title', store.name)
+    setMeta('og:type', 'website')
+    if (store.favicon_url) setMeta('og:image', store.favicon_url)
+
+    const coverImgs = store.cover_images?.length ? store.cover_images : (store.cover_image_url ? [store.cover_image_url] : [])
+    if (coverImgs.length > 0) setMeta('og:image', coverImgs[0])
+  }, [store])
 
   /* ── CSS injection for animations ── */
   useEffect(() => {
@@ -386,32 +453,12 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
         </div>
       </nav>
 
-      {/* ═══════════════ COVER IMAGES CAROUSEL ═══════════════ */}
-      {(() => {
-        const coverImgs = store.cover_images?.length ? store.cover_images : (store.cover_image_url ? [store.cover_image_url] : [])
-        if (coverImgs.length === 0) return null
-        return (
-          <div className="relative w-full h-44 sm:h-60 overflow-hidden">
-            {coverImgs.length === 1 ? (
-              <img src={coverImgs[0]} alt={store.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-                {coverImgs.map((url, i) => (
-                  <img key={i} src={url} alt={`${store.name} ${i + 1}`} className="w-full h-full object-cover flex-shrink-0 snap-center" />
-                ))}
-              </div>
-            )}
-            <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${isGradient ? 'rgba(0,0,0,0.7)' : baseBgHex})` }} />
-            {coverImgs.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                {coverImgs.map((_, i) => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/50" />
-                ))}
-              </div>
-            )}
-          </div>
-        )
-      })()}
+      {/* ═══════════════ COVER IMAGES CAROUSEL (auto-rotate) ═══════════════ */}
+      <CoverCarousel
+        images={store.cover_images?.length ? store.cover_images : (store.cover_image_url ? [store.cover_image_url] : [])}
+        storeName={store.name}
+        gradientTo={isGradient ? 'rgba(0,0,0,0.7)' : baseBgHex}
+      />
 
       {/* ═══════════════ HERO SECTION ═══════════════ */}
       <section className="relative overflow-hidden">
