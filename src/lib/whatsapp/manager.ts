@@ -16,7 +16,7 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 import { generateBotResponse } from './ai-engine'
 
 // ═══ CONFIG ═══
-const SESSIONS_DIR = process.env.WHATSAPP_SESSIONS_DIR || '/data/baileys-sessions'
+const SESSIONS_DIR = process.env.WHATSAPP_SESSIONS_DIR || '/var/data/baileys-sessions'
 const MAX_RETRIES = 15
 const RECONNECT_DELAY = 5_000
 const MESSAGE_BUFFER_MS = 15_000
