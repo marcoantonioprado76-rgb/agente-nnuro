@@ -29,9 +29,9 @@ const currencySymbol: Record<string, string> = {
 }
 
 const TRUST_BADGES = [
-  { icon: Truck, label: 'Entrega Rapida', sub: 'A tu puerta' },
-  { icon: Shield, label: 'Compra Segura', sub: '100% protegida' },
-  { icon: BadgeCheck, label: 'Calidad Premium', sub: 'Garantizado' },
+  { icon: Truck, label: 'Envio Rapido', sub: 'Directo a tu puerta' },
+  { icon: Shield, label: 'Pago Seguro', sub: 'Proteccion total' },
+  { icon: BadgeCheck, label: 'Calidad Garantizada', sub: 'Productos originales' },
 ]
 
 /* ============================================================
@@ -360,9 +360,13 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
       >
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${accent}20` }}>
-              <Store className="h-4 w-4" style={{ color: accent }} />
-            </div>
+            {store.favicon_url ? (
+              <img src={store.favicon_url} alt="" className="h-8 w-8 rounded-lg object-cover" />
+            ) : (
+              <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${accent}20` }}>
+                <Store className="h-4 w-4" style={{ color: accent }} />
+              </div>
+            )}
             <span className="text-sm font-semibold" style={{ color: textPrimary, fontFamily }}>{store.name}</span>
           </div>
           <button
@@ -557,18 +561,18 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
               return (
                 <div
                   key={product.id}
-                  className="product-card rounded-xl sm:rounded-2xl overflow-hidden anim-fade-up"
+                  className="product-card group rounded-2xl overflow-hidden anim-fade-up"
                   style={{
                     backgroundColor: surface,
                     border: `1px solid ${border}`,
-                    boxShadow: `0 2px 20px ${isGradient ? 'rgba(0,0,0,0.2)' : `${baseBgHex}40`}`,
+                    boxShadow: `0 4px 24px rgba(0,0,0,0.15)`,
                     animationDelay: `${0.05 * idx}s`,
                   }}
                 >
                   {/* Image */}
-                  <div className="relative aspect-square sm:aspect-[4/3] overflow-hidden" style={{ backgroundColor: surfaceDeep }}>
+                  <div className="relative aspect-[4/5] sm:aspect-[4/3] overflow-hidden" style={{ backgroundColor: surfaceDeep }}>
                     {mainImage ? (
-                      <img src={mainImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />
+                      <img src={mainImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center"><Package className="h-10 w-10 sm:h-12 sm:w-12" style={{ color: textMuted }} /></div>
                     )}
@@ -595,50 +599,57 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
                   </div>
 
                   {/* Content */}
-                  <div className="p-2.5 sm:p-4 space-y-1.5 sm:space-y-3">
+                  <div className="p-3 sm:p-5 space-y-2 sm:space-y-3">
+                    {/* Category tag */}
+                    {product.category && (
+                      <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider" style={{ color: accent }}>
+                        {product.category}
+                      </span>
+                    )}
+
                     {/* Name */}
-                    <h3 className="text-[13px] sm:text-base font-bold leading-tight line-clamp-2" style={{ color: textPrimary, fontFamily }}>
+                    <h3 className="text-sm sm:text-base font-bold leading-snug line-clamp-2" style={{ color: textPrimary, fontFamily }}>
                       {product.name}
                     </h3>
 
                     {/* Description - desktop only */}
                     {product.description && (
-                      <p className="text-xs line-clamp-2 leading-relaxed hidden sm:block" style={{ color: textSecondary }}>
+                      <p className="text-[11px] sm:text-xs line-clamp-2 leading-relaxed hidden sm:block" style={{ color: textSecondary }}>
                         {product.description}
                       </p>
                     )}
 
-                    {/* Price - prominent */}
-                    <div className="flex items-baseline gap-1 sm:gap-2">
-                      <span className="text-[17px] sm:text-2xl font-extrabold leading-none" style={{ color: accent }}>
+                    {/* Price */}
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-lg sm:text-2xl font-black leading-none" style={{ color: accent }}>
                         {pSym}{product.price.toLocaleString()}
                       </span>
-                      <span className="text-[9px] sm:text-xs font-medium" style={{ color: textMuted }}>{product.currency}</span>
+                      <span className="text-[9px] sm:text-[10px] font-medium" style={{ color: textMuted }}>{product.currency}</span>
                     </div>
 
-                    {/* Quantity controls */}
-                    <div className="flex items-center justify-center rounded-lg sm:rounded-xl overflow-hidden" style={{ border: `1px solid ${border}` }}>
-                      <button onClick={() => setQty(product.id, qty - 1)} className="h-9 flex-1 sm:h-10 sm:w-10 sm:flex-none flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
-                        <Minus className="h-3.5 w-3.5" />
-                      </button>
-                      <span className="w-10 sm:w-12 text-center text-sm font-bold" style={{ color: textPrimary }}>{qty}</span>
-                      <button onClick={() => setQty(product.id, qty + 1)} className="h-9 flex-1 sm:h-10 sm:w-10 sm:flex-none flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
-                        <Plus className="h-3.5 w-3.5" />
+                    {/* Quantity + Buy row */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center rounded-xl overflow-hidden shrink-0" style={{ border: `1px solid ${border}` }}>
+                        <button onClick={() => setQty(product.id, qty - 1)} className="h-10 w-9 sm:w-10 flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
+                          <Minus className="h-3.5 w-3.5" />
+                        </button>
+                        <span className="w-8 sm:w-10 text-center text-sm font-bold" style={{ color: textPrimary }}>{qty}</span>
+                        <button onClick={() => setQty(product.id, qty + 1)} className="h-10 w-9 sm:w-10 flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => addToCart(product)}
+                        className="flex-1 h-10 rounded-xl text-[12px] sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 hover:opacity-90"
+                        style={{
+                          backgroundColor: isAdded ? '#22c55e' : accent,
+                          color: isDark ? '#000' : '#fff',
+                          boxShadow: `0 3px 12px ${isAdded ? 'rgba(34,197,94,0.25)' : glowColor}`,
+                        }}
+                      >
+                        {isAdded ? <><Check className="h-3.5 w-3.5" /> Listo</> : <><ShoppingCart className="h-3.5 w-3.5" /> Agregar</>}
                       </button>
                     </div>
-
-                    {/* Buy button - full width, prominent */}
-                    <button
-                      onClick={() => addToCart(product)}
-                      className="w-full h-11 sm:h-10 rounded-lg sm:rounded-xl text-[13px] sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition-all active:scale-95"
-                      style={{
-                        backgroundColor: isAdded ? '#22c55e' : accent,
-                        color: isDark ? '#000' : '#fff',
-                        boxShadow: `0 3px 16px ${isAdded ? 'rgba(34,197,94,0.3)' : glowColor}`,
-                      }}
-                    >
-                      {isAdded ? <><Check className="h-4 w-4" /> Agregado</> : <><ShoppingCart className="h-4 w-4" /> Comprar</>}
-                    </button>
                   </div>
                 </div>
               )
@@ -649,9 +660,13 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
 
 
       {/* ═══════════════ FOOTER ═══════════════ */}
-      <footer className="py-5 sm:py-8 text-center" style={{ borderTop: `1px solid ${border}` }}>
-        <p className="text-xs" style={{ color: textMuted }}>
-          {store.name} &middot; Todos los derechos reservados
+      <footer className="py-6 sm:py-10 text-center" style={{ borderTop: `1px solid ${border}` }}>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          {store.favicon_url && <img src={store.favicon_url} alt="" className="h-5 w-5 rounded" />}
+          <span className="text-xs font-semibold" style={{ color: textSecondary }}>{store.name}</span>
+        </div>
+        <p className="text-[10px]" style={{ color: textMuted }}>
+          Todos los derechos reservados
         </p>
       </footer>
 
