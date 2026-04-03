@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
 import sharp from 'sharp'
 
-const ALLOWED_BUCKETS = ['store-products', 'store-qr', 'product-images', 'product-testimonials', 'avatars', 'payment-proofs']
+const ALLOWED_BUCKETS = ['store-products', 'store-qr', 'product-images', 'product-testimonials', 'avatars', 'payment-proofs', 'store-covers', 'store-favicons']
 const MAX_IMAGE_DIMENSION = 1080
 const IMAGE_QUALITY = 80
 const MAX_VIDEO_SIZE_MB = 50

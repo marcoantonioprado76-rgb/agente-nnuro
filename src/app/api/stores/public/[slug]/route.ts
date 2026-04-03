@@ -12,7 +12,7 @@ export async function GET(
 
     const { data: store, error } = await service
       .from('stores')
-      .select('id, name, slug, store_type, whatsapp_number, payment_qr_url, visibility, font_family, font_weight, font_spacing, font_style, background_type, background_value, font_config, bg_config')
+      .select('id, name, slug, store_type, whatsapp_number, payment_qr_url, visibility, font_family, font_weight, font_spacing, font_style, background_type, background_value, font_config, bg_config, cover_image_url, favicon_url')
       .eq('slug', slug)
       .eq('visibility', 'public')
       .eq('is_active', true)

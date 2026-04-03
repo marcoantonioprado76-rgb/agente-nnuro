@@ -279,6 +279,23 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
     )
   }
 
+  /* ── Dynamic favicon ── */
+  useEffect(() => {
+    if (!store?.favicon_url) return
+    let link = document.querySelector("link[rel='icon']") as HTMLLinkElement
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'icon'
+      document.head.appendChild(link)
+    }
+    link.href = store.favicon_url
+  }, [store?.favicon_url])
+
+  /* ── Dynamic page title ── */
+  useEffect(() => {
+    if (store?.name) document.title = store.name
+  }, [store?.name])
+
   /* ── CSS injection for animations ── */
   useEffect(() => {
     if (typeof document === 'undefined') return
@@ -362,12 +379,25 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
         </div>
       </nav>
 
-      {/* ═══════════════ HERO SECTION ═══════════════ */}
-      {/* Mobile: compact hero to show products faster */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: accent }} />
+      {/* ═══════════════ COVER IMAGE ═══════════════ */}
+      {store.cover_image_url && (
+        <div className="relative w-full h-40 sm:h-56 overflow-hidden">
+          <img
+            src={store.cover_image_url}
+            alt={`Portada de ${store.name}`}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${isGradient ? 'rgba(0,0,0,0.7)' : baseBgHex})` }} />
         </div>
+      )}
+
+      {/* ═══════════════ HERO SECTION ═══════════════ */}
+      <section className="relative overflow-hidden">
+        {!store.cover_image_url && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: accent }} />
+          </div>
+        )}
 
         <div className="relative max-w-5xl mx-auto px-4 pt-6 pb-4 sm:pt-16 sm:pb-14">
           {/* Badge + Title row on mobile */}

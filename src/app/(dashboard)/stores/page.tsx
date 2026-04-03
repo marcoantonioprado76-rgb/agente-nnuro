@@ -35,6 +35,9 @@ import {
   MessageCircle,
   QrCode,
   EyeOff,
+  Upload,
+  X,
+  Image as ImageIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { SingleImageUpload } from '@/components/shared/image-upload'
@@ -155,6 +158,8 @@ interface StoreForm {
   visibility: 'public' | 'private'
   font_config: FontConfig
   bg_config: BgConfig
+  cover_image_url: string
+  favicon_url: string
 }
 
 const emptyForm: StoreForm = {
@@ -166,6 +171,8 @@ const emptyForm: StoreForm = {
   visibility: 'public',
   font_config: { ...defaultFontConfig },
   bg_config: { ...defaultBgConfig },
+  cover_image_url: '',
+  favicon_url: '',
 }
 
 /* ============================================================
@@ -266,6 +273,8 @@ export default function StoresPage() {
       visibility: store.visibility as 'public' | 'private',
       font_config: store.font_config || { ...defaultFontConfig },
       bg_config: store.bg_config || { ...defaultBgConfig },
+      cover_image_url: store.cover_image_url || '',
+      favicon_url: store.favicon_url || '',
     })
     setDialogOpen(true)
   }
@@ -645,6 +654,86 @@ export default function StoresPage() {
                   bucket="store-qr"
                   placeholder="Sube tu QR de pago"
                 />
+              </div>
+            </div>
+
+            {/* ━━━ DIVIDER ━━━ */}
+            <div className="h-px mb-6" style={{ background: 'linear-gradient(to right, transparent, rgba(167, 139, 250, 0.15), transparent)' }} />
+
+            {/* ━━━ SECTION: PORTADA E ICONO ━━━ */}
+            <div className="space-y-4 mb-6">
+              <SectionLabel icon={ImageIcon} label="Portada e Icono" color="#EC4899" />
+
+              {/* Cover Image */}
+              <div className="space-y-2">
+                <Label className="text-[11px] text-[#94A3B8]/80 font-medium">Foto de portada</Label>
+                {form.cover_image_url ? (
+                  <div className="relative rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <img src={form.cover_image_url} alt="Portada" className="w-full h-32 object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setForm(prev => ({ ...prev, cover_image_url: '' }))}
+                      className="absolute top-2 right-2 bg-black/70 hover:bg-red-500 text-white rounded-full p-1 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center gap-2 py-6 rounded-xl cursor-pointer transition-colors hover:bg-white/[0.02]" style={{ border: '2px dashed rgba(236, 72, 153, 0.2)' }}>
+                    <Upload className="h-6 w-6 text-[#EC4899]/40" />
+                    <span className="text-xs text-[#94A3B8]/60">Subir imagen de portada</span>
+                    <span className="text-[10px] text-[#94A3B8]/30">Recomendado: 1200x400px</span>
+                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      const fd = new FormData()
+                      fd.append('file', file)
+                      fd.append('bucket', 'store-covers')
+                      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                      const data = await res.json()
+                      if (res.ok) setForm(prev => ({ ...prev, cover_image_url: data.url }))
+                      else toast.error('Error al subir portada')
+                    }} />
+                  </label>
+                )}
+              </div>
+
+              {/* Favicon */}
+              <div className="space-y-2">
+                <Label className="text-[11px] text-[#94A3B8]/80 font-medium">Icono de pestaña (favicon)</Label>
+                <div className="flex items-center gap-4">
+                  {form.favicon_url ? (
+                    <div className="relative">
+                      <img src={form.favicon_url} alt="Favicon" className="h-12 w-12 rounded-lg object-cover" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }} />
+                      <button
+                        type="button"
+                        onClick={() => setForm(prev => ({ ...prev, favicon_url: '' }))}
+                        className="absolute -top-1 -right-1 bg-black/70 hover:bg-red-500 text-white rounded-full p-0.5 transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center justify-center h-12 w-12 rounded-lg cursor-pointer transition-colors hover:bg-white/[0.02]" style={{ border: '2px dashed rgba(139, 92, 246, 0.2)' }}>
+                      <Upload className="h-4 w-4 text-[#8B5CF6]/40" />
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+                        const fd = new FormData()
+                        fd.append('file', file)
+                        fd.append('bucket', 'store-favicons')
+                        const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                        const data = await res.json()
+                        if (res.ok) setForm(prev => ({ ...prev, favicon_url: data.url }))
+                        else toast.error('Error al subir icono')
+                      }} />
+                    </label>
+                  )}
+                  <div>
+                    <p className="text-xs text-[#94A3B8]/60">Icono que aparece en la pestaña del navegador</p>
+                    <p className="text-[10px] text-[#94A3B8]/30">Recomendado: 64x64px, cuadrado</p>
+                  </div>
+                </div>
               </div>
             </div>
 
