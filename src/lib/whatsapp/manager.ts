@@ -530,6 +530,16 @@ class WhatsAppManager {
     // Save incoming message
     await saveMessage(conversation.id, 'client', msgType, content)
 
+    // Reset followup when client responds (prevents followup during conversation)
+    if (conversation.status === 'pending_followup') {
+      const resetDb = await createServiceRoleClient()
+      await resetDb.from('conversations').update({
+        status: 'active',
+        followup_count: 0,
+        last_followup_at: null,
+      }).eq('id', conversation.id)
+    }
+
     // Mark message as read (blue ticks)
     if (msg.key) {
       try {
