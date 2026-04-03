@@ -939,9 +939,9 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Precio unitario</label>
+                  <label className={labelClass}>Precio</label>
                   <input
                     type="number"
                     value={form.price_unit || ''}
@@ -951,22 +951,12 @@ export function ProductsTab({ botId }: ProductsTabProps) {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Precio promo ×2</label>
+                  <label className={labelClass}>Precio de oferta</label>
                   <input
                     type="number"
-                    value={form.price_promo_x2 ?? ''}
-                    onChange={(e) => updateField('price_promo_x2', e.target.value ? parseFloat(e.target.value) : null)}
-                    placeholder="45.00"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>Precio súper ×6</label>
-                  <input
-                    type="number"
-                    value={form.price_super_x6 ?? ''}
-                    onChange={(e) => updateField('price_super_x6', e.target.value ? parseFloat(e.target.value) : null)}
-                    placeholder="120.00"
+                    value={form.offer_price ?? ''}
+                    onChange={(e) => updateField('offer_price', e.target.value ? parseFloat(e.target.value) : null)}
+                    placeholder="Opcional"
                     className={inputClass}
                   />
                 </div>
