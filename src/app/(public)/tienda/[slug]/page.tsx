@@ -49,6 +49,8 @@ interface StoreData {
   font_style?: string | null
   background_type?: string | null
   background_value?: string | null
+  cover_image_url?: string | null
+  favicon_url?: string | null
 }
 
 interface StoreProductPublic {

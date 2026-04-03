@@ -146,6 +146,8 @@ interface StoreItem {
   product_count: number
   font_config?: FontConfig | null
   bg_config?: BgConfig | null
+  cover_image_url?: string
+  favicon_url?: string
   created_at: string
 }
 
