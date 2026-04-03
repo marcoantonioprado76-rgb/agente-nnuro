@@ -698,9 +698,10 @@ class WhatsAppManager {
       }
 
       // ── Send videos if present ──
-      const videos: string[] = Array.isArray((aiResponse as unknown as Record<string, unknown>).videos_message1)
-        ? ((aiResponse as unknown as Record<string, unknown>).videos_message1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('http'))
-        : []
+      if (aiResponse.videos_message1) {
+        aiResponse.videos_message1 = aiResponse.videos_message1.filter(u => !sentUrls.has(u))
+      }
+      const videos: string[] = (aiResponse.videos_message1 || []).filter(v => v.startsWith('http'))
       for (const videoUrl of videos) {
         if (sentUrls.has(videoUrl)) continue
         try {

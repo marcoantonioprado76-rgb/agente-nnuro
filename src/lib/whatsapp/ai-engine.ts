@@ -20,6 +20,7 @@ export interface AIResponse {
   message2: string | null
   message3: string | null
   photos_message1: string[] | null
+  videos_message1: string[] | null
   report: string | null
   context_memory: string | null
   /** Datos estructurados del pedido cuando hay una venta confirmada */
@@ -254,14 +255,25 @@ function buildProductsContext(products: Record<string, unknown>[]): string {
     const imageTestimonials = testimonials.filter(t => t.type === 'image')
     const videoTestimonials = testimonials.filter(t => t.type === 'video')
 
+    // Separate main images (first 3) from additional photos (rest)
+    const mainImgs = productImgs.slice(0, 3)
+    const moreImgs = productImgs.slice(3)
+
+    // Separate testimonial photos from testimonial videos
+    const testimonialPhotos = imageTestimonials
+    const testimonialVideos = videoTestimonials
+
     let ctx = `═══ PRODUCTO: ${p.name} (ID: ${p.id}) ═══`
-    if (p.first_message) ctx += `\n\n--- PRIMER MENSAJE DEL PRODUCTO (ENVIAR EXACTO EN PRIMERA INTERACCION) ---\n${p.first_message}`
+
+    if (p.first_message) {
+      ctx += `\n\n--- PRIMER MENSAJE DEL PRODUCTO (ENVIAR EXACTO CUANDO SE IDENTIFIQUE) ---\n${p.first_message}`
+    }
+
     if (p.category) ctx += `\nCategoria: ${p.category}`
-    ctx += `\nDescripcion: ${p.description}`
-    ctx += `\nBeneficios: ${p.benefits}`
+    if (p.description) ctx += `\nDescripcion: ${p.description}`
+    if (p.benefits) ctx += `\nBeneficios: ${p.benefits}`
     if (p.usage_instructions) ctx += `\nModo de uso: ${p.usage_instructions}`
     if (p.warnings) ctx += `\nAdvertencias: ${p.warnings}`
-    if (p.hooks && (p.hooks as string[]).length > 0) ctx += `\nKeywords/Hooks: ${(p.hooks as string[]).join(', ')}`
 
     ctx += `\n\n--- PRECIOS ---`
     ctx += `\nMoneda: ${p.currency || 'BOB'}`
@@ -270,15 +282,21 @@ function buildProductsContext(products: Record<string, unknown>[]): string {
     if (p.price_promo_x2) ctx += `\nPrecio promo x2: ${p.currency} ${p.price_promo_x2}`
     if (p.price_super_x6) ctx += `\nPrecio super x6: ${p.currency} ${p.price_super_x6}`
 
-    ctx += `\n\n--- ENVIO ---`
-    ctx += `\nInfo envio: ${p.shipping_info || 'No especificado'}`
-    ctx += `\nCobertura: ${p.coverage || 'No especificada'}`
-    if (p.sell_zones) ctx += `\nZonas de venta: ${p.sell_zones}`
-    if (p.delivery_zones) ctx += `\nZonas de entrega: ${p.delivery_zones}`
+    if (mainImgs.length > 0) {
+      ctx += `\n\n--- IMAGENES PRINCIPALES (enviar 1 en primer contacto) ---`
+      mainImgs.forEach((img, i) => { ctx += `\n  [Imagen principal ${i + 1}]: ${img.url}` })
+    }
 
-    if (productImgs.length > 0) {
-      ctx += `\n\n--- FOTOS DEL PRODUCTO ---`
-      productImgs.forEach((img, i) => { ctx += `\n  [Foto ${i + 1}]: ${img.url}` })
+    if (moreImgs.length > 0) {
+      ctx += `\n\n--- MAS FOTOS DEL PRODUCTO (enviar solo si el cliente pide mas fotos) ---`
+      moreImgs.forEach((img, i) => { ctx += `\n  [Foto adicional ${i + 1}]: ${img.url}` })
+    }
+
+    // Videos del producto from hooks field (URLs)
+    const productVideoUrls = (p.hooks as string[] || []).filter(h => h.startsWith('http'))
+    if (productVideoUrls.length > 0) {
+      ctx += `\n\n--- VIDEOS DEL PRODUCTO (enviar cuando sea relevante o el cliente pida ver en accion) ---`
+      productVideoUrls.forEach((url, i) => { ctx += `\n  [Video producto ${i + 1}]: ${url}` })
     }
 
     if (offerImgs.length > 0) {
@@ -286,11 +304,19 @@ function buildProductsContext(products: Record<string, unknown>[]): string {
       offerImgs.forEach((img, i) => { ctx += `\n  [Oferta ${i + 1}]: ${img.url}` })
     }
 
-    if (imageTestimonials.length > 0) {
-      ctx += `\n\n--- FOTOS DE TESTIMONIOS ---`
-      imageTestimonials.forEach((t, i) => {
+    if (testimonialPhotos.length > 0) {
+      ctx += `\n\n--- FOTOS DE TESTIMONIOS (enviar como prueba social ante dudas) ---`
+      testimonialPhotos.forEach((t, i) => {
         ctx += `\n  [Testimonio foto ${i + 1}]: ${t.url}`
-        if (t.description) ctx += ` - ${t.description}`
+        if (t.description) ctx += ` — ${t.description}`
+      })
+    }
+
+    if (testimonialVideos.length > 0) {
+      ctx += `\n\n--- VIDEOS DE TESTIMONIOS (enviar como prueba social, priorizar sobre fotos) ---`
+      testimonialVideos.forEach((t, i) => {
+        ctx += `\n  [Testimonio video ${i + 1}]: ${t.url}`
+        if (t.description) ctx += ` — ${t.description}`
       })
     }
 
@@ -298,15 +324,7 @@ function buildProductsContext(products: Record<string, unknown>[]): string {
       ctx += `\n\n--- TESTIMONIOS DE TEXTO ---`
       textTestimonials.forEach((t, i) => {
         ctx += `\n  [Testimonio ${i + 1}]: "${t.content}"`
-        if (t.description) ctx += ` - ${t.description}`
-      })
-    }
-
-    if (videoTestimonials.length > 0) {
-      ctx += `\n\n--- VIDEOS ---`
-      videoTestimonials.forEach((t, i) => {
-        ctx += `\n  [Video ${i + 1}]: ${t.url}`
-        if (t.description) ctx += ` - ${t.description}`
+        if (t.description) ctx += ` — ${t.description}`
       })
     }
 
@@ -659,6 +677,11 @@ function parseAIResponse(responseContent: string): AIResponse {
       'fotos_mensaje', 'foto', 'photo', 'media', 'adjuntos', 'attachments',
     ], null)
 
+    // Buscar videos
+    const videosRaw = findKey(parsed, [
+      'videos_mensaje1', 'videos_message1', 'videos', 'video',
+    ], null)
+
     // Buscar reporte
     const report = String(findKey(parsed, [
       'reporte', 'report', 'informe', 'notificacion', 'alerta',
@@ -686,6 +709,7 @@ function parseAIResponse(responseContent: string): AIResponse {
         message2: null,
         message3: null,
         photos_message1: null,
+        videos_message1: null,
         report: null,
         context_memory: contextMemory ? String(contextMemory) : null,
         order_data: orderData,
@@ -698,6 +722,7 @@ function parseAIResponse(responseContent: string): AIResponse {
       message2: (msg1 ? msg2 : msg3) || null,
       message3: (msg1 && msg2 ? msg3 : null) || null,
       photos_message1: normalizePhotos(photosRaw),
+      videos_message1: normalizePhotos(videosRaw),
       report: report || null,
       context_memory: contextMemory ? String(contextMemory) : null,
       order_data: orderData,
@@ -723,7 +748,8 @@ function parseAIResponse(responseContent: string): AIResponse {
       message2: null,
       message3: null,
       photos_message1: null,
-      report: null,
+      videos_message1: null,
+        report: null,
       context_memory: null,
       order_data: null,
       timing: null,
