@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
@@ -44,7 +43,8 @@ import {
   ExternalLink,
   ZoomIn,
   Play,
-  ChevronRight,
+  Video,
+  Camera,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Product, ProductImage, ProductTestimonial } from '@/types'
@@ -148,7 +148,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
   const [saving, setSaving] = useState(false)
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState('basic')
   const [uploadingImage, setUploadingImage] = useState(false)
 
   const fetchProducts = async () => {
@@ -177,7 +176,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
   const openCreate = () => {
     setEditingId(null)
     setForm(emptyForm)
-    setActiveTab('basic')
     setDialogOpen(true)
   }
 
@@ -220,7 +218,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
       offer_images: oImages,
       testimonials: tests,
     })
-    setActiveTab('basic')
     setDialogOpen(true)
   }
 
@@ -342,7 +339,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
   const handleSave = async () => {
     if (!form.name.trim()) {
       toast.error('El nombre del producto es requerido')
-      setActiveTab('basic')
       return
     }
     setSaving(true)
@@ -450,6 +446,29 @@ export function ProductsTab({ botId }: ProductsTabProps) {
     }
   }
 
+  // ── Helper: single image upload slot ──
+  const handleSingleSlotUpload = async (file: File, type: 'product' | 'offer', slotIndex: number) => {
+    const key = type === 'product' ? 'product_images' : 'offer_images'
+    setUploadingImage(true)
+    const url = await uploadFile(file, 'product-images')
+    if (url) {
+      const current = [...form[key]]
+      const newItem: ImageItem = { url, sort_order: slotIndex, is_primary: slotIndex === 0 && current.length === 0 }
+      // Replace at slot index or push
+      if (slotIndex < current.length) {
+        current[slotIndex] = newItem
+      } else {
+        // Fill gaps if needed
+        while (current.length < slotIndex) {
+          current.push({ url: '', sort_order: current.length, is_primary: false })
+        }
+        current.push(newItem)
+      }
+      updateField(key, current.filter(img => img.url !== '').map((img, i) => ({ ...img, sort_order: i, is_primary: i === 0 })))
+    }
+    setUploadingImage(false)
+  }
+
   // ── Loading ──
 
   if (loading) {
@@ -462,6 +481,142 @@ export function ProductsTab({ botId }: ProductsTabProps) {
           </div>
         </div>
         <p className="text-[13px] text-[#94A3B8]/50 font-medium">Cargando productos...</p>
+      </div>
+    )
+  }
+
+  // ── Styles helpers ──
+  const sectionStyle = {
+    background: '#0A0A0F',
+    border: '1px solid rgba(139, 92, 246, 0.1)',
+    borderRadius: '16px',
+  }
+
+  const inputStyle = {
+    background: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+  }
+
+  const labelClass = "text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50"
+
+  // ── Image slot component ──
+  const ImageSlot = ({ index, image, type, label }: { index: number; image?: ImageItem; type: 'product' | 'offer'; label: string }) => (
+    <div className="space-y-1.5">
+      <p className="text-[10px] text-[#94A3B8]/40 font-medium">{label}</p>
+      {image?.url ? (
+        <div className="relative group">
+          <img
+            src={image.url}
+            alt={label}
+            className="w-full aspect-square rounded-lg object-cover"
+            style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}
+          />
+          <button
+            onClick={() => removeImage(type, index)}
+            className="absolute top-1 right-1 h-6 w-6 rounded-full flex items-center justify-center bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      ) : (
+        <label className="cursor-pointer block">
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) handleSingleSlotUpload(e.target.files[0], type, index)
+            }}
+          />
+          <div
+            className="w-full aspect-square rounded-lg flex flex-col items-center justify-center gap-1 transition-all hover:border-[#8B5CF6]/40"
+            style={{ background: 'rgba(255, 255, 255, 0.02)', border: '2px dashed rgba(255, 255, 255, 0.08)' }}
+          >
+            <Upload className="h-5 w-5 text-[#94A3B8]/30" />
+            <span className="text-[9px] text-[#94A3B8]/30">Subir</span>
+          </div>
+        </label>
+      )}
+    </div>
+  )
+
+  // ── Testimonial image slot ──
+  const TestimonialImageSlot = ({ index }: { index: number }) => {
+    const testimonial = form.testimonials[index]
+    const hasImage = testimonial?.url
+
+    const ensureTestimonialExists = (idx: number) => {
+      const current = [...form.testimonials]
+      while (current.length <= idx) {
+        current.push({ type: 'image', url: '', content: '', description: '' })
+      }
+      if (current.length !== form.testimonials.length) {
+        updateField('testimonials', current)
+      }
+      return current
+    }
+
+    return (
+      <div className="space-y-1.5">
+        <p className="text-[10px] text-[#94A3B8]/40 font-medium">
+          {hasImage ? `Testimonio ${index + 1}` : `Testimonio inactivo ${index + 1}`}
+        </p>
+        {hasImage ? (
+          <div className="relative group">
+            <img
+              src={testimonial.url}
+              alt={`Testimonio ${index + 1}`}
+              className="w-full aspect-square rounded-lg object-cover"
+              style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }}
+            />
+            <button
+              onClick={() => {
+                if (testimonial) updateTestimonial(index, 'url', '')
+              }}
+              className="absolute top-1 right-1 h-6 w-6 rounded-full flex items-center justify-center bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        ) : (
+          <label className="cursor-pointer block">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={async (e) => {
+                if (e.target.files?.[0]) {
+                  ensureTestimonialExists(index)
+                  // Need to ensure the testimonial exists before uploading
+                  const current = [...form.testimonials]
+                  while (current.length <= index) {
+                    current.push({ type: 'image', url: '', content: '', description: '' })
+                  }
+                  updateField('testimonials', current)
+                  // Upload
+                  setUploadingImage(true)
+                  const url = await uploadFile(e.target.files[0], 'product-testimonials')
+                  if (url) {
+                    const updated = [...form.testimonials]
+                    while (updated.length <= index) {
+                      updated.push({ type: 'image', url: '', content: '', description: '' })
+                    }
+                    updated[index] = { ...updated[index], type: 'image', url }
+                    updateField('testimonials', updated)
+                  }
+                  setUploadingImage(false)
+                }
+              }}
+            />
+            <div
+              className="w-full aspect-square rounded-lg flex flex-col items-center justify-center gap-1 transition-all hover:border-[#FBBF24]/40"
+              style={{ background: 'rgba(255, 255, 255, 0.02)', border: '2px dashed rgba(255, 255, 255, 0.08)' }}
+            >
+              <Upload className="h-5 w-5 text-[#94A3B8]/30" />
+              <span className="text-[9px] text-[#94A3B8]/30">Subir</span>
+            </div>
+          </label>
+        )}
       </div>
     )
   }
@@ -634,401 +789,383 @@ export function ProductsTab({ botId }: ProductsTabProps) {
       {/* ── Create/Edit Dialog ── */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
-          className="sm:max-w-3xl max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col p-0 border-0 rounded-2xl"
+          className="sm:max-w-3xl max-h-[90vh] overflow-hidden flex flex-col p-0 border-0 rounded-2xl"
           style={{
-            background: 'linear-gradient(180deg, rgba(17, 29, 53, 0.98) 0%, rgba(13, 21, 41, 1) 100%)',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
+            background: '#0D0D14',
+            border: '1px solid rgba(139, 92, 246, 0.15)',
             boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5)',
           }}
         >
-          <DialogHeader className="px-4 md:px-6 pt-4 md:pt-5 pb-3 shrink-0" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <DialogTitle className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(167, 139, 250, 0.12)' }}>
-                <Package className="h-[18px] w-[18px] text-[#A78BFA]" />
+          {/* Dialog Header with close button */}
+          <DialogHeader className="px-5 md:px-6 pt-4 md:pt-5 pb-3 shrink-0 relative" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.1)' }}>
+            <DialogTitle className="flex items-center gap-3 pr-8">
+              <div className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
+                <Package className="h-[18px] w-[18px] text-[#8B5CF6]" />
               </div>
               <span className="text-[15px] font-semibold text-white">
                 {editingId ? 'Editar Producto' : 'Nuevo Producto'}
               </span>
             </DialogTitle>
+            <button
+              onClick={() => setDialogOpen(false)}
+              className="absolute top-4 right-4 h-8 w-8 rounded-lg flex items-center justify-center text-[#94A3B8]/50 hover:text-white hover:bg-white/5 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </DialogHeader>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-            {/* Desktop tabs - hidden on mobile */}
-            <TabsList
-              className="hidden sm:flex w-full justify-start gap-1 bg-transparent rounded-none px-4 md:px-6 py-2 shrink-0 overflow-x-auto h-auto"
-              style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}
-            >
-              {[
-                { value: 'basic', label: 'Basico', icon: FileText },
-                { value: 'info', label: 'Info', icon: MessageSquare },
-                { value: 'prices', label: 'Precios', icon: DollarSign },
-                { value: 'images', label: 'Imagenes', icon: ImageIcon },
-                { value: 'offer-images', label: 'Oferta', icon: Sparkles },
-                { value: 'testimonials', label: 'Testimonios', icon: Star },
-              ].map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="data-[state=active]:bg-[#A78BFA]/15 data-[state=active]:text-[#A78BFA] data-[state=active]:shadow-none text-[#94A3B8]/60 text-xs gap-1.5 rounded-lg px-3 h-8 border-0 transition-all"
-                >
-                  <tab.icon className="h-3 w-3" /> {tab.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+          {/* Scrollable form content */}
+          <div className="flex-1 overflow-y-auto px-5 md:px-6 py-5 space-y-5">
 
-            {/* Mobile section selector - visible only on small screens */}
-            <MobileProductSections activeTab={activeTab} onSelect={setActiveTab} />
-
-            <div className={`flex-1 overflow-y-auto px-4 md:px-6 py-4 ${activeTab === '__menu__' ? 'hidden' : ''}`}>
-              {/* ── TAB: Basico ── */}
-              <TabsContent value="basic" className="mt-0 space-y-5">
-                <SectionHeader icon={<FileText className="h-4 w-4 text-[#A78BFA]" />} title="Informacion basica" subtitle="Datos principales del producto" />
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Nombre del producto *</Label>
-                  <Input
-                    value={form.name}
-                    onChange={(e) => updateField('name', e.target.value)}
-                    placeholder="Ej: Super Detox Natural 500ml"
-                    className="h-11 text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
+            {/* ── SECTION 1: INFORMACION BASICA ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.12)' }}>
+                  <FileText className="h-4 w-4" style={{ color: '#8B5CF6' }} />
                 </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#8B5CF6' }}>INFORMACION BASICA</h3>
+              </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Categoria</Label>
-                    <Select value={form.category} onValueChange={(v) => { if (v) updateField('category', v) }}>
-                      <SelectTrigger className="h-11 text-white rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                        <SelectValue placeholder="Seleccionar categoria" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categoryOptions.map((cat) => (
-                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+              <div className="space-y-2">
+                <Label className={labelClass}>Nombre del producto *</Label>
+                <Input
+                  value={form.name}
+                  onChange={(e) => updateField('name', e.target.value)}
+                  placeholder="Ej: Super Detox Natural 500ml"
+                  className="h-11 text-white rounded-xl"
+                  style={inputStyle}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className={labelClass}>Categoria</Label>
+                <Select value={form.category} onValueChange={(v) => { if (v) updateField('category', v) }}>
+                  <SelectTrigger className="h-11 text-white rounded-xl" style={inputStyle}>
+                    <SelectValue placeholder="Seleccionar categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.map((cat) => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className={labelClass}>Primer mensaje del producto</Label>
+                <Textarea
+                  value={form.description}
+                  onChange={(e) => updateField('description', e.target.value)}
+                  placeholder="Descripcion o primer mensaje que el bot enviara sobre este producto..."
+                  rows={3}
+                  className="text-white rounded-xl"
+                  style={inputStyle}
+                />
+              </div>
+
+              <div className="flex items-center gap-3 pt-1">
+                <Switch
+                  checked={form.is_active}
+                  onCheckedChange={(checked) => updateField('is_active', checked)}
+                />
+                <span className={`text-sm font-medium ${form.is_active ? 'text-[#10B981]' : 'text-red-400'}`}>
+                  {form.is_active ? 'Producto activo' : 'Producto inactivo'}
+                </span>
+              </div>
+            </div>
+
+            {/* ── SECTION 2: DESCRIPCION ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(245, 158, 11, 0.12)' }}>
+                  <MessageSquare className="h-4 w-4" style={{ color: '#F59E0B' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#F59E0B' }}>DESCRIPCION</h3>
+              </div>
+
+              <div className="space-y-2">
+                <Label className={labelClass}>Beneficios</Label>
+                <Textarea
+                  value={form.benefits}
+                  onChange={(e) => updateField('benefits', e.target.value)}
+                  placeholder="Lista los beneficios principales del producto..."
+                  rows={4}
+                  className="text-white rounded-xl"
+                  style={inputStyle}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className={labelClass}>Modo de uso</Label>
+                <Textarea
+                  value={form.usage_instructions}
+                  onChange={(e) => updateField('usage_instructions', e.target.value)}
+                  placeholder="Instrucciones de uso del producto..."
+                  rows={3}
+                  className="text-white rounded-xl"
+                  style={inputStyle}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className={`${labelClass} flex items-center gap-2`}>
+                  <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
+                  Advertencias
+                </Label>
+                <Textarea
+                  value={form.warnings}
+                  onChange={(e) => updateField('warnings', e.target.value)}
+                  placeholder="Advertencias, contraindicaciones o precauciones..."
+                  rows={2}
+                  className="text-white rounded-xl"
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+
+            {/* ── SECTION 3: PRECIOS ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.12)' }}>
+                  <DollarSign className="h-4 w-4" style={{ color: '#10B981' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#10B981' }}>PRECIOS</h3>
+              </div>
+
+              <div className="space-y-2">
+                <Label className={labelClass}>Moneda</Label>
+                <Select value={form.currency} onValueChange={(v) => { if (v) updateField('currency', v) }}>
+                  <SelectTrigger className="h-11 text-white rounded-xl" style={inputStyle}>
+                    <SelectValue placeholder="Selecciona moneda" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencyOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-2">
+                  <Label className={labelClass}>Precio unitario</Label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]/40" />
+                    <Input
+                      type="number"
+                      value={form.price_unit || ''}
+                      onChange={(e) => updateField('price_unit', parseFloat(e.target.value) || 0)}
+                      placeholder="0.00"
+                      className="pl-9 h-11 text-white rounded-xl"
+                      style={inputStyle}
+                    />
                   </div>
-                  <div className="space-y-2 flex flex-col justify-end">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Estado</Label>
-                    <div className="flex items-center gap-3 h-9">
-                      <Switch
-                        checked={form.is_active}
-                        onCheckedChange={(checked) => updateField('is_active', checked)}
-                      />
-                      <span className={`text-sm font-medium ${form.is_active ? 'text-[#10B981]' : 'text-red-400'}`}>
-                        {form.is_active ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </div>
-                  </div>
                 </div>
-
-              </TabsContent>
-
-              {/* ── TAB: Info ── */}
-              <TabsContent value="info" className="mt-0 space-y-5">
-                <SectionHeader icon={<MessageSquare className="h-4 w-4 text-[#A78BFA]" />} title="Informacion del producto" subtitle="Detalles y beneficios" />
-
                 <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Descripcion</Label>
-                  <Textarea
-                    value={form.description}
-                    onChange={(e) => updateField('description', e.target.value)}
-                    placeholder="Descripcion detallada del producto..."
-                    rows={4}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Beneficios</Label>
-                  <Textarea
-                    value={form.benefits}
-                    onChange={(e) => updateField('benefits', e.target.value)}
-                    placeholder="Lista los beneficios principales..."
-                    rows={4}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Modo de uso</Label>
-                  <Textarea
-                    value={form.usage_instructions}
-                    onChange={(e) => updateField('usage_instructions', e.target.value)}
-                    placeholder="Instrucciones de uso del producto..."
-                    rows={3}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50 flex items-center gap-2">
-                    <ShieldAlert className="h-3.5 w-3.5 text-amber-400" />
-                    Advertencias
+                  <Label className={`${labelClass} flex items-center gap-1`}>
+                    <Sparkles className="h-3 w-3 text-amber-400" /> Precio oferta
                   </Label>
-                  <Textarea
-                    value={form.warnings}
-                    onChange={(e) => updateField('warnings', e.target.value)}
-                    placeholder="Advertencias, contraindicaciones o precauciones..."
-                    rows={2}
-                    className="text-white rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                  />
-                </div>
-              </TabsContent>
-
-              {/* ── TAB: Precios ── */}
-              <TabsContent value="prices" className="mt-0 space-y-5">
-                <SectionHeader icon={<DollarSign className="h-4 w-4 text-[#10B981]" />} title="Precios" subtitle="Configuracion de precios y ofertas" />
-
-                <div className="space-y-2">
-                  <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Moneda</Label>
-                  <Select value={form.currency} onValueChange={(v) => { if (v) updateField('currency', v) }}>
-                    <SelectTrigger className="h-11 text-white rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                      <SelectValue placeholder="Selecciona moneda" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {currencyOptions.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Precio unitario</Label>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]/40" />
-                      <Input
-                        type="number"
-                        value={form.price_unit || ''}
-                        onChange={(e) => updateField('price_unit', parseFloat(e.target.value) || 0)}
-                        placeholder="0.00"
-                        className="pl-9 h-11 text-white rounded-xl"
-                        style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                      />
-                    </div>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500" />
+                    <Input
+                      type="number"
+                      value={form.offer_price ?? ''}
+                      onChange={(e) => updateField('offer_price', e.target.value ? parseFloat(e.target.value) : null)}
+                      placeholder="Opcional"
+                      className="pl-9 h-11 text-white rounded-xl"
+                      style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(251, 191, 36, 0.2)' }}
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50 flex items-center gap-1">
-                      <Sparkles className="h-3 w-3 text-amber-400" /> Precio oferta
-                    </Label>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-amber-500" />
-                      <Input
-                        type="number"
-                        value={form.offer_price ?? ''}
-                        onChange={(e) => updateField('offer_price', e.target.value ? parseFloat(e.target.value) : null)}
-                        placeholder="Opcional"
-                        className="pl-9 h-11 text-white rounded-xl"
-                        style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(251, 191, 36, 0.2)' }}
-                      />
-                    </div>
-                    <p className="text-xs text-[#94A3B8]/40">Precio especial de oferta (opcional).</p>
-                  </div>
+                  <p className="text-xs text-[#94A3B8]/40">Precio especial de oferta (opcional).</p>
                 </div>
+              </div>
 
-                {form.price_unit > 0 && (
-                  <div
-                    className="rounded-xl p-4 space-y-2"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Vista previa</p>
-                    <div className="flex items-center gap-4">
+              {form.price_unit > 0 && (
+                <div
+                  className="rounded-xl p-4 space-y-2"
+                  style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Vista previa</p>
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <p className={`text-lg font-bold ${form.offer_price ? 'text-[#94A3B8]/40 line-through' : 'text-white'}`}>
+                        {form.currency} {form.price_unit.toLocaleString()}
+                      </p>
+                    </div>
+                    {form.offer_price && (
                       <div>
-                        <p className={`text-lg font-bold ${form.offer_price ? 'text-[#94A3B8]/40 line-through' : 'text-white'}`}>
-                          {form.currency} {form.price_unit.toLocaleString()}
+                        <p className="text-lg font-bold text-amber-400">
+                          {form.currency} {form.offer_price.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-[#10B981]">
+                          Ahorra {Math.round(((form.price_unit - form.offer_price) / form.price_unit) * 100)}%
                         </p>
                       </div>
-                      {form.offer_price && (
-                        <div>
-                          <p className="text-lg font-bold text-amber-400">
-                            {form.currency} {form.offer_price.toLocaleString()}
-                          </p>
-                          <p className="text-xs text-[#10B981]">
-                            Ahorra {Math.round(((form.price_unit - form.offer_price) / form.price_unit) * 100)}%
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
-                )}
-              </TabsContent>
-
-              {/* ── TAB: Imagenes del producto ── */}
-              <TabsContent value="images" className="mt-0 space-y-5">
-                <ImageSection
-                  title="Imagenes del producto"
-                  description="Imagenes principales que el bot enviara al cliente."
-                  images={form.product_images}
-                  type="product"
-                  uploading={uploadingImage}
-                  onUpload={handleImageUpload}
-                  onRemove={removeImage}
-                  onSetPrimary={setPrimaryImage}
-                  onMove={moveImage}
-                  onAddUrl={addUrlToImages}
-                />
-              </TabsContent>
-
-              {/* ── TAB: Imagenes de oferta ── */}
-              <TabsContent value="offer-images" className="mt-0 space-y-5">
-                <ImageSection
-                  title="Imagenes de oferta"
-                  description="Imagenes especiales de oferta/promocion que el bot usara al negociar precios."
-                  images={form.offer_images}
-                  type="offer"
-                  uploading={uploadingImage}
-                  onUpload={handleImageUpload}
-                  onRemove={removeImage}
-                  onSetPrimary={setPrimaryImage}
-                  onMove={moveImage}
-                  onAddUrl={addUrlToImages}
-                />
-              </TabsContent>
-
-              {/* ── TAB: Testimonios ── */}
-              <TabsContent value="testimonials" className="mt-0 space-y-5">
-                <SectionHeader icon={<Star className="h-4 w-4 text-amber-400" />} title="Testimonios" subtitle="Prueba social para generar confianza" />
-                <p className="text-sm text-[#94A3B8]/60">
-                  Agrega testimonios de clientes que el bot puede enviar para generar confianza.
-                </p>
-
-                {form.testimonials.map((t, i) => (
-                  <Card
-                    key={i}
-                    className="border-0 rounded-xl"
-                    style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
-                  >
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Badge className="inline-flex items-center gap-1.5 rounded-full px-2.5 h-6 text-[10px] font-semibold border-0" style={{ background: 'rgba(251, 191, 36, 0.12)', color: '#FBBF24' }}>
-                          Testimonio {i + 1}
-                        </Badge>
-                        <Button
-                          variant="ghost" size="sm"
-                          onClick={() => removeTestimonial(i)}
-                          className="text-red-400 hover:text-red-300 h-7 w-7 p-0"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Tipo</Label>
-                          <Select value={t.type} onValueChange={(v) => { if (v) updateTestimonial(i, 'type', v) }}>
-                            <SelectTrigger className="h-9 text-white rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="image">Imagen</SelectItem>
-                              <SelectItem value="video">Video</SelectItem>
-                              <SelectItem value="text">Texto</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-1">
-                          <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Descripcion</Label>
-                          <Input
-                            value={t.description}
-                            onChange={(e) => updateTestimonial(i, 'description', e.target.value)}
-                            placeholder="Ej: Resultado despues de 30 dias"
-                            className="h-9 text-white rounded-xl"
-                            style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                          />
-                        </div>
-                      </div>
-
-                      {t.type === 'text' ? (
-                        <div className="space-y-1">
-                          <Label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]/50">Contenido del testimonio</Label>
-                          <Textarea
-                            value={t.content}
-                            onChange={(e) => updateTestimonial(i, 'content', e.target.value)}
-                            placeholder="Texto del testimonio del cliente..."
-                            rows={2}
-                            className="text-white rounded-xl"
-                            style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          {t.url ? (
-                            <div className="space-y-2">
-                              <div className="flex items-start gap-3">
-                                {t.type === 'image' ? (
-                                  <img src={t.url} alt="Testimonio" className="h-20 w-20 rounded-lg object-cover shrink-0" style={{ border: '1px solid rgba(255, 255, 255, 0.08)' }} />
-                                ) : (
-                                  <video
-                                    src={t.url}
-                                    controls
-                                    className="w-full max-w-xs rounded-lg"
-                                    style={{ maxHeight: '180px', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                                  />
-                                )}
-                                <div className="flex-1 min-w-0 pt-1">
-                                  <p className="text-xs text-[#94A3B8]/50 truncate">{t.url}</p>
-                                </div>
-                                <Button variant="ghost" size="sm" onClick={() => updateTestimonial(i, 'url', '')} className="text-red-400 h-7 w-7 p-0 shrink-0">
-                                  <X className="h-3.5 w-3.5" />
-                                </Button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex gap-2">
-                              <Input
-                                value={t.url}
-                                onChange={(e) => updateTestimonial(i, 'url', e.target.value)}
-                                placeholder="URL de la imagen o video..."
-                                className="flex-1 h-9 text-white rounded-xl"
-                                style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                              />
-                              {(t.type === 'image' || t.type === 'video') && (
-                                <label
-                                  className="cursor-pointer inline-flex items-center gap-1.5 h-9 px-3 rounded-xl text-sm text-[#94A3B8]/70 hover:text-white transition-colors"
-                                  style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                                >
-                                  <input
-                                    type="file"
-                                    accept={t.type === 'video' ? 'video/*' : 'image/*'}
-                                    className="hidden"
-                                    onChange={(e) => {
-                                      if (e.target.files?.[0]) uploadTestimonialImage(e.target.files[0], i)
-                                    }}
-                                  />
-                                  <Upload className="h-3 w-3" /> Subir
-                                </label>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-
-                <Button
-                  onClick={addTestimonial}
-                  variant="outline"
-                  className="w-full gap-2 border-dashed text-amber-400 hover:text-amber-300 rounded-xl h-11"
-                  style={{ borderColor: 'rgba(251, 191, 36, 0.2)', background: 'rgba(251, 191, 36, 0.05)' }}
-                >
-                  <Plus className="h-4 w-4" />
-                  Agregar testimonio
-                </Button>
-              </TabsContent>
-
+                </div>
+              )}
             </div>
-          </Tabs>
+
+            {/* ── SECTION 4: IMAGENES PRINCIPALES ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
+                  <ImageIcon className="h-4 w-4" style={{ color: '#EC4899' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#EC4899' }}>IMAGENES PRINCIPALES</h3>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {[0, 1, 2].map((i) => (
+                  <ImageSlot
+                    key={`main-${i}`}
+                    index={i}
+                    image={form.product_images[i]}
+                    type="product"
+                    label={`Foto principal ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* ── SECTION 5: MAS FOTOS DEL PRODUCTO ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
+                  <Camera className="h-4 w-4" style={{ color: '#EC4899' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#EC4899' }}>MAS FOTOS DEL PRODUCTO</h3>
+              </div>
+
+              <div className="grid grid-cols-5 gap-2 sm:gap-3">
+                {[3, 4, 5, 6, 7].map((i) => (
+                  <ImageSlot
+                    key={`extra-${i}`}
+                    index={i}
+                    image={form.product_images[i]}
+                    type="product"
+                    label={`Foto ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* ── SECTION 6: VIDEOS DEL PRODUCTO ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.12)' }}>
+                  <Video className="h-4 w-4" style={{ color: '#3B82F6' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#3B82F6' }}>VIDEOS DEL PRODUCTO</h3>
+              </div>
+
+              <p className="text-xs text-[#94A3B8]/50">
+                Agrega URLs de videos del producto. El bot los enviara al cliente cuando sea relevante.
+              </p>
+
+              {/* Video URL inputs - use hooks field to store comma-separated URLs for now */}
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label className={labelClass}>URLs de videos (separadas por coma)</Label>
+                  <Textarea
+                    value={form.hooks}
+                    onChange={(e) => updateField('hooks', e.target.value)}
+                    placeholder="https://youtube.com/watch?v=..., https://vimeo.com/..."
+                    rows={3}
+                    className="text-white rounded-xl"
+                    style={inputStyle}
+                  />
+                  <p className="text-xs text-[#94A3B8]/40">Pega las URLs de los videos separadas por comas.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* ── SECTION 7: IMAGENES DE OFERTA ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(236, 72, 153, 0.12)' }}>
+                  <Sparkles className="h-4 w-4" style={{ color: '#EC4899' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#EC4899' }}>IMAGENES DE OFERTA</h3>
+              </div>
+
+              <p className="text-xs text-[#94A3B8]/50">
+                Imagenes especiales de oferta/promocion que el bot usara al negociar precios.
+              </p>
+
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
+                {[0, 1, 2, 3].map((i) => (
+                  <ImageSlot
+                    key={`offer-${i}`}
+                    index={i}
+                    image={form.offer_images[i]}
+                    type="offer"
+                    label={`Oferta ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* ── SECTION 8: FOTOS DE TESTIMONIOS ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.12)' }}>
+                  <Star className="h-4 w-4" style={{ color: '#FBBF24' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#FBBF24' }}>FOTOS DE TESTIMONIOS</h3>
+              </div>
+
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+                  <TestimonialImageSlot key={`test-img-${i}`} index={i} />
+                ))}
+              </div>
+            </div>
+
+            {/* ── SECTION 9: VIDEOS DE TESTIMONIOS ── */}
+            <div className="p-4 md:p-5 space-y-4" style={sectionStyle}>
+              <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.08)' }}>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.12)' }}>
+                  <Video className="h-4 w-4" style={{ color: '#FBBF24' }} />
+                </div>
+                <h3 className="text-[14px] font-semibold" style={{ color: '#FBBF24' }}>VIDEOS DE TESTIMONIOS</h3>
+              </div>
+
+              <div className="space-y-3">
+                {[0, 1, 2, 3].map((i) => {
+                  // Video testimonials are stored with type='video' in the testimonials array
+                  // We offset by 7 (after the 7 image testimonial slots)
+                  const videoIndex = 7 + i
+                  const testimonial = form.testimonials[videoIndex]
+
+                  return (
+                    <div key={`test-video-${i}`} className="space-y-1.5">
+                      <Label className={labelClass}>URL Video testimonial {i + 1}</Label>
+                      <Input
+                        value={testimonial?.url || ''}
+                        onChange={(e) => {
+                          const current = [...form.testimonials]
+                          while (current.length <= videoIndex) {
+                            current.push({ type: 'image', url: '', content: '', description: '' })
+                          }
+                          current[videoIndex] = { ...current[videoIndex], type: 'video', url: e.target.value }
+                          updateField('testimonials', current)
+                        }}
+                        placeholder="https://youtube.com/watch?v=... o URL del video"
+                        className="h-10 text-white rounded-xl"
+                        style={inputStyle}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+          </div>
 
           {/* Footer */}
-          <div className={`px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0 ${activeTab === '__menu__' ? 'hidden' : ''}`} style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+          <div className="px-5 md:px-6 py-3 md:py-4 flex items-center justify-between shrink-0" style={{ borderTop: '1px solid rgba(139, 92, 246, 0.1)' }}>
             <Button
               variant="ghost"
               onClick={() => setDialogOpen(false)}
@@ -1053,330 +1190,6 @@ export function ProductsTab({ botId }: ProductsTabProps) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  )
-}
-
-// ── Reusable sub-components ────────────────────────────────────
-
-function SectionHeader({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) {
-  return (
-    <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-      <div className="h-9 w-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(167, 139, 250, 0.1)' }}>
-        {icon}
-      </div>
-      <div>
-        <h3 className="text-[15px] font-semibold text-white">{title}</h3>
-        {subtitle && <p className="text-[11px] text-[#94A3B8]/60">{subtitle}</p>}
-      </div>
-    </div>
-  )
-}
-
-function ImageSection({
-  title,
-  description,
-  images,
-  type,
-  uploading,
-  onUpload,
-  onRemove,
-  onSetPrimary,
-  onMove,
-  onAddUrl,
-}: {
-  title: string
-  description: string
-  images: ImageItem[]
-  type: 'product' | 'offer'
-  uploading: boolean
-  onUpload: (files: FileList, type: 'product' | 'offer') => void
-  onRemove: (type: 'product' | 'offer', index: number) => void
-  onSetPrimary: (type: 'product' | 'offer', index: number) => void
-  onMove: (type: 'product' | 'offer', from: number, to: number) => void
-  onAddUrl: (url: string, type: 'product' | 'offer') => void
-}) {
-  const fileRef = useRef<HTMLInputElement>(null)
-  const [urlInput, setUrlInput] = useState('')
-  const [addingUrl, setAddingUrl] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-
-  const handleAddUrl = () => {
-    const url = urlInput.trim()
-    if (!url) return
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      toast.error('La URL debe empezar con http:// o https://')
-      return
-    }
-    onAddUrl(url, type)
-    setUrlInput('')
-    setAddingUrl(false)
-  }
-
-  const isVideoUrl = (url: string) => /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(url)
-  const previewIsVideo = previewUrl ? isVideoUrl(previewUrl) : false
-
-  return (
-    <div className="space-y-4">
-      <SectionHeader
-        icon={type === 'product' ? <ImageIcon className="h-4 w-4 text-[#A78BFA]" /> : <Sparkles className="h-4 w-4 text-amber-400" />}
-        title={title}
-        subtitle={description}
-      />
-      <p className="text-sm text-[#94A3B8]/60">{description}</p>
-
-      {/* Media grid */}
-      {images.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3">
-          {images.map((img, i) => {
-            const isVideo = isVideoUrl(img.url)
-            return (
-            <div key={i} className="relative group">
-              {isVideo ? (
-                <div
-                  className="w-full aspect-square rounded-lg flex items-center justify-center relative overflow-hidden"
-                  style={{
-                    background: 'rgba(0,0,0,0.4)',
-                    border: img.is_primary ? '2px solid #A78BFA' : '2px solid rgba(255, 255, 255, 0.06)',
-                  }}
-                >
-                  <video src={img.url} className="w-full h-full object-cover absolute inset-0" muted playsInline />
-                  <Play className="h-6 w-6 text-white/80 relative z-10 drop-shadow-lg" />
-                </div>
-              ) : (
-                <img
-                  src={img.url}
-                  alt={`Imagen ${i + 1}`}
-                  className="w-full aspect-square rounded-lg object-cover transition-all"
-                  style={{
-                    border: img.is_primary ? '2px solid #A78BFA' : '2px solid rgba(255, 255, 255, 0.06)',
-                  }}
-                />
-              )}
-              {img.is_primary && (
-                <div
-                  className="absolute top-1 left-1 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold"
-                  style={{ background: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%)' }}
-                >
-                  Principal
-                </div>
-              )}
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
-                <Button
-                  variant="ghost" size="sm"
-                  onClick={() => setPreviewUrl(img.url)}
-                  className="h-7 w-7 p-0 text-white hover:text-[#06B6D4]"
-                  title="Ampliar"
-                >
-                  <ZoomIn className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant="ghost" size="sm"
-                  onClick={() => window.open(img.url, '_blank')}
-                  className="h-7 w-7 p-0 text-white hover:text-[#06B6D4]"
-                  title="Abrir en nueva pestaña"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </Button>
-                {!img.is_primary && (
-                  <Button
-                    variant="ghost" size="sm"
-                    onClick={() => onSetPrimary(type, i)}
-                    className="h-7 w-7 p-0 text-[#A78BFA] hover:text-[#C4B5FD]"
-                    title="Hacer principal"
-                  >
-                    <Star className="h-3.5 w-3.5" />
-                  </Button>
-                )}
-                {i > 0 && (
-                  <Button
-                    variant="ghost" size="sm"
-                    onClick={() => onMove(type, i, i - 1)}
-                    className="h-7 w-7 p-0 text-white hover:text-[#94A3B8]"
-                    title="Mover izquierda"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost" size="sm"
-                  onClick={() => onRemove(type, i)}
-                  className="h-7 w-7 p-0 text-red-400 hover:text-red-300"
-                  title="Eliminar"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            </div>
-          )})}
-        </div>
-      )}
-
-      {/* Upload + URL area */}
-      {images.length < 10 && (
-        <div className="space-y-3">
-          <label className="cursor-pointer block">
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*,video/mp4,video/quicktime,video/webm"
-              multiple
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  onUpload(e.target.files, type)
-                  e.target.value = ''
-                }
-              }}
-            />
-            <div
-              className="border-2 border-dashed rounded-xl p-5 text-center transition-all hover:border-[#A78BFA]/40"
-              style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
-            >
-              {uploading ? (
-                <div className="flex flex-col items-center gap-2">
-                  <div className="h-8 w-8 rounded-full border-[3px] border-[#A78BFA]/20 border-t-[#A78BFA] animate-spin" />
-                  <p className="text-sm text-[#94A3B8]/50">Optimizando y subiendo...</p>
-                </div>
-              ) : (
-                <>
-                  <Upload className="h-7 w-7 text-[#94A3B8]/30 mx-auto mb-1.5" />
-                  <p className="text-sm text-[#94A3B8]/60">Click para subir imagenes o videos</p>
-                  <p className="text-xs text-[#94A3B8]/40 mt-1">Se optimizan automaticamente. {images.length}/10 archivos</p>
-                </>
-              )}
-            </div>
-          </label>
-
-          {/* URL paste */}
-          {addingUrl ? (
-            <div className="flex gap-2">
-              <Input
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddUrl()}
-                placeholder="https://ejemplo.com/imagen.jpg"
-                className="flex-1 h-9 text-white rounded-xl text-sm"
-                style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
-                autoFocus
-              />
-              <Button onClick={handleAddUrl} size="sm" className="h-9 px-3 rounded-xl bg-[#A78BFA] hover:bg-[#8B5CF6] text-white">
-                <Plus className="h-3.5 w-3.5" />
-              </Button>
-              <Button onClick={() => { setAddingUrl(false); setUrlInput('') }} variant="ghost" size="sm" className="h-9 w-9 p-0 text-[#94A3B8]">
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setAddingUrl(true)}
-              className="flex items-center gap-2 text-[12px] text-[#94A3B8]/50 hover:text-[#A78BFA] transition-colors"
-            >
-              <Link className="h-3.5 w-3.5" />
-              O pegar URL de imagen/video
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Lightbox preview */}
-      {previewUrl && (
-        <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
-          <DialogContent className="max-w-3xl p-2 bg-black/95 border-white/10">
-            <div className="flex justify-end gap-2 mb-1">
-              <Button
-                variant="ghost" size="sm"
-                onClick={() => window.open(previewUrl, '_blank')}
-                className="h-8 px-3 text-xs text-[#94A3B8] hover:text-white"
-              >
-                <ExternalLink className="h-3.5 w-3.5 mr-1.5" /> Abrir original
-              </Button>
-            </div>
-            {previewIsVideo ? (
-              <video src={previewUrl} controls autoPlay className="w-full max-h-[70vh] rounded-lg" />
-            ) : (
-              <img src={previewUrl} alt="Preview" className="w-full max-h-[70vh] object-contain rounded-lg" />
-            )}
-          </DialogContent>
-        </Dialog>
-      )}
-    </div>
-  )
-}
-
-// ── Mobile section selector for product dialog ──
-const PRODUCT_SECTIONS = [
-  { value: 'basic', label: 'Basico', desc: 'Nombre, categoria, estado', icon: FileText, color: '#A78BFA' },
-  { value: 'info', label: 'Informacion', desc: 'Descripcion y beneficios', icon: MessageSquare, color: '#06B6D4' },
-  { value: 'prices', label: 'Precios', desc: 'Precios y ofertas', icon: DollarSign, color: '#10B981' },
-  { value: 'images', label: 'Imagenes', desc: 'Fotos del producto', icon: ImageIcon, color: '#A78BFA' },
-  { value: 'offer-images', label: 'Imgs. Oferta', desc: 'Fotos de promocion', icon: Sparkles, color: '#F59E0B' },
-  { value: 'testimonials', label: 'Testimonios', desc: 'Prueba social', icon: Star, color: '#FBBF24' },
-]
-
-function MobileProductSections({ activeTab, onSelect }: { activeTab: string; onSelect: (v: string) => void }) {
-  const current = PRODUCT_SECTIONS.find((s) => s.value === activeTab)
-
-  return (
-    <div className="sm:hidden shrink-0" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
-      {/* Current section indicator + dropdown */}
-      <div className="px-4 py-2.5">
-        <button
-          onClick={() => onSelect('__menu__')}
-          className="w-full flex items-center gap-2.5 rounded-xl p-2.5 transition-all"
-          style={{
-            background: current ? `${current.color}10` : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${current ? `${current.color}20` : 'rgba(255,255,255,0.06)'}`,
-          }}
-        >
-          {current && (
-            <>
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-                style={{ background: `${current.color}18` }}
-              >
-                <current.icon className="h-4 w-4" style={{ color: current.color }} />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="text-[13px] font-semibold text-white">{current.label}</p>
-                <p className="text-[10px] text-[#94A3B8]/50">{current.desc}</p>
-              </div>
-              <span className="text-[10px] text-[#94A3B8]/40 font-medium">Cambiar seccion</span>
-              <ChevronRight className="h-3.5 w-3.5 text-[#94A3B8]/30 rotate-90" />
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Expanded menu */}
-      {activeTab === '__menu__' && (
-        <div className="px-4 pb-3 space-y-1.5 max-h-[50vh] overflow-y-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]/40 px-1 pb-1">Selecciona una seccion</p>
-          {PRODUCT_SECTIONS.map((section) => (
-            <button
-              key={section.value}
-              onClick={() => onSelect(section.value)}
-              className="w-full flex items-center gap-2.5 rounded-xl p-2.5 transition-all active:scale-[0.98]"
-              style={{
-                background: 'rgba(255, 255, 255, 0.025)',
-                border: '1px solid rgba(255, 255, 255, 0.04)',
-              }}
-            >
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-                style={{ background: `${section.color}15`, border: `1px solid ${section.color}20` }}
-              >
-                <section.icon className="h-4 w-4" style={{ color: section.color }} />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="text-[13px] font-medium text-white">{section.label}</p>
-                <p className="text-[10px] text-[#94A3B8]/50">{section.desc}</p>
-              </div>
-              <ChevronRight className="h-3.5 w-3.5 text-[#94A3B8]/25 shrink-0" />
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
