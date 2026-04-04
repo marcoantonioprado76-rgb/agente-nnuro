@@ -1,52 +1,40 @@
 /**
- * Motor de IA interno para el WhatsApp Manager.
- * Genera respuestas sin pasar por el endpoint HTTP (no requiere auth de usuario).
+ * BotEngine – core processing logic for WhatsApp bots.
  *
- * REGLA: El System Prompt del usuario es la UNICA fuente de verdad.
- * Este archivo solo provee: datos de sesion, productos y formato JSON minimo.
- * NO inyecta reglas, limites de caracteres, ni instrucciones de venta.
+ * ─── SISTEMA DE BUFFER ────────────────────────────────────────────────────────
+ * Cuando un usuario envía varios mensajes rápido (texto + audio + imagen):
+ *  1. Cada mensaje llega, se transcribe/analiza y se guarda en buffer en memoria
+ *  2. Se espera BUFFER_DELAY_MS (15 sg) para acumular todos los mensajes
+ *  3. El ÚLTIMO mensaje en llegar es el "ganador" y procesa todos juntos
+ *  4. Los mensajes buffered se combinan en 1 solo contexto
+ *  5. Ese contexto combinado se envía a OpenAI para generar la respuesta
+ * ─────────────────────────────────────────────────────────────────────────────
  */
-import OpenAI from 'openai'
-import { createServiceRoleClient } from '@/lib/supabase/server'
 
-/** Modelos GPT válidos que soporta el sistema */
-const VALID_GPT_MODELS = new Set([
-  'gpt-5.1', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini',
-])
-const DEFAULT_MODEL = 'gpt-5.1'
+import { ChatMessage } from '@/lib/openai'
 
-export interface AIResponse {
-  message1: string
-  message2: string | null
-  message3: string | null
-  photos_message1: string[] | null
-  videos_message1: string[] | null
-  report: string | null
-  context_memory: string | null
-  /** Datos estructurados del pedido cuando hay una venta confirmada */
-  order_data: {
-    product_id: string
-    product_name: string
-    quantity: number
-    total_amount: number
-    currency: string
-    shipping_address: string | null
-    customer_name: string | null
-    customer_phone: string | null
-  } | null
-  /** Tiempos opcionales controlados desde el prompt (en segundos). Si null, usa defaults del sistema. */
-  timing: {
-    delay_read: number | null       // segundos antes de marcar como leido
-    delay_typing: number | null     // segundos antes de empezar a escribir
-    typing_duration: number | null  // segundos simulando escritura
-    delay_between: number | null    // segundos entre mensajes
-    show_online: boolean | null     // mostrar como en linea
-  } | null
-}
+// ─── Prompt builder ───────────────────────────────────────────────────────────
 
-interface ConversationMessage {
-  sender: string
-  content: string
+/** Extrae todas las URLs (fotos + videos) ya enviadas en mensajes anteriores del bot */
+export function extractSentUrls(messages: Array<{ sender?: string; role?: string; content: string }>): string[] {
+  const urls: string[] = []
+  for (const m of messages) {
+    const isBot = m.sender === 'bot' || m.role === 'assistant'
+    if (!isBot) continue
+    // Buscar URLs en el contenido (puede ser JSON o texto plano)
+    try {
+      const parsed = JSON.parse(m.content) as Record<string, unknown>
+      const fotos = Array.isArray(parsed.fotos_mensaje1) ? parsed.fotos_mensaje1 as string[] : []
+      const videos = Array.isArray(parsed.videos_mensaje1) ? parsed.videos_mensaje1 as string[] : []
+      urls.push(...fotos, ...videos)
+    } catch {
+      // Buscar URLs directamente en el texto
+      const found = m.content.match(/https?:\/\/[^\s,)"]+/g) || []
+      urls.push(...found)
+    }
+  }
+  const filtered = urls.filter(u => typeof u === 'string' && u.startsWith('http'))
+  return Array.from(new Set(filtered))
 }
 
 interface ProductImage {
@@ -63,823 +51,516 @@ interface ProductTestimonial {
   description: string
 }
 
-/**
- * Genera una respuesta de IA para un bot dado un mensaje (o mensajes agrupados).
- * Carga TODA la configuracion del bot y productos desde la base de datos.
- */
-export async function generateBotResponse(
-  botId: string,
-  contactPhone: string,
-  message: string,
-  conversationId: string,
-  contactName: string = ''
-): Promise<AIResponse | null> {
-  try {
-    const supabase = await createServiceRoleClient()
-
-    // 1. CARGAR BOT + PROMPTS
-    console.log(`[AI Engine] Cargando bot ${botId}...`)
-    const { data: bot, error: botError } = await supabase
-      .from('bots')
-      .select('*, bot_prompts(*)')
-      .eq('id', botId)
-      .single()
-
-    if (botError || !bot) {
-      console.error(`[AI Engine] Bot ${botId} no encontrado:`, botError)
-      return null
-    }
-
-    if (!bot.is_active) {
-      console.log(`[AI Engine] Bot ${botId} inactivo`)
-      return null
-    }
-
-    console.log(`[AI Engine] Bot: "${bot.name}", modelo: ${bot.gpt_model || 'gpt-4o'}`)
-
-    // 2. API KEY
-    const apiKey = bot.openai_api_key || process.env.OPENAI_API_KEY
-    if (!apiKey) {
-      console.error(`[AI Engine] Sin API Key`)
-      return null
-    }
-
-    // 3. PRODUCTOS
-    const { data: products } = await supabase
-      .from('products')
-      .select('*, product_images(*), product_testimonials(*)')
-      .eq('bot_id', botId)
-      .eq('is_active', true)
-
-    console.log(`[AI Engine] Productos: ${products?.length || 0}`)
-
-    // 4. BOT PROMPTS
-    const botPrompt = bot.bot_prompts
-    if (!botPrompt) {
-      console.error(`[AI Engine] Bot ${botId} sin bot_prompts`)
-      return null
-    }
-
-    // 5. MEMORIA DE CONTEXTO
-    const { data: conversation } = await supabase
-      .from('conversations')
-      .select('product_interest')
-      .eq('id', conversationId)
-      .single()
-
-    const savedMemory = conversation?.product_interest || null
-    console.log(`[AI Engine] Memoria: ${savedMemory ? savedMemory.length + ' chars' : 'vacia'}`)
-
-    // 6. PRODUCTOS CONTEXTO
-    const productsContext = buildProductsContext(products || [])
-
-    // 7. HISTORIAL
-    const { data: history } = await supabase
-      .from('messages')
-      .select('sender, content')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true })
-      .limit(40)
-
-    const botMessages = (history || []).filter((m: ConversationMessage) => m.sender === 'bot')
-    const isFirstInteraction = botMessages.length === 0
-    const sentUrls = botMessages
-      .map((m: ConversationMessage) => m.content)
-      .join(' ')
-      .match(/https?:\/\/[^\s,)"]+/g) || []
-
-    console.log(`[AI Engine] Historial: ${history?.length || 0} msgs, primera_interaccion=${isFirstInteraction}, urls_enviadas=${sentUrls.length}`)
-
-    // 8. CONSTRUIR SYSTEM PROMPT
-    const systemPrompt = buildSystemPrompt(
-      botPrompt, productsContext, contactPhone, bot.report_phone,
-      isFirstInteraction, sentUrls, savedMemory, contactName
-    )
-
-    // 9. MENSAJES PARA OPENAI
-    const messages: OpenAI.ChatCompletionMessageParam[] = [
-      { role: 'system', content: systemPrompt },
-    ]
-
-    if (history && history.length > 0) {
-      for (const msg of history as ConversationMessage[]) {
-        messages.push({
-          role: msg.sender === 'bot' ? 'assistant' : 'user',
-          content: msg.content,
-        })
-      }
-    }
-
-    messages.push({ role: 'user', content: message })
-
-    // 10. LLAMAR A OPENAI
-    const openai = new OpenAI({ apiKey })
-    const rawModel = bot.gpt_model || DEFAULT_MODEL
-    const selectedModel = VALID_GPT_MODELS.has(rawModel) ? rawModel : DEFAULT_MODEL
-    if (rawModel !== selectedModel) {
-      console.warn(`[AI Engine] ⚠️ Modelo inválido "${rawModel}" en DB, usando fallback "${selectedModel}"`)
-    }
-    const useJsonMode = botPrompt.strict_json_output === true
-
-    console.log(`[AI Engine] OpenAI: modelo=${selectedModel}, json_mode=${useJsonMode}, msgs=${messages.length}`)
-
-    const completionParams: OpenAI.ChatCompletionCreateParamsNonStreaming = {
-      model: selectedModel,
-      messages,
-      temperature: 0.7,
-      max_completion_tokens: 800,
-    }
-
-    if (useJsonMode) {
-      completionParams.response_format = { type: 'json_object' }
-    }
-
-    let completion: OpenAI.ChatCompletion | null = null
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        completion = await openai.chat.completions.create(completionParams)
-        break
-      } catch (err: unknown) {
-        const errMsg = err instanceof Error ? err.message : String(err)
-        const isNetworkError = errMsg.includes('fetch failed') || errMsg.includes('ENOTFOUND') || errMsg.includes('ETIMEDOUT') || errMsg.includes('Connection error')
-        if (isNetworkError && attempt < 3) {
-          console.log(`[AI Engine] Red error (${attempt}/3): ${errMsg}. Retry 2s...`)
-          await new Promise(r => setTimeout(r, 2000))
-          continue
-        }
-        throw err
-      }
-    }
-
-    let responseContent = completion?.choices[0]?.message?.content
-
-    // NEVER fail — retry aggressively until OpenAI responds
-    if (!responseContent) {
-      const finishReason = completion?.choices[0]?.finish_reason
-      console.error(`[AI Engine] Sin respuesta. finish_reason=${finishReason}, msgs=${messages.length}`)
-
-      for (let cycle = 1; cycle <= 3 && !responseContent; cycle++) {
-        console.log(`[AI Engine] Ciclo de reintentos ${cycle}/3...`)
-
-        // Retry 1: fewer messages
-        if (!responseContent && messages.length > 5) {
-          try {
-            const r = await openai.chat.completions.create({ ...completionParams, messages: [messages[0], ...messages.slice(-4)] })
-            responseContent = r?.choices[0]?.message?.content
-            if (responseContent) { console.log(`[AI Engine] Retry ${cycle}.1 exitoso (menos historial)`); break }
-          } catch { /* continue */ }
-        }
-
-        // Retry 2: no json_mode
-        if (!responseContent) {
-          try {
-            const r = await openai.chat.completions.create({ model: selectedModel, messages: [messages[0], messages[messages.length - 1]], temperature: 0.7, max_completion_tokens: 400 })
-            responseContent = r?.choices[0]?.message?.content
-            if (responseContent) { console.log(`[AI Engine] Retry ${cycle}.2 exitoso (sin json_mode)`); break }
-          } catch { /* continue */ }
-        }
-
-        // Retry 3: cheaper model
-        if (!responseContent) {
-          try {
-            const r = await openai.chat.completions.create({ model: 'gpt-4o-mini', messages: [messages[0], messages[messages.length - 1]], temperature: 0.7, max_completion_tokens: 300 })
-            responseContent = r?.choices[0]?.message?.content
-            if (responseContent) { console.log(`[AI Engine] Retry ${cycle}.3 exitoso (gpt-4o-mini)`); break }
-          } catch { /* continue */ }
-        }
-
-        // Wait before next cycle
-        if (!responseContent && cycle < 3) {
-          await new Promise(r => setTimeout(r, 3000))
-        }
-      }
-
-      if (!responseContent) {
-        console.error(`[AI Engine] 9 reintentos agotados, sin respuesta`)
-        return null
-      }
-    }
-
-    console.log(`[AI Engine] Respuesta: ${responseContent.length} chars`)
-    console.log(`[AI Engine] Cruda: ${responseContent.substring(0, 500)}${responseContent.length > 500 ? '...' : ''}`)
-
-    // 11. PARSEAR RESPUESTA (sin truncar — el System Prompt controla todo)
-    return parseAIResponse(responseContent)
-  } catch (err) {
-    const errMsg = err instanceof Error ? err.message : String(err)
-    console.error(`[AI Engine] Error:`, errMsg)
-
-    // Re-throw fatal errors so the manager can auto-disable the bot
-    const isFatal = errMsg.includes('insufficient_quota') || errMsg.includes('429')
-      || errMsg.includes('404') || errMsg.includes('401')
-      || errMsg.includes('invalid_api_key') || errMsg.includes('Incorrect API key')
-      || errMsg.includes('billing') || errMsg.includes('exceeded')
-    if (isFatal) throw err
-
-    return null
-  }
-}
-
-/**
- * Construye el contexto de productos.
- * Solo datos, sin instrucciones de uso (eso lo define el System Prompt).
- */
-function buildProductsContext(products: Record<string, unknown>[]): string {
-  if (!products || products.length === 0) return 'No hay productos configurados.'
-
-  return products.map((p) => {
-    const imgs = (p.product_images as ProductImage[]) || []
-    const testimonials = (p.product_testimonials as ProductTestimonial[]) || []
-
-    const productImgs = imgs.filter(i => i.image_type === 'product')
-    const offerImgs = imgs.filter(i => i.image_type === 'offer')
-
-    const textTestimonials = testimonials.filter(t => t.type === 'text')
-    const imageTestimonials = testimonials.filter(t => t.type === 'image')
-    const videoTestimonials = testimonials.filter(t => t.type === 'video')
-
-    // Separate main images (first 3) from additional photos (rest)
-    const mainImgs = productImgs.slice(0, 3)
-    const moreImgs = productImgs.slice(3)
-
-    // Separate testimonial photos from testimonial videos
-    const testimonialPhotos = imageTestimonials
-    const testimonialVideos = videoTestimonials
-
-    let ctx = `═══ PRODUCTO: ${p.name} (ID: ${p.id}) ═══`
-
-    if (p.first_message) {
-      ctx += `\n\n--- PRIMER MENSAJE DEL PRODUCTO (ENVIAR EXACTO CUANDO SE IDENTIFIQUE) ---\n${p.first_message}`
-    }
-
-    if (p.category) ctx += `\nCategoria: ${p.category}`
-    if (p.description) ctx += `\nDescripcion: ${p.description}`
-    if (p.benefits) ctx += `\nBeneficios: ${p.benefits}`
-    if (p.usage_instructions) ctx += `\nModo de uso: ${p.usage_instructions}`
-    if (p.warnings) ctx += `\nAdvertencias: ${p.warnings}`
-
-    ctx += `\n\n--- PRECIOS ---`
-    ctx += `\nMoneda: ${p.currency || 'BOB'}`
-    ctx += `\nPrecio unitario: ${p.currency} ${p.price_unit}`
-    if (p.offer_price) ctx += `\nPrecio de oferta: ${p.currency} ${p.offer_price}`
-    if (p.price_promo_x2) ctx += `\nPrecio promo x2: ${p.currency} ${p.price_promo_x2}`
-    if (p.price_super_x6) ctx += `\nPrecio super x6: ${p.currency} ${p.price_super_x6}`
-
-    if (mainImgs.length > 0) {
-      ctx += `\n\n--- IMAGENES PRINCIPALES (enviar 1 en primer contacto) ---`
-      mainImgs.forEach((img, i) => { ctx += `\n  [Imagen principal ${i + 1}]: ${img.url}` })
-    }
-
-    if (moreImgs.length > 0) {
-      ctx += `\n\n--- MAS FOTOS DEL PRODUCTO (enviar solo si el cliente pide mas fotos) ---`
-      moreImgs.forEach((img, i) => { ctx += `\n  [Foto adicional ${i + 1}]: ${img.url}` })
-    }
-
-    // Videos del producto from hooks field (URLs)
-    const productVideoUrls = (p.hooks as string[] || []).filter(h => h.startsWith('http'))
-    if (productVideoUrls.length > 0) {
-      ctx += `\n\n--- VIDEOS DEL PRODUCTO (enviar cuando sea relevante o el cliente pida ver en accion) ---`
-      productVideoUrls.forEach((url, i) => { ctx += `\n  [Video producto ${i + 1}]: ${url}` })
-    }
-
-    if (offerImgs.length > 0) {
-      ctx += `\n\n--- IMAGENES DE OFERTA ---`
-      offerImgs.forEach((img, i) => { ctx += `\n  [Oferta ${i + 1}]: ${img.url}` })
-    }
-
-    if (testimonialPhotos.length > 0) {
-      ctx += `\n\n--- FOTOS DE TESTIMONIOS (enviar como prueba social ante dudas) ---`
-      testimonialPhotos.forEach((t, i) => {
-        ctx += `\n  [Testimonio foto ${i + 1}]: ${t.url}`
-        if (t.description) ctx += ` — ${t.description}`
-      })
-    }
-
-    if (testimonialVideos.length > 0) {
-      ctx += `\n\n--- VIDEOS DE TESTIMONIOS (enviar como prueba social, priorizar sobre fotos) ---`
-      testimonialVideos.forEach((t, i) => {
-        ctx += `\n  [Testimonio video ${i + 1}]: ${t.url}`
-        if (t.description) ctx += ` — ${t.description}`
-      })
-    }
-
-    if (textTestimonials.length > 0) {
-      ctx += `\n\n--- TESTIMONIOS DE TEXTO ---`
-      textTestimonials.forEach((t, i) => {
-        ctx += `\n  [Testimonio ${i + 1}]: "${t.content}"`
-        if (t.description) ctx += ` — ${t.description}`
-      })
-    }
-
-    console.log(`[AI Engine] Producto "${p.name}": ${p.currency} ${p.price_unit}, imgs=${imgs.length}, testimonios=${testimonials.length}`)
-
-    return ctx
-  }).join('\n\n')
-}
-
-/**
- * Construye el system prompt.
- *
- * REGLA: El System Prompt del usuario es la UNICA fuente de verdad.
- * El dynamicContext solo agrega DATOS FACTUALES que el prompt no puede saber:
- * - Datos de sesion (telefono, nombre, genero)
- * - Estado (primera interaccion, URLs enviadas)
- * - Memoria persistente
- * - Catalogo de productos
- * - Campo "contexto" para memoria (unica adicion al formato JSON del usuario)
- *
- * NO agrega: limites de caracteres, reglas de mensajes, instrucciones de venta,
- * ni nada que el System Prompt ya defina.
- */
-function buildSystemPrompt(
-  botPrompt: Record<string, unknown>,
-  productsContext: string,
-  contactPhone: string,
-  reportPhone: string | null,
-  isFirstInteraction: boolean,
-  sentUrls: string[],
-  savedMemory: string | null,
-  contactName: string = ''
+export function buildSystemPrompt(
+  bot: { name: string; report_phone?: string | null },
+  botPrompt: { system_prompt?: string | null; personality?: string | null },
+  products: Array<Record<string, unknown>>,
+  userName?: string | null,
+  userPhone?: string | null,
+  identifiedProductIds?: string[],
+  sentUrls?: string[],
+  isFirstInteraction?: boolean,
 ): string {
-  const systemPromptBase = (botPrompt.system_prompt as string) || 'Eres un asistente de ventas profesional.'
+  // Limpieza: si userName parece un teléfono, usar 'cliente'
+  const isNumeric = userName && /^\d+$/.test(userName.replace(/[+\s-]/g, ''))
+  const nameToUse = (userName && !isNumeric) ? userName : 'cliente'
 
-  // Detectar genero del contacto por nombre (dato factual, no regla)
-  const nameForDetection = contactName.trim().split(/\s+/)[0]?.toLowerCase() || ''
-  const femaleNames = ['maria', 'ana', 'carmen', 'rosa', 'patricia', 'luz', 'elena', 'claudia', 'martha', 'marta', 'laura', 'andrea', 'gabriela', 'daniela', 'alejandra', 'fernanda', 'valentina', 'isabella', 'sofia', 'camila', 'natalia', 'paola', 'carolina', 'diana', 'cecilia', 'silvia', 'susana', 'monica', 'veronica', 'jessica', 'lorena', 'rocio', 'adriana', 'lucia', 'julia', 'gloria', 'sandra', 'norma', 'teresa', 'cristina', 'margarita', 'elizabeth', 'beatriz', 'alicia', 'irma', 'leticia', 'juana', 'yolanda', 'angela', 'karen', 'karina', 'mariana', 'viviana', 'wendy', 'pamela', 'lidia', 'dora', 'miriam', 'ruth', 'esther', 'ester', 'nelly', 'neli', 'jenny', 'gaby', 'paty', 'lupe', 'magaly', 'magali', 'maribel', 'flor', 'pilar', 'sonia', 'mirtha']
-  const maleNames = ['jose', 'juan', 'carlos', 'luis', 'pedro', 'miguel', 'jorge', 'roberto', 'fernando', 'ricardo', 'daniel', 'francisco', 'mario', 'david', 'oscar', 'marco', 'marcos', 'hugo', 'pablo', 'raul', 'rafael', 'diego', 'sergio', 'arturo', 'gustavo', 'alejandro', 'andres', 'antonio', 'gabriel', 'hector', 'ivan', 'jaime', 'javier', 'leonardo', 'manuel', 'martin', 'nelson', 'ramon', 'santiago', 'victor', 'willy', 'freddy', 'percy', 'rolando', 'edwin', 'erwin', 'gonzalo', 'alvaro', 'boris', 'christian', 'cristian', 'edu', 'enrique', 'fabian', 'felipe', 'gerardo', 'ismael', 'jhon', 'john', 'julio']
-
-  let detectedGender: 'female' | 'male' | 'unknown' = 'unknown'
-  if (nameForDetection) {
-    if (femaleNames.includes(nameForDetection)) detectedGender = 'female'
-    else if (maleNames.includes(nameForDetection)) detectedGender = 'male'
-    else if (nameForDetection.endsWith('a') && !nameForDetection.endsWith('ba') && !nameForDetection.endsWith('ca')) detectedGender = 'female'
-    else if (nameForDetection.endsWith('o') || nameForDetection.endsWith('os')) detectedGender = 'male'
+  const currencySymbols: Record<string, string> = {
+    USD: '$', EUR: '€', BOB: 'Bs.', PEN: 'S/',
+    COP: '$', ARS: '$', MXN: '$', CLP: '$', UYU: '$', CUP: '$',
+    GTQ: 'Q', HNL: 'L', NIO: 'C$', CRC: '₡',
+    PAB: 'B/.', DOP: 'RD$', PYG: '₲', BRL: 'R$', VES: 'Bs.S',
   }
 
-  const genderLabel = detectedGender === 'female' ? 'mujer' : detectedGender === 'male' ? 'hombre' : 'no identificado'
-  console.log(`[AI Engine] Contacto: "${contactName}", genero: ${genderLabel}`)
+  const welcomeSent = !isFirstInteraction
 
-  // ═══════════════════════════════════════
-  // DATOS FACTUALES SOLAMENTE — sin reglas
-  // ═══════════════════════════════════════
-  let dynamicContext = `
+  const productBlock = products
+    .map(p => {
+      const currency = (p.currency as string | undefined) ?? 'USD'
+      const sym = currencySymbols[currency] ?? currency
 
-═══ DATOS DE ESTA SESION ═══
-Telefono del cliente: ${contactPhone}
-Nombre del cliente: ${contactName || 'No disponible'}
-Genero detectado: ${genderLabel}`
+      // Smart filter: si se detectaron productos, los no mencionados van con info mínima
+      if (identifiedProductIds?.length && !identifiedProductIds.includes(p.id as string)) {
+        return [
+          `### PRODUCTO: ${p.name}`,
+          p.price_unit ? `- Precio unitario: ${sym}${p.price_unit} (${currency})` : '',
+          p.price_promo_x2 ? `- Precio promo ×2: ${sym}${p.price_promo_x2} (${currency})` : '',
+          p.price_super_x6 ? `- Precio súper ×6: ${sym}${p.price_super_x6} (${currency})` : '',
+        ].filter(Boolean).join('\n')
+      }
 
-  if (reportPhone) {
-    dynamicContext += `
-Numero para reportes de venta: ${reportPhone}`
-  }
+      // Imágenes del producto (de product_images)
+      const imgs = (p.product_images as ProductImage[]) || []
+      const productImgs = imgs.filter(i => i.image_type === 'product').sort((a, b) => a.sort_order - b.sort_order)
+      const mainImgs = productImgs.slice(0, 3).map(i => i.url)
+      const moreImgs = productImgs.slice(3, 8).map(i => i.url)
 
-  dynamicContext += `
-Primera interaccion: ${isFirstInteraction ? 'SI' : 'NO'}`
+      // Testimonios
+      const testimonials = (p.product_testimonials as ProductTestimonial[]) || []
+      const testimonialsImages = testimonials
+        .filter(t => t.type === 'image' && t.url?.startsWith('http'))
+        .map(t => ({ url: t.url, label: t.description || '' }))
+      const testimonialsVideos = testimonials
+        .filter(t => t.type === 'video' && t.url?.startsWith('http'))
+        .map(t => ({ url: t.url, label: t.description || '' }))
 
-  if (sentUrls.length > 0) {
-    dynamicContext += `
-URLs ya enviadas (no repetir):
-${sentUrls.map(u => `- ${u}`).join('\n')}`
-  }
+      // Videos del producto (de hooks field o de product_images type=offer)
+      const rawProductVideos = Array.isArray(p.hooks)
+        ? (p.hooks as string[]).filter(h => typeof h === 'string' && h.startsWith('http'))
+        : []
 
-  if (savedMemory) {
-    dynamicContext += `
+      return [
+        `### PRODUCTO: ${p.name}`,
+        p.category ? `Categoría: ${p.category}` : '',
+        p.benefits ? `Beneficios: ${p.benefits}` : '',
+        p.usage_instructions ? `Uso: ${p.usage_instructions}` : '',
+        p.warnings ? `Advertencias: ${p.warnings}` : '',
+        !welcomeSent ? `Primer mensaje del producto identificado: "${p.first_message || ''}"` : '',
+        !welcomeSent ? `Imágenes principales (enviar 1): ${JSON.stringify(mainImgs)}` : '',
+        `Precios: unitario=${sym}${p.price_unit ?? '—'} | ×2=${sym}${p.price_promo_x2 ?? '—'} | ×6=${sym}${p.price_super_x6 ?? '—'}`,
+        `Más fotos: ${JSON.stringify(moreImgs)}`,
+        rawProductVideos.length > 0 ? `Videos producto: ${JSON.stringify(rawProductVideos)}` : '',
+        `Fotos testimonios: ${JSON.stringify(testimonialsImages)}`,
+        testimonialsVideos.length > 0 ? `Videos testimonios: ${JSON.stringify(testimonialsVideos)}` : '',
+        p.description ? `Descripción: ${p.description}` : '',
+      ].filter(Boolean).join('\n')
+    })
+    .join('\n\n')
 
-═══ MEMORIA DEL CLIENTE ═══
-${savedMemory}`
-  }
+  const sentUrlsBlock = sentUrls && sentUrls.length > 0 ? `
 
-  // Shipping data from personality field
+---
+
+# 🚫 URLs YA ENVIADAS — COMPLETAMENTE PROHIBIDO REPETIRLAS
+
+Las siguientes URLs ya fueron enviadas en esta conversación. JAMÁS las incluyas en fotos_mensaje1 ni videos_mensaje1. Si la única URL disponible ya fue enviada, deja el array vacío [].
+
+${sentUrls.map(u => `- ${u}`).join('\n')}` : ''
+
+  const customPrompt = botPrompt.system_prompt?.trim()
+
+  // Datos de envío desde el campo personality
+  let shippingBlock = ''
   try {
     const personalityRaw = (botPrompt.personality as string) || '{}'
     const shippingData = JSON.parse(personalityRaw)
     const hasShipping = shippingData.shipping_info || shippingData.coverage || shippingData.sell_zones || shippingData.delivery_zones
     if (hasShipping) {
-      console.log(`[AI Engine] Shipping data cargado: ${Object.keys(shippingData).filter(k => shippingData[k]).join(', ')}`)
-      dynamicContext += `
-
-═══ ENVIO Y COBERTURA ═══`
-      if (shippingData.shipping_info) dynamicContext += `\nInformacion de envio: ${shippingData.shipping_info}`
-      if (shippingData.coverage) dynamicContext += `\nCobertura: ${shippingData.coverage}`
-      if (shippingData.sell_zones) dynamicContext += `\nZonas de venta: ${shippingData.sell_zones}`
-      if (shippingData.delivery_zones) dynamicContext += `\nZonas de entrega: ${shippingData.delivery_zones}`
-      dynamicContext += `\nUSA esta informacion cuando el cliente pregunte por envios, cobertura, zonas de entrega o tiempos de envio. No inventes datos de envio.`
+      shippingBlock = '\n\n---\n\n# 🚚 ENVÍO Y COBERTURA\n'
+      if (shippingData.shipping_info) shippingBlock += `\nInformación de envío: ${shippingData.shipping_info}`
+      if (shippingData.coverage) shippingBlock += `\nCobertura: ${shippingData.coverage}`
+      if (shippingData.sell_zones) shippingBlock += `\nZonas de venta: ${shippingData.sell_zones}`
+      if (shippingData.delivery_zones) shippingBlock += `\nZonas de entrega: ${shippingData.delivery_zones}`
     }
-  } catch (err) {
-    console.error(`[AI Engine] Error parseando personality/shipping JSON:`, err)
+  } catch { /* ignore */ }
+
+  // Si el usuario tiene su propio prompt → lo usa como flujo completo
+  if (customPrompt) {
+    return `
+# 👤 CLIENTE ACTUAL
+
+- Nombre: ${nameToUse}
+- Género: detectar por el nombre y usar el trato correspondiente del prompt (señorita/casera si mujer, estimado/amigo si hombre). Si el nombre es genérico o desconocido, usar trato neutro.
+- Teléfono: ${userPhone ? userPhone.replace(/^\+/, '') : 'desconocido'}
+- Primer mensaje del producto: ${welcomeSent ? 'YA FUE ENVIADO — NO repetirlo ni la foto principal' : 'AÚN NO enviado — cuando identifiques el producto, copia y envía su texto COMPLETO y EXACTO en mensaje1, sin resumir ni recortar, aunque tenga 600+ caracteres.'}
+
+---
+
+${customPrompt}
+${shippingBlock}
+${sentUrlsBlock}
+
+---
+
+# 🧩 BASE DE CONOCIMIENTO (CATÁLOGO)
+
+${productBlock}
+
+---
+
+# 📦 FORMATO DE SALIDA (OBLIGATORIO — NO NEGOCIABLE)
+
+Responde SIEMPRE con este JSON exacto, sin texto fuera del JSON.
+
+Regla de mensajes:
+- mensaje1: SIEMPRE requerido.
+- mensaje2: SOLO para un gatillo mental o pregunta clave de cierre. Si no es necesario, dejar "".
+- mensaje3: SOLO si es imprescindible (muy raro). Si no, dejar "".
+- En la mayoría de turnos solo va mensaje1.
+
+\`\`\`json
+{
+  "mensaje1": "Texto principal del turno",
+  "mensaje2": "",
+  "mensaje3": "",
+  "fotos_mensaje1": [],
+  "videos_mensaje1": [],
+  "reporte": ""
+}
+\`\`\`
+`.trim()
   }
 
-  dynamicContext += `
+  // Sin prompt personalizado → flujo por defecto completo
+  const identityBlock = `Eres ${bot.name}, vendedor profesional de WhatsApp. Amable, directo y humano.\n\nTono: corto, cálido, cercano.\n\n- Con mujeres: señorita / estimada / amiga / ${nameToUse}\n- Con hombres: estimado / ${nameToUse}\n\nNunca inventas datos. Siempre presionas de forma ética hacia la compra.`
 
-═══ CATALOGO DE PRODUCTOS ═══
-${productsContext}`
+  return `
+# 👤 CLIENTE ACTUAL
 
-  // Campo "contexto" para memoria persistente entre turnos
-  dynamicContext += `
+- Nombre: ${nameToUse}
+- Género: detectar por el nombre y usar el trato correspondiente (señorita/casera si mujer, estimado/amigo si hombre). Si es genérico o desconocido, usar trato neutro.
+- Teléfono: ${userPhone ? userPhone.replace(/^\+/, '') : 'desconocido'}
+- Primer mensaje del producto: ${welcomeSent ? 'YA FUE ENVIADO — NO repetirlo ni la foto principal' : 'AÚN NO enviado — enviar en este turno si el producto está identificado'}
 
-═══ MEMORIA ENTRE TURNOS ═══
-Agrega en tu respuesta JSON un campo llamado "contexto" con un resumen breve del estado actual de la conversacion (nombre del cliente, producto, etapa, que se dijo, que falta). No se envia al cliente — es memoria interna del sistema.`
+---
 
-  // Informar sobre timing opcional
-  dynamicContext += `
+# 🎯 IDENTIDAD
 
-═══ TIMING (OPCIONAL) ═══
-Si tu prompt define tiempos de respuesta, agrega un campo "timing" en tu JSON con estos subcampos (en segundos):
-- delay_read: segundos antes de marcar como leido (default: 10)
-- delay_typing: segundos antes de empezar a escribir (default: 5-10)
-- typing_duration: segundos simulando escritura (default: 5-8)
-- delay_between: segundos entre mensajes multiples (default: 3-5)
-- show_online: true/false para mostrar como en linea (default: true)
-Si no incluyes "timing", se usan los defaults del sistema.`
+${identityBlock}
 
-  // Informar sobre registro de venta automatico
-  dynamicContext += `
+---
 
-═══ REGISTRO DE VENTA (OBLIGATORIO CON REPORTE) ═══
-Cuando generes un "reporte" de venta confirmada, SIEMPRE incluye tambien un campo "pedido" en tu JSON con estos datos:
-- product_id: el ID del producto vendido (esta en el catalogo arriba)
-- producto: nombre del producto
-- cantidad: numero de unidades (default: 1)
-- monto_total: precio total en numero (sin simbolo de moneda)
-- moneda: codigo de moneda (ej: "BOB", "USD")
-- direccion: direccion de envio del cliente (o null si no se tiene)
-- nombre_cliente: nombre del cliente
-- telefono_cliente: numero de telefono del cliente (si lo menciono en la conversacion, ej: "78515950")
-Esto registra la venta automaticamente en el sistema. Sin este campo, la venta NO queda registrada.`
+# 🧠 SECUENCIA PRINCIPAL
 
-  // Refuerzo final de limites de caracteres (el modelo tiende a ignorarlos)
-  dynamicContext += `
+## 1. Dar un bienvenida cálida y amigable y luego Identificación del producto (OBLIGATORIO)
 
-═══ RECORDATORIO CRITICO ═══
-RESPETA ESTRICTAMENTE los limites de caracteres definidos en tu prompt.
-Los mensajes de WhatsApp deben ser CORTOS. Si tu prompt dice maximo 78 caracteres, NO generes mas de 78.
-Escribe frases cortas y directas como en un chat real. NUNCA parrafos largos.
-Si necesitas dar mucha info, dividela en mensaje1, mensaje2 y mensaje3 (todos cortos).
+Primero dar una bienvenida calida y amigable.
 
-═══ REGLA ANTI-REPETICION (MUY IMPORTANTE) ═══
-Lee el historial COMPLETO antes de responder. NUNCA repitas una pregunta que ya fue respondida.
-Si el cliente ya confirmo un dato (nombre, telefono, direccion, cantidad), NO lo vuelvas a preguntar.
-Si ya tienes TODOS los datos necesarios (producto, cantidad, direccion, nombre, telefono), pasa DIRECTAMENTE a la CONFIRMACION y genera el REPORTE.
-Repetir la misma pregunta es un error grave — el cliente se frustra y pierde confianza.`
+Luego identifica el producto de interés (obligatorio).
 
-  return systemPromptBase + dynamicContext
+Si no está identificado:
+
+- NO envíes bienvenida, precios, fotos ni beneficios.
+- Pregunta amablemente: "¿Qué producto te interesa?"
+
+El flujo no avanza hasta que el producto esté identificado.
+
+---
+
+## 2. Primera interacción (solo si el producto ya fue identificado)
+
+Si es la primera vez que el usuario consulta sobre ese producto:
+
+- Enviar el texto exacto del campo "Primer mensaje del producto identificado".
+- NO incluir precios en este mensaje.
+- Enviar 1 foto de "Imágenes principales" en fotos_mensaje1 (solo se puede enviar una vez).
+- Añadir gatillos mentales suaves: transformación, autoridad, prueba social.
+
+Una vez enviado el primer mensaje y la primera foto "Imágenes principales"  → no repetirlo en ningún turno posterior.
+
+---
+
+## 3. Detección de intención
+
+Detecta una sola intención dominante por turno:
+Interés / Duda / Precio / Comparación / Compra / Entrega
+
+Máximo 3 mensajes por turno.
+
+---
+
+## 4. Precios
+
+Solo informa precios si el usuario los solicita explícitamente.
+
+- Precio unitario → cuando quiere 1 unidad.
+- Precio promo ×2 o Precio súper ×6 → cuando quiere 2 o más unidades.
+
+Usa gatillos de: ahorro, urgencia y beneficio inmediato.
+
+NUNCA inventas montos. Usa solo los precios de la base de conocimiento del producto.
+
+## 5. Fotos y videos del producto (usar según lo que pida el cliente)
+
+- Si el usuario pide **fotos** → envía desde "**Más fotos del producto**" en fotos_mensaje1.
+- Si el usuario pide **ver el producto en acción** o pide un **video** → envía desde "**Videos del producto**" en videos_mensaje1.
+- Puedes combinar: una foto Y un video en el mismo turno si el cliente quiere ver más.
+- Nunca repitas la misma URL ya enviada en la conversación.
+
+---
+
+## 6. Testimonios y confianza (usar testimonios solo si existen)
+
+Si detectas duda, inseguridad o el usuario pide evidencias o testimonios, o deseas reforzar la confianza:
+
+- Usa **fotos de testimonios** (desde "Fotos de testimonios") Y/O **videos de testimonios** (desde "Videos de testimonios") según lo que tengas disponible.
+- Si tienes tanto fotos como videos de testimonios, puedes enviar uno de cada tipo en el mismo turno para mayor impacto.
+- Si el cliente pide específicamente un video testimonio → usa "Videos de testimonios".
+- Si el cliente pide fotos de resultados → usa "Fotos de testimonios".
+- No repitas la misma foto o video en la misma conversación.
+- Acompaña siempre con un mensaje de prueba social y credibilidad.
+
+---
+
+## **7. Comparación y cierre**
+
+Guía suave hacia la decisión:
+
+- Resaltar beneficios del producto.
+- Mostrar resultados potenciales o transformación (sin inventar).
+- Los mensajes deben avanzar hacia:
+    - Confirmación de compra
+    - Datos de entrega
+    - Selección de variante
+
+Siempre con amabilidad y claridad.
+
+---
+
+# 📍 **DIRECCIÓN**
+
+Válida si incluye:
+
+- Ciudad
+- Calle
+- Zona
+- Nº (si existe)
+
+    o coordenadas / link Maps.
+
+Si falta algo → pedir solo lo faltante o direccion en gps (validar coordenadas).
+
+Debes pedir nombre y numero de telefono obligatorio.
+
+Si es de provincia no pedir direccion detallada en vez de eso preguntar por que linea de transporte le gustaria que se lo mandemos en cuanto confirme pasar a (CONFIRMACION)
+
+No repetir datos ya enviados.
+
+---
+
+# 📦 **CONFIRMACIÓN**
+
+Se confirma solo si hay dirección completa o coordenadas válidas.
+
+El pago se coordina directo con asesor que se va a comunicar.
+
+Mensaje obligatorio:
+
+\`\`\`
+¡Gracias por tu confianza, ${nameToUse}! 🚚💚
+
+Recibí tu dirección:
+
+📍 [dirección o coordenadas]
+
+Entrega estimada: dentro las primeras 8–24 horas despues del pedido.
+
+Un encargado te llamará para coordinar ⭐
+\`\`\`
+
+---
+
+# 📝 **REPORTE (solo si hubo confirmación)**
+
+\`\`\`
+"Hola *${bot.name}*, nuevo pedido de ${nameToUse}.
+Contacto: ${(userPhone || '').replace(/^\+/, '')} (Solo el numero de telefono sin textos).
+Dirección: [dirección o coordenadas].
+Descripción: [producto]."
+\`\`\`
+
+Si no hubo confirmación → \`"reporte": ""\`.
+
+---
+
+# 🚨 REGLA OBLIGATORIA (NO NEGOCIABLE)
+
+Está prohibido inventar datos.
+Toda la información debe obtenerse únicamente de la base de conocimiento del producto.
+
+---
+
+# 🧩 REGLAS GENERALES
+
+- Tono cálido, cercano, empático y natural con acento boliviano.
+- No repetir fotos ni URLs de testimonios ya enviados.
+- No dar precios en los primeros mensajes.
+- En dudas → usar testimonios.
+- No pedir datos ya recibidos.
+- No ofrecer productos ya cerrados.
+- Usar *negritas con un asterisco por lado*.
+- Mensajes cortos y directos (excepto el primer mensaje del producto).
+- 2 saltos de línea entre bloques de texto.
+- Responder siempre aunque el input llegue vacío: usar el historial.
+- Mensajes cortos, claros y humanos.
+
+---
+
+# 🔥 GATILLOS MENTALES (VENTA ÉTICA)
+
+- Urgencia, escasez, autoridad, prueba social, transformación.
+- Insistir de forma estratégica, amigable y respetuosa.
+- Objetivo principal: cerrar la venta.
+- Después de la confirmación → NO seguir vendiendo.
+
+---
+
+# 📏 REGLAS DE MENSAJES
+
+## mensaje1
+
+- Si es el primer mensaje del producto: enviar el texto completo tal cual.
+- Si no: corto y directo. Con emojis. Sin preguntas. 2 saltos entre frases.
+
+## mensaje2 (opcional)
+
+- Corto y directo. Pregunta suave o llamada a la acción.
+
+## mensaje3 (opcional)
+
+- Corto y directo. Emoción, gatillo o pregunta de cierre.
+
+Usar solo 1 o 2 mensajes por turno.
+Usar mensaje2 y mensaje3 SOLO si realmente aportan valor.
+
+## Regla estricta
+
+- Jamás superar el límite de caracteres por mensaje.
+- Resaltar palabras clave con *negrita de un asterisco*.
+- Separar bloques con 2 saltos de línea.
+${shippingBlock}
+---
+
+# 🧠 REGLA FINAL
+
+Siempre generar una respuesta aunque no llegue texto nuevo.
+Leer el historial completo y responder con coherencia y continuidad.
+
+---
+
+# 🧩 BASE DE CONOCIMIENTO (CATÁLOGO)
+
+${productBlock}
+${sentUrlsBlock}
+
+---
+
+# 📦 FORMATO DE SALIDA (OBLIGATORIO)
+
+Regla de mensajes:
+- mensaje1: SIEMPRE requerido.
+- mensaje2: solo si aporta valor real. Si no, dejar "".
+- mensaje3: raramente usado. Solo si es imprescindible. Si no, dejar "".
+- En la mayoría de turnos solo se necesita mensaje1.
+
+\`\`\`json
+{
+  "mensaje1": "Texto principal del turno",
+  "mensaje2": "",
+  "mensaje3": "",
+  "fotos_mensaje1": [],
+  "videos_mensaje1": [],
+  "reporte": ""
+}
+\`\`\`
+`.trim()
 }
 
-/**
- * Busca un valor en el JSON parseado probando multiples keys posibles.
- * Retorna el primer valor que encuentre (truthy) o el fallback.
- */
-function findKey(obj: Record<string, unknown>, keys: string[], fallback: unknown = ''): unknown {
-  for (const key of keys) {
-    if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') return obj[key]
-  }
-  return fallback
+// ─── Combinar mensajes del buffer ─────────────────────────────────────────────
+
+interface BufferedMsg {
+  type: string
+  content: string
+  timestamp: number
 }
 
-/**
- * Normaliza cualquier valor a un array de URLs (strings que empiezan con http).
- */
-function normalizePhotos(value: unknown): string[] | null {
-  if (!value) return null
-  if (typeof value === 'string' && value.trim().startsWith('http')) return [value.trim()]
-  if (Array.isArray(value)) {
-    const urls = value.filter((v): v is string => typeof v === 'string' && v.trim().startsWith('http'))
-    return urls.length > 0 ? urls : null
-  }
-  return null
-}
+export function combineBufferedMessages(messages: BufferedMsg[]): string {
+  const sorted = [...messages].sort((a, b) => a.timestamp - b.timestamp)
 
-/**
- * Extrae valores de timing de la respuesta JSON de la IA.
- * Busca campos con multiples nombres posibles (español/inglés).
- * Los valores se esperan en SEGUNDOS. Retorna null si no hay timing.
- */
-function extractTiming(parsed: Record<string, unknown>): AIResponse['timing'] {
-  // Buscar un objeto "timing" anidado primero
-  const timingObj = findKey(parsed, [
-    'timing', 'tiempos', 'delays', 'configuracion_tiempo', 'time_config',
-  ], null) as Record<string, unknown> | null
-
-  // Fuente: el objeto timing anidado, o el JSON raiz
-  const src = (timingObj && typeof timingObj === 'object') ? timingObj : parsed
-
-  const delayRead = findKey(src, [
-    'delay_read', 'delay_lectura', 'tiempo_lectura', 'read_delay',
-    'espera_lectura', 'antes_de_leer', 'demora_lectura',
-  ], null)
-
-  const delayTyping = findKey(src, [
-    'delay_typing', 'delay_escritura', 'tiempo_antes_escribir', 'typing_delay',
-    'espera_escritura', 'antes_de_escribir', 'demora_escritura',
-  ], null)
-
-  const typingDuration = findKey(src, [
-    'typing_duration', 'duracion_escritura', 'tiempo_escribiendo', 'writing_duration',
-    'duracion_typing', 'escribiendo', 'writing_time',
-  ], null)
-
-  const delayBetween = findKey(src, [
-    'delay_between', 'delay_entre_mensajes', 'tiempo_entre_mensajes', 'between_delay',
-    'espera_entre_mensajes', 'pausa_entre_mensajes', 'demora_entre',
-  ], null)
-
-  const showOnline = findKey(src, [
-    'show_online', 'mostrar_en_linea', 'en_linea', 'online', 'available',
-    'mostrar_online', 'visible',
-  ], null)
-
-  // Si no hay ningun campo de timing, retornar null
-  if (delayRead === null && delayTyping === null && typingDuration === null && delayBetween === null && showOnline === null) {
-    return null
-  }
-
-  const toSeconds = (v: unknown): number | null => {
-    if (v === null || v === undefined || v === '') return null
-    const n = Number(v)
-    return isNaN(n) ? null : n
-  }
-
-  const toBool = (v: unknown): boolean | null => {
-    if (v === null || v === undefined || v === '') return null
-    if (typeof v === 'boolean') return v
-    if (typeof v === 'string') return v.toLowerCase() === 'true' || v === 'si' || v === 'sí' || v === '1'
-    if (typeof v === 'number') return v !== 0
-    return null
-  }
-
-  return {
-    delay_read: toSeconds(delayRead),
-    delay_typing: toSeconds(delayTyping),
-    typing_duration: toSeconds(typingDuration),
-    delay_between: toSeconds(delayBetween),
-    show_online: toBool(showOnline),
-  }
-}
-
-/**
- * Extrae datos estructurados del pedido cuando hay una venta confirmada.
- * Busca un objeto "pedido"/"order" en el JSON de respuesta.
- */
-function extractOrderData(parsed: Record<string, unknown>): AIResponse['order_data'] {
-  const orderObj = findKey(parsed, [
-    'pedido', 'order', 'orden', 'venta', 'sale', 'order_data', 'datos_pedido',
-  ], null) as Record<string, unknown> | null
-
-  if (!orderObj || typeof orderObj !== 'object') return null
-
-  const productId = findKey(orderObj, [
-    'product_id', 'producto_id', 'id_producto',
-  ], null)
-
-  const productName = findKey(orderObj, [
-    'producto', 'product', 'product_name', 'nombre_producto',
-  ], null)
-
-  const quantity = findKey(orderObj, [
-    'cantidad', 'quantity', 'qty', 'unidades',
-  ], 1)
-
-  const totalAmount = findKey(orderObj, [
-    'monto_total', 'total_amount', 'total', 'precio', 'price', 'monto',
-  ], null)
-
-  const currency = findKey(orderObj, [
-    'moneda', 'currency', 'divisa',
-  ], 'BOB')
-
-  const address = findKey(orderObj, [
-    'direccion', 'address', 'shipping_address', 'direccion_envio',
-  ], null)
-
-  const customerName = findKey(orderObj, [
-    'nombre_cliente', 'customer_name', 'cliente', 'nombre',
-  ], null)
-
-  const customerPhone = findKey(orderObj, [
-    'telefono_cliente', 'customer_phone', 'telefono', 'phone', 'celular',
-  ], null)
-
-  // Necesitamos al menos product_id y monto para registrar la venta
-  if (!productId || (totalAmount == null)) {
-    console.log(`[AI Engine] Pedido incompleto: product_id=${productId}, total=${totalAmount}`)
-    return null
-  }
-
-  const result = {
-    product_id: String(productId),
-    product_name: productName ? String(productName) : '',
-    quantity: Number(quantity) || 1,
-    total_amount: Number(totalAmount) || 0,
-    currency: String(currency) || 'BOB',
-    shipping_address: address ? String(address) : null,
-    customer_name: customerName ? String(customerName) : null,
-    customer_phone: customerPhone ? String(customerPhone) : null,
-  }
-
-  console.log(`[AI Engine] 🛒 Pedido detectado: ${result.product_name} x${result.quantity} = ${result.currency} ${result.total_amount}`)
-  return result
-}
-
-/**
- * Parsea la respuesta de OpenAI.
- *
- * Parser FLEXIBLE: busca campos por multiples nombres posibles.
- * NO trunca ni modifica los mensajes. El System Prompt controla todo.
- * Si el prompt cambia los nombres de los campos, el parser se adapta.
- */
-function parseAIResponse(responseContent: string): AIResponse {
-  try {
-    let jsonStr = responseContent.trim()
-
-    // Extraer JSON de markdown code blocks si viene envuelto
-    const jsonMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/)
-    if (jsonMatch) {
-      jsonStr = jsonMatch[1].trim()
-    }
-
-    const parsed = JSON.parse(jsonStr)
-
-    // Buscar mensajes con nombres flexibles (español, ingles, variantes)
-    const msg1 = String(findKey(parsed, [
-      'mensaje1', 'message1', 'msg1', 'respuesta1', 'texto1', 'mensaje_1', 'message_1',
-      'mensaje', 'message', 'respuesta', 'texto', 'reply', 'respuesta_cliente',
-    ], ''))
-
-    const msg2 = String(findKey(parsed, [
-      'mensaje2', 'message2', 'msg2', 'respuesta2', 'texto2', 'mensaje_2', 'message_2',
-    ], ''))
-
-    const msg3 = String(findKey(parsed, [
-      'mensaje3', 'message3', 'msg3', 'respuesta3', 'texto3', 'mensaje_3', 'message_3',
-    ], ''))
-
-    // Buscar fotos con nombres flexibles
-    const photosRaw = findKey(parsed, [
-      'fotos_mensaje1', 'photos_message1', 'fotos', 'photos', 'imagenes', 'images',
-      'fotos_mensaje', 'foto', 'photo', 'imagen', 'image', 'media', 'adjuntos', 'attachments',
-    ], null)
-
-    // Buscar videos
-    const videosRaw = findKey(parsed, [
-      'videos_mensaje1', 'videos_message1', 'videos', 'video',
-      'video_mensaje1', 'video_url', 'videoUrl',
-    ], null)
-
-    // Buscar reporte
-    const report = String(findKey(parsed, [
-      'reporte', 'report', 'informe', 'notificacion', 'alerta',
-    ], ''))
-
-    // Buscar contexto/memoria
-    const contextMemory = findKey(parsed, [
-      'contexto', 'context', 'context_memory', 'memoria', 'memory', 'resumen', 'summary',
-    ], null)
-
-    // Extraer timing si el prompt lo define
-    const timing = extractTiming(parsed)
-
-    // Extraer datos de pedido si hay reporte de venta
-    const orderData = extractOrderData(parsed)
-
-    // Si no hay ningun mensaje, intentar extraer de formatos alternativos
-    if (!msg1 && !msg2 && !msg3) {
-      // Format: { mensajes: [{ tipo: "texto", contenido: "..." }, ...] }
-      const mensajesArray = parsed.mensajes || parsed.messages || parsed.respuestas
-      if (Array.isArray(mensajesArray) && mensajesArray.length > 0) {
-        const extractedMsgs = mensajesArray
-          .map((m: unknown) => {
-            if (typeof m === 'string') return m
-            if (typeof m === 'object' && m !== null) {
-              const obj = m as Record<string, unknown>
-              return String(obj.contenido || obj.content || obj.texto || obj.text || obj.mensaje || '')
-            }
-            return ''
-          })
-          .filter(Boolean)
-
-        if (extractedMsgs.length > 0) {
-          console.log(`[AI Engine] Formato alternativo 'mensajes[]' detectado: ${extractedMsgs.length} msgs`)
-
-          // Extract media from array items
-          let extractedPhotos: string[] = []
-          let extractedVideos: string[] = []
-          for (const m of mensajesArray) {
-            if (typeof m === 'object' && m !== null) {
-              const obj = m as Record<string, unknown>
-              const media = obj.media || obj.foto || obj.image || obj.video
-              if (typeof media === 'string' && media.startsWith('http')) {
-                if (obj.tipo === 'video' || obj.type === 'video') extractedVideos.push(media)
-                else extractedPhotos.push(media)
-              }
-            }
-          }
-
-          return {
-            message1: extractedMsgs[0] || '',
-            message2: extractedMsgs[1] || null,
-            message3: extractedMsgs[2] || null,
-            photos_message1: extractedPhotos.length > 0 ? extractedPhotos : normalizePhotos(photosRaw),
-            videos_message1: extractedVideos.length > 0 ? extractedVideos : normalizePhotos(videosRaw),
-            report: report || null,
-            context_memory: contextMemory ? String(contextMemory) : null,
-            order_data: orderData,
-            timing,
-          }
-        }
+  return sorted
+    .map(m => {
+      switch (m.type) {
+        case 'audio': return `🎙️ (audio transcrito): ${m.content} `
+        case 'image': return `📷 (imagen analizada): ${m.content} `
+        case 'location': return `📍 (ubicación): ${m.content}`
+        case 'video': return `🎬 (video): ${m.content}`
+        case 'document': return `📄 (documento): ${m.content}`
+        default: return `📝 (texto): ${m.content}`
       }
+    })
+    .join('\n')
+}
 
-      console.error(`[AI Engine] ⚠️ JSON válido pero sin campos de mensaje. Keys: ${Object.keys(parsed).join(', ')}`)
-      console.error(`[AI Engine] Respuesta cruda (500ch): ${responseContent.substring(0, 500)}`)
+// ─── Smart product detector ───────────────────────────────────────────────────
 
-      // JSON sin mensajes = modelo no generó respuesta → retornar null para que NO se envíe nada
-      return {
-        message1: '',
-        message2: null,
-        message3: null,
-        photos_message1: null,
-        videos_message1: null,
-        report: null,
-        context_memory: contextMemory ? String(contextMemory) : null,
-        order_data: orderData,
-        timing,
+/**
+ * Scans recent message history to detect which product the client is discussing.
+ * Returns the product id only when exactly one product name matches (conservative).
+ * On any ambiguity or no match → returns undefined → full catalog is used (safe fallback).
+ */
+export function detectIdentifiedProduct(
+  recentMessages: Array<{ role?: string; sender?: string; content: string }>,
+  products: Array<Record<string, unknown>>,
+): string[] {
+  if (!products.length) return []
+
+  const combinedText = recentMessages
+    .map(m => {
+      const isBot = m.sender === 'bot' || m.role === 'assistant'
+      if (isBot) {
+        try {
+          const parsed = JSON.parse(m.content) as Record<string, unknown>
+          return [parsed.mensaje1, parsed.mensaje2, parsed.mensaje3].filter(Boolean).join(' ')
+        } catch { return m.content }
       }
-    }
+      return m.content
+    })
+    .join(' ')
+    .toLowerCase()
 
-    const result: AIResponse = {
-      message1: msg1 || msg2 || msg3,
-      message2: (msg1 ? msg2 : msg3) || null,
-      message3: (msg1 && msg2 ? msg3 : null) || null,
-      photos_message1: normalizePhotos(photosRaw),
-      videos_message1: normalizePhotos(videosRaw),
-      report: report || null,
-      context_memory: contextMemory ? String(contextMemory) : null,
-      order_data: orderData,
-      timing,
-    }
+  return products
+    .filter(p => {
+      const name = (p.name as string | undefined)?.trim().toLowerCase()
+      return name && name.length > 2 && combinedText.includes(name)
+    })
+    .map(p => p.id as string)
+}
 
-    // Diagnostico
-    console.log(`[AI Engine] RESPUESTA:`)
-    console.log(`[AI Engine]   msg1 (${result.message1.length}ch): "${result.message1.substring(0, 120)}${result.message1.length > 120 ? '...' : ''}"`)
-    if (result.message2) console.log(`[AI Engine]   msg2 (${result.message2.length}ch): "${result.message2.substring(0, 120)}"`)
-    if (result.message3) console.log(`[AI Engine]   msg3 (${result.message3.length}ch): "${result.message3.substring(0, 120)}"`)
-    if (result.photos_message1) console.log(`[AI Engine]   fotos: ${result.photos_message1.length} → ${result.photos_message1.map(u => u.substring(0, 60)).join(', ')}`)
-    if (result.report) console.log(`[AI Engine]   reporte: ${result.report.substring(0, 100)}`)
-    if (result.order_data) console.log(`[AI Engine]   pedido: ${result.order_data.product_name} x${result.order_data.quantity} = ${result.order_data.currency} ${result.order_data.total_amount}`)
-    if (result.context_memory) console.log(`[AI Engine]   memoria: ${result.context_memory.substring(0, 200)}`)
-    if (result.timing) console.log(`[AI Engine]   timing: read=${result.timing.delay_read}s, typing=${result.timing.delay_typing}s, dur=${result.timing.typing_duration}s, between=${result.timing.delay_between}s, online=${result.timing.show_online}`)
+// ─── Character limit enforcer ─────────────────────────────────────────────────
 
-    return result
-  } catch {
-    console.log(`[AI Engine] Respuesta no es JSON, enviando como texto plano`)
-    return {
-      message1: responseContent,
-      message2: null,
-      message3: null,
-      photos_message1: null,
-      videos_message1: null,
-        report: null,
-      context_memory: null,
-      order_data: null,
-      timing: null,
-    }
+/**
+ * Trunca en código los mensajes de la respuesta según los límites configurados.
+ * isFirstInteraction=true → mensaje1 NO se trunca (primer mensaje del producto va completo).
+ */
+export function enforceCharLimits(
+  response: { mensaje1?: string; mensaje2?: string; mensaje3?: string },
+  maxChars?: { m1?: number | null; m2?: number | null; m3?: number | null },
+): void {
+  if (!maxChars) return
+  const m1 = maxChars.m1 && maxChars.m1 > 0 ? maxChars.m1 : null
+  const m2 = maxChars.m2 && maxChars.m2 > 0 ? maxChars.m2 : null
+  const m3 = maxChars.m3 && maxChars.m3 > 0 ? maxChars.m3 : null
+
+  if (m1 && response.mensaje1 && response.mensaje1.length > m1) {
+    response.mensaje1 = response.mensaje1.slice(0, m1)
+  }
+  if (m2 && response.mensaje2 && response.mensaje2.length > m2) {
+    response.mensaje2 = response.mensaje2.slice(0, m2)
+  }
+  if (m3 && response.mensaje3 && response.mensaje3.length > m3) {
+    response.mensaje3 = response.mensaje3.slice(0, m3)
   }
 }
 
+// ─── Parse bot history for chat context ──────────────────────────────────────
+
 /**
- * Transcribe audio usando OpenAI Whisper.
+ * Converts database messages (sender='bot'|'client') to ChatMessage format.
+ * For bot messages stored as JSON, extracts readable text.
  */
-export async function transcribeAudio(
-  audioBuffer: Buffer,
-  mimeType: string = 'audio/ogg'
-): Promise<string | null> {
-  try {
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-
-    const extMap: Record<string, string> = {
-      'audio/ogg': 'ogg',
-      'audio/mpeg': 'mp3',
-      'audio/mp4': 'mp4',
-      'audio/wav': 'wav',
-      'audio/webm': 'webm',
-      'audio/ogg; codecs=opus': 'ogg',
+export function parseChatHistory(
+  messages: Array<{ sender: string; content: string }>,
+): ChatMessage[] {
+  return messages.map(m => {
+    if (m.sender === 'bot') {
+      try {
+        const parsed = JSON.parse(m.content)
+        const text = [parsed.mensaje1, parsed.mensaje2, parsed.mensaje3].filter(Boolean).join('\n')
+        return { role: 'assistant' as const, content: text || m.content }
+      } catch {
+        return { role: 'assistant' as const, content: m.content }
+      }
     }
-    const ext = extMap[mimeType] || 'ogg'
-
-    const file = new File([audioBuffer as unknown as BlobPart], `audio.${ext}`, { type: mimeType })
-
-    const transcription = await openai.audio.transcriptions.create({
-      model: 'whisper-1',
-      file,
-      language: 'es',
-    })
-
-    console.log(`[AI Engine] Audio transcrito: "${transcription.text}"`)
-    return transcription.text || null
-  } catch (err) {
-    console.error(`[AI Engine] Error transcribiendo audio:`, err)
-    return null
-  }
+    return { role: 'user' as const, content: m.content }
+  })
 }

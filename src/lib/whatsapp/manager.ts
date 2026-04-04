@@ -1,3 +1,10 @@
+/**
+ * Baileys Manager — Singleton que gestiona múltiples conexiones WhatsApp Web.
+ * Una conexión por botId. Sesión guardada en disco + backup en Supabase.
+ *
+ * Basado en la arquitectura de METO APP, adaptado de Prisma a Supabase.
+ */
+
 import makeWASocket, {
   DisconnectReason,
   useMultiFileAuthState,
@@ -13,16 +20,27 @@ import fs from 'fs'
 import QRCode from 'qrcode'
 import pino from 'pino'
 import { createServiceRoleClient } from '@/lib/supabase/server'
-import { generateBotResponse } from './ai-engine'
+import { transcribeAudio, analyzeImage, chat } from '@/lib/openai'
+import {
+  buildSystemPrompt,
+  detectIdentifiedProduct,
+  enforceCharLimits,
+  extractSentUrls,
+  parseChatHistory,
+} from './ai-engine'
 
-// ═══ CONFIG ═══
+// ── Config ──────────────────────────────────────────────────────────────────────
+
 const SESSIONS_DIR = process.env.WHATSAPP_SESSIONS_DIR || '/var/data/baileys-sessions'
 const MAX_RETRIES = 15
 const RECONNECT_DELAY = 5_000
-const MESSAGE_BUFFER_MS = 15_000
+const BUFFER_DELAY_MS = 15_000
+const MAX_HISTORY = 10
 const baileysLogger = pino({ level: 'silent' })
+const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms))
 
-// ═══ TYPES ═══
+// ── Types ──────────────────────────────────────────────────────────────────────
+
 interface BaileysConnection {
   socket: WASocket | null
   status: 'disconnected' | 'connecting' | 'qr_ready' | 'connected'
@@ -31,125 +49,34 @@ interface BaileysConnection {
   retryCount: number
 }
 
-interface BufferedMessage {
+interface BufferedMsg {
   content: string
-  type: 'text' | 'audio' | 'image' | 'location' | 'video' | 'document'
+  type: string
   timestamp: number
 }
 
-// ═══ SINGLETON ═══
+// ── Singleton ──────────────────────────────────────────────────────────────────
+
 const globalForWa = globalThis as typeof globalThis & {
   waManager: WhatsAppManager | undefined
-  waManagerRestored: boolean
 }
 
-// ═══ HELPERS: Audio Transcription & Image Analysis ═══
-
-async function transcribeAudio(audioBuffer: Buffer, mimeType: string, apiKey: string): Promise<string> {
-  try {
-    const baseMime = mimeType.split(';')[0].trim()
-    const mimeToExt: Record<string, string> = {
-      'audio/ogg': 'ogg', 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a',
-      'audio/x-m4a': 'm4a', 'audio/wav': 'wav', 'audio/webm': 'webm',
-      'audio/flac': 'flac', 'audio/aac': 'm4a', 'audio/amr': 'amr',
-    }
-    const ext = mimeToExt[baseMime] || 'ogg'
-
-    const blob = new Blob([new Uint8Array(audioBuffer)], { type: baseMime })
-    const form = new FormData()
-    form.append('file', blob, `audio.${ext}`)
-    form.append('model', 'whisper-1')
-    form.append('language', 'es')
-
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 60000)
-    let res: Response
-    try {
-      res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}` },
-        body: form,
-        signal: controller.signal,
-      })
-    } finally {
-      clearTimeout(timeout)
-    }
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '')
-      console.error(`[WA] Whisper API error: ${res.status} ${errText.substring(0, 200)}`)
-      return ''
-    }
-    const data = await res.json()
-    return (data.text as string) || ''
-  } catch (err) {
-    console.error('[WA] Whisper transcription error:', err)
-    return ''
-  }
-}
-
-async function analyzeImage(base64DataUrl: string, apiKey: string): Promise<string> {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 30000)
-  try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: `Analiza esta imagen. Describe qué aparece, objetos, texto visible y contexto. Si hay texto, transcríbelo. Responde en español, máximo 3 frases.`,
-            },
-            { type: 'image_url', image_url: { url: base64DataUrl, detail: 'high' } },
-          ],
-        }],
-        max_tokens: 500,
-      }),
-    })
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '')
-      console.error(`[WA] Vision API error: ${res.status} ${errText.substring(0, 200)}`)
-      return ''
-    }
-    const data = await res.json()
-    return (data.choices?.[0]?.message?.content as string) || ''
-  } catch (err) {
-    console.error('[WA] Vision analysis error:', err)
-    return ''
-  } finally {
-    clearTimeout(timeout)
-  }
-}
-
-// ═══ HELPERS: DB ═══
+// ── Helpers: DB ────────────────────────────────────────────────────────────────
 
 async function getBot(botId: string) {
   const supabase = await createServiceRoleClient()
-  const { data } = await supabase.from('bots').select('*').eq('id', botId).single()
+  const { data } = await supabase.from('bots').select('*, bot_prompts(*)').eq('id', botId).single()
   return data
 }
 
 async function findOrCreateContact(phone: string, pushName: string, tenantId: string, botId: string) {
   const supabase = await createServiceRoleClient()
-  const { data: existing, error: findError } = await supabase
+  const { data: existing } = await supabase
     .from('contacts')
     .select('*')
     .eq('phone', phone)
     .eq('bot_id', botId)
     .maybeSingle()
-
-  if (findError) {
-    console.error(`[WA] Error finding contact:`, findError.message)
-  }
 
   if (existing) {
     if (pushName && pushName !== existing.push_name) {
@@ -158,15 +85,11 @@ async function findOrCreateContact(phone: string, pushName: string, tenantId: st
     return existing
   }
 
-  const { data: created, error: createError } = await supabase
+  const { data: created } = await supabase
     .from('contacts')
     .insert({ phone, push_name: pushName, name: pushName || phone, tenant_id: tenantId, bot_id: botId })
     .select()
     .single()
-
-  if (createError) {
-    console.error(`[WA] Error creating contact:`, createError.message, `phone=${phone} bot=${botId}`)
-  }
   return created
 }
 
@@ -191,14 +114,13 @@ async function findOrCreateConversation(botId: string, contactId: string) {
   return created
 }
 
-async function saveMessage(conversationId: string, sender: 'bot' | 'client', type: string, content: string, metadata?: object) {
+async function saveMessage(conversationId: string, sender: 'bot' | 'client', type: string, content: string) {
   const supabase = await createServiceRoleClient()
   await supabase.from('messages').insert({
     conversation_id: conversationId,
     sender,
     type,
     content,
-    metadata: metadata || null,
   })
   await supabase
     .from('conversations')
@@ -206,7 +128,7 @@ async function saveMessage(conversationId: string, sender: 'bot' | 'client', typ
     .eq('id', conversationId)
 }
 
-// ═══ HELPERS: Credentials Backup ═══
+// ── Helpers: Credentials Backup ────────────────────────────────────────────────
 
 async function backupCredentialsToDb(botId: string): Promise<void> {
   const sessionDir = path.join(SESSIONS_DIR, botId)
@@ -222,9 +144,9 @@ async function backupCredentialsToDb(botId: string): Promise<void> {
     if (Object.keys(files).length === 0) return
     const supabase = await createServiceRoleClient()
     await supabase.from('whatsapp_sessions').update({ credentials_backup: files }).eq('bot_id', botId)
-    console.log(`[WA] Credentials backed up for bot ${botId}`)
+    console.log(`[BAILEYS] Credentials backed up for bot ${botId}`)
   } catch (err) {
-    console.error(`[WA] Backup error for ${botId}:`, err)
+    console.error(`[BAILEYS] Backup error for ${botId}:`, err)
   }
 }
 
@@ -246,29 +168,25 @@ async function restoreCredentialsFromDb(botId: string): Promise<boolean> {
     for (const [name, content] of Object.entries(files)) {
       fs.writeFileSync(path.join(sessionDir, name), content, 'utf-8')
     }
-    console.log(`[WA] Credentials restored from DB for bot ${botId}`)
+    console.log(`[BAILEYS] Credentials restored from DB for bot ${botId}`)
     return true
   } catch (err) {
-    console.error(`[WA] Restore error for ${botId}:`, err)
+    console.error(`[BAILEYS] Restore error for ${botId}:`, err)
     return false
   }
 }
 
-// ═══ UTILITY ═══
-
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
+// ── Utility ────────────────────────────────────────────────────────────────────
 
 function phoneFromJid(jid: string): string {
   return jid.replace(/@.*$/, '')
 }
 
-// ═══ CLASS ═══
+// ── WhatsApp Manager Class ─────────────────────────────────────────────────────
 
 class WhatsAppManager {
   private connections = new Map<string, BaileysConnection>()
-  private messageBuffers = new Map<string, BufferedMessage[]>()
+  private messageBuffers = new Map<string, BufferedMsg[]>()
   private processingKeys = new Set<string>()
   private processedMessageIds = new Set<string>()
 
@@ -279,7 +197,7 @@ class WhatsAppManager {
       return { status: 'connected', phone: existing.phoneNumber || undefined }
     }
 
-    // Kill any existing socket before creating a new one
+    // Kill any existing socket
     if (existing?.socket) {
       try { (existing.socket.ev as any).removeAllListeners(); (existing.socket as any).end() } catch { /* ignore */ }
       existing.socket = null
@@ -301,10 +219,9 @@ class WhatsAppManager {
     }
     this.connections.set(botId, conn)
 
-    // For fresh connections, clean old session to force new QR
+    // Try restoring credentials from DB if no local session
     const sessionDir = path.join(SESSIONS_DIR, botId)
     if (!existing) {
-      // First connection attempt — try restoring from DB
       if (!fs.existsSync(path.join(sessionDir, 'creds.json'))) {
         await restoreCredentialsFromDb(botId)
       }
@@ -340,6 +257,7 @@ class WhatsAppManager {
       logger: baileysLogger,
       printQRInTerminal: false,
       generateHighQualityLinkPreview: false,
+      browser: ['Ubuntu', 'Chrome', '120.0.0'],
       syncFullHistory: false,
       markOnlineOnConnect: false,
     })
@@ -370,7 +288,7 @@ class WhatsAppManager {
         conn.phoneNumber = phoneNumber
         conn.qrCode = null
         conn.retryCount = 0
-        console.log(`[WA] Bot ${botId} connected as ${phoneNumber}`)
+        console.log(`[BAILEYS] Bot ${botId} connected as ${phoneNumber}`)
 
         const supabase = await createServiceRoleClient()
         await supabase.from('whatsapp_sessions').upsert(
@@ -385,10 +303,9 @@ class WhatsAppManager {
         const isLoggedOut = statusCode === DisconnectReason.loggedOut
         const isReplaced = statusCode === DisconnectReason.connectionReplaced
 
-        console.log(`[WA] Bot ${botId} disconnected. Code: ${statusCode}, loggedOut: ${isLoggedOut}`)
+        console.log(`[BAILEYS] Bot ${botId} disconnected. Code: ${statusCode}, loggedOut: ${isLoggedOut}`)
 
         if (isLoggedOut) {
-          // WhatsApp closed session — clean everything, needs new QR
           conn.status = 'disconnected'
           conn.socket = null
           conn.phoneNumber = null
@@ -397,28 +314,29 @@ class WhatsAppManager {
           if (fs.existsSync(sessionDir2)) {
             fs.rmSync(sessionDir2, { recursive: true, force: true })
           }
-          console.log(`[WA] Bot ${botId} logged out — session cleaned, needs new QR`)
+          this.connections.delete(botId)
+          console.log(`[BAILEYS] Bot ${botId} logged out — session cleaned`)
           const supabase = await createServiceRoleClient()
           await supabase.from('whatsapp_sessions').upsert(
             { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
             { onConflict: 'bot_id' }
           )
         } else if (isReplaced) {
-          // Connection replaced — stop reconnecting to avoid loop
-          console.log(`[WA] Bot ${botId} connection replaced (440), stopping. User must reconnect manually.`)
+          console.log(`[BAILEYS] Bot ${botId} connection replaced (440), stopping.`)
           conn.status = 'disconnected'
           conn.socket = null
+          this.connections.delete(botId)
         } else if (conn.retryCount < MAX_RETRIES) {
-          // Reconnect
           conn.retryCount++
           conn.status = 'connecting'
           conn.socket = null
-          console.log(`[WA] Bot ${botId} reconnecting (attempt ${conn.retryCount}/${MAX_RETRIES})...`)
+          console.log(`[BAILEYS] Bot ${botId} reconnecting (attempt ${conn.retryCount}/${MAX_RETRIES})...`)
           setTimeout(() => this.createSocket(botId).catch(console.error), RECONNECT_DELAY)
         } else {
           conn.status = 'disconnected'
           conn.socket = null
-          console.log(`[WA] Bot ${botId} max retries reached`)
+          this.connections.delete(botId)
+          console.log(`[BAILEYS] Bot ${botId} max retries reached`)
           const supabase = await createServiceRoleClient()
           await supabase.from('whatsapp_sessions').upsert(
             { bot_id: botId, status: 'disconnected' },
@@ -438,168 +356,151 @@ class WhatsAppManager {
     socket.ev.on('messages.upsert', async ({ messages: msgs, type }) => {
       if (type !== 'notify') return
       for (const msg of msgs) {
-        this.handleIncomingMessage(botId, msg, socket).catch(err => {
-          console.error(`[WA] Error handling message for bot ${botId}:`, err)
-        })
+        this.handleMessage(botId, msg, socket).catch(err =>
+          console.error(`[BAILEYS] Error procesando mensaje botId=${botId}:`, err)
+        )
       }
     })
   }
 
-  // ── Handle Incoming Message ──
-  private async handleIncomingMessage(botId: string, msg: WAMessage, socket: WASocket): Promise<void> {
-    // Ignore own messages, groups, status broadcast
-    if (msg.key.fromMe) return
+  // ── Handle Incoming Message ──────────────────────────────────────────────────
 
-    // Ignore old messages (older than 60 seconds) — these arrive on reconnect
+  private async handleMessage(botId: string, msg: WAMessage, sock: WASocket): Promise<void> {
+    if (!msg.key?.remoteJid) return
+    const jid = msg.key.remoteJid
+
+    // Ignorar mensajes propios, grupos y status
+    if (msg.key.fromMe || jid === 'status@broadcast' || jid.endsWith('@g.us') || jid.endsWith('@newsletter')) return
+
+    // Ignorar mensajes viejos (>60s) que llegan en reconexión
     const msgTimestamp = msg.messageTimestamp
     if (msgTimestamp) {
       const msgTime = typeof msgTimestamp === 'number' ? msgTimestamp : Number(msgTimestamp)
       const now = Math.floor(Date.now() / 1000)
       if (now - msgTime > 60) return
     }
-    const jid = msg.key.remoteJid
-    if (!jid || jid === 'status@broadcast' || jid.endsWith('@g.us') || jid.endsWith('@newsletter')) return
 
-    const message = msg.message
-    if (!message) return
+    const msgContent = msg.message
+    if (!msgContent) return
 
-    // Deduplication by message ID
+    // Deduplicación por ID de mensaje
     if (msg.key.id) {
       if (this.processedMessageIds.has(msg.key.id)) return
       this.processedMessageIds.add(msg.key.id)
-      // Keep set from growing forever (max 5000 for scale)
       if (this.processedMessageIds.size > 5000) {
-        const iter = this.processedMessageIds.values()
-        for (let i = 0; i < 1000; i++) iter.next()
-        // Delete oldest 1000 entries
-        const toDelete: string[] = []
         const allValues = [...this.processedMessageIds]
-        for (let i = 0; i < 1000; i++) toDelete.push(allValues[i])
-        toDelete.forEach(id => this.processedMessageIds.delete(id))
+        for (let i = 0; i < 1000; i++) this.processedMessageIds.delete(allValues[i])
       }
     }
 
-    const phone = phoneFromJid(jid)
-    let pushName = msg.pushName || ''
-    // Filter numeric-only names (fallback to phone number)
-    if (pushName && /^\d+$/.test(pushName.replace(/[+\s-]/g, ''))) {
-      pushName = ''
-    }
-    console.log(`[WA] Message from ${pushName || phone} (jid: ${jid})`)
-
-    // Get bot info
+    // Verificar que el bot siga activo en BD
     const bot = await getBot(botId)
-    if (!bot) { console.log(`[WA] Bot ${botId} not found`); return }
-    if (!bot.is_active) { console.log(`[WA] Bot ${botId} inactive, ignoring`); return }
+    if (!bot || !bot.is_active) {
+      console.log(`[BAILEYS] Bot ${botId} inactivo, ignorando mensaje`)
+      return
+    }
+
     const apiKey = bot.openai_api_key || process.env.OPENAI_API_KEY
-    if (!apiKey) { console.error(`[WA] Bot ${botId} no API key`); return }
+    if (!apiKey) {
+      console.warn(`[BAILEYS] Bot ${botId} sin API key de OpenAI`)
+      return
+    }
 
-    // ── Extract content ──
+    const userPhone = phoneFromJid(jid)
+    let userName = msg.pushName || ''
+    if (userName && /^\d+$/.test(userName.replace(/[+\s-]/g, ''))) {
+      userName = ''
+    }
+
+    console.log(`[BAILEYS] Mensaje de ${userName || userPhone} (jid: ${jid})`)
+
+    // ── Extraer contenido del mensaje ──
     let content = ''
-    let msgType: BufferedMessage['type'] = 'text'
+    let msgType: string = 'text'
 
-    if (message.conversation || message.extendedTextMessage?.text) {
-      content = message.conversation || message.extendedTextMessage?.text || ''
+    if (msgContent.conversation || msgContent.extendedTextMessage?.text) {
+      content = msgContent.conversation || msgContent.extendedTextMessage?.text || ''
       msgType = 'text'
-    } else if (message.audioMessage) {
+    } else if (msgContent.audioMessage) {
       msgType = 'audio'
       try {
         const buffer = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-        const mime = message.audioMessage.mimetype || 'audio/ogg'
-        const transcription = await transcribeAudio(buffer, mime, apiKey)
-        if (transcription && transcription.trim().length > 0) {
-          content = `[Audio transcrito]: ${transcription}`
-        } else {
-          content = '[El cliente envió un audio pero no se pudo transcribir]'
-        }
-      } catch (err) {
-        console.error('[WA] Audio download error:', err)
-        content = '[El cliente envió un audio pero no se pudo procesar]'
+        const blob = new Blob([new Uint8Array(buffer)], { type: 'audio/ogg' })
+        content = await transcribeAudio(blob, apiKey)
+        if (!content) content = '[Audio recibido - no se pudo transcribir]'
+      } catch {
+        content = '[Audio recibido - no se pudo transcribir]'
       }
-    } else if (message.imageMessage) {
+    } else if (msgContent.imageMessage) {
       msgType = 'image'
       try {
         const buffer = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
-        const mime = message.imageMessage.mimetype || 'image/jpeg'
-        const base64 = `data:${mime};base64,${buffer.toString('base64')}`
-        const description = await analyzeImage(base64, apiKey)
-        const caption = message.imageMessage.caption || ''
-        if (description && !description.includes('[Imagen no procesada]')) {
-          content = `[Imagen enviada${caption ? `: "${caption}"` : ''}. Descripción: ${description}]`
-        } else {
-          content = caption ? `[Imagen enviada con texto: "${caption}"]` : '[El cliente envió una imagen]'
-        }
-      } catch (err) {
-        console.error('[WA] Image download error:', err)
-        const caption = message.imageMessage?.caption || ''
-        content = caption ? `[Imagen enviada con texto: "${caption}"]` : '[El cliente envió una imagen]'
+        const b64 = buffer.toString('base64')
+        const dataUrl = `data:image/jpeg;base64,${b64}`
+        const analysis = await analyzeImage(dataUrl, apiKey)
+        content = `[Imagen recibida] ${analysis} ${msgContent.imageMessage.caption ? `| Pie de foto: ${msgContent.imageMessage.caption}` : ''}`
+      } catch {
+        content = msgContent.imageMessage.caption || '[Imagen recibida - error al analizar]'
       }
-    } else if (message.locationMessage || (message as Record<string, unknown>).liveLocationMessage) {
+    } else if (msgContent.locationMessage || (msgContent as any)?.liveLocationMessage) {
       msgType = 'location'
-      const loc = message.locationMessage || (message as Record<string, unknown>).liveLocationMessage as Record<string, unknown>
-      const lat = (loc as Record<string, unknown>).degreesLatitude
-      const lng = (loc as Record<string, unknown>).degreesLongitude
-      const name = ((loc as Record<string, unknown>).name || '') as string
-      const address = ((loc as Record<string, unknown>).address || '') as string
+      const loc = msgContent.locationMessage || (msgContent as any).liveLocationMessage
+      const lat = loc.degreesLatitude
+      const lon = loc.degreesLongitude
+      const name = loc.name || ''
+      const address = loc.address || ''
       content = `📍 Ubicación recibida: ${name} ${address}`.trim()
-      if (lat && lng) content += ` | https://maps.google.com/?q=${lat},${lng}`
-    } else if (message.videoMessage) {
+      if (lat && lon) content += ` | https://maps.google.com/?q=${lat},${lon}`
+    } else if (msgContent.videoMessage) {
       msgType = 'video'
-      const caption = message.videoMessage?.caption || ''
+      const caption = msgContent.videoMessage?.caption || ''
       content = `[Video enviado${caption ? `: "${caption}"` : ''}]`
-    } else if (message.documentMessage) {
+    } else if (msgContent.documentMessage) {
       msgType = 'document'
-      const fileName = message.documentMessage?.fileName || 'documento'
+      const fileName = msgContent.documentMessage?.fileName || 'documento'
       content = `[Documento enviado: ${fileName}]`
     } else {
-      // Unsupported message type
       return
     }
 
-    if (!content.trim()) {
-      console.log(`[WA] Empty content after extraction, skipping`)
-      return
-    }
-    console.log(`[WA] Content extracted (${msgType}): ${content.substring(0, 100)}...`)
+    if (!content.trim()) return
 
-    // ── DB: Contact, Conversation, Save message ──
-    const contact = await findOrCreateContact(phone, pushName, bot.tenant_id, botId)
-    if (!contact) { console.error(`[WA] Failed to find/create contact for ${phone}`); return }
+    // ── DB: Contact, Conversation ──
+    const contact = await findOrCreateContact(userPhone, userName, bot.tenant_id, botId)
+    if (!contact) { console.error(`[BAILEYS] Failed to find/create contact for ${userPhone}`); return }
     const conversation = await findOrCreateConversation(botId, contact.id)
-    if (!conversation) { console.error(`[WA] Failed to find/create conversation`); return }
-    console.log(`[WA] Contact: ${contact.id}, Conversation: ${conversation.id}, Status: ${conversation.status}`)
+    if (!conversation) { console.error(`[BAILEYS] Failed to find/create conversation`); return }
 
-    // If conversation is paused or closed (sold), don't read, don't save, don't respond
+    // Si la conversación está cerrada (vendido) o pausada → no responder
     if (conversation.status === 'paused' || conversation.status === 'closed') {
-      console.log(`[WA] Conversation ${conversation.id} is ${conversation.status} — ignoring completely`)
+      console.log(`[BAILEYS] Conversación ${conversation.id} es ${conversation.status} — ignorando`)
       return
     }
 
-    // Save incoming message
-    await saveMessage(conversation.id, 'client', msgType, content)
-
-    // Reset followup when client responds (prevents followup during conversation)
+    // Reset followup si el cliente responde
     if (conversation.status === 'pending_followup') {
-      const resetDb = await createServiceRoleClient()
-      await resetDb.from('conversations').update({
+      const supabase = await createServiceRoleClient()
+      await supabase.from('conversations').update({
         status: 'active',
         followup_count: 0,
         last_followup_at: null,
       }).eq('id', conversation.id)
     }
 
-    // Mark message as read (blue ticks)
+    // Marcar como leído
     if (msg.key) {
-      try {
-        await socket.readMessages([msg.key])
-      } catch (err) {
-        console.error('[WA] Error marking as read:', err)
-      }
+      await sock.readMessages([msg.key]).catch(err =>
+        console.error('[BAILEYS] Error al marcar como leído:', err)
+      )
     }
 
+    // Guardar mensaje entrante
+    await saveMessage(conversation.id, 'client', msgType, content)
 
-    // ── Buffer messages ──
-    const bufferKey = `${botId}:${phone}`
+    const resolvedUserName = userName || contact.name || contact.push_name || ''
+
+    // ── BUFFER ──
+    const bufferKey = `${botId}:${userPhone}`
     const now = Date.now()
 
     if (!this.messageBuffers.has(bufferKey)) {
@@ -607,10 +508,11 @@ class WhatsAppManager {
     }
     this.messageBuffers.get(bufferKey)!.push({ content, type: msgType, timestamp: now })
 
-    // Wait 15 seconds (buffer window)
-    await sleep(MESSAGE_BUFFER_MS)
+    console.log(`[BAILEYS] Buffer: mensaje guardado (${msgType}) para ${userPhone}, esperando ${BUFFER_DELAY_MS / 1000}s...`)
 
-    // Check if newer messages arrived — if so, this is not the latest, skip
+    await sleep(BUFFER_DELAY_MS)
+
+    // Check if newer messages arrived
     const currentBuffer = this.messageBuffers.get(bufferKey)
     if (!currentBuffer || currentBuffer.length === 0) return
     const latestTimestamp = Math.max(...currentBuffer.map(m => m.timestamp))
@@ -625,202 +527,203 @@ class WhatsAppManager {
       const buffered = [...currentBuffer]
       this.messageBuffers.delete(bufferKey)
 
-      // Combine messages
-      const combinedMessage = buffered.map(m => {
-        switch (m.type) {
-          case 'audio': return `🎙️ (audio transcrito): ${m.content}`
-          case 'image': return `📷 (imagen recibida): ${m.content}`
-          case 'location': return `📍 (ubicación): ${m.content}`
-          case 'video': return `🎬 (video): ${m.content}`
-          case 'document': return `📄 (documento): ${m.content}`
-          default: return m.content
-        }
-      }).join('\n')
-      const contactName = contact.name || contact.push_name || phone
+      console.log(`[BAILEYS] Buffer: procesando ${buffered.length} mensaje(s) combinados para ${userPhone}`)
 
-      // Re-check conversation status (may have been paused/closed during buffer wait)
+      // Re-check conversation status + product_interest (equivale a welcomeSent de METO)
       const freshSupabase = await createServiceRoleClient()
       const { data: freshConv } = await freshSupabase
         .from('conversations')
-        .select('status')
+        .select('status, product_interest')
         .eq('id', conversation.id)
         .single()
 
       if (freshConv?.status === 'paused' || freshConv?.status === 'closed') {
-        console.log(`[WA] Conversation ${conversation.id} was ${freshConv.status} during buffer — not responding`)
+        console.log(`[BAILEYS] Conversación ${conversation.id} cambió a ${freshConv.status} durante buffer — no responder`)
         return
       }
 
-      // ── Generate AI Response ──
-      console.log(`[WA] Generating response for bot ${botId}, phone ${phone}`)
-      let aiResponse
-      try {
-        aiResponse = await generateBotResponse(botId, phone, combinedMessage, conversation.id, contactName)
-      } catch (aiErr: unknown) {
-        const errMsg = aiErr instanceof Error ? aiErr.message : String(aiErr)
-        console.error(`[WA] AI error for bot ${botId}:`, errMsg)
+      // Cargar historial reciente
+      const { data: recentMessages } = await freshSupabase
+        .from('messages')
+        .select('sender, content')
+        .eq('conversation_id', conversation.id)
+        .order('created_at', { ascending: false })
+        .limit(MAX_HISTORY)
 
-        // Auto-pause bot on quota/billing/invalid key errors
-        const isFatalError = errMsg.includes('insufficient_quota')
-          || errMsg.includes('429')
-          || errMsg.includes('billing')
-          || errMsg.includes('404')
-          || errMsg.includes('invalid_api_key')
-          || errMsg.includes('401')
-          || errMsg.includes('Incorrect API key')
-          || errMsg.includes('exceeded')
-        if (isFatalError) {
+      const history = (recentMessages || []).reverse()
+      const chatHistory = parseChatHistory(history)
+
+      // Cargar productos activos del bot con imágenes y testimonios
+      const { data: botProducts } = await freshSupabase
+        .from('products')
+        .select('*, product_images(*), product_testimonials(*)')
+        .eq('bot_id', botId)
+        .eq('is_active', true)
+
+      const products = (botProducts || []) as Array<Record<string, unknown>>
+
+      // Detectar productos mencionados
+      const identifiedProductIds = detectIdentifiedProduct(history, products)
+      if (identifiedProductIds.length) {
+        const names = identifiedProductIds.map(id => products.find(p => p.id === id)?.name).join(', ')
+        console.log(`[BAILEYS] Smart filter: productos="${names}" — otros en modo minimal`)
+      }
+
+      // Extraer URLs ya enviadas
+      const { data: allBotMessages } = await freshSupabase
+        .from('messages')
+        .select('sender, content')
+        .eq('conversation_id', conversation.id)
+        .eq('sender', 'bot')
+        .order('created_at', { ascending: true })
+
+      const sentUrls = extractSentUrls(allBotMessages || [])
+      if (sentUrls.length) {
+        console.log(`[BAILEYS] URLs ya enviadas (${sentUrls.length}) extraídas`)
+      }
+
+      // welcomeSent: equivale al botState.welcomeSent de METO
+      // product_interest != null significa que ya se envió el primer mensaje del producto
+      const welcomeSent = !!freshConv?.product_interest
+
+      // Bot prompts
+      const botPrompt = bot.bot_prompts || { system_prompt: null, personality: null }
+
+      // Construir system prompt (isFirstInteraction = !welcomeSent, como METO)
+      const systemPrompt = buildSystemPrompt(
+        bot,
+        botPrompt,
+        products,
+        resolvedUserName,
+        userPhone,
+        identifiedProductIds,
+        sentUrls,
+        !welcomeSent,
+      )
+
+      // Llamar a OpenAI
+      let response: Awaited<ReturnType<typeof chat>>
+      try {
+        response = await chat(systemPrompt, chatHistory, apiKey, bot.gpt_model || 'gpt-4o')
+      } catch (aiErr: any) {
+        console.error(`[BAILEYS] OpenAI error para ${userPhone}:`, aiErr.message)
+        const isQuotaError = aiErr.message?.includes('insufficient_quota') || aiErr.message?.includes('429')
+        if (isQuotaError) {
+          // Sin saldo → desactivar bot automáticamente
           const pauseDb = await createServiceRoleClient()
           await pauseDb.from('bots').update({ is_active: false }).eq('id', botId)
-
-          // Determine notification message
-          let notifTitle = 'Bot desactivado — Error de API Key'
-          let notifMsg = `El bot "${bot.name}" fue desactivado automáticamente.`
-          if (errMsg.includes('insufficient_quota') || errMsg.includes('exceeded') || errMsg.includes('429') || errMsg.includes('billing')) {
-            notifTitle = 'Bot desactivado — Sin saldo en OpenAI'
-            notifMsg = `El bot "${bot.name}" fue desactivado porque tu API key de OpenAI no tiene saldo. Recarga créditos y reactívalo.`
-          } else if (errMsg.includes('404') || errMsg.includes('invalid_api_key') || errMsg.includes('401') || errMsg.includes('Incorrect API key')) {
-            notifTitle = 'Bot desactivado — API Key inválida'
-            notifMsg = `El bot "${bot.name}" fue desactivado porque la API key de OpenAI es inválida o fue eliminada. Configura una nueva API key.`
-          }
-
-          // Notify bot owner
+          // Notificar al dueño
           try {
             const { data: profile } = await pauseDb.from('profiles').select('id').eq('tenant_id', bot.tenant_id).limit(1).single()
             if (profile) {
               await pauseDb.from('user_notifications').insert({
                 user_id: profile.id, type: 'bot_pausado',
-                title: notifTitle,
-                message: notifMsg,
+                title: '⚠️ Bot pausado — Sin saldo en OpenAI',
+                message: `El bot "${bot.name}" fue pausado automáticamente porque tu API key de OpenAI no tiene saldo. Recarga créditos y reactívalo manualmente.`,
                 link: `/bots/${botId}`,
               })
             }
           } catch { /* silent */ }
-          console.warn(`[WA] Bot ${botId} AUTO-DISABLED: ${errMsg.substring(0, 100)}`)
+          console.warn(`[BAILEYS] Bot ${botId} PAUSADO automáticamente por quota insuficiente`)
         } else {
-          // Non-fatal AI error — stay silent, don't send fallback
-          console.error(`[WA] AI error no fatal, no se envía nada al cliente`)
+          // Otro error transitorio → respaldo
+          await sock.sendMessage(jid, { text: '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊' }).catch(() => {})
         }
         return
       }
 
-      if (!aiResponse) {
-        // AI returned null after all retries — stay silent
-        console.log(`[WA] No AI response for bot ${botId}, silencio`)
-        return
+      // Aplicar límites de caracteres (como METO enforceCharLimits)
+      enforceCharLimits(response)
+
+      // Filtro de seguridad: eliminar URLs repetidas
+      if (sentUrls.length) {
+        const sentSet = new Set(sentUrls)
+        response.fotos_mensaje1 = (response.fotos_mensaje1 ?? []).filter((u: string) => !sentSet.has(u))
+        response.videos_mensaje1 = (response.videos_mensaje1 ?? []).filter((u: string) => !sentSet.has(u))
       }
 
-      // ── Filter already-sent URLs to prevent repeats ──
-      const sentUrlsDb = await createServiceRoleClient()
-      const { data: botMsgs } = await sentUrlsDb
-        .from('messages')
-        .select('content, type')
-        .eq('conversation_id', conversation.id)
-        .eq('sender', 'bot')
-        .in('type', ['image', 'video'])
-      const sentUrls = new Set((botMsgs || []).map(m => m.content).filter(u => u?.startsWith('http')))
-
-      if (aiResponse.photos_message1) {
-        aiResponse.photos_message1 = aiResponse.photos_message1.filter(u => !sentUrls.has(u))
-      }
-
-      // ── Helper: send text with typing ──
+      // ── Enviar respuestas ──
       const sendMsg = async (text: string) => {
-        try { await socket.presenceSubscribe(jid) } catch { /* silent */ }
-        try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
+        await sock.sendPresenceUpdate('composing', jid)
         await sleep(Math.floor(Math.random() * 1000) + 1000)
-        await Promise.race([
-          socket.sendMessage(jid, { text }),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 15000)),
-        ])
+        await sock.sendMessage(jid, { text })
         await saveMessage(conversation.id, 'bot', 'text', text)
       }
 
-      // ── Send in METO order: mensaje1 → fotos → videos → mensaje2 → mensaje3 ──
-      if (aiResponse.message1) await sendMsg(aiResponse.message1)
+      if (response.mensaje1) await sendMsg(response.mensaje1)
 
-      // Photos after message1
-      if (aiResponse.photos_message1 && aiResponse.photos_message1.length > 0) {
-        for (const photoUrl of aiResponse.photos_message1) {
-          if (!photoUrl.startsWith('http')) continue
+      for (const photoUrl of response.fotos_mensaje1) {
+        if (photoUrl.startsWith('https://')) {
+          await sock.sendPresenceUpdate('composing', jid)
+          await sleep(500)
           try {
-            try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
-            await sleep(500)
             await Promise.race([
-              socket.sendMessage(jid, { image: { url: photoUrl } }),
+              sock.sendMessage(jid, { image: { url: photoUrl } }),
               new Promise((_, reject) => setTimeout(() => reject(new Error('Image timeout')), 30000)),
             ])
             await saveMessage(conversation.id, 'bot', 'image', photoUrl)
           } catch (err) {
-            console.error(`[WA] Error sending photo:`, err)
+            console.error(`[BAILEYS] Error sending photo:`, err)
           }
         }
       }
 
-      // Videos after photos
-      const videos: string[] = (aiResponse.videos_message1 || []).filter(v => v.startsWith('http') && !sentUrls.has(v))
-      for (const videoUrl of videos) {
+      const videosToSend: string[] = Array.isArray(response.videos_mensaje1)
+        ? (response.videos_mensaje1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('https://'))
+        : []
+      for (const videoUrl of videosToSend) {
+        await sock.sendPresenceUpdate('composing', jid)
+        await sleep(800)
         try {
-          try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
-          await sleep(800)
           await Promise.race([
-            socket.sendMessage(jid, { video: { url: videoUrl } }),
+            sock.sendMessage(jid, { video: { url: videoUrl } }),
             new Promise((_, reject) => setTimeout(() => reject(new Error('Video timeout')), 30000)),
           ])
           await saveMessage(conversation.id, 'bot', 'video', videoUrl)
         } catch (err) {
-          console.error(`[WA] Error sending video:`, err)
+          console.error(`[BAILEYS] Error sending video:`, err)
         }
       }
 
-      // mensaje2 and mensaje3 after media
-      if (aiResponse.message2) await sendMsg(aiResponse.message2)
-      if (aiResponse.message3) await sendMsg(aiResponse.message3)
+      if (response.mensaje2) await sendMsg(response.mensaje2)
+      if (response.mensaje3) await sendMsg(response.mensaje3)
 
-      // ── Save AI memory (context) ──
-      if (aiResponse.context_memory) {
-        const memDb = await createServiceRoleClient()
-        await memDb.from('conversations').update({
-          product_interest: aiResponse.context_memory,
-        }).eq('id', conversation.id)
-      }
-
-      // ── Send report if present (sale confirmed) ──
+      // ── Reporte (venta confirmada) ──
       const supabaseUpdate = await createServiceRoleClient()
 
-      if (aiResponse.report && bot.report_phone) {
-        // Sale confirmed — send report to seller and close conversation
-        try {
-          const reportJid = `${bot.report_phone.replace(/^\+/, '').replace(/\s/g, '')}@s.whatsapp.net`
-          await socket.sendMessage(reportJid, { text: aiResponse.report })
-          console.log(`[WA] Sale report sent to ${bot.report_phone}`)
-        } catch (err) {
-          console.error(`[WA] Error sending report:`, err)
-        }
+      if (response.reporte && bot.report_phone) {
+        const reportJid = `${bot.report_phone.replace(/^\+/, '').replace(/\s/g, '')}@s.whatsapp.net`
+        await sock.sendMessage(reportJid, { text: response.reporte }).catch(() => {})
 
-        // Close conversation — bot stops responding to this client
+        // Marcar como sold (closed)
         await supabaseUpdate.from('conversations').update({
           status: 'closed',
           last_bot_message_at: new Date().toISOString(),
           last_message_at: new Date().toISOString(),
         }).eq('id', conversation.id)
 
-        // Notify bot owner about the sale
+        // Notificación al dueño del bot
         try {
           const { data: ownerProfile } = await supabaseUpdate.from('profiles').select('id').eq('tenant_id', bot.tenant_id).limit(1).single()
           if (ownerProfile) {
             await supabaseUpdate.from('user_notifications').insert({
               user_id: ownerProfile.id, type: 'venta_confirmada',
-              title: `Nueva venta — ${bot.name}`,
-              message: aiResponse.report?.slice(0, 150) || 'Venta confirmada',
+              title: `🤖 Nueva venta — ${bot.name}`,
+              message: response.reporte.slice(0, 150),
               link: '/sales',
             })
           }
         } catch { /* silent */ }
 
-        console.log(`[WA] Conversation ${conversation.id} closed (sale confirmed)`)
+        // Etiquetar conversación
+        try {
+          const labelJid = jid.endsWith('@lid') ? `${userPhone.replace(/\D/g, "")}@s.whatsapp.net` : jid
+          await (sock as any).addChatLabel(labelJid, '4')
+        } catch { /* silent */ }
+
+        console.log(`[BAILEYS] Conversación ${conversation.id} finalizada (Reporte generado)`)
       } else {
-        // No sale — update timestamps and set pending_followup only if still active
+        // Sin venta → programar seguimientos (pending_followup)
         const { data: currentConv } = await supabaseUpdate
           .from('conversations')
           .select('status')
@@ -832,7 +735,6 @@ class WhatsAppManager {
           last_message_at: new Date().toISOString(),
         }
 
-        // Only change status if not paused or closed
         if (currentConv?.status !== 'paused' && currentConv?.status !== 'closed') {
           updateData.status = 'pending_followup'
           updateData.followup_count = 0
@@ -841,8 +743,24 @@ class WhatsAppManager {
 
         await supabaseUpdate.from('conversations').update(updateData).eq('id', conversation.id)
       }
+
+      // Actualizar product_interest (equivale a botState.welcomeSent de METO)
+      // Solo marcar cuando el producto fue identificado Y se envió mensaje1
+      if (!welcomeSent && response.mensaje1 && identifiedProductIds.length > 0) {
+        const productNames = identifiedProductIds
+          .map(id => products.find(p => p.id === id)?.name)
+          .filter(Boolean)
+          .join(', ')
+        await supabaseUpdate.from('conversations').update({
+          product_interest: productNames || 'identified',
+        }).eq('id', conversation.id)
+        console.log(`[BAILEYS] welcomeSent=true → product_interest="${productNames}"`)
+      }
+
+      console.log(`[BAILEYS] ✓ Respuesta enviada para bot=${botId} phone=${userPhone} (${buffered.length} msgs procesados)`)
+
     } catch (err) {
-      console.error(`[WA] Error processing buffered messages for ${bufferKey}:`, err)
+      console.error(`[BAILEYS] Error processing buffered messages for ${bufferKey}:`, err)
     } finally {
       this.processingKeys.delete(bufferKey)
     }
@@ -852,15 +770,10 @@ class WhatsAppManager {
   async disconnect(botId: string): Promise<void> {
     const conn = this.connections.get(botId)
     if (conn?.socket) {
-      try {
-        await conn.socket.logout()
-      } catch { /* ignore */ }
-      try {
-        (conn.socket as any).end()
-      } catch { /* ignore */ }
+      try { await conn.socket.logout() } catch { /* ignore */ }
+      try { (conn.socket as any).end() } catch { /* ignore */ }
     }
 
-    // Clean session files
     const sessionDir = path.join(SESSIONS_DIR, botId)
     if (fs.existsSync(sessionDir)) {
       fs.rmSync(sessionDir, { recursive: true, force: true })
@@ -873,27 +786,29 @@ class WhatsAppManager {
       { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
       { onConflict: 'bot_id' }
     )
-    console.log(`[WA] Bot ${botId} disconnected and session cleaned`)
+    console.log(`[BAILEYS] Bot ${botId} disconnected and session cleaned`)
   }
 
-  // ── Send Message (with 15s timeout) ──
+  // ── Send Message ──
   async sendMessage(botId: string, phoneOrJid: string, text: string): Promise<boolean> {
     const conn = this.connections.get(botId)
     if (!conn?.socket || conn.status !== 'connected') return false
     try {
       const jid = phoneOrJid.includes('@') ? phoneOrJid : `${phoneOrJid}@s.whatsapp.net`
+      await conn.socket.sendPresenceUpdate('composing', jid)
+      await sleep(Math.floor(Math.random() * 1000) + 1000)
       await Promise.race([
         conn.socket.sendMessage(jid, { text }),
         new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 15000)),
       ])
       return true
     } catch (err) {
-      console.error(`[WA] sendMessage error:`, err)
+      console.error('[BAILEYS] sendMessage error:', err)
       return false
     }
   }
 
-  // ── Send Image (with 30s timeout) ──
+  // ── Send Image ──
   async sendImage(botId: string, phoneOrJid: string, imageUrl: string): Promise<boolean> {
     const conn = this.connections.get(botId)
     if (!conn?.socket || conn.status !== 'connected') return false
@@ -905,14 +820,31 @@ class WhatsAppManager {
       ])
       return true
     } catch (err) {
-      console.error(`[WA] sendImage error:`, err)
+      console.error('[BAILEYS] sendImage error:', err)
+      return false
+    }
+  }
+
+  // ── Send Video ──
+  async sendVideo(botId: string, phoneOrJid: string, videoUrl: string): Promise<boolean> {
+    const conn = this.connections.get(botId)
+    if (!conn?.socket || conn.status !== 'connected') return false
+    try {
+      const jid = phoneOrJid.includes('@') ? phoneOrJid : `${phoneOrJid}@s.whatsapp.net`
+      await Promise.race([
+        conn.socket.sendMessage(jid, { video: { url: videoUrl } }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 30000)),
+      ])
+      return true
+    } catch (err) {
+      console.error('[BAILEYS] sendVideo error:', err)
       return false
     }
   }
 
   // ── Restore Connected Sessions ──
   async restoreConnectedSessions(): Promise<void> {
-    console.log('[WA] Restoring connected sessions...')
+    console.log('[BAILEYS] Restoring connected sessions...')
     try {
       const supabase = await createServiceRoleClient()
       const { data: sessions } = await supabase
@@ -921,28 +853,27 @@ class WhatsAppManager {
         .eq('status', 'connected')
 
       if (!sessions || sessions.length === 0) {
-        console.log('[WA] No sessions to restore')
+        console.log('[BAILEYS] No sessions to restore')
         return
       }
 
       for (const session of sessions) {
-        // Skip if already connected in memory
         const existing = this.connections.get(session.bot_id)
         if (existing?.status === 'connected') {
-          console.log(`[WA] Bot ${session.bot_id} already connected, skipping`)
+          console.log(`[BAILEYS] Bot ${session.bot_id} already connected, skipping`)
           continue
         }
 
-        console.log(`[WA] Restoring session for bot ${session.bot_id}...`)
+        console.log(`[BAILEYS] Restoring session for bot ${session.bot_id}...`)
         try {
           await this.connect(session.bot_id)
         } catch (err) {
-          console.error(`[WA] Failed to restore bot ${session.bot_id}:`, err)
+          console.error(`[BAILEYS] Failed to restore bot ${session.bot_id}:`, err)
         }
       }
-      console.log(`[WA] Restore completed`)
+      console.log(`[BAILEYS] Restore completed`)
     } catch (err) {
-      console.error('[WA] Error restoring sessions:', err)
+      console.error('[BAILEYS] Error restoring sessions:', err)
     }
   }
 
