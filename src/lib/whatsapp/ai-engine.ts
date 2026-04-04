@@ -792,10 +792,9 @@ function parseAIResponse(responseContent: string): AIResponse {
       console.error(`[AI Engine] ⚠️ JSON válido pero sin campos de mensaje. Keys: ${Object.keys(parsed).join(', ')}`)
       console.error(`[AI Engine] Respuesta cruda (500ch): ${responseContent.substring(0, 500)}`)
 
-      // Fallback: si solo tiene contexto/timing pero no mensajes, es un error del modelo
-      const looksLikeJson = responseContent.trim().startsWith('{') || responseContent.trim().startsWith('[')
+      // JSON sin mensajes = modelo no generó respuesta → retornar null para que NO se envíe nada
       return {
-        message1: looksLikeJson ? 'Hola, ¿en qué puedo ayudarte?' : responseContent,
+        message1: '',
         message2: null,
         message3: null,
         photos_message1: null,

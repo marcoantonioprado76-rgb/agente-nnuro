@@ -47,30 +47,50 @@ const globalForWa = globalThis as typeof globalThis & {
 
 async function transcribeAudio(audioBuffer: Buffer, mimeType: string, apiKey: string): Promise<string> {
   try {
-    const ext = mimeType.includes('mp4') ? 'mp4' : 'ogg'
-    const blob = new Blob([new Uint8Array(audioBuffer)], { type: mimeType })
+    const baseMime = mimeType.split(';')[0].trim()
+    const mimeToExt: Record<string, string> = {
+      'audio/ogg': 'ogg', 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a',
+      'audio/x-m4a': 'm4a', 'audio/wav': 'wav', 'audio/webm': 'webm',
+      'audio/flac': 'flac', 'audio/aac': 'm4a', 'audio/amr': 'amr',
+    }
+    const ext = mimeToExt[baseMime] || 'ogg'
+
+    const blob = new Blob([new Uint8Array(audioBuffer)], { type: baseMime })
     const form = new FormData()
     form.append('file', blob, `audio.${ext}`)
     form.append('model', 'whisper-1')
     form.append('language', 'es')
-    const res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}` },
-      body: form,
-    })
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 60000)
+    let res: Response
+    try {
+      res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}` },
+        body: form,
+        signal: controller.signal,
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
+
     if (!res.ok) {
-      console.error(`[WA] Whisper API error: ${res.status} ${res.statusText}`)
+      const errText = await res.text().catch(() => '')
+      console.error(`[WA] Whisper API error: ${res.status} ${errText.substring(0, 200)}`)
       return ''
     }
     const data = await res.json()
-    return data.text || ''
+    return (data.text as string) || ''
   } catch (err) {
     console.error('[WA] Whisper transcription error:', err)
-    return '[Audio no procesado]'
+    return ''
   }
 }
 
 async function analyzeImage(base64DataUrl: string, apiKey: string): Promise<string> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 30000)
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -78,27 +98,35 @@ async function analyzeImage(base64DataUrl: string, apiKey: string): Promise<stri
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [{
           role: 'user',
           content: [
-            { type: 'text', text: 'Describe esta imagen brevemente en español. Si hay texto, transcríbelo.' },
-            { type: 'image_url', image_url: { url: base64DataUrl, detail: 'low' } },
+            {
+              type: 'text',
+              text: `Analiza esta imagen. Describe qué aparece, objetos, texto visible y contexto. Si hay texto, transcríbelo. Responde en español, máximo 3 frases.`,
+            },
+            { type: 'image_url', image_url: { url: base64DataUrl, detail: 'high' } },
           ],
         }],
-        max_tokens: 300,
+        max_tokens: 500,
       }),
     })
+
     if (!res.ok) {
-      console.error(`[WA] Vision API error: ${res.status} ${res.statusText}`)
-      return '[Imagen no procesada]'
+      const errText = await res.text().catch(() => '')
+      console.error(`[WA] Vision API error: ${res.status} ${errText.substring(0, 200)}`)
+      return ''
     }
     const data = await res.json()
-    return data.choices?.[0]?.message?.content || ''
+    return (data.choices?.[0]?.message?.content as string) || ''
   } catch (err) {
     console.error('[WA] Vision analysis error:', err)
-    return '[Imagen no procesada]'
+    return ''
+  } finally {
+    clearTimeout(timeout)
   }
 }
 
@@ -452,7 +480,11 @@ class WhatsAppManager {
     }
 
     const phone = phoneFromJid(jid)
-    const pushName = msg.pushName || ''
+    let pushName = msg.pushName || ''
+    // Filter numeric-only names (fallback to phone number)
+    if (pushName && /^\d+$/.test(pushName.replace(/[+\s-]/g, ''))) {
+      pushName = ''
+    }
     console.log(`[WA] Message from ${pushName || phone} (jid: ${jid})`)
 
     // Get bot info
@@ -474,12 +506,15 @@ class WhatsAppManager {
       try {
         const buffer = await downloadMediaMessage(msg, 'buffer', {}) as Buffer
         const mime = message.audioMessage.mimetype || 'audio/ogg'
-        content = await transcribeAudio(buffer, mime, apiKey)
-        if (content) content = `[Audio transcrito]: ${content}`
-        else content = '[Audio no procesado]'
+        const transcription = await transcribeAudio(buffer, mime, apiKey)
+        if (transcription && transcription.trim().length > 0) {
+          content = `[Audio transcrito]: ${transcription}`
+        } else {
+          content = '[El cliente envió un audio pero no se pudo transcribir]'
+        }
       } catch (err) {
         console.error('[WA] Audio download error:', err)
-        content = '[Audio no procesado]'
+        content = '[El cliente envió un audio pero no se pudo procesar]'
       }
     } else if (message.imageMessage) {
       msgType = 'image'
@@ -489,16 +524,25 @@ class WhatsAppManager {
         const base64 = `data:${mime};base64,${buffer.toString('base64')}`
         const description = await analyzeImage(base64, apiKey)
         const caption = message.imageMessage.caption || ''
-        content = `[Imagen enviada${caption ? `: "${caption}"` : ''}. Descripción: ${description}]`
+        if (description && !description.includes('[Imagen no procesada]')) {
+          content = `[Imagen enviada${caption ? `: "${caption}"` : ''}. Descripción: ${description}]`
+        } else {
+          content = caption ? `[Imagen enviada con texto: "${caption}"]` : '[El cliente envió una imagen]'
+        }
       } catch (err) {
         console.error('[WA] Image download error:', err)
-        content = '[Imagen no procesada]'
+        const caption = message.imageMessage?.caption || ''
+        content = caption ? `[Imagen enviada con texto: "${caption}"]` : '[El cliente envió una imagen]'
       }
-    } else if (message.locationMessage) {
+    } else if (message.locationMessage || (message as Record<string, unknown>).liveLocationMessage) {
       msgType = 'location'
-      const lat = message.locationMessage.degreesLatitude
-      const lng = message.locationMessage.degreesLongitude
-      content = `[Ubicación compartida: lat=${lat}, lng=${lng}]`
+      const loc = message.locationMessage || (message as Record<string, unknown>).liveLocationMessage as Record<string, unknown>
+      const lat = (loc as Record<string, unknown>).degreesLatitude
+      const lng = (loc as Record<string, unknown>).degreesLongitude
+      const name = ((loc as Record<string, unknown>).name || '') as string
+      const address = ((loc as Record<string, unknown>).address || '') as string
+      content = `📍 Ubicación recibida: ${name} ${address}`.trim()
+      if (lat && lng) content += ` | https://maps.google.com/?q=${lat},${lng}`
     } else if (message.videoMessage) {
       msgType = 'video'
       const caption = message.videoMessage?.caption || ''
@@ -582,7 +626,16 @@ class WhatsAppManager {
       this.messageBuffers.delete(bufferKey)
 
       // Combine messages
-      const combinedMessage = buffered.map(m => m.content).join('\n')
+      const combinedMessage = buffered.map(m => {
+        switch (m.type) {
+          case 'audio': return `🎙️ (audio transcrito): ${m.content}`
+          case 'image': return `📷 (imagen recibida): ${m.content}`
+          case 'location': return `📍 (ubicación): ${m.content}`
+          case 'video': return `🎬 (video): ${m.content}`
+          case 'document': return `📄 (documento): ${m.content}`
+          default: return m.content
+        }
+      }).join('\n')
       const contactName = contact.name || contact.push_name || phone
 
       // Re-check conversation status (may have been paused/closed during buffer wait)
@@ -671,63 +724,58 @@ class WhatsAppManager {
         aiResponse.photos_message1 = aiResponse.photos_message1.filter(u => !sentUrls.has(u))
       }
 
-      // ── Send responses with typing simulation ──
-      const messagesToSend = [aiResponse.message1, aiResponse.message2, aiResponse.message3].filter(Boolean) as string[]
-
-      for (let i = 0; i < messagesToSend.length; i++) {
-        const text = messagesToSend[i]
-
-        // Typing simulation
+      // ── Helper: send text with typing ──
+      const sendMsg = async (text: string) => {
         try { await socket.presenceSubscribe(jid) } catch { /* silent */ }
-        await sleep(1000)
         try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
-        const typingMs = Math.min(6000, Math.max(2000, text.length * 50))
-        await sleep(typingMs)
-        try { await socket.sendPresenceUpdate('paused', jid) } catch { /* silent */ }
-
-        // Send message (with timeout)
+        await sleep(Math.floor(Math.random() * 1000) + 1000)
         await Promise.race([
           socket.sendMessage(jid, { text }),
           new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 15000)),
         ])
         await saveMessage(conversation.id, 'bot', 'text', text)
-
-        if (i < messagesToSend.length - 1) {
-          await sleep(2000 + Math.random() * 3000)
-        }
       }
 
-      // ── Send photos if present ──
+      // ── Send in METO order: mensaje1 → fotos → videos → mensaje2 → mensaje3 ──
+      if (aiResponse.message1) await sendMsg(aiResponse.message1)
+
+      // Photos after message1
       if (aiResponse.photos_message1 && aiResponse.photos_message1.length > 0) {
         for (const photoUrl of aiResponse.photos_message1) {
           if (!photoUrl.startsWith('http')) continue
           try {
+            try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
+            await sleep(500)
             await Promise.race([
               socket.sendMessage(jid, { image: { url: photoUrl } }),
-              new Promise((_, reject) => setTimeout(() => reject(new Error('Image send timeout')), 30000)),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('Image timeout')), 30000)),
             ])
             await saveMessage(conversation.id, 'bot', 'image', photoUrl)
-            await sleep(800)
           } catch (err) {
             console.error(`[WA] Error sending photo:`, err)
           }
         }
       }
 
-      // ── Send videos if present ──
+      // Videos after photos
       const videos: string[] = (aiResponse.videos_message1 || []).filter(v => v.startsWith('http') && !sentUrls.has(v))
       for (const videoUrl of videos) {
         try {
+          try { await socket.sendPresenceUpdate('composing', jid) } catch { /* silent */ }
+          await sleep(800)
           await Promise.race([
             socket.sendMessage(jid, { video: { url: videoUrl } }),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Video send timeout')), 30000)),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Video timeout')), 30000)),
           ])
           await saveMessage(conversation.id, 'bot', 'video', videoUrl)
-          await sleep(1000)
         } catch (err) {
           console.error(`[WA] Error sending video:`, err)
         }
       }
+
+      // mensaje2 and mensaje3 after media
+      if (aiResponse.message2) await sendMsg(aiResponse.message2)
+      if (aiResponse.message3) await sendMsg(aiResponse.message3)
 
       // ── Save AI memory (context) ──
       if (aiResponse.context_memory) {
@@ -743,7 +791,7 @@ class WhatsAppManager {
       if (aiResponse.report && bot.report_phone) {
         // Sale confirmed — send report to seller and close conversation
         try {
-          const reportJid = `${bot.report_phone}@s.whatsapp.net`
+          const reportJid = `${bot.report_phone.replace(/^\+/, '').replace(/\s/g, '')}@s.whatsapp.net`
           await socket.sendMessage(reportJid, { text: aiResponse.report })
           console.log(`[WA] Sale report sent to ${bot.report_phone}`)
         } catch (err) {
