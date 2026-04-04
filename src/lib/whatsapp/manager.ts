@@ -640,20 +640,15 @@ class WhatsAppManager {
           } catch { /* silent */ }
           console.warn(`[WA] Bot ${botId} AUTO-DISABLED: ${errMsg.substring(0, 100)}`)
         } else {
-          // Fallback message so client isn't left on read
-          try {
-            await socket.sendMessage(jid, { text: '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊' })
-          } catch { /* silent */ }
+          // Non-fatal AI error — stay silent, don't send fallback
+          console.error(`[WA] AI error no fatal, no se envía nada al cliente`)
         }
         return
       }
 
       if (!aiResponse) {
-        // Fallback if AI returned null
-        try {
-          await socket.sendMessage(jid, { text: '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊' })
-        } catch { /* silent */ }
-        console.log(`[WA] No AI response for bot ${botId}, fallback sent`)
+        // AI returned null after all retries — stay silent
+        console.log(`[WA] No AI response for bot ${botId}, silencio`)
         return
       }
 

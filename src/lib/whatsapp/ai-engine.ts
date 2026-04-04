@@ -211,29 +211,53 @@ export async function generateBotResponse(
       }
     }
 
-    const responseContent = completion?.choices[0]?.message?.content
+    let responseContent = completion?.choices[0]?.message?.content
+
+    // NEVER fail — retry aggressively until OpenAI responds
     if (!responseContent) {
       const finishReason = completion?.choices[0]?.finish_reason
-      console.error(`[AI Engine] Sin respuesta de OpenAI. finish_reason=${finishReason}, choices=${completion?.choices?.length || 0}`)
+      console.error(`[AI Engine] Sin respuesta. finish_reason=${finishReason}, msgs=${messages.length}`)
 
-      // If finish_reason is 'length', the response was cut off — retry with fewer messages
-      if (finishReason === 'length' && messages.length > 5) {
-        console.log(`[AI Engine] Reintentando con menos historial...`)
-        const reducedMessages = [messages[0], ...messages.slice(-4)]
-        try {
-          const retryCompletion = await openai.chat.completions.create({
-            ...completionParams,
-            messages: reducedMessages,
-          })
-          const retryContent = retryCompletion?.choices[0]?.message?.content
-          if (retryContent) {
-            console.log(`[AI Engine] Retry exitoso: ${retryContent.length} chars`)
-            return parseAIResponse(retryContent)
-          }
-        } catch { /* silent */ }
+      for (let cycle = 1; cycle <= 3 && !responseContent; cycle++) {
+        console.log(`[AI Engine] Ciclo de reintentos ${cycle}/3...`)
+
+        // Retry 1: fewer messages
+        if (!responseContent && messages.length > 5) {
+          try {
+            const r = await openai.chat.completions.create({ ...completionParams, messages: [messages[0], ...messages.slice(-4)] })
+            responseContent = r?.choices[0]?.message?.content
+            if (responseContent) { console.log(`[AI Engine] Retry ${cycle}.1 exitoso (menos historial)`); break }
+          } catch { /* continue */ }
+        }
+
+        // Retry 2: no json_mode
+        if (!responseContent) {
+          try {
+            const r = await openai.chat.completions.create({ model: selectedModel, messages: [messages[0], messages[messages.length - 1]], temperature: 0.7, max_completion_tokens: 400 })
+            responseContent = r?.choices[0]?.message?.content
+            if (responseContent) { console.log(`[AI Engine] Retry ${cycle}.2 exitoso (sin json_mode)`); break }
+          } catch { /* continue */ }
+        }
+
+        // Retry 3: cheaper model
+        if (!responseContent) {
+          try {
+            const r = await openai.chat.completions.create({ model: 'gpt-4o-mini', messages: [messages[0], messages[messages.length - 1]], temperature: 0.7, max_completion_tokens: 300 })
+            responseContent = r?.choices[0]?.message?.content
+            if (responseContent) { console.log(`[AI Engine] Retry ${cycle}.3 exitoso (gpt-4o-mini)`); break }
+          } catch { /* continue */ }
+        }
+
+        // Wait before next cycle
+        if (!responseContent && cycle < 3) {
+          await new Promise(r => setTimeout(r, 3000))
+        }
       }
 
-      return null
+      if (!responseContent) {
+        console.error(`[AI Engine] 9 reintentos agotados, sin respuesta`)
+        return null
+      }
     }
 
     console.log(`[AI Engine] Respuesta: ${responseContent.length} chars`)
