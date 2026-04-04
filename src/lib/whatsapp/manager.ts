@@ -376,11 +376,10 @@ class WhatsAppManager {
             { onConflict: 'bot_id' }
           )
         } else if (isReplaced) {
-          // Connection replaced by another instance — reconnect after delay
-          console.log(`[WA] Bot ${botId} connection replaced (440), reconnecting in 10s...`)
-          conn.status = 'connecting'
+          // Connection replaced — stop reconnecting to avoid loop
+          console.log(`[WA] Bot ${botId} connection replaced (440), stopping. User must reconnect manually.`)
+          conn.status = 'disconnected'
           conn.socket = null
-          setTimeout(() => this.createSocket(botId).catch(console.error), 10_000)
         } else if (conn.retryCount < MAX_RETRIES) {
           // Reconnect
           conn.retryCount++

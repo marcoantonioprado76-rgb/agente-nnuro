@@ -660,7 +660,7 @@ function parseAIResponse(responseContent: string): AIResponse {
     // Buscar mensajes con nombres flexibles (español, ingles, variantes)
     const msg1 = String(findKey(parsed, [
       'mensaje1', 'message1', 'msg1', 'respuesta1', 'texto1', 'mensaje_1', 'message_1',
-      'mensaje', 'message', 'respuesta', 'texto', 'reply',
+      'mensaje', 'message', 'respuesta', 'texto', 'reply', 'respuesta_cliente',
     ], ''))
 
     const msg2 = String(findKey(parsed, [
