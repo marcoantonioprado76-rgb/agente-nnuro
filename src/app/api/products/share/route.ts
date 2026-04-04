@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
       title: `${senderProfile.full_name} te compartió productos`,
       message: `Recibiste ${cloned} producto(s) copiados a tu bot. Puedes editarlos libremente.`,
       link: '/bots',
-    }).catch(() => {})
+    })
 
     return NextResponse.json({
       success: true,
