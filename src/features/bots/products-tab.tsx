@@ -545,7 +545,7 @@ export function ProductsTab({ botId }: ProductsTabProps) {
     const hasImage = testimonial?.url
 
     return (
-      <div className="grid grid-cols-2 gap-3 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-2 items-start">
         <input
           type="text"
           value={testimonial?.description || ''}
@@ -557,7 +557,7 @@ export function ProductsTab({ botId }: ProductsTabProps) {
             current[index] = { ...current[index], description: e.target.value }
             updateField('testimonials', current)
           }}
-          placeholder={index < 3 ? `Ej: Testimonio manchas ${index + 1}` : `Testimonio inactivo ${index + 1}`}
+          placeholder={`Descripcion testimonio ${index + 1}`}
           className={inputClass}
         />
         <div>
@@ -1086,9 +1086,61 @@ export function ProductsTab({ botId }: ProductsTabProps) {
               <p className="text-xs text-white/40">(el agente las envia ante dudas)</p>
 
               <div className="space-y-3">
-                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                  <TestimonialRow key={`test-row-${i}`} index={i} />
-                ))}
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => {
+                  const testimonial = form.testimonials[i]
+                  const hasImage = testimonial?.url
+                  return (
+                    <div key={`test-row-${i}`} className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-2 items-start">
+                      <input
+                        type="text"
+                        value={testimonial?.description || ''}
+                        onChange={(e) => {
+                          const current = [...form.testimonials]
+                          while (current.length <= i) {
+                            current.push({ type: 'image', url: '', content: '', description: '' })
+                          }
+                          current[i] = { ...current[i], description: e.target.value }
+                          updateField('testimonials', current)
+                        }}
+                        placeholder={`Descripcion testimonio ${i + 1}`}
+                        className={inputClass}
+                      />
+                      <div>
+                        {hasImage ? (
+                          <div className="flex items-center gap-2">
+                            <img src={testimonial.url} alt={`Testimonio ${i + 1}`} className="h-10 w-10 rounded-lg object-cover border border-white/10" />
+                            <span className="text-xs text-emerald-400 flex-1 truncate">Subido</span>
+                            <button type="button" onClick={() => updateTestimonial(i, 'url', '')} className="h-7 w-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-400/10 transition-colors">
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="cursor-pointer block">
+                            <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                              if (e.target.files?.[0]) {
+                                const current = [...form.testimonials]
+                                while (current.length <= i) {
+                                  current.push({ type: 'image', url: '', content: '', description: '' })
+                                }
+                                setUploadingImage(true)
+                                const url = await uploadFile(e.target.files[0], 'product-testimonials')
+                                if (url) {
+                                  current[i] = { ...current[i], type: 'image', url }
+                                  updateField('testimonials', current)
+                                }
+                                setUploadingImage(false)
+                              }
+                            }} />
+                            <div className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl transition-colors hover:bg-white/[0.02]" style={{ border: '2px dashed rgba(99, 102, 241, 0.2)' }}>
+                              <Upload className="h-4 w-4 text-indigo-400/40" />
+                              <span className="text-[11px] text-white/30">Subir foto testimonio {i + 1}</span>
+                            </div>
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
