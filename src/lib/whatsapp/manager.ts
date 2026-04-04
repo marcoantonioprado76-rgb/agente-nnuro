@@ -439,10 +439,15 @@ class WhatsAppManager {
     if (msg.key.id) {
       if (this.processedMessageIds.has(msg.key.id)) return
       this.processedMessageIds.add(msg.key.id)
-      // Keep set from growing forever (max 1000)
-      if (this.processedMessageIds.size > 1000) {
-        const first = this.processedMessageIds.values().next().value
-        if (first) this.processedMessageIds.delete(first)
+      // Keep set from growing forever (max 5000 for scale)
+      if (this.processedMessageIds.size > 5000) {
+        const iter = this.processedMessageIds.values()
+        for (let i = 0; i < 1000; i++) iter.next()
+        // Delete oldest 1000 entries
+        const toDelete: string[] = []
+        const allValues = [...this.processedMessageIds]
+        for (let i = 0; i < 1000; i++) toDelete.push(allValues[i])
+        toDelete.forEach(id => this.processedMessageIds.delete(id))
       }
     }
 
@@ -680,8 +685,11 @@ class WhatsAppManager {
         await sleep(typingMs)
         try { await socket.sendPresenceUpdate('paused', jid) } catch { /* silent */ }
 
-        // Send message
-        await socket.sendMessage(jid, { text })
+        // Send message (with timeout)
+        await Promise.race([
+          socket.sendMessage(jid, { text }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 15000)),
+        ])
         await saveMessage(conversation.id, 'bot', 'text', text)
 
         if (i < messagesToSend.length - 1) {
@@ -694,7 +702,10 @@ class WhatsAppManager {
         for (const photoUrl of aiResponse.photos_message1) {
           if (!photoUrl.startsWith('http')) continue
           try {
-            await socket.sendMessage(jid, { image: { url: photoUrl } })
+            await Promise.race([
+              socket.sendMessage(jid, { image: { url: photoUrl } }),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('Image send timeout')), 30000)),
+            ])
             await saveMessage(conversation.id, 'bot', 'image', photoUrl)
             await sleep(800)
           } catch (err) {
@@ -707,7 +718,10 @@ class WhatsAppManager {
       const videos: string[] = (aiResponse.videos_message1 || []).filter(v => v.startsWith('http') && !sentUrls.has(v))
       for (const videoUrl of videos) {
         try {
-          await socket.sendMessage(jid, { video: { url: videoUrl } })
+          await Promise.race([
+            socket.sendMessage(jid, { video: { url: videoUrl } }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Video send timeout')), 30000)),
+          ])
           await saveMessage(conversation.id, 'bot', 'video', videoUrl)
           await sleep(1000)
         } catch (err) {
@@ -814,14 +828,16 @@ class WhatsAppManager {
     console.log(`[WA] Bot ${botId} disconnected and session cleaned`)
   }
 
-  // ── Send Message ──
+  // ── Send Message (with 15s timeout) ──
   async sendMessage(botId: string, phoneOrJid: string, text: string): Promise<boolean> {
     const conn = this.connections.get(botId)
     if (!conn?.socket || conn.status !== 'connected') return false
     try {
-      // Accept full JID (@lid or @s.whatsapp.net) or just phone number
       const jid = phoneOrJid.includes('@') ? phoneOrJid : `${phoneOrJid}@s.whatsapp.net`
-      await conn.socket.sendMessage(jid, { text })
+      await Promise.race([
+        conn.socket.sendMessage(jid, { text }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 15000)),
+      ])
       return true
     } catch (err) {
       console.error(`[WA] sendMessage error:`, err)
@@ -829,13 +845,16 @@ class WhatsAppManager {
     }
   }
 
-  // ── Send Image ──
+  // ── Send Image (with 30s timeout) ──
   async sendImage(botId: string, phoneOrJid: string, imageUrl: string): Promise<boolean> {
     const conn = this.connections.get(botId)
     if (!conn?.socket || conn.status !== 'connected') return false
     try {
       const jid = phoneOrJid.includes('@') ? phoneOrJid : `${phoneOrJid}@s.whatsapp.net`
-      await conn.socket.sendMessage(jid, { image: { url: imageUrl } })
+      await Promise.race([
+        conn.socket.sendMessage(jid, { image: { url: imageUrl } }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Send timeout')), 30000)),
+      ])
       return true
     } catch (err) {
       console.error(`[WA] sendImage error:`, err)
