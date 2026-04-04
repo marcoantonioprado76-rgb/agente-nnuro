@@ -6,7 +6,7 @@ const PRODUCT_COLUMNS = new Set([
   'name', 'description', 'benefits', 'usage_instructions', 'warnings',
   'currency', 'price_unit', 'price_promo_x2', 'price_super_x6',
   'offer_price', 'shipping_info', 'coverage', 'hooks', 'is_active',
-  'category', 'sell_zones', 'delivery_zones',
+  'category', 'sell_zones', 'delivery_zones', 'first_message',
 ]);
 
 function pickProductFields(obj: Record<string, unknown>) {
