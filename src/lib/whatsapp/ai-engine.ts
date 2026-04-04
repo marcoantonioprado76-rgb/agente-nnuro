@@ -213,7 +213,26 @@ export async function generateBotResponse(
 
     const responseContent = completion?.choices[0]?.message?.content
     if (!responseContent) {
-      console.error(`[AI Engine] Sin respuesta de OpenAI`)
+      const finishReason = completion?.choices[0]?.finish_reason
+      console.error(`[AI Engine] Sin respuesta de OpenAI. finish_reason=${finishReason}, choices=${completion?.choices?.length || 0}`)
+
+      // If finish_reason is 'length', the response was cut off — retry with fewer messages
+      if (finishReason === 'length' && messages.length > 5) {
+        console.log(`[AI Engine] Reintentando con menos historial...`)
+        const reducedMessages = [messages[0], ...messages.slice(-4)]
+        try {
+          const retryCompletion = await openai.chat.completions.create({
+            ...completionParams,
+            messages: reducedMessages,
+          })
+          const retryContent = retryCompletion?.choices[0]?.message?.content
+          if (retryContent) {
+            console.log(`[AI Engine] Retry exitoso: ${retryContent.length} chars`)
+            return parseAIResponse(retryContent)
+          }
+        } catch { /* silent */ }
+      }
+
       return null
     }
 
