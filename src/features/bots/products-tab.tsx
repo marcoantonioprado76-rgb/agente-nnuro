@@ -45,6 +45,8 @@ import {
   Play,
   Video,
   Camera,
+  Share2,
+  Mail,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Product, ProductImage, ProductTestimonial } from '@/types'
@@ -163,6 +165,10 @@ export function ProductsTab({ botId }: ProductsTabProps) {
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [shareDialogOpen, setShareDialogOpen] = useState(false)
+  const [shareEmail, setShareEmail] = useState('')
+  const [shareProductIds, setShareProductIds] = useState<string[]>([])
+  const [sharing, setSharing] = useState(false)
 
   const fetchProducts = async () => {
     try {
@@ -466,6 +472,31 @@ export function ProductsTab({ botId }: ProductsTabProps) {
     }
   }
 
+  const handleShare = async () => {
+    if (!shareEmail.trim() || shareProductIds.length === 0) {
+      toast.error('Selecciona productos e ingresa el correo')
+      return
+    }
+    setSharing(true)
+    try {
+      const res = await fetch('/api/products/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_ids: shareProductIds, recipient_email: shareEmail.trim() }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(data.message)
+        setShareDialogOpen(false)
+        setShareEmail('')
+        setShareProductIds([])
+      } else {
+        toast.error(data.error || 'Error al compartir')
+      }
+    } catch { toast.error('Error de conexión') }
+    finally { setSharing(false) }
+  }
+
   // ── Helper: single image upload slot ──
   const handleSingleSlotUpload = async (file: File, type: 'product' | 'offer', slotIndex: number) => {
     const key = type === 'product' ? 'product_images' : 'offer_images'
@@ -634,17 +665,29 @@ export function ProductsTab({ botId }: ProductsTabProps) {
             {products.length}
           </Badge>
         </div>
-        <Button
-          onClick={openCreate}
-          className="gap-2 text-white border-0 rounded-xl h-10 px-5 text-[13px] font-semibold"
-          style={{
-            background: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%)',
-            boxShadow: '0 4px 15px rgba(167, 139, 250, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          Agregar producto
-        </Button>
+        <div className="flex items-center gap-2">
+          {products.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => { setShareProductIds(products.map(p => p.id)); setShareDialogOpen(true) }}
+              className="gap-2 rounded-xl h-10 px-4 text-[12px] font-semibold border-white/10 text-white/70 hover:text-white"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+              Compartir
+            </Button>
+          )}
+          <Button
+            onClick={openCreate}
+            className="gap-2 text-white border-0 rounded-xl h-10 px-5 text-[13px] font-semibold"
+            style={{
+              background: 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%)',
+              boxShadow: '0 4px 15px rgba(167, 139, 250, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            Agregar producto
+          </Button>
+        </div>
       </div>
 
       {/* Product List or Empty State */}
@@ -1243,6 +1286,68 @@ export function ProductsTab({ botId }: ProductsTabProps) {
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               Guardar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Share Dialog ── */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="sm:max-w-md p-0 border-0 rounded-2xl" style={{ background: '#0D0D14', border: '1px solid rgba(139, 92, 246, 0.15)' }}>
+          <DialogHeader className="px-5 pt-5 pb-3" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+            <DialogTitle className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-violet-400/10">
+                <Share2 className="h-[18px] w-[18px] text-violet-400" />
+              </div>
+              <div>
+                <span className="text-[15px] font-semibold text-white block">Compartir productos</span>
+                <span className="text-[11px] text-[#94A3B8]/60">Se copian al bot del destinatario</span>
+              </div>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="px-5 py-4 space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-white/50 mb-1.5">Correo del destinatario</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/25" />
+                <input
+                  type="email"
+                  value={shareEmail}
+                  onChange={(e) => setShareEmail(e.target.value)}
+                  placeholder="usuario@email.com"
+                  className="w-full bg-[#0B0B12]/50 border border-white/10 rounded-xl px-4 pl-10 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-violet-400/40"
+                />
+              </div>
+              <p className="text-[10px] text-[#94A3B8]/40 mt-1">El usuario debe estar registrado en la plataforma</p>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-white/50 mb-2">Productos a compartir ({shareProductIds.length})</label>
+              <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                {products.map(p => (
+                  <label key={p.id} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.02] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={shareProductIds.includes(p.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) setShareProductIds(prev => [...prev, p.id])
+                        else setShareProductIds(prev => prev.filter(id => id !== p.id))
+                      }}
+                      className="rounded border-white/20"
+                    />
+                    <span className="text-sm text-white">{p.name}</span>
+                    <span className="text-[10px] text-[#94A3B8]/40 ml-auto">{p.currency} {p.price_unit}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="px-5 py-3 flex gap-3" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+            <Button variant="ghost" onClick={() => setShareDialogOpen(false)} disabled={sharing} className="flex-1 text-white/50 rounded-xl">
+              Cancelar
+            </Button>
+            <Button onClick={handleShare} disabled={sharing || !shareEmail.trim() || shareProductIds.length === 0} className="flex-1 gap-2 text-white border-0 rounded-xl font-semibold" style={{ background: 'linear-gradient(135deg, #A78BFA, #8B5CF6)' }}>
+              {sharing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+              Compartir
             </Button>
           </div>
         </DialogContent>
