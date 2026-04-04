@@ -698,11 +698,57 @@ function parseAIResponse(responseContent: string): AIResponse {
     // Extraer datos de pedido si hay reporte de venta
     const orderData = extractOrderData(parsed)
 
-    // Si no hay ningun mensaje, NO enviar JSON crudo al cliente
+    // Si no hay ningun mensaje, intentar extraer de formatos alternativos
     if (!msg1 && !msg2 && !msg3) {
+      // Format: { mensajes: [{ tipo: "texto", contenido: "..." }, ...] }
+      const mensajesArray = parsed.mensajes || parsed.messages || parsed.respuestas
+      if (Array.isArray(mensajesArray) && mensajesArray.length > 0) {
+        const extractedMsgs = mensajesArray
+          .map((m: unknown) => {
+            if (typeof m === 'string') return m
+            if (typeof m === 'object' && m !== null) {
+              const obj = m as Record<string, unknown>
+              return String(obj.contenido || obj.content || obj.texto || obj.text || obj.mensaje || '')
+            }
+            return ''
+          })
+          .filter(Boolean)
+
+        if (extractedMsgs.length > 0) {
+          console.log(`[AI Engine] Formato alternativo 'mensajes[]' detectado: ${extractedMsgs.length} msgs`)
+
+          // Extract media from array items
+          let extractedPhotos: string[] = []
+          let extractedVideos: string[] = []
+          for (const m of mensajesArray) {
+            if (typeof m === 'object' && m !== null) {
+              const obj = m as Record<string, unknown>
+              const media = obj.media || obj.foto || obj.image || obj.video
+              if (typeof media === 'string' && media.startsWith('http')) {
+                if (obj.tipo === 'video' || obj.type === 'video') extractedVideos.push(media)
+                else extractedPhotos.push(media)
+              }
+            }
+          }
+
+          return {
+            message1: extractedMsgs[0] || '',
+            message2: extractedMsgs[1] || null,
+            message3: extractedMsgs[2] || null,
+            photos_message1: extractedPhotos.length > 0 ? extractedPhotos : normalizePhotos(photosRaw),
+            videos_message1: extractedVideos.length > 0 ? extractedVideos : normalizePhotos(videosRaw),
+            report: report || null,
+            context_memory: contextMemory ? String(contextMemory) : null,
+            order_data: orderData,
+            timing,
+          }
+        }
+      }
+
       console.error(`[AI Engine] ⚠️ JSON válido pero sin campos de mensaje. Keys: ${Object.keys(parsed).join(', ')}`)
       console.error(`[AI Engine] Respuesta cruda (500ch): ${responseContent.substring(0, 500)}`)
-      // Si la respuesta no parece JSON, usarla como texto plano
+
+      // Fallback: si solo tiene contexto/timing pero no mensajes, es un error del modelo
       const looksLikeJson = responseContent.trim().startsWith('{') || responseContent.trim().startsWith('[')
       return {
         message1: looksLikeJson ? 'Hola, ¿en qué puedo ayudarte?' : responseContent,
