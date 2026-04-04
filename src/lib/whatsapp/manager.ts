@@ -704,12 +704,8 @@ class WhatsAppManager {
       }
 
       // ── Send videos if present ──
-      if (aiResponse.videos_message1) {
-        aiResponse.videos_message1 = aiResponse.videos_message1.filter(u => !sentUrls.has(u))
-      }
-      const videos: string[] = (aiResponse.videos_message1 || []).filter(v => v.startsWith('http'))
+      const videos: string[] = (aiResponse.videos_message1 || []).filter(v => v.startsWith('http') && !sentUrls.has(v))
       for (const videoUrl of videos) {
-        if (sentUrls.has(videoUrl)) continue
         try {
           await socket.sendMessage(jid, { video: { url: videoUrl } })
           await saveMessage(conversation.id, 'bot', 'video', videoUrl)

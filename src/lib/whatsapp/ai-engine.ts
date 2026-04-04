@@ -717,12 +717,13 @@ function parseAIResponse(responseContent: string): AIResponse {
     // Buscar fotos con nombres flexibles
     const photosRaw = findKey(parsed, [
       'fotos_mensaje1', 'photos_message1', 'fotos', 'photos', 'imagenes', 'images',
-      'fotos_mensaje', 'foto', 'photo', 'media', 'adjuntos', 'attachments',
+      'fotos_mensaje', 'foto', 'photo', 'imagen', 'image', 'media', 'adjuntos', 'attachments',
     ], null)
 
     // Buscar videos
     const videosRaw = findKey(parsed, [
       'videos_mensaje1', 'videos_message1', 'videos', 'video',
+      'video_mensaje1', 'video_url', 'videoUrl',
     ], null)
 
     // Buscar reporte
