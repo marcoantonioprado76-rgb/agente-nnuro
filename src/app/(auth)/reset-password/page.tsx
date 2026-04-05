@@ -29,10 +29,16 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams()
   const supabase = createClient()
 
-  // Supabase sends tokens as hash params — listen for auth state change
+  // Supabase sends tokens as hash params. The client processes them on init
+  // and fires PASSWORD_RECOVERY before this effect runs, so we also check
+  // getSession() directly to catch the already-processed case.
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setSessionReady(true)
+    })
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
         setSessionReady(true)
       }
     })
