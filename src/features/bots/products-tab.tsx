@@ -201,15 +201,27 @@ export function ProductsTab({ botId }: ProductsTabProps) {
 
   const openEdit = (product: Product) => {
     setEditingId(product.id)
-    const pImages = (product.product_images || [])
-      .filter((img) => img.image_type === 'product')
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map((img) => ({ url: img.url, sort_order: img.sort_order, is_primary: img.is_primary }))
+    // Reconstruir el array por SLOT (sort_order), dejando huecos donde no hay foto.
+    // Esto garantiza que cada imagen reaparezca en el slot exacto donde se subió:
+    // slots 0-2 = IMÁGENES PRINCIPALES, slots 3-7 = MÁS FOTOS DEL PRODUCTO.
+    const buildSlotArray = (images: typeof product.product_images, imageType: 'product' | 'offer') => {
+      const filtered = (images || []).filter((img) => img.image_type === imageType)
+      if (filtered.length === 0) return []
+      const maxSlot = Math.max(...filtered.map((img) => img.sort_order), 0)
+      const result: ImageItem[] = []
+      for (let i = 0; i <= maxSlot; i++) {
+        const found = filtered.find((img) => img.sort_order === i)
+        result.push(
+          found
+            ? { url: found.url, sort_order: i, is_primary: found.is_primary }
+            : { url: '', sort_order: i, is_primary: false }
+        )
+      }
+      return result
+    }
 
-    const oImages = (product.product_images || [])
-      .filter((img) => img.image_type === 'offer')
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map((img) => ({ url: img.url, sort_order: img.sort_order, is_primary: img.is_primary }))
+    const pImages = buildSlotArray(product.product_images, 'product')
+    const oImages = buildSlotArray(product.product_images, 'offer')
 
     const tests = (product.product_testimonials || []).map((t) => ({
       type: t.type,
@@ -271,26 +283,41 @@ export function ProductsTab({ botId }: ProductsTabProps) {
   const handleImageUpload = async (files: FileList, type: 'product' | 'offer') => {
     const key = type === 'product' ? 'product_images' : 'offer_images'
     const current = [...form[key]]
-    if (current.length + files.length > 10) {
+    // Contar solo slots con url real (no vacíos) para el límite
+    const filledCount = current.filter((img) => img.url && img.url.trim() !== '').length
+    if (filledCount + files.length > 10) {
       toast.error('Maximo 10 archivos permitidos')
       return
     }
     setUploadingImage(true)
     const bucket = 'product-images'
-    const newItems: ImageItem[] = []
+    // Colocar cada nueva foto en el primer slot vacío disponible (o al final)
     for (let i = 0; i < files.length; i++) {
       const url = await uploadFile(files[i], bucket)
-      if (url) {
-        newItems.push({
-          url,
-          sort_order: current.length + newItems.length,
-          is_primary: current.length === 0 && newItems.length === 0,
-        })
+      if (!url) continue
+      let placed = false
+      for (let j = 0; j < current.length; j++) {
+        if (!current[j]?.url || current[j].url.trim() === '') {
+          current[j] = { url, sort_order: j, is_primary: false }
+          placed = true
+          break
+        }
+      }
+      if (!placed) {
+        current.push({ url, sort_order: current.length, is_primary: false })
       }
     }
-    if (newItems.length > 0) {
-      updateField(key, [...current, ...newItems])
+    // Si no hay primary y hay alguna foto en slots 0-2, marcar la primera
+    const hasPrimary = current.some((img) => img.url && img.is_primary)
+    if (!hasPrimary) {
+      for (let k = 0; k <= 2 && k < current.length; k++) {
+        if (current[k]?.url) {
+          current[k].is_primary = true
+          break
+        }
+      }
     }
+    updateField(key, current)
     setUploadingImage(false)
   }
 
@@ -311,9 +338,20 @@ export function ProductsTab({ botId }: ProductsTabProps) {
 
   const removeImage = (type: 'product' | 'offer', index: number) => {
     const key = type === 'product' ? 'product_images' : 'offer_images'
-    const updated = form[key].filter((_, i) => i !== index).map((img, i) => ({ ...img, sort_order: i }))
-    if (updated.length > 0 && !updated.some(img => img.is_primary)) {
-      updated[0].is_primary = true
+    // Preservar slots: en vez de filter + map (que colapsa), dejar el slot vacío
+    const updated = [...form[key]]
+    if (updated[index]) {
+      updated[index] = { url: '', sort_order: index, is_primary: false }
+    }
+    // Si se borró la primary, asignar a la primera con url en slots 0-2
+    const hasPrimary = updated.some(img => img.url && img.is_primary)
+    if (!hasPrimary) {
+      for (let i = 0; i <= 2 && i < updated.length; i++) {
+        if (updated[i]?.url) {
+          updated[i].is_primary = true
+          break
+        }
+      }
     }
     updateField(key, updated)
   }
@@ -366,9 +404,18 @@ export function ProductsTab({ botId }: ProductsTabProps) {
     }
     setSaving(true)
 
+    // Filtrar slots vacíos PRESERVANDO el sort_order original del slot.
+    // Esto es crítico para que al recargar la página, cada foto vuelva a su slot:
+    // slots 0-2 = IMÁGENES PRINCIPALES, slots 3-7 = MÁS FOTOS DEL PRODUCTO.
     const allImages = [
-      ...form.product_images.map((img) => ({ ...img, image_type: 'product' as const })),
-      ...form.offer_images.map((img) => ({ ...img, image_type: 'offer' as const })),
+      ...form.product_images
+        .map((img, i) => ({ ...img, sort_order: i })) // sort_order = posición del slot
+        .filter((img) => img.url && img.url.trim() !== '')
+        .map((img) => ({ ...img, image_type: 'product' as const })),
+      ...form.offer_images
+        .map((img, i) => ({ ...img, sort_order: i }))
+        .filter((img) => img.url && img.url.trim() !== '')
+        .map((img) => ({ ...img, image_type: 'offer' as const })),
     ]
 
     const payload = {
@@ -498,22 +545,31 @@ export function ProductsTab({ botId }: ProductsTabProps) {
   }
 
   // ── Helper: single image upload slot ──
+  // CRÍTICO: preserva el slotIndex exacto donde el usuario subió la foto.
+  // No reorganiza el array ni remapea sort_order, así las fotos "adicionales"
+  // (slots 3-7) nunca caen en las "principales" (slots 0-2).
   const handleSingleSlotUpload = async (file: File, type: 'product' | 'offer', slotIndex: number) => {
     const key = type === 'product' ? 'product_images' : 'offer_images'
     setUploadingImage(true)
     const url = await uploadFile(file, 'product-images')
     if (url) {
       const current = [...form[key]]
-      const newItem: ImageItem = { url, sort_order: slotIndex, is_primary: slotIndex === 0 && current.length === 0 }
-      if (slotIndex < current.length) {
-        current[slotIndex] = newItem
-      } else {
-        while (current.length < slotIndex) {
-          current.push({ url: '', sort_order: current.length, is_primary: false })
-        }
-        current.push(newItem)
+      // Rellenar con slots vacíos hasta llegar al slotIndex
+      while (current.length <= slotIndex) {
+        current.push({ url: '', sort_order: current.length, is_primary: false })
       }
-      updateField(key, current.filter(img => img.url !== '').map((img, i) => ({ ...img, sort_order: i, is_primary: i === 0 })))
+      // Solo actualiza el slot específico, sin tocar los demás
+      current[slotIndex] = {
+        url,
+        sort_order: slotIndex,
+        is_primary: current[slotIndex]?.is_primary ?? false,
+      }
+      // Si no hay ninguna primary y esta es la primera foto con url en slots 0-2, marcarla
+      const hasPrimary = current.some(img => img.url && img.is_primary)
+      if (!hasPrimary && slotIndex <= 2 && current[slotIndex].url) {
+        current[slotIndex].is_primary = true
+      }
+      updateField(key, current)
     }
     setUploadingImage(false)
   }
