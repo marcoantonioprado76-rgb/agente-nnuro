@@ -156,9 +156,17 @@ async function restoreCredentialsFromDb(botId: string): Promise<boolean> {
     const supabase = await createServiceRoleClient()
     const { data } = await supabase
       .from('whatsapp_sessions')
-      .select('credentials_backup')
+      .select('credentials_backup, status')
       .eq('bot_id', botId)
       .maybeSingle()
+
+    // CRÍTICO: solo restaurar si el último estado en DB fue 'connected'.
+    // Si el bot está disconnected/qr_ready/otro, las creds pueden ser stale
+    // y Baileys se colgaría intentando usarlas (nunca emite QR).
+    if (data?.status !== 'connected') {
+      console.log(`[BAILEYS] Skip restore for ${botId}: last DB status="${data?.status ?? 'none'}" (no prior connected session)`)
+      return false
+    }
 
     if (!data?.credentials_backup || typeof data.credentials_backup !== 'object') return false
     const files = data.credentials_backup as Record<string, string>
@@ -173,6 +181,19 @@ async function restoreCredentialsFromDb(botId: string): Promise<boolean> {
   } catch (err) {
     console.error(`[BAILEYS] Restore error for ${botId}:`, err)
     return false
+  }
+}
+
+/** Limpia la sesión local si existe (fuerza QR nuevo) */
+function cleanLocalSession(botId: string): void {
+  const sessionDir = path.join(SESSIONS_DIR, botId)
+  if (fs.existsSync(sessionDir)) {
+    try {
+      fs.rmSync(sessionDir, { recursive: true, force: true })
+      console.log(`[BAILEYS] Local session cleaned for ${botId}`)
+    } catch (err) {
+      console.error(`[BAILEYS] Error cleaning session for ${botId}:`, err)
+    }
   }
 }
 
@@ -203,8 +224,23 @@ class WhatsAppManager {
       existing.socket = null
     }
 
-    // Update DB status
+    // Consultar último estado en DB ANTES de modificar nada
     const supabase = await createServiceRoleClient()
+    const { data: dbSession } = await supabase
+      .from('whatsapp_sessions')
+      .select('status')
+      .eq('bot_id', botId)
+      .maybeSingle()
+
+    const wasConnected = dbSession?.status === 'connected'
+
+    // Si NO estaba conectado previamente → limpiar sesión local stale.
+    // Esto garantiza que Baileys emita QR nuevo (no intentará usar creds viejas que cuelgan).
+    if (!wasConnected) {
+      cleanLocalSession(botId)
+    }
+
+    // Update DB status
     await supabase.from('whatsapp_sessions').upsert(
       { bot_id: botId, status: 'connecting', qr_code: null },
       { onConflict: 'bot_id' }
@@ -219,19 +255,17 @@ class WhatsAppManager {
     }
     this.connections.set(botId, conn)
 
-    // Try restoring credentials from DB if no local session
+    // Solo restaurar creds si el estado previo era 'connected' (creds válidas)
     const sessionDir = path.join(SESSIONS_DIR, botId)
-    if (!existing) {
-      if (!fs.existsSync(path.join(sessionDir, 'creds.json'))) {
-        await restoreCredentialsFromDb(botId)
-      }
+    if (wasConnected && !fs.existsSync(path.join(sessionDir, 'creds.json'))) {
+      await restoreCredentialsFromDb(botId)
     }
     fs.mkdirSync(sessionDir, { recursive: true })
 
     await this.createSocket(botId)
 
-    // Wait for QR or connection (up to 30s)
-    for (let i = 0; i < 30; i++) {
+    // Esperar QR o conexión (hasta 45s — Baileys puede tardar en el primer handshake)
+    for (let i = 0; i < 45; i++) {
       await sleep(1000)
       const c = this.connections.get(botId)
       if (!c) break
@@ -239,7 +273,19 @@ class WhatsAppManager {
       if (c.status === 'qr_ready' && c.qrCode) return { status: 'qr_ready', qrCode: c.qrCode }
     }
 
+    // Timeout sin QR ni conexión → limpiar sesión stale para el próximo intento
     const final = this.connections.get(botId)
+    if (final && final.status !== 'connected' && final.status !== 'qr_ready') {
+      console.warn(`[BAILEYS] Bot ${botId} timeout (45s) sin QR ni conexión — limpiando sesión stale`)
+      try { (final.socket as any)?.ev?.removeAllListeners?.(); (final.socket as any)?.end?.() } catch { /* ignore */ }
+      this.connections.delete(botId)
+      cleanLocalSession(botId)
+      await supabase.from('whatsapp_sessions').upsert(
+        { bot_id: botId, status: 'disconnected', qr_code: null, credentials_backup: null },
+        { onConflict: 'bot_id' }
+      )
+    }
+
     return { status: final?.status || 'disconnected', qrCode: final?.qrCode || undefined }
   }
 
