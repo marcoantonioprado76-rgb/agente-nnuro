@@ -128,49 +128,69 @@ function LoginContent() {
     setLoading(true)
     setErrorMsg('')
 
-    const { data: authData, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    console.log('[LOGIN] STEP 1: Iniciando signInWithPassword...')
+    console.log('[LOGIN] Supabase URL configurada:', process.env.NEXT_PUBLIC_SUPABASE_URL)
 
-    if (error) {
-      setErrorMsg('Credenciales incorrectas')
+    try {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      console.log('[LOGIN] STEP 2: signInWithPassword respondió', { hasUser: !!authData?.user, error: error?.message })
+
+      if (error) {
+        console.error('[LOGIN] Error en signInWithPassword:', error)
+        setErrorMsg(`Error: ${error.message}`)
+        setLoading(false)
+        return
+      }
+
+      if (authData.user) {
+        console.log('[LOGIN] STEP 3: Consultando perfil del usuario...')
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role, status')
+          .eq('id', authData.user.id)
+          .single()
+
+        console.log('[LOGIN] STEP 4: Perfil recibido', { profile, profileError: profileError?.message })
+
+        if (profileError) {
+          setErrorMsg(`Error cargando perfil: ${profileError.message}`)
+          setLoading(false)
+          return
+        }
+
+        if (profile?.status === 'blocked') {
+          await supabase.auth.signOut()
+          setErrorMsg('Tu cuenta ha sido bloqueada. Contacta al administrador.')
+          setLoading(false)
+          return
+        }
+
+        if (profile?.status === 'suspended') {
+          await supabase.auth.signOut()
+          setErrorMsg('Tu cuenta esta suspendida. Contacta al administrador.')
+          setLoading(false)
+          return
+        }
+
+        toast.success('Bienvenido')
+
+        const targetUrl = profile?.role === 'admin' ? '/admin/dashboard' : '/dashboard'
+        console.log('[LOGIN] STEP 5: Redirigiendo a', targetUrl)
+        window.location.href = targetUrl
+        return
+      }
+
+      console.warn('[LOGIN] No hubo error pero tampoco authData.user')
       setLoading(false)
-      return
+    } catch (err: any) {
+      console.error('[LOGIN] Excepción durante login:', err)
+      setErrorMsg(`Error inesperado: ${err?.message || String(err)}`)
+      setLoading(false)
     }
-
-    if (authData.user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role, status')
-        .eq('id', authData.user.id)
-        .single()
-
-      if (profile?.status === 'blocked') {
-        await supabase.auth.signOut()
-        setErrorMsg('Tu cuenta ha sido bloqueada. Contacta al administrador.')
-        setLoading(false)
-        return
-      }
-
-      if (profile?.status === 'suspended') {
-        await supabase.auth.signOut()
-        setErrorMsg('Tu cuenta esta suspendida. Contacta al administrador.')
-        setLoading(false)
-        return
-      }
-
-      toast.success('Bienvenido')
-
-      if (profile?.role === 'admin') {
-        window.location.href = '/admin/dashboard'
-      } else {
-        window.location.href = '/dashboard'
-      }
-      return
-    }
-
-    setLoading(false)
   }
 
   const handleGoogleLogin = async () => {
