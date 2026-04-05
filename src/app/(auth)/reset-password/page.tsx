@@ -33,8 +33,8 @@ function ResetPasswordContent() {
   // and fires PASSWORD_RECOVERY before this effect runs, so we also check
   // getSession() directly to catch the already-processed case.
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setSessionReady(true)
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setSessionReady(true)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
