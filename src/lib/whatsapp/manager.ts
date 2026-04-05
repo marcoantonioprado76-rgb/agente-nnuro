@@ -889,6 +889,8 @@ class WhatsAppManager {
   }
 
   // ── Restore Connected Sessions ──
+  // IMPORTANTE: NO bloquea. Lanza cada restauración en paralelo sin awaitear.
+  // Si un bot tiene creds stale, su retry loop no afecta a los demás ni al HTTP server.
   async restoreConnectedSessions(): Promise<void> {
     console.log('[BAILEYS] Restoring connected sessions...')
     try {
@@ -903,21 +905,22 @@ class WhatsAppManager {
         return
       }
 
-      for (const session of sessions) {
-        const existing = this.connections.get(session.bot_id)
-        if (existing?.status === 'connected') {
-          console.log(`[BAILEYS] Bot ${session.bot_id} already connected, skipping`)
-          continue
-        }
+      console.log(`[BAILEYS] Launching background restore for ${sessions.length} session(s)...`)
 
-        console.log(`[BAILEYS] Restoring session for bot ${session.bot_id}...`)
-        try {
-          await this.connect(session.bot_id)
-        } catch (err) {
-          console.error(`[BAILEYS] Failed to restore bot ${session.bot_id}:`, err)
-        }
-      }
-      console.log(`[BAILEYS] Restore completed`)
+      // Fire-and-forget en paralelo con escalonamiento (evita saturar CPU/red al arrancar)
+      sessions.forEach((session, idx) => {
+        setTimeout(() => {
+          const existing = this.connections.get(session.bot_id)
+          if (existing?.status === 'connected') return
+
+          console.log(`[BAILEYS] Background restore: bot ${session.bot_id}`)
+          this.connect(session.bot_id).catch(err => {
+            console.error(`[BAILEYS] Failed to restore bot ${session.bot_id}:`, err?.message || err)
+          })
+        }, idx * 2000) // Escalonar 2s entre bots
+      })
+
+      console.log(`[BAILEYS] Restore dispatched (non-blocking)`)
     } catch (err) {
       console.error('[BAILEYS] Error restoring sessions:', err)
     }

@@ -13,13 +13,31 @@ export async function register() {
     }
 
     console.log('[Instrumentation] Servidor produccion iniciado, inicializando WhatsApp Manager...')
-    try {
-      const { initWhatsAppManager } = await import('@/lib/whatsapp/manager')
-      await initWhatsAppManager()
-      console.log('[Instrumentation] WhatsApp Manager inicializado y sesiones restauradas')
-    } catch (err) {
-      console.error('[Instrumentation] Error inicializando WhatsApp Manager:', err)
-    }
+
+    // Global safety net: evitar que errores no-manejados de Baileys tumben el proceso.
+    // Baileys emite errores desde WebSockets internos que Node 18+ considera fatales.
+    process.on('unhandledRejection', (reason: any) => {
+      const msg = reason?.message || String(reason)
+      if (msg.includes('Connection Closed') || msg.includes('Stream Errored') || msg.includes('timed out') || msg.includes('WebSocket')) {
+        console.warn(`[Instrumentation] Unhandled Baileys rejection (ignorado): ${msg.slice(0, 120)}`)
+        return
+      }
+      console.error('[Instrumentation] Unhandled rejection:', reason)
+    })
+    process.on('uncaughtException', (err: any) => {
+      const msg = err?.message || String(err)
+      if (msg.includes('Connection Closed') || msg.includes('Stream Errored') || msg.includes('WebSocket')) {
+        console.warn(`[Instrumentation] Uncaught Baileys exception (ignorado): ${msg.slice(0, 120)}`)
+        return
+      }
+      console.error('[Instrumentation] Uncaught exception:', err)
+    })
+
+    // Fire-and-forget: NO awaitear. Si bloqueamos aquí, el HTTP server no responde.
+    import('@/lib/whatsapp/manager')
+      .then(({ initWhatsAppManager }) => initWhatsAppManager())
+      .then(() => console.log('[Instrumentation] WhatsApp Manager inicializado'))
+      .catch(err => console.error('[Instrumentation] Error inicializando WhatsApp Manager:', err))
 
     // Programar cron job interno para seguimientos (cada 5 minutos)
     const cronSecret = process.env.CRON_SECRET
