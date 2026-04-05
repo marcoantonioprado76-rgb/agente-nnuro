@@ -29,26 +29,39 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams()
   const supabase = createClient()
 
-  // Supabase sends tokens in the URL hash (#access_token=...&type=recovery).
-  // We unlock the form using three strategies for maximum reliability:
-  //   1. Synchronous hash check — instant, works regardless of client timing
-  //   2. getSession() — catches the case where the client already processed the hash
-  //   3. onAuthStateChange — catches events fired after this effect runs
+  // Supabase sends tokens in the URL hash (#access_token=...&refresh_token=...).
+  // @supabase/ssr defaults to PKCE flow and does NOT auto-process implicit-style
+  // hash tokens — we must extract them manually and call setSession() ourselves
+  // so that updateUser() later has an active session.
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
-      setSessionReady(true)
+    if (typeof window === 'undefined') return
+
+    const hash = window.location.hash.startsWith('#')
+      ? window.location.hash.substring(1)
+      : window.location.hash
+    const params = new URLSearchParams(hash)
+    const access_token = params.get('access_token')
+    const refresh_token = params.get('refresh_token')
+
+    if (access_token && refresh_token) {
+      supabase.auth
+        .setSession({ access_token, refresh_token })
+        .then((result: { error: unknown }) => {
+          if (!result.error) {
+            setSessionReady(true)
+            // Clean the hash so a page refresh doesn't re-trigger
+            window.history.replaceState(null, '', window.location.pathname)
+          } else {
+            setError('El enlace de recuperación es inválido o ha expirado.')
+          }
+        })
+      return
     }
 
+    // Fallback: if there's already a session (e.g. user came back), unlock
     supabase.auth.getSession().then((result: { data: { session: unknown } }) => {
       if (result.data.session) setSessionReady(true)
     })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
-      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-        setSessionReady(true)
-      }
-    })
-    return () => subscription.unsubscribe()
   }, [supabase])
 
   async function handleReset(e: React.FormEvent) {
