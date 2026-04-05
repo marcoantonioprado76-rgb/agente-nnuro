@@ -29,16 +29,22 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams()
   const supabase = createClient()
 
-  // Supabase sends tokens as hash params. The client processes them on init
-  // and fires PASSWORD_RECOVERY before this effect runs, so we also check
-  // getSession() directly to catch the already-processed case.
+  // Supabase sends tokens in the URL hash (#access_token=...&type=recovery).
+  // We unlock the form using three strategies for maximum reliability:
+  //   1. Synchronous hash check — instant, works regardless of client timing
+  //   2. getSession() — catches the case where the client already processed the hash
+  //   3. onAuthStateChange — catches events fired after this effect runs
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      setSessionReady(true)
+    }
+
     supabase.auth.getSession().then((result: { data: { session: unknown } }) => {
       if (result.data.session) setSessionReady(true)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
-      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
         setSessionReady(true)
       }
     })
