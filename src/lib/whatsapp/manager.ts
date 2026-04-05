@@ -61,6 +61,85 @@ const globalForWa = globalThis as typeof globalThis & {
   waManager: WhatsAppManager | undefined
 }
 
+// ── Helper: upsert session seguro con validación de FK ──────────────────────
+//
+// Este helper resuelve el bug catastrófico que tumbó Postgres:
+// - Baileys emite `connection.update` decenas de veces/segundo durante retry
+// - Cada evento hacía upsert a whatsapp_sessions
+// - Si el bot fue borrado, el upsert violaba FK → error en loop → Postgres OOM
+//
+// Fix:
+// 1. Verifica que el bot existe ANTES de upsertear (con caché en memoria, 60s TTL)
+// 2. Si el bot no existe → señal para detener la reconexión
+// 3. Throttle: max 1 upsert cada 2s por bot (evita spam a la DB)
+
+const botExistsCache = new Map<string, { exists: boolean; checkedAt: number }>()
+const BOT_EXISTS_CACHE_TTL = 60_000 // 60 segundos
+
+async function botExists(botId: string): Promise<boolean> {
+  const cached = botExistsCache.get(botId)
+  if (cached && Date.now() - cached.checkedAt < BOT_EXISTS_CACHE_TTL) {
+    return cached.exists
+  }
+
+  try {
+    const supabase = await createServiceRoleClient()
+    const { data } = await supabase.from('bots').select('id').eq('id', botId).maybeSingle()
+    const exists = !!data
+    botExistsCache.set(botId, { exists, checkedAt: Date.now() })
+    return exists
+  } catch (err) {
+    console.error(`[BAILEYS] botExists check failed for ${botId}:`, err)
+    // En caso de error de DB, asumir que existe para no romper el flujo normal
+    return true
+  }
+}
+
+const lastSessionUpsert = new Map<string, number>()
+const SESSION_UPSERT_THROTTLE_MS = 2000 // Máximo 1 upsert cada 2s por bot
+
+async function safeUpsertSession(
+  botId: string,
+  payload: Record<string, unknown>,
+  force = false,
+): Promise<{ ok: boolean; botDeleted: boolean }> {
+  // Validar que el bot existe (evita FK violation)
+  const exists = await botExists(botId)
+  if (!exists) {
+    console.warn(`[BAILEYS] safeUpsertSession: bot ${botId} NO existe en DB — omitiendo upsert`)
+    return { ok: false, botDeleted: true }
+  }
+
+  // Throttle: evita spam de upserts durante retry storms
+  if (!force) {
+    const last = lastSessionUpsert.get(botId) ?? 0
+    if (Date.now() - last < SESSION_UPSERT_THROTTLE_MS) {
+      return { ok: false, botDeleted: false }
+    }
+  }
+  lastSessionUpsert.set(botId, Date.now())
+
+  try {
+    const supabase = await createServiceRoleClient()
+    const { error } = await supabase
+      .from('whatsapp_sessions')
+      .upsert({ bot_id: botId, ...payload }, { onConflict: 'bot_id' })
+    if (error) {
+      console.error(`[BAILEYS] safeUpsertSession error for ${botId}:`, error.message)
+      // Si es error de FK, invalidar caché y marcar como borrado
+      if (error.message.includes('foreign key') || error.code === '23503') {
+        botExistsCache.set(botId, { exists: false, checkedAt: Date.now() })
+        return { ok: false, botDeleted: true }
+      }
+      return { ok: false, botDeleted: false }
+    }
+    return { ok: true, botDeleted: false }
+  } catch (err) {
+    console.error(`[BAILEYS] safeUpsertSession exception for ${botId}:`, err)
+    return { ok: false, botDeleted: false }
+  }
+}
+
 // ── Helpers: DB ────────────────────────────────────────────────────────────────
 
 async function getBot(botId: string) {
@@ -228,7 +307,18 @@ class WhatsAppManager {
     }
 
     // Consultar último estado en DB ANTES de modificar nada
-    console.log(`[BAILEYS connect] STEP 2: consultando DB status para ${botId}`)
+    // CRÍTICO: validar que el bot existe en DB ANTES de hacer cualquier cosa.
+    // Si el bot fue borrado, NO conectamos ni reintentamos (evita el loop de FK violations).
+    console.log(`[BAILEYS connect] STEP 2a: validando bot existe en DB`)
+    const exists = await botExists(botId)
+    if (!exists) {
+      console.warn(`[BAILEYS connect] Bot ${botId} NO existe en DB — abortando conexión y limpiando`)
+      cleanLocalSession(botId)
+      this.connections.delete(botId)
+      return { status: 'disconnected' }
+    }
+
+    console.log(`[BAILEYS connect] STEP 2b: consultando DB status para ${botId}`)
     const supabase = await createServiceRoleClient()
     const { data: dbSession, error: dbErr } = await supabase
       .from('whatsapp_sessions')
@@ -246,12 +336,9 @@ class WhatsAppManager {
       cleanLocalSession(botId)
     }
 
-    // Update DB status
+    // Update DB status (force=true: esta escritura es importante, no throttlear)
     console.log(`[BAILEYS connect] STEP 4: actualizando DB status=connecting`)
-    await supabase.from('whatsapp_sessions').upsert(
-      { bot_id: botId, status: 'connecting', qr_code: null },
-      { onConflict: 'bot_id' }
-    )
+    await safeUpsertSession(botId, { status: 'connecting', qr_code: null }, true)
 
     const conn: BaileysConnection = {
       socket: null,
@@ -282,10 +369,7 @@ class WhatsAppManager {
       console.error(`[BAILEYS connect] ERROR creando socket:`, err?.message || err)
       this.connections.delete(botId)
       cleanLocalSession(botId)
-      await supabase.from('whatsapp_sessions').upsert(
-        { bot_id: botId, status: 'disconnected', qr_code: null },
-        { onConflict: 'bot_id' }
-      )
+      await safeUpsertSession(botId, { status: 'disconnected', qr_code: null }, true)
       return { status: 'disconnected' }
     }
 
@@ -312,10 +396,7 @@ class WhatsAppManager {
       try { (final.socket as any)?.ev?.removeAllListeners?.(); (final.socket as any)?.end?.() } catch { /* ignore */ }
       this.connections.delete(botId)
       cleanLocalSession(botId)
-      await supabase.from('whatsapp_sessions').upsert(
-        { bot_id: botId, status: 'disconnected', qr_code: null, credentials_backup: null },
-        { onConflict: 'bot_id' }
-      )
+      await safeUpsertSession(botId, { status: 'disconnected', qr_code: null, credentials_backup: null }, true)
     }
 
     return { status: final?.status || 'disconnected', qrCode: final?.qrCode || undefined }
@@ -369,11 +450,14 @@ class WhatsAppManager {
           const qrDataUrl = await QRCode.toDataURL(qr)
           conn.status = 'qr_ready'
           conn.qrCode = qrDataUrl
-          const supabase = await createServiceRoleClient()
-          await supabase.from('whatsapp_sessions').upsert(
-            { bot_id: botId, status: 'qr_ready', qr_code: qrDataUrl },
-            { onConflict: 'bot_id' }
-          )
+          // safeUpsertSession: valida FK + throttle — evita spam durante retry loops
+          const result = await safeUpsertSession(botId, { status: 'qr_ready', qr_code: qrDataUrl }, true)
+          if (result.botDeleted) {
+            console.warn(`[BAILEYS] Bot ${botId} borrado detectado en qr handler — cerrando socket`)
+            try { (socket.ev as any).removeAllListeners(); (socket as any).end() } catch { /* ignore */ }
+            this.connections.delete(botId)
+            cleanLocalSession(botId)
+          }
         } catch { /* ignore QR errors */ }
       }
 
@@ -385,11 +469,18 @@ class WhatsAppManager {
         conn.retryCount = 0
         console.log(`[BAILEYS] Bot ${botId} connected as ${phoneNumber}`)
 
-        const supabase = await createServiceRoleClient()
-        await supabase.from('whatsapp_sessions').upsert(
-          { bot_id: botId, status: 'connected', phone_number: phoneNumber, qr_code: null },
-          { onConflict: 'bot_id' }
+        const openResult = await safeUpsertSession(
+          botId,
+          { status: 'connected', phone_number: phoneNumber, qr_code: null },
+          true,
         )
+        if (openResult.botDeleted) {
+          console.warn(`[BAILEYS] Bot ${botId} borrado detectado en 'open' — cerrando`)
+          try { (socket.ev as any).removeAllListeners(); (socket as any).end() } catch { /* ignore */ }
+          this.connections.delete(botId)
+          cleanLocalSession(botId)
+          return
+        }
         backupCredentialsToDb(botId).catch(() => {})
       }
 
@@ -399,6 +490,18 @@ class WhatsAppManager {
         const isReplaced = statusCode === DisconnectReason.connectionReplaced
 
         console.log(`[BAILEYS] Bot ${botId} disconnected. Code: ${statusCode}, loggedOut: ${isLoggedOut}`)
+
+        // CRÍTICO: antes de cualquier reconexión, validar que el bot sigue existiendo.
+        // Si fue borrado, detener TODO el ciclo de retry inmediatamente (esto causó la caída anterior).
+        const stillExists = await botExists(botId)
+        if (!stillExists) {
+          console.warn(`[BAILEYS] Bot ${botId} borrado en DB — deteniendo reconexión y limpiando TODO`)
+          conn.status = 'disconnected'
+          conn.socket = null
+          this.connections.delete(botId)
+          cleanLocalSession(botId)
+          return
+        }
 
         if (isLoggedOut) {
           conn.status = 'disconnected'
@@ -411,10 +514,10 @@ class WhatsAppManager {
           }
           this.connections.delete(botId)
           console.log(`[BAILEYS] Bot ${botId} logged out — session cleaned`)
-          const supabase = await createServiceRoleClient()
-          await supabase.from('whatsapp_sessions').upsert(
-            { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
-            { onConflict: 'bot_id' }
+          await safeUpsertSession(
+            botId,
+            { status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
+            true,
           )
         } else if (isReplaced) {
           console.log(`[BAILEYS] Bot ${botId} connection replaced (440), stopping.`)
@@ -432,11 +535,7 @@ class WhatsAppManager {
           conn.socket = null
           this.connections.delete(botId)
           console.log(`[BAILEYS] Bot ${botId} max retries reached`)
-          const supabase = await createServiceRoleClient()
-          await supabase.from('whatsapp_sessions').upsert(
-            { bot_id: botId, status: 'disconnected' },
-            { onConflict: 'bot_id' }
-          )
+          await safeUpsertSession(botId, { status: 'disconnected' }, true)
         }
       }
     })
@@ -876,10 +975,11 @@ class WhatsAppManager {
 
     this.connections.delete(botId)
 
-    const supabase = await createServiceRoleClient()
-    await supabase.from('whatsapp_sessions').upsert(
-      { bot_id: botId, status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
-      { onConflict: 'bot_id' }
+    // safeUpsertSession valida FK: si el bot fue borrado, no hace nada (evita error)
+    await safeUpsertSession(
+      botId,
+      { status: 'disconnected', phone_number: null, qr_code: null, credentials_backup: null },
+      true,
     )
     console.log(`[BAILEYS] Bot ${botId} disconnected and session cleaned`)
   }
