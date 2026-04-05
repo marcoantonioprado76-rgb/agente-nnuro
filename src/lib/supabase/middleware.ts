@@ -41,6 +41,8 @@ export async function updateSession(request: NextRequest) {
     pathname === '/' ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
+    pathname.startsWith('/forgot-password') ||
+    pathname.startsWith('/reset-password') ||
     pathname.startsWith('/pricing') ||
     pathname.startsWith('/pending-approval') ||
     pathname.startsWith('/account-suspended') ||
