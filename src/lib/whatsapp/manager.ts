@@ -213,34 +213,41 @@ class WhatsAppManager {
 
   // ── Connect ──
   async connect(botId: string): Promise<{ status: string; qrCode?: string; phone?: string }> {
+    console.log(`[BAILEYS connect] STEP 1: iniciando para ${botId}`)
     const existing = this.connections.get(botId)
     if (existing?.status === 'connected') {
+      console.log(`[BAILEYS connect] Bot ${botId} ya está conectado, retornando`)
       return { status: 'connected', phone: existing.phoneNumber || undefined }
     }
 
     // Kill any existing socket
     if (existing?.socket) {
+      console.log(`[BAILEYS connect] Matando socket previo para ${botId}`)
       try { (existing.socket.ev as any).removeAllListeners(); (existing.socket as any).end() } catch { /* ignore */ }
       existing.socket = null
     }
 
     // Consultar último estado en DB ANTES de modificar nada
+    console.log(`[BAILEYS connect] STEP 2: consultando DB status para ${botId}`)
     const supabase = await createServiceRoleClient()
-    const { data: dbSession } = await supabase
+    const { data: dbSession, error: dbErr } = await supabase
       .from('whatsapp_sessions')
       .select('status')
       .eq('bot_id', botId)
       .maybeSingle()
 
+    if (dbErr) console.warn(`[BAILEYS connect] DB query error:`, dbErr.message)
+
     const wasConnected = dbSession?.status === 'connected'
+    console.log(`[BAILEYS connect] STEP 3: wasConnected=${wasConnected} (DB status="${dbSession?.status ?? 'null'}")`)
 
     // Si NO estaba conectado previamente → limpiar sesión local stale.
-    // Esto garantiza que Baileys emita QR nuevo (no intentará usar creds viejas que cuelgan).
     if (!wasConnected) {
       cleanLocalSession(botId)
     }
 
     // Update DB status
+    console.log(`[BAILEYS connect] STEP 4: actualizando DB status=connecting`)
     await supabase.from('whatsapp_sessions').upsert(
       { bot_id: botId, status: 'connecting', qr_code: null },
       { onConflict: 'bot_id' }
@@ -255,28 +262,53 @@ class WhatsAppManager {
     }
     this.connections.set(botId, conn)
 
-    // Solo restaurar creds si el estado previo era 'connected' (creds válidas)
+    // Solo restaurar creds si el estado previo era 'connected'
     const sessionDir = path.join(SESSIONS_DIR, botId)
     if (wasConnected && !fs.existsSync(path.join(sessionDir, 'creds.json'))) {
+      console.log(`[BAILEYS connect] STEP 5: restaurando credenciales desde DB`)
       await restoreCredentialsFromDb(botId)
     }
     fs.mkdirSync(sessionDir, { recursive: true })
 
-    await this.createSocket(botId)
+    console.log(`[BAILEYS connect] STEP 6: creando socket Baileys`)
+    try {
+      // createSocket con timeout global de 20s para no bloquear el request
+      await Promise.race([
+        this.createSocket(botId),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('createSocket timeout 20s')), 20000)),
+      ])
+      console.log(`[BAILEYS connect] STEP 7: socket creado OK`)
+    } catch (err: any) {
+      console.error(`[BAILEYS connect] ERROR creando socket:`, err?.message || err)
+      this.connections.delete(botId)
+      cleanLocalSession(botId)
+      await supabase.from('whatsapp_sessions').upsert(
+        { bot_id: botId, status: 'disconnected', qr_code: null },
+        { onConflict: 'bot_id' }
+      )
+      return { status: 'disconnected' }
+    }
 
-    // Esperar QR o conexión (hasta 45s — Baileys puede tardar en el primer handshake)
-    for (let i = 0; i < 45; i++) {
+    // Esperar QR o conexión (hasta 25s — más corto ahora que createSocket ya validó)
+    console.log(`[BAILEYS connect] STEP 8: esperando QR o conexión...`)
+    for (let i = 0; i < 25; i++) {
       await sleep(1000)
       const c = this.connections.get(botId)
       if (!c) break
-      if (c.status === 'connected') return { status: 'connected', phone: c.phoneNumber || undefined }
-      if (c.status === 'qr_ready' && c.qrCode) return { status: 'qr_ready', qrCode: c.qrCode }
+      if (c.status === 'connected') {
+        console.log(`[BAILEYS connect] ✅ Conectado tras ${i + 1}s`)
+        return { status: 'connected', phone: c.phoneNumber || undefined }
+      }
+      if (c.status === 'qr_ready' && c.qrCode) {
+        console.log(`[BAILEYS connect] ✅ QR listo tras ${i + 1}s`)
+        return { status: 'qr_ready', qrCode: c.qrCode }
+      }
     }
 
     // Timeout sin QR ni conexión → limpiar sesión stale para el próximo intento
     const final = this.connections.get(botId)
+    console.warn(`[BAILEYS connect] ⚠️ Timeout 25s. Estado final: ${final?.status}, hasQR: ${!!final?.qrCode}`)
     if (final && final.status !== 'connected' && final.status !== 'qr_ready') {
-      console.warn(`[BAILEYS] Bot ${botId} timeout (45s) sin QR ni conexión — limpiando sesión stale`)
       try { (final.socket as any)?.ev?.removeAllListeners?.(); (final.socket as any)?.end?.() } catch { /* ignore */ }
       this.connections.delete(botId)
       cleanLocalSession(botId)
@@ -291,12 +323,28 @@ class WhatsAppManager {
 
   // ── Create Baileys Socket ──
   private async createSocket(botId: string): Promise<void> {
+    console.log(`[BAILEYS createSocket] ${botId}: useMultiFileAuthState...`)
     const sessionDir = path.join(SESSIONS_DIR, botId)
     fs.mkdirSync(sessionDir, { recursive: true })
 
     const { state, saveCreds } = await useMultiFileAuthState(sessionDir)
-    const { version } = await fetchLatestBaileysVersion()
 
+    // fetchLatestBaileysVersion descarga info de GitHub → puede colgar 30s+ sin timeout.
+    // Usar fallback a versión hardcoded si falla/timeouts en 5s.
+    console.log(`[BAILEYS createSocket] ${botId}: fetchLatestBaileysVersion (con timeout 5s)...`)
+    let version: [number, number, number] = [2, 3000, 1015901307] // Fallback conocido estable
+    try {
+      const result = await Promise.race([
+        fetchLatestBaileysVersion(),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('fetchLatestBaileysVersion timeout 5s')), 5000)),
+      ])
+      version = (result as any).version
+      console.log(`[BAILEYS createSocket] ${botId}: version=${version.join('.')}`)
+    } catch (err: any) {
+      console.warn(`[BAILEYS createSocket] ${botId}: fetchLatestBaileysVersion falló (${err?.message}), usando fallback ${version.join('.')}`)
+    }
+
+    console.log(`[BAILEYS createSocket] ${botId}: makeWASocket...`)
     const socket = makeWASocket({
       version,
       auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, baileysLogger) },
@@ -307,6 +355,7 @@ class WhatsAppManager {
       syncFullHistory: false,
       markOnlineOnConnect: false,
     })
+    console.log(`[BAILEYS createSocket] ${botId}: socket creado, registrando listeners`)
 
     const conn = this.connections.get(botId)!
     conn.socket = socket
