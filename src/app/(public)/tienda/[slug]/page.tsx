@@ -193,6 +193,8 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
   const [geoError, setGeoError] = useState('')
   const [locationMode, setLocationMode] = useState<'auto' | 'manual' | null>(null)
   const [addedProductId, setAddedProductId] = useState<string | null>(null)
+  const [detailProduct, setDetailProduct] = useState<StoreProductPublic | null>(null)
+  const [detailImageIdx, setDetailImageIdx] = useState(0)
   const [mounted, setMounted] = useState(false)
   const fontLoaded = useRef(false)
   const productsRef = useRef<HTMLDivElement>(null)
@@ -632,8 +634,8 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
                     animationDelay: `${0.05 * idx}s`,
                   }}
                 >
-                  {/* Image */}
-                  <div className="relative aspect-[4/5] sm:aspect-[4/3] overflow-hidden" style={{ backgroundColor: surfaceDeep }}>
+                  {/* Image — tap to see details */}
+                  <div className="relative aspect-[4/5] sm:aspect-[4/3] overflow-hidden cursor-pointer" style={{ backgroundColor: surfaceDeep }} onClick={() => { setDetailProduct(product); setDetailImageIdx(0) }}>
                     {mainImage ? (
                       <img src={mainImage} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                     ) : (
@@ -659,10 +661,15 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
                       <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" style={{ color: '#facc15' }} />
                       {(4.5 + Math.random() * 0.5).toFixed(1)}
                     </div>
+
+                    {/* Ver detalles hint */}
+                    <div className="absolute bottom-1.5 right-1.5 sm:bottom-3 sm:right-3 flex items-center gap-1 px-2 py-1 rounded-lg backdrop-blur-md text-[10px] sm:text-xs font-semibold" style={{ backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff' }}>
+                      <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Ver mas
+                    </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-3 sm:p-5 space-y-2 sm:space-y-3">
+                  <div className="p-2.5 sm:p-5 space-y-1.5 sm:space-y-3">
                     {/* Category tag */}
                     {product.category && (
                       <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider" style={{ color: accent }}>
@@ -671,7 +678,7 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
                     )}
 
                     {/* Name */}
-                    <h3 className="text-sm sm:text-base font-bold leading-snug line-clamp-2" style={{ color: textPrimary, fontFamily }}>
+                    <h3 className="text-[13px] sm:text-base font-bold leading-tight line-clamp-2" style={{ color: textPrimary, fontFamily }}>
                       {product.name}
                     </h3>
 
@@ -683,27 +690,29 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
                     )}
 
                     {/* Price */}
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-lg sm:text-2xl font-black leading-none" style={{ color: accent }}>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-base sm:text-2xl font-black leading-none" style={{ color: accent }}>
                         {pSym}{product.price.toLocaleString()}
                       </span>
-                      <span className="text-[9px] sm:text-[10px] font-medium" style={{ color: textMuted }}>{product.currency}</span>
+                      <span className="text-[8px] sm:text-[10px] font-medium" style={{ color: textMuted }}>{product.currency}</span>
                     </div>
 
-                    {/* Quantity + Buy row */}
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center rounded-xl overflow-hidden shrink-0" style={{ border: `1px solid ${border}` }}>
-                        <button onClick={() => setQty(product.id, qty - 1)} className="h-10 w-9 sm:w-10 flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
-                          <Minus className="h-3.5 w-3.5" />
+                    {/* Mobile: stacked layout / Desktop: horizontal */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
+                      {/* Quantity selector */}
+                      <div className="flex items-center rounded-lg sm:rounded-xl overflow-hidden shrink-0 self-start" style={{ border: `1px solid ${border}` }}>
+                        <button onClick={() => setQty(product.id, qty - 1)} className="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
+                          <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                         </button>
-                        <span className="w-8 sm:w-10 text-center text-sm font-bold" style={{ color: textPrimary }}>{qty}</span>
-                        <button onClick={() => setQty(product.id, qty + 1)} className="h-10 w-9 sm:w-10 flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
-                          <Plus className="h-3.5 w-3.5" />
+                        <span className="w-7 sm:w-10 text-center text-xs sm:text-sm font-bold" style={{ color: textPrimary }}>{qty}</span>
+                        <button onClick={() => setQty(product.id, qty + 1)} className="h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center transition-colors active:scale-90" style={{ backgroundColor: surfaceDeep, color: textPrimary }}>
+                          <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                         </button>
                       </div>
+                      {/* Add to cart button */}
                       <button
                         onClick={() => addToCart(product)}
-                        className="flex-1 h-10 rounded-xl text-[12px] sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 hover:opacity-90"
+                        className="w-full sm:flex-1 h-9 sm:h-10 rounded-lg sm:rounded-xl text-[13px] sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 hover:opacity-90"
                         style={{
                           backgroundColor: isAdded ? '#22c55e' : accent,
                           color: isDark ? '#000' : '#fff',
@@ -721,6 +730,146 @@ export default function PublicStorePage({ params }: { params: Promise<{ slug: st
         )}
       </section>
 
+
+      {/* ═══════════════ PRODUCT DETAIL SHEET ═══════════════ */}
+      {detailProduct && (() => {
+        const dp = detailProduct
+        const dpImages = (dp.store_product_images || []).sort((a, b) => a.sort_order - b.sort_order)
+        const dpSym = currencySymbol[dp.currency] || '$'
+        const dpQty = getQty(dp.id)
+        const dpAdded = addedProductId === dp.id
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" onClick={() => setDetailProduct(null)}>
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+            {/* Sheet */}
+            <div
+              className="relative w-full sm:max-w-lg max-h-[92vh] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col anim-slide-up"
+              style={{ backgroundColor: surface, border: `1px solid ${border}` }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setDetailProduct(null)}
+                className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full flex items-center justify-center backdrop-blur-md"
+                style={{ backgroundColor: 'rgba(0,0,0,0.5)', color: '#fff' }}
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              {/* Image gallery */}
+              <div className="relative aspect-square sm:aspect-[4/3] overflow-hidden shrink-0" style={{ backgroundColor: surfaceDeep }}>
+                {dpImages.length > 0 ? (
+                  <>
+                    <img
+                      src={dpImages[detailImageIdx]?.image_url}
+                      alt={dp.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {dpImages.length > 1 && (
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                        {dpImages.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setDetailImageIdx(i)}
+                            className="w-2.5 h-2.5 rounded-full transition-all"
+                            style={{
+                              backgroundColor: i === detailImageIdx ? '#fff' : 'rgba(255,255,255,0.4)',
+                              transform: i === detailImageIdx ? 'scale(1.3)' : 'scale(1)',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Package className="h-16 w-16" style={{ color: textMuted }} />
+                  </div>
+                )}
+
+                {/* Badges in detail */}
+                <div className="absolute top-3 left-3 flex gap-1.5">
+                  {dp.stock <= 5 && dp.stock > 0 && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase backdrop-blur-md" style={{ backgroundColor: 'rgba(245,158,11,0.9)', color: '#fff' }}>
+                      <Clock className="h-3 w-3" /> Quedan {dp.stock}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                {/* Category */}
+                {dp.category && (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: accent }}>
+                    {dp.category}
+                  </span>
+                )}
+
+                {/* Name */}
+                <h2 className="text-xl sm:text-2xl font-black leading-tight" style={{ color: textPrimary, fontFamily }}>
+                  {dp.name}
+                </h2>
+
+                {/* Price */}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-3xl font-black" style={{ color: accent }}>
+                    {dpSym}{dp.price.toLocaleString()}
+                  </span>
+                  <span className="text-xs font-medium" style={{ color: textMuted }}>{dp.currency}</span>
+                </div>
+
+                {/* Description */}
+                {dp.description ? (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: textSecondary }}>Descripcion</h4>
+                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: textSecondary }}>
+                      {dp.description}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm italic" style={{ color: textMuted }}>Sin descripcion disponible</p>
+                )}
+
+                {/* Stock info */}
+                <div className="flex items-center gap-2 text-xs" style={{ color: dp.stock > 0 ? '#22c55e' : '#ef4444' }}>
+                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: dp.stock > 0 ? '#22c55e' : '#ef4444' }} />
+                  {dp.stock > 0 ? `${dp.stock} disponibles` : 'Agotado'}
+                </div>
+              </div>
+
+              {/* Bottom action bar */}
+              <div className="shrink-0 p-4 flex items-center gap-3" style={{ borderTop: `1px solid ${border}`, backgroundColor: surfaceDeep }}>
+                {/* Quantity */}
+                <div className="flex items-center rounded-xl overflow-hidden shrink-0" style={{ border: `1px solid ${border}` }}>
+                  <button onClick={() => setQty(dp.id, dpQty - 1)} className="h-11 w-10 flex items-center justify-center active:scale-90" style={{ backgroundColor: surface, color: textPrimary }}>
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="w-10 text-center text-sm font-bold" style={{ color: textPrimary }}>{dpQty}</span>
+                  <button onClick={() => setQty(dp.id, dpQty + 1)} className="h-11 w-10 flex items-center justify-center active:scale-90" style={{ backgroundColor: surface, color: textPrimary }}>
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+                {/* Add button */}
+                <button
+                  onClick={() => { addToCart(dp); setTimeout(() => setDetailProduct(null), 600) }}
+                  className="flex-1 h-11 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95"
+                  style={{
+                    backgroundColor: dpAdded ? '#22c55e' : accent,
+                    color: isDark ? '#000' : '#fff',
+                    boxShadow: `0 4px 20px ${dpAdded ? 'rgba(34,197,94,0.3)' : glowColor}`,
+                  }}
+                >
+                  {dpAdded ? <><Check className="h-4 w-4" /> Agregado</> : <><ShoppingCart className="h-4 w-4" /> Agregar al carrito</>}
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ═══════════════ FOOTER ═══════════════ */}
       <footer className="py-6 sm:py-10 text-center" style={{ borderTop: `1px solid ${border}` }}>
