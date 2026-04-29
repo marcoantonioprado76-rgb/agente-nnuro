@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     // 1. Fetch profiles with tenant info
     let profilesQuery = service
       .from('profiles')
-      .select('*, tenants:tenant_id(id, name, slug)')
+      .select('*')
       .order('created_at', { ascending: false })
 
     // Apply filters
@@ -134,7 +134,6 @@ export async function GET(request: NextRequest) {
       is_active: u.is_active,
       created_at: u.created_at,
       updated_at: u.updated_at,
-      tenants: u.tenants,
 
       // New profile fields
       country: u.country || '',

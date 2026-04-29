@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data: profile, error } = await db
     .from('profiles')
-    .select('id, email, full_name, avatar_url, role, tenant_id, is_active, country, city, phone_number, country_code, phone_with_code, login_provider, status, last_login_at, onboarding_completed, created_at, updated_at')
+    .select('id, email, full_name, avatar_url, role, tenant_id, is_active, country, city, phone_number, country_code, phone_with_code, login_provider, status, ai_credits_usd, last_login_at, onboarding_completed, created_at, updated_at')
     .eq('id', session.sub)
     .single();
 
