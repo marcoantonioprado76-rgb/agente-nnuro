@@ -1,8 +1,5 @@
-import { createServiceRoleClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 
-/**
- * Create a notification for a regular user (stored in user_notifications)
- */
 export async function createUserNotification(params: {
   userId: string
   type: string
@@ -12,23 +9,21 @@ export async function createUserNotification(params: {
   metadata?: Record<string, unknown>
 }) {
   try {
-    const service = await createServiceRoleClient()
-    await service.from('user_notifications').insert({
-      user_id: params.userId,
-      type: params.type,
-      title: params.title,
-      message: params.message,
-      link: params.link || null,
-      metadata: params.metadata || {},
+    await (prisma as any).userNotification.create({
+      data: {
+        user_id:  params.userId,
+        type:     params.type,
+        title:    params.title,
+        message:  params.message,
+        link:     params.link || null,
+        metadata: params.metadata || {},
+      },
     })
   } catch (error) {
     console.error('Error creating user notification:', error)
   }
 }
 
-/**
- * Create a notification for admin users (stored in admin_notifications)
- */
 export async function createAdminNotification(params: {
   type: string
   title: string
@@ -37,14 +32,14 @@ export async function createAdminNotification(params: {
   metadata?: Record<string, unknown>
 }) {
   try {
-    const service = await createServiceRoleClient()
-    await service.from('admin_notifications').insert({
-      type: params.type,
-      title: params.title,
-      message: params.message,
-      target_role: 'admin',
-      related_user_id: params.relatedUserId || null,
-      metadata: params.metadata || {},
+    await (prisma as any).adminNotification.create({
+      data: {
+        type:              params.type,
+        title:             params.title,
+        message:           params.message,
+        target_user_id:    params.relatedUserId || null,
+        related_user_id:   params.relatedUserId || null,
+      },
     })
   } catch (error) {
     console.error('Error creating admin notification:', error)

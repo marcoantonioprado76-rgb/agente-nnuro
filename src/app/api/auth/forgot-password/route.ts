@@ -1,48 +1,37 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createServiceRoleClient } from '@/lib/supabase/server'
-import { sendPasswordRecoveryEmail } from '@/lib/email'
+import { NextRequest, NextResponse } from 'next/server';
+import { SignJWT } from 'jose';
+import { db } from '@/lib/db';
+import { sendPasswordRecoveryEmail } from '@/lib/email';
 
-export async function POST(request: NextRequest) {
+const SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET ?? 'fallback-secret-change-in-production'
+);
+
+export async function POST(req: NextRequest) {
   try {
-    const { email } = await request.json()
+    const { email } = await req.json();
+    if (!email) return NextResponse.json({ error: 'El email es requerido' }, { status: 400 });
 
-    if (!email) {
-      return NextResponse.json({ error: 'El email es requerido' }, { status: 400 })
-    }
+    const { data: profile } = await db
+      .from('profiles').select('id, full_name').eq('email', email.toLowerCase()).maybeSingle();
 
-    const service = await createServiceRoleClient()
+    if (!profile)
+      return NextResponse.json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' });
 
-    // Get user profile to personalize the email
-    const { data: profile } = await service
-      .from('profiles')
-      .select('full_name, email')
-      .eq('email', email)
-      .single()
+    const token = await new SignJWT({ sub: profile.id, purpose: 'password_reset' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('1h')
+      .sign(SECRET);
 
-    // Generate password reset link via Supabase admin
-    const { data, error } = await service.auth.admin.generateLink({
-      type: 'recovery',
-      email,
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
-      },
-    })
+    const appUrl   = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const resetUrl = `${appUrl}/reset-password?token=${token}`;
 
-    if (error || !data?.properties?.action_link) {
-      // Return success anyway to avoid email enumeration
-      return NextResponse.json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' })
-    }
+    await sendPasswordRecoveryEmail(email, profile.full_name || 'Usuario', resetUrl).catch(() => {});
 
-    // Send branded email via Resend
-    await sendPasswordRecoveryEmail(
-      email,
-      profile?.full_name || 'Usuario',
-      data.properties.action_link
-    )
-
-    return NextResponse.json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' })
-  } catch (error) {
-    console.error('[ForgotPassword] Error:', error)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
+    return NextResponse.json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' });
+  } catch (err) {
+    console.error('[auth/forgot-password]', err);
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
   }
 }

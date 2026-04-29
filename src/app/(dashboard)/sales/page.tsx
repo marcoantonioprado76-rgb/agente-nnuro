@@ -426,7 +426,7 @@ function OrderDetail({
   order: OrderWithRelations;
   messages: ChatMessage[];
   messagesLoading: boolean;
-  chatEndRef: React.RefObject<HTMLDivElement | null>;
+  chatEndRef: React.RefObject<HTMLDivElement>;
   onClose: () => void;
 }) {
   const sc = statusConfig[order.status] || statusConfig.pending;

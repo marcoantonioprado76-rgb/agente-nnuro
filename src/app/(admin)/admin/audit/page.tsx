@@ -63,8 +63,6 @@ const actionLabels: Record<string, string> = {
   'payment.approve': 'Pago aprobado',
   'payment.reject': 'Pago rechazado',
   'payment.create': 'Pago registrado',
-  'whatsapp.connect': 'WhatsApp conectado',
-  'whatsapp.disconnect': 'WhatsApp desconectado',
   // Legacy action names
   usuario_registrado: 'Usuario registrado',
   crear_bot: 'Bot creado',
@@ -72,8 +70,6 @@ const actionLabels: Record<string, string> = {
   eliminar_bot: 'Bot eliminado',
   activar_bot: 'Bot activado',
   desactivar_bot: 'Bot desactivado',
-  conectar_whatsapp: 'WhatsApp conectado',
-  desconectar_whatsapp: 'WhatsApp desconectado',
   cambiar_rol: 'Cambio de rol',
   suspender_usuario: 'Usuario suspendido',
   activar_usuario: 'Usuario activado',
@@ -94,15 +90,15 @@ type BadgeColor = 'green' | 'red' | 'blue' | 'yellow' | 'gray'
 const greenActions = new Set([
   'subscription.approve', 'payment.approve', 'payment.create',
   'user.activate', 'bot.activate', 'bot.create', 'product.create',
-  'user.create', 'whatsapp.connect',
-  'crear_bot', 'activar_bot', 'activar_usuario', 'conectar_whatsapp', 'crear_usuario_manual',
+  'user.create',
+  'crear_bot', 'activar_bot', 'activar_usuario', 'crear_usuario_manual',
 ])
 const redActions = new Set([
   'user.delete', 'user.suspend', 'bot.delete', 'bot.deactivate', 'product.delete',
   'subscription.reject', 'subscription.cancel', 'subscription.suspend',
-  'payment.reject', 'whatsapp.disconnect',
+  'payment.reject',
   'eliminar_bot', 'desactivar_bot', 'suspender_usuario', 'eliminar_usuario',
-  'desconectar_whatsapp', 'eliminar_producto',
+  'eliminar_producto',
 ])
 const blueActions = new Set([
   'register', 'login', 'logout',
@@ -148,9 +144,6 @@ const categoryPrefixes: Record<string, string[]> = {
   ],
   Suscripciones: ['subscription.'],
   Pagos: ['payment.'],
-  WhatsApp: [
-    'whatsapp.', 'conectar_whatsapp', 'desconectar_whatsapp',
-  ],
 }
 
 function matchesCategory(action: string, category: string): boolean {
@@ -171,8 +164,6 @@ function getEntityBadge(entityType?: string) {
     product: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
     subscription: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
     payment: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    whatsapp: 'bg-green-500/15 text-green-400 border-green-500/30',
-    session: 'bg-green-500/15 text-green-400 border-green-500/30',
   }
   return map[entityType.toLowerCase()] || 'bg-zinc-500/15 text-zinc-400 border-zinc-500/30'
 }
@@ -193,7 +184,7 @@ function formatDetails(details?: Record<string, unknown>): string {
 // Constants
 // ---------------------------------------------------------------------------
 const PAGE_SIZE = 25
-const CATEGORIES = ['Todos', 'Usuarios', 'Bots', 'Productos', 'Suscripciones', 'Pagos', 'WhatsApp']
+const CATEGORIES = ['Todos', 'Usuarios', 'Bots', 'Productos', 'Suscripciones', 'Pagos']
 
 // ---------------------------------------------------------------------------
 // Main page

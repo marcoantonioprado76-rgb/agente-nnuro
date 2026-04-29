@@ -14,6 +14,7 @@ export interface BotJsonResponse {
   mensaje3: string
   fotos_mensaje1: string[]
   videos_mensaje1: string[]
+  audio_url: string        // URL de audio PTT (nota de voz) — solo Baileys
   reporte: string
 }
 
@@ -24,12 +25,14 @@ export async function transcribeAudio(audioSource: string | Blob, apiKey: string
   let baseMime = 'audio/ogg'
 
   if (typeof audioSource === 'string') {
+    // Caso YCloud: Descargar el archivo desde URL
     const audioRes = await fetch(audioSource)
     if (!audioRes.ok) throw new Error(`Failed to download audio: ${audioRes.status}`)
     audioBuffer = await audioRes.arrayBuffer()
     const rawContentType = audioRes.headers.get('content-type') || 'audio/ogg'
     baseMime = rawContentType.split(';')[0].trim()
   } else {
+    // Caso Baileys: Usar el Blob/File directamente
     audioBuffer = await audioSource.arrayBuffer()
     baseMime = audioSource.type.split(';')[0].trim() || 'audio/ogg'
   }
@@ -155,15 +158,21 @@ export const AI_MODELS = [
 
 export type AiModelId = typeof AI_MODELS[number]['id']
 
-export const FOLLOWUP_MODEL = 'gpt-4o-mini'
+export const FOLLOWUP_MODEL = 'gpt-4o-mini' // Siempre económico para seguimientos
+
+interface ChatCompletionResult {
+  content: string
+  promptTokens: number
+  completionTokens: number
+}
 
 async function callChatCompletion(
   messages: Array<{ role: string; content: string }>,
   apiKey: string,
   model: string = 'gpt-5.1',
-): Promise<string> {
+): Promise<ChatCompletionResult> {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 60000)
+  const timeout = setTimeout(() => controller.abort(), 60000) // 1 min timeout
 
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -187,9 +196,64 @@ async function callChatCompletion(
     }
 
     const data = await res.json()
-    return (data.choices?.[0]?.message?.content as string) || '{}'
+    return {
+      content: (data.choices?.[0]?.message?.content as string) || '{}',
+      promptTokens: (data.usage?.prompt_tokens as number) ?? 0,
+      completionTokens: (data.usage?.completion_tokens as number) ?? 0,
+    }
   } finally {
     clearTimeout(timeout)
+  }
+}
+
+export interface ChatWithUsageResult {
+  response: BotJsonResponse
+  promptTokens: number
+  completionTokens: number
+}
+
+export async function chatWithUsage(
+  systemPrompt: string,
+  history: ChatMessage[],
+  apiKey: string,
+  model: string = 'gpt-4o',
+): Promise<ChatWithUsageResult> {
+  const messages: Array<{ role: string; content: string }> = [
+    { role: 'system', content: systemPrompt },
+    ...history,
+  ]
+
+  let result = await callChatCompletion(messages, apiKey, model)
+  let totalPrompt = result.promptTokens
+  let totalCompletion = result.completionTokens
+
+  let parsed: Record<string, unknown>
+  try {
+    parsed = JSON.parse(result.content)
+  } catch {
+    // Retry once with explicit instruction
+    messages.push(
+      { role: 'assistant', content: result.content },
+      { role: 'user', content: 'El JSON no es válido. Devuelve SOLO JSON con el schema exacto indicado.' },
+    )
+    result = await callChatCompletion(messages, apiKey, model)
+    totalPrompt += result.promptTokens
+    totalCompletion += result.completionTokens
+    parsed = JSON.parse(result.content) // If this throws again, let it propagate
+  }
+
+  return {
+    response: {
+      mensaje1: typeof parsed.mensaje1 === 'string' ? parsed.mensaje1 : '',
+      mensaje2: typeof parsed.mensaje2 === 'string' ? parsed.mensaje2 : '',
+      mensaje3: typeof parsed.mensaje3 === 'string' ? parsed.mensaje3 : '',
+      fotos_mensaje1: normalizeFotos(parsed.fotos_mensaje1),
+      videos_mensaje1: normalizeFotos(parsed.videos_mensaje1),
+      audio_url: typeof parsed.audio_url === 'string' ? parsed.audio_url : '',
+      reporte: typeof parsed.reporte === 'string' ? parsed.reporte : '',
+    },
+    promptTokens: totalPrompt,
+    completionTokens: totalCompletion,
   }
 }
 
@@ -199,31 +263,6 @@ export async function chat(
   apiKey: string,
   model: string = 'gpt-4o',
 ): Promise<BotJsonResponse> {
-  const messages: Array<{ role: string; content: string }> = [
-    { role: 'system', content: systemPrompt },
-    ...history,
-  ]
-
-  let raw = await callChatCompletion(messages, apiKey, model)
-
-  let parsed: Record<string, unknown>
-  try {
-    parsed = JSON.parse(raw)
-  } catch {
-    messages.push(
-      { role: 'assistant', content: raw },
-      { role: 'user', content: 'El JSON no es válido. Devuelve SOLO JSON con el schema exacto indicado.' },
-    )
-    raw = await callChatCompletion(messages, apiKey, model)
-    parsed = JSON.parse(raw)
-  }
-
-  return {
-    mensaje1: typeof parsed.mensaje1 === 'string' ? parsed.mensaje1 : '',
-    mensaje2: typeof parsed.mensaje2 === 'string' ? parsed.mensaje2 : '',
-    mensaje3: typeof parsed.mensaje3 === 'string' ? parsed.mensaje3 : '',
-    fotos_mensaje1: normalizeFotos(parsed.fotos_mensaje1),
-    videos_mensaje1: normalizeFotos(parsed.videos_mensaje1),
-    reporte: typeof parsed.reporte === 'string' ? parsed.reporte : '',
-  }
+  const { response } = await chatWithUsage(systemPrompt, history, apiKey, model)
+  return response
 }

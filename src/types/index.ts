@@ -59,7 +59,6 @@ export interface Bot {
   // Joined
   bot_prompts?: BotPrompt;
   followup_settings?: FollowupSettings;
-  whatsapp_sessions?: WhatsappSession;
 }
 
 export interface BotPrompt {
@@ -134,17 +133,6 @@ export interface FollowupSettings {
   first_followup_minutes: number;
   second_followup_minutes: number;
   is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface WhatsappSession {
-  id: string;
-  bot_id: string;
-  status: 'disconnected' | 'connecting' | 'connected' | 'qr_ready';
-  phone_number?: string;
-  qr_code?: string;
-  last_connected_at?: string;
   created_at: string;
   updated_at: string;
 }

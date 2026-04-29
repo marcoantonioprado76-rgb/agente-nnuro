@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
 import sharp from 'sharp'
 
 const ALLOWED_BUCKETS = ['store-products', 'store-qr', 'product-images', 'product-testimonials', 'avatars', 'payment-proofs', 'store-covers', 'store-favicons']
@@ -11,22 +12,21 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now()
 
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const user = { id: session.sub }
 
     const formData = await request.formData()
     const file = formData.get('file') as File | null
-    const bucket = formData.get('bucket') as string | null
+    const bucket = (formData.get('bucket') as string | null) ?? 'media'
 
     if (!file) {
       return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 })
     }
 
     if (!bucket || !ALLOWED_BUCKETS.includes(bucket)) {
-      return NextResponse.json({ error: 'Bucket no válido' }, { status: 400 })
+      // Allow 'media' as default bucket for bot product uploads
+      if (bucket !== 'media') return NextResponse.json({ error: 'Bucket no válido' }, { status: 400 })
     }
 
     const isImage = file.type.startsWith('image/')

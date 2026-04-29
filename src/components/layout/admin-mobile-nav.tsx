@@ -8,15 +8,16 @@ import {
   CreditCard,
   DollarSign,
   Settings,
+  ArrowLeft,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const adminMobileNavItems = [
-  { label: 'Panel', href: '/admin/dashboard', icon: LayoutDashboard },
-  { label: 'Usuarios', href: '/admin/users', icon: Users },
-  { label: 'Planes', href: '/admin/subscriptions', icon: CreditCard },
-  { label: 'Pagos', href: '/admin/payments', icon: DollarSign },
-  { label: 'Config', href: '/admin/settings', icon: Settings },
+  { label: 'Panel',    href: '/admin/dashboard',      icon: LayoutDashboard },
+  { label: 'Usuarios', href: '/admin/users',           icon: Users           },
+  { label: 'Planes',   href: '/admin/subscriptions',  icon: CreditCard      },
+  { label: 'Pagos',    href: '/admin/payments',        icon: DollarSign      },
+  { label: 'Mi App',   href: '/dashboard',             icon: ArrowLeft       },
 ]
 
 export function AdminMobileNav() {

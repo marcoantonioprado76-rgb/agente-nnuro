@@ -4,38 +4,45 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
-  Bot,
   Store,
   ShoppingBag,
-  UserCircle,
+  ShieldCheck,
+  CreditCard,
+  Bot,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/hooks/use-auth'
 
-const mobileNavItems = [
-  { label: 'Inicio', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Bots', href: '/bots', icon: Bot },
-  { label: 'Tiendas', href: '/stores', icon: Store },
-  { label: 'Ventas', href: '/sales', icon: ShoppingBag },
-  { label: 'Perfil', href: '/profile', icon: UserCircle },
+const baseItems = [
+  { label: 'Inicio',  href: '/dashboard',    icon: LayoutDashboard },
+  { label: 'Bots',    href: '/bots',         icon: Bot             },
+  { label: 'Tiendas', href: '/stores',       icon: Store           },
+  { label: 'Ventas',  href: '/sales',        icon: ShoppingBag     },
+  { label: 'Plan',    href: '/subscription', icon: CreditCard      },
 ]
 
+const adminItem = { label: 'Admin', href: '/admin/dashboard', icon: ShieldCheck }
+
 export function MobileNav() {
-  const pathname = usePathname()
+  const pathname  = usePathname()
+  const { isAdmin } = useAuth()
+
+  const items = isAdmin ? [...baseItems, adminItem] : baseItems
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
       style={{
-        background: 'linear-gradient(180deg, rgba(10, 17, 34, 0.98), rgba(8, 13, 26, 0.99))',
-        borderTop: '1px solid rgba(139, 92, 246, 0.08)',
-        backdropFilter: 'blur(24px)',
+        background:       'linear-gradient(180deg, rgba(10, 17, 34, 0.98), rgba(8, 13, 26, 0.99))',
+        borderTop:        '1px solid rgba(139, 92, 246, 0.08)',
+        backdropFilter:   'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
+        paddingBottom:    'env(safe-area-inset-bottom, 0px)',
+        boxShadow:        '0 -4px 20px rgba(0, 0, 0, 0.3)',
       }}
     >
       <div className="flex items-stretch justify-around h-[56px]">
-        {mobileNavItems.map((item) => {
+        {items.map((item) => {
           const isActive = pathname === item.href || pathname?.startsWith(item.href + '/')
           return (
             <Link
@@ -43,9 +50,7 @@ export function MobileNav() {
               href={item.href}
               className={cn(
                 'relative flex flex-col items-center justify-center flex-1 gap-1 transition-colors duration-200',
-                isActive
-                  ? 'text-[#8B5CF6]'
-                  : 'text-[#64748B]/50 active:text-[#64748B]/80'
+                isActive ? 'text-[#8B5CF6]' : 'text-[#64748B]/50 active:text-[#64748B]/80'
               )}
             >
               {isActive && (
@@ -61,10 +66,7 @@ export function MobileNav() {
                 )}
                 strokeWidth={isActive ? 2.2 : 1.8}
               />
-              <span className={cn(
-                'text-[10px] leading-none tracking-wide',
-                isActive ? 'font-bold' : 'font-medium'
-              )}>
+              <span className={cn('text-[10px] leading-none tracking-wide', isActive ? 'font-bold' : 'font-medium')}>
                 {item.label}
               </span>
             </Link>

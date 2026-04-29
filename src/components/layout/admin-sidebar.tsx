@@ -6,8 +6,6 @@ import { useEffect, useState } from 'react'
 import {
   LayoutDashboard,
   Users,
-  Bot,
-  Package,
   Store,
   CreditCard,
   DollarSign,
@@ -36,15 +34,13 @@ interface NotificationData {
 }
 
 const adminNavItems = [
-  { label: 'Dashboard General', href: '/admin/dashboard', icon: LayoutDashboard, description: 'Resumen de plataforma', badgeKey: null as string | null },
-  { label: 'Usuarios', href: '/admin/users', icon: Users, description: 'Gestión de usuarios', badgeKey: null as string | null },
-  { label: 'Bots por Usuario', href: '/admin/bots', icon: Bot, description: 'Bots de cada usuario', badgeKey: null as string | null },
-  { label: 'Tiendas', href: '/admin/stores', icon: Store, description: 'Tiendas de usuarios', badgeKey: null as string | null },
-  { label: 'Productos', href: '/admin/products', icon: Package, description: 'Productos globales', badgeKey: null as string | null },
-  { label: 'Suscripciones', href: '/admin/subscriptions', icon: CreditCard, description: 'Planes y aprobaciones', badgeKey: 'pending_subscriptions' as string | null },
-  { label: 'Pagos', href: '/admin/payments', icon: DollarSign, description: 'Pagos y comprobantes', badgeKey: 'pending_payments' as string | null },
-  { label: 'Actividad / Auditoría', href: '/admin/audit', icon: Activity, description: 'Registro de actividad', badgeKey: null as string | null },
-  { label: 'Configuración', href: '/admin/settings', icon: Settings, description: 'Ajustes del sistema', badgeKey: null as string | null },
+  { label: 'Dashboard General',    href: '/admin/dashboard',     icon: LayoutDashboard, description: 'Resumen de plataforma',    badgeKey: null as string | null },
+  { label: 'Usuarios',             href: '/admin/users',         icon: Users,           description: 'Gestión de usuarios',      badgeKey: null as string | null },
+  { label: 'Tiendas',             href: '/admin/stores',        icon: Store,           description: 'Tiendas de usuarios',      badgeKey: null as string | null },
+  { label: 'Suscripciones',       href: '/admin/subscriptions', icon: CreditCard,      description: 'Planes y aprobaciones',    badgeKey: 'pending_subscriptions' as string | null },
+  { label: 'Pagos',               href: '/admin/payments',      icon: DollarSign,      description: 'Pagos y comprobantes',     badgeKey: 'pending_payments' as string | null },
+  { label: 'Actividad / Auditoría',href: '/admin/audit',        icon: Activity,        description: 'Registro de actividad',    badgeKey: null as string | null },
+  { label: 'Configuración',       href: '/admin/settings',      icon: Settings,        description: 'Ajustes del sistema',      badgeKey: null as string | null },
 ]
 
 export function AdminSidebar() {

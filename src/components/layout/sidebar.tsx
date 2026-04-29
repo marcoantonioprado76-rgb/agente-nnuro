@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Bot,
   Settings,
   LogOut,
   ChevronLeft,
@@ -16,6 +15,7 @@ import {
   UserCircle,
   Shield,
   ChevronUp,
+  Bot,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -24,12 +24,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { NuroSmile } from '@/components/shared/nuro-logo';
 
 const navItems = [
-  { label: 'Panel', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Bots', href: '/bots', icon: Bot },
-{ label: 'Tiendas Virtuales', href: '/stores', icon: Store },
-  { label: 'Ventas Confirmadas', href: '/sales', icon: ShoppingBag },
-  { label: 'Suscripción', href: '/subscription', icon: CreditCard },
-  { label: 'Perfil', href: '/profile', icon: UserCircle },
+  { label: 'Panel',             href: '/dashboard',    icon: LayoutDashboard },
+  { label: 'Agentes de IA',     href: '/bots',         icon: Bot             },
+  { label: 'Tiendas Virtuales', href: '/stores',       icon: Store           },
+  { label: 'Ventas Confirmadas',href: '/sales',        icon: ShoppingBag     },
+  { label: 'Suscripción',       href: '/subscription', icon: CreditCard      },
+  { label: 'Perfil',            href: '/profile',      icon: UserCircle      },
 ];
 
 const adminItems = [

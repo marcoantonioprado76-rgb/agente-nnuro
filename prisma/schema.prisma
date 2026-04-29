@@ -1,0 +1,489 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────────
+// PROFILES (users)
+// ─────────────────────────────────────────────
+model Profile {
+  id                        String    @id @default(uuid())
+  email                     String    @unique
+  full_name                 String    @default("")
+  avatar_url                String?
+  role                      String    @default("user")
+  tenant_id                 String?
+  is_active                 Boolean   @default(true)
+  password_hash             String?
+  country                   String    @default("")
+  city                      String    @default("")
+  phone_number              String    @default("")
+  country_code              String    @default("")
+  phone_with_code           String    @default("")
+  transaction_password_hash String?
+  login_provider            String    @default("email")
+  status                    String    @default("active")
+  ai_credits_usd            Decimal   @default(0) @db.Decimal(10, 6)
+  last_login_at             DateTime?
+  onboarding_completed      Boolean   @default(false)
+  suspended_at              DateTime?
+  suspended_by              String?
+  blocked_at                DateTime?
+  blocked_by                String?
+  created_at                DateTime  @default(now())
+  updated_at                DateTime  @updatedAt
+
+  stores        Store[]
+  subscriptions Subscription[]
+  payments      Payment[]
+
+  @@map("profiles")
+}
+
+// ─────────────────────────────────────────────
+// PLANS
+// ─────────────────────────────────────────────
+model Plan {
+  id                   String   @id @default(uuid())
+  name                 String
+  slug                 String   @unique
+  price                Decimal  @db.Decimal(10, 2)
+  currency             String   @default("USD")
+  max_bots             Int      @default(1)
+  max_products         Int      @default(5)
+  max_conversations    Int      @default(1000)
+  max_whatsapp_numbers Int      @default(1)
+  features             String[]
+  is_active            Boolean  @default(true)
+  sort_order           Int      @default(0)
+  stripe_price_id      String?
+  created_at           DateTime @default(now())
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+// ─────────────────────────────────────────────
+// SUBSCRIPTIONS
+// ─────────────────────────────────────────────
+model Subscription {
+  id                         String    @id @default(uuid())
+  user_id                    String
+  plan_id                    String
+  status                     String    @default("pending")
+  approval_status            String    @default("pending_review")
+  start_date                 DateTime?
+  end_date                   DateTime?
+  payment_provider           String?   @default("manual")
+  payment_id                 String?
+  admin_notes                String?
+  approved_by                String?
+  approved_at                DateTime?
+  cancelled_at               DateTime?
+  cancelled_by               String?
+  extended_at                DateTime?
+  extended_by                String?
+  plan_changed_at            DateTime?
+  previous_plan_id           String?
+  stripe_customer_id         String?
+  stripe_checkout_session_id String?
+  created_at                 DateTime  @default(now())
+  updated_at                 DateTime  @updatedAt
+
+  user     Profile   @relation(fields: [user_id], references: [id])
+  plan     Plan      @relation(fields: [plan_id], references: [id])
+  payments Payment[]
+
+  @@map("subscriptions")
+}
+
+// ─────────────────────────────────────────────
+// PAYMENTS
+// ─────────────────────────────────────────────
+model Payment {
+  id                         String    @id @default(uuid())
+  user_id                    String
+  subscription_id            String?
+  amount                     Decimal   @db.Decimal(10, 2)
+  currency                   String    @default("USD")
+  payment_method             String?
+  payment_status             String    @default("pending")
+  transaction_id             String?
+  payment_proof_url          String?
+  notes                      String?
+  admin_notes                String?
+  reviewed_by                String?
+  reviewed_at                DateTime?
+  stripe_payment_intent_id   String?
+  stripe_checkout_session_id String?
+  stripe_customer_id         String?
+  created_at                 DateTime  @default(now())
+
+  user         Profile       @relation(fields: [user_id], references: [id])
+  subscription Subscription? @relation(fields: [subscription_id], references: [id])
+
+  @@map("payments")
+}
+
+// ─────────────────────────────────────────────
+// BOTS
+// ─────────────────────────────────────────────
+model Bot {
+  id                     String    @id @default(uuid())
+  tenant_id              String
+  name                   String
+  description            String?
+  type                   String    @default("BAILEYS")
+  status                 String    @default("ACTIVE")
+  is_active              Boolean   @default(false)
+  webhook_token          String    @default("")
+  system_prompt_template String?
+  ai_model               String    @default("gpt-4o-mini")
+  max_chars_msg1         Int?
+  max_chars_msg2         Int?
+  max_chars_msg3         Int?
+  follow_up1_delay       Int       @default(15)
+  follow_up2_delay       Int       @default(4320)
+  baileys_phone          String?
+  openai_api_key         String?
+  report_phone           String?
+  gpt_model              String?
+  paused_at              DateTime?
+  paused_by              String?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime  @updatedAt
+
+  bot_secrets       BotSecret?
+  bot_prompts       BotPrompt?
+  followup_settings FollowupSettings?
+  products          Product[]
+  conversations     Conversation[]
+
+  @@index([tenant_id])
+  @@map("bots")
+}
+
+// ─────────────────────────────────────────────
+// BOT SECRETS
+// ─────────────────────────────────────────────
+model BotSecret {
+  id                       String   @id @default(uuid())
+  bot_id                   String   @unique
+  ycloud_api_key_enc       String?
+  openai_api_key_enc       String?
+  meta_page_token_enc      String?
+  meta_phone_number_id     String?
+  meta_waba_id             String?
+  whatsapp_instance_number String   @default("")
+  report_phone             String   @default("")
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+
+  bot Bot @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+
+  @@map("bot_secrets")
+}
+
+// ─────────────────────────────────────────────
+// BOT STATE
+// ─────────────────────────────────────────────
+model BotState {
+  id              String    @id @default(uuid())
+  conversation_id String    @unique
+  welcome_sent    Boolean   @default(false)
+  welcome_sent_at DateTime?
+  last_intent     String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  @@map("bot_states")
+}
+
+// ─────────────────────────────────────────────
+// BOT PROMPTS
+// ─────────────────────────────────────────────
+model BotPrompt {
+  id                    String   @id @default(uuid())
+  bot_id                String   @unique
+  system_prompt         String   @default("")
+  personality           String   @default("Vendedor profesional, amable y persuasivo")
+  sales_rules           String   @default("")
+  tone                  String   @default("profesional y cálido")
+  max_chars_per_message Int      @default(500)
+  max_chars_message1    Int      @default(200)
+  max_chars_message2    Int      @default(200)
+  max_chars_message3    Int      @default(200)
+  strict_json_output    Boolean  @default(false)
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+
+  bot Bot @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+
+  @@map("bot_prompts")
+}
+
+// ─────────────────────────────────────────────
+// FOLLOWUP SETTINGS
+// ─────────────────────────────────────────────
+model FollowupSettings {
+  id                      String   @id @default(uuid())
+  bot_id                  String   @unique
+  first_followup_minutes  Int      @default(30)
+  second_followup_minutes Int      @default(1440)
+  is_active               Boolean  @default(true)
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  bot Bot @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+
+  @@map("followup_settings")
+}
+
+// ─────────────────────────────────────────────
+// PRODUCTS
+// ─────────────────────────────────────────────
+model Product {
+  id                      String   @id @default(uuid())
+  bot_id                  String?
+  tenant_id               String
+  name                    String
+  category                String   @default("General")
+  description             String   @default("")
+  benefits                String   @default("")
+  usage_instructions      String   @default("")
+  warnings                String   @default("")
+  currency                String   @default("USD")
+  price_unit              Decimal? @db.Decimal(10, 2)
+  offer_price             Decimal? @db.Decimal(10, 2)
+  price_promo_x2          Decimal? @db.Decimal(10, 2)
+  price_super_x6          Decimal? @db.Decimal(10, 2)
+  shipping_info           String   @default("")
+  coverage                String   @default("")
+  sell_zones              String   @default("")
+  delivery_zones          String   @default("")
+  hooks                   String[]
+  first_message           String?
+  first_message_audio_url String?
+  is_active               Boolean  @default(true)
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  bot                  Bot?                 @relation(fields: [bot_id], references: [id], onDelete: SetNull)
+  product_images       ProductImage[]
+  product_testimonials ProductTestimonial[]
+
+  @@index([bot_id])
+  @@index([tenant_id])
+  @@map("products")
+}
+
+// ─────────────────────────────────────────────
+// PRODUCT IMAGES
+// ─────────────────────────────────────────────
+model ProductImage {
+  id         String   @id @default(uuid())
+  product_id String
+  url        String
+  is_primary Boolean  @default(false)
+  sort_order Int      @default(0)
+  image_type String   @default("product")
+  created_at DateTime @default(now())
+
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@index([product_id])
+  @@map("product_images")
+}
+
+// ─────────────────────────────────────────────
+// PRODUCT TESTIMONIALS
+// ─────────────────────────────────────────────
+model ProductTestimonial {
+  id          String   @id @default(uuid())
+  product_id  String
+  type        String
+  url         String   @default("")
+  content     String?
+  description String?
+  created_at  DateTime @default(now())
+
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@index([product_id])
+  @@map("product_testimonials")
+}
+
+// ─────────────────────────────────────────────
+// CONVERSATIONS
+// ─────────────────────────────────────────────
+model Conversation {
+  id                  String    @id @default(uuid())
+  bot_id              String
+  user_phone          String    @default("")
+  user_name           String?
+  status              String    @default("active")
+  product_interest    String?
+  last_message_at     DateTime  @default(now())
+  last_bot_message_at DateTime?
+  follow_up1_at       DateTime?
+  follow_up1_sent     Boolean   @default(false)
+  follow_up2_at       DateTime?
+  follow_up2_sent     Boolean   @default(false)
+  sold                Boolean   @default(false)
+  sold_at             DateTime?
+  bot_disabled        Boolean   @default(false)
+  updated_at          DateTime  @default(now()) @updatedAt
+  created_at          DateTime  @default(now())
+
+  bot      Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@unique([bot_id, user_phone])
+  @@index([bot_id])
+  @@index([user_phone])
+  @@map("conversations")
+}
+
+// ─────────────────────────────────────────────
+// MESSAGES
+// ─────────────────────────────────────────────
+model Message {
+  id              String   @id @default(uuid())
+  conversation_id String
+  role            String   @default("user")
+  sender          String?
+  type            String   @default("text")
+  content         String
+  buffered        Boolean  @default(false)
+  message_id      String?
+  metadata        Json?
+  created_at      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+
+  @@index([conversation_id])
+  @@index([created_at])
+  @@map("messages")
+}
+
+// ─────────────────────────────────────────────
+// STORES
+// ─────────────────────────────────────────────
+model Store {
+  id               String   @id @default(uuid())
+  user_id          String
+  tenant_id        String
+  bot_id           String?
+  name             String
+  slug             String   @unique
+  description      String?
+  store_type       String   @default("business")
+  status           String   @default("active")
+  whatsapp_number  String?
+  payment_qr_url   String?
+  visibility       String   @default("public")
+  is_active        Boolean  @default(true)
+  font_family      String?
+  font_weight      String?
+  font_spacing     String?
+  font_style       String?
+  background_type  String?
+  background_value String?
+  font_config      Json?
+  bg_config        Json?
+  cover_image_url  String?
+  cover_images     Json?
+  favicon_url      String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  user         Profile      @relation(fields: [user_id], references: [id])
+  store_orders StoreOrder[]
+
+  @@index([user_id])
+  @@index([tenant_id])
+  @@map("stores")
+}
+
+// ─────────────────────────────────────────────
+// STORE ORDERS
+// ─────────────────────────────────────────────
+model StoreOrder {
+  id               String   @id @default(uuid())
+  store_id         String
+  user_id          String
+  tenant_id        String
+  customer_name    String
+  customer_phone   String
+  customer_city    String?
+  customer_address String?
+  reference        String?
+  payment_method   String   @default("whatsapp")
+  items            Json
+  subtotal         Decimal  @db.Decimal(10, 2) @default(0)
+  total            Decimal  @db.Decimal(10, 2)
+  currency         String   @default("USD")
+  status           String   @default("pending")
+  notes            String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  store Store @relation(fields: [store_id], references: [id])
+
+  @@index([store_id])
+  @@map("store_orders")
+}
+
+// ─────────────────────────────────────────────
+// USER NOTIFICATIONS
+// ─────────────────────────────────────────────
+model UserNotification {
+  id        String   @id @default(uuid())
+  user_id   String
+  type      String
+  title     String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  read_at   DateTime?
+  created_at DateTime @default(now())
+
+  @@index([user_id])
+  @@map("notifications")
+}
+
+// ─────────────────────────────────────────────
+// SYSTEM SETTINGS
+// ─────────────────────────────────────────────
+model SystemSetting {
+  id         String   @id @default(uuid())
+  key        String   @unique
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+// ─────────────────────────────────────────────
+// AI USAGE LOGS
+// ─────────────────────────────────────────────
+model AiUsageLog {
+  id                String   @id @default(uuid())
+  user_id           String
+  service           String
+  model             String
+  prompt_tokens     Int      @default(0)
+  completion_tokens Int      @default(0)
+  cost_usd          Decimal  @default(0) @db.Decimal(10, 6)
+  created_at        DateTime @default(now())
+
+  @@index([user_id])
+  @@map("ai_usage_logs")
+}

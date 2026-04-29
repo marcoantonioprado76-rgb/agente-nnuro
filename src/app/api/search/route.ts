@@ -296,7 +296,7 @@ export async function GET(request: NextRequest) {
         ]
       : [
           { name: 'Dashboard', link: '/dashboard', keywords: ['panel', 'dashboard', 'inicio'] },
-          { name: 'Mis Agentes', link: '/bots', keywords: ['bots', 'agentes', 'whatsapp'] },
+          { name: 'Mis Agentes', link: '/bots', keywords: ['bots', 'agentes', 'ia'] },
           { name: 'Conversaciones', link: '/conversations', keywords: ['conversaciones', 'chats', 'mensajes'] },
           { name: 'Leads', link: '/leads', keywords: ['leads', 'oportunidades', 'prospectos'] },
           { name: 'Tienda Virtual', link: '/stores', keywords: ['tienda', 'store', 'catalogo'] },

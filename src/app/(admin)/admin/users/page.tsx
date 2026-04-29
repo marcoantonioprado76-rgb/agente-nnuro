@@ -51,7 +51,6 @@ interface EnrichedUser {
   bots_count: number
   products_count: number
   stores_count: number
-  has_whatsapp: boolean
   country: string
   city: string
   phone_number: string
@@ -498,7 +497,6 @@ export default function AdminUsersPage() {
                       <TableHead className="text-muted-foreground">Plan</TableHead>
                       <TableHead className="text-muted-foreground text-center">Bots</TableHead>
                       <TableHead className="text-muted-foreground text-center">Productos</TableHead>
-                      <TableHead className="text-muted-foreground text-center">WhatsApp</TableHead>
                       <TableHead className="text-muted-foreground">Ultimo acceso</TableHead>
                       <TableHead className="text-muted-foreground">Registro</TableHead>
                       <TableHead className="text-muted-foreground text-right">Acciones</TableHead>
@@ -573,13 +571,6 @@ export default function AdminUsersPage() {
                             <div className="flex items-center justify-center gap-1.5">
                               <Package className="h-3.5 w-3.5 text-muted-foreground" />
                               <span className="text-sm font-medium text-foreground">{user.products_count}</span>
-                            </div>
-                          </TableCell>
-
-                          {/* WhatsApp */}
-                          <TableCell className="text-center">
-                            <div className="flex items-center justify-center">
-                              <div className={`h-2.5 w-2.5 rounded-full ${user.has_whatsapp ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]' : 'bg-gray-500/40'}`} />
                             </div>
                           </TableCell>
 

@@ -121,26 +121,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // 5. Check WhatsApp connectivity per tenant
-    //    A user "has WhatsApp connected" if any bot in their tenant has a connected session
-    const whatsappMap = new Map<string, boolean>()
-    if (tenantIds.length > 0) {
-      const { data: waSessions } = await service
-        .from('whatsapp_sessions')
-        .select('bot_id, status, bots:bot_id(tenant_id)')
-        .eq('status', 'connected')
-
-      if (waSessions) {
-        for (const session of waSessions) {
-          const tenantId = (session.bots as unknown as { tenant_id: string })?.tenant_id
-          if (tenantId && tenantIds.includes(tenantId)) {
-            whatsappMap.set(tenantId, true)
-          }
-        }
-      }
-    }
-
-    // 5b. Batch count stores per user
+    // 5. Batch count stores per user
     const storeCountMap = new Map<string, number>()
     const { data: storeCounts } = await service
       .from('stores')
@@ -183,8 +164,6 @@ export async function GET(request: NextRequest) {
       products_count: u.tenant_id ? (productCountMap.get(u.tenant_id) || 0) : 0,
       stores_count: storeCountMap.get(u.id) || 0,
 
-      // WhatsApp connectivity
-      has_whatsapp: u.tenant_id ? (whatsappMap.get(u.tenant_id) || false) : false,
     }))
 
     return NextResponse.json(enrichedUsers)

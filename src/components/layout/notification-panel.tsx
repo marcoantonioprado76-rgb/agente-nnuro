@@ -14,7 +14,6 @@ import {
   Store,
   Target,
   Shield,
-  Smartphone,
   Loader2,
   X,
 } from 'lucide-react'
@@ -41,8 +40,6 @@ const typeIcons: Record<string, { icon: typeof Bell; color: string; bg: string }
   tienda_creada: { icon: Store, color: '#A78BFA', bg: 'rgba(167, 139, 250, 0.1)' },
   tienda_actualizada: { icon: Store, color: '#06B6D4', bg: 'rgba(6, 182, 212, 0.1)' },
   venta_confirmada: { icon: ShoppingBag, color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)' },
-  whatsapp_conectado: { icon: Smartphone, color: '#10B981', bg: 'rgba(16, 185, 129, 0.1)' },
-  whatsapp_desconectado: { icon: Smartphone, color: '#EF4444', bg: 'rgba(239, 68, 68, 0.1)' },
   lead_nuevo: { icon: Target, color: '#06B6D4', bg: 'rgba(6, 182, 212, 0.1)' },
   seguimiento_ejecutado: { icon: MessageSquare, color: '#F59E0B', bg: 'rgba(245, 158, 11, 0.1)' },
   cuenta_actualizada: { icon: Shield, color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.1)' },
