@@ -6,54 +6,55 @@
    PREMIUM DARK THEME — Multi-tonal Violet & Emerald
    ============================================================ */
 :root {
-  --background: #000000;
-  --foreground: #FFFFFF;
+  /* ── Shadcn/ui standard variables — HSL format (required by Tailwind) ── */
+  --background: 0 0% 0%;           /* #000000 */
+  --foreground: 0 0% 100%;         /* #FFFFFF */
 
-  --card: #0A0A0F;
-  --card-foreground: #FFFFFF;
-  --popover: #0A0A0F;
-  --popover-foreground: #FFFFFF;
+  --card: 240 25% 6%;              /* #0A0A0F */
+  --card-foreground: 0 0% 100%;    /* #FFFFFF */
+  --popover: 240 25% 6%;           /* #0A0A0F */
+  --popover-foreground: 0 0% 100%; /* #FFFFFF */
 
-  --primary: #8B5CF6;
-  --primary-foreground: #FFFFFF;
+  --primary: 263 87% 65%;          /* #8B5CF6 */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
 
-  --secondary: #0F0F17;
-  --secondary-foreground: #94A3B8;
+  --secondary: 240 22% 8%;                /* #0F0F17 */
+  --secondary-foreground: 215 28% 66%;    /* #94A3B8 */
 
-  --muted: #0F0F17;
-  --muted-foreground: #64748B;
+  --muted: 240 22% 8%;                    /* #0F0F17 */
+  --muted-foreground: 215 16% 47%;        /* #64748B */
 
-  --accent: #141420;
-  --accent-foreground: #FFFFFF;
+  --accent: 240 14% 10%;                  /* #141420 */
+  --accent-foreground: 0 0% 100%;         /* #FFFFFF */
 
-  --destructive: #EF4444;
+  --destructive: 0 84% 60%;              /* #EF4444 */
+  --destructive-foreground: 0 0% 100%;   /* #FFFFFF */
 
-  --border: rgba(139, 92, 246, 0.1);
-  --input: rgba(139, 92, 246, 0.1);
+  --border: 263 50% 50%;           /* subtle purple border */
+  --input: 263 50% 50%;
+  --ring: 263 87% 65%;             /* #8B5CF6 */
 
-  --ring: #8B5CF6;
-
-  --chart-1: #8B5CF6;
-  --chart-2: #3B82F6;
-  --chart-3: #10B981;
-  --chart-4: #F472B6;
-  --chart-5: #F59E0B;
+  --chart-1: 263 87% 65%;
+  --chart-2: 217 91% 60%;
+  --chart-3: 160 84% 39%;
+  --chart-4: 330 86% 70%;
+  --chart-5: 43 96% 56%;
 
   --radius: 0.75rem;
 
-  --sidebar: #050508;
-  --sidebar-foreground: #94A3B8;
-  --sidebar-primary: #8B5CF6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #141420;
-  --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: rgba(139, 92, 246, 0.08);
-  --sidebar-ring: #8B5CF6;
+  --sidebar: 240 23% 4%;           /* #050508 */
+  --sidebar-foreground: 215 28% 66%;
+  --sidebar-primary: 263 87% 65%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 14% 10%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 263 87% 65%;
+  --sidebar-ring: 263 87% 65%;
 
+  /* ── Raw hex values for direct CSS use ── */
   --glow-purple: #8B5CF6;
   --glow-blue: #3B82F6;
   --glow-cyan: #06B6D4;
-
   --success: #10B981;
   --success-foreground: #FFFFFF;
 }

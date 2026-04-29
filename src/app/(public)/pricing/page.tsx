@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -37,7 +37,7 @@ export default function PricingPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const router = useRouter()
-  const supabase = createClient()
+  
 
   useEffect(() => {
     async function load() {
@@ -53,8 +53,8 @@ export default function PricingPage() {
   }, [])
 
   const handleStripeCheckout = async (plan: Plan) => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
+    const meRes = await fetch('/api/auth/me')
+    if (!meRes.ok) { router.push('/login'); return }
 
     setSubscribing(plan.id)
     try {
@@ -79,8 +79,8 @@ export default function PricingPage() {
   }
 
   const openTransferDialog = async (plan: Plan) => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
+    const meRes2 = await fetch('/api/auth/me')
+    if (!meRes2.ok) { router.push('/login'); return }
     setSelectedPlan(plan)
     setTransactionId('')
     setProofUrl('')
