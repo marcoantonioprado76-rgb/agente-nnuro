@@ -39,7 +39,6 @@ import {
   MessageSquare,
   Share2,
   UserCheck,
-  Mic,
   Sparkles,
 } from 'lucide-react'
 
@@ -79,7 +78,6 @@ interface Product {
   currency: string
   welcomeMessage: string | null
   firstMessage: string | null
-  firstMessageAudioUrl: string | null
   hooks: string[]
   imageMainUrls: string[]
   imagePriceUnitUrl: string | null
@@ -1344,120 +1342,8 @@ function ProductForm({
   const [showTestimonialPhotos, setShowTestimonialPhotos] = useState(false)
   const [showTestimonialVideos, setShowTestimonialVideos] = useState(false)
 
-  // Audio PTT state — sincronizar con el producto cuando cambia
-  const [audioUrl, setAudioUrl] = useState<string | null>(product?.firstMessageAudioUrl ?? null)
-  useEffect(() => { setAudioUrl(product?.firstMessageAudioUrl ?? null) }, [product?.id])
-  const [pendingAudio, setPendingAudio] = useState<{ file: File; localUrl: string } | null>(null)
-  const [isRecordingAudio, setIsRecordingAudio] = useState(false)
-  const [recordingSeconds, setRecordingSeconds] = useState(0)
-  const [uploadingAudio, setUploadingAudio] = useState(false)
-  const [audioError, setAudioError] = useState<string | null>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
   const setField = (key: keyof ProductFormState, value: string | boolean) =>
     setForm(f => ({ ...f, [key]: value }))
-
-  async function startRecordingAudio() {
-    setAudioError(null)
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setAudioError('Grabación no disponible. Usá Chrome/Firefox y asegurate de estar en HTTPS.')
-      return
-    }
-    let stream: MediaStream
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    } catch (err: unknown) {
-      const name = err instanceof Error ? err.name : ''
-      if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
-        setAudioError('Permiso de micrófono denegado. Hacé clic en el ícono 🔒 de la barra del navegador y habilitá el micrófono.')
-      } else if (name === 'NotFoundError') {
-        setAudioError('No se encontró ningún micrófono en este dispositivo.')
-      } else {
-        setAudioError('No se pudo acceder al micrófono: ' + (err instanceof Error ? err.message : String(err)))
-      }
-      return
-    }
-    try {
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')
-          ? 'audio/ogg;codecs=opus'
-          : 'audio/webm'
-      const recorder = new MediaRecorder(stream, { mimeType })
-      audioChunksRef.current = []
-      recorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data) }
-      recorder.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop())
-        const blob = new Blob(audioChunksRef.current, { type: mimeType })
-        await handleAudioReady(blob, mimeType)
-      }
-      recorder.start(100)
-      mediaRecorderRef.current = recorder
-      setIsRecordingAudio(true)
-      setRecordingSeconds(0)
-      recordingTimerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000)
-    } catch (err: unknown) {
-      stream.getTracks().forEach(t => t.stop())
-      setAudioError('Error al iniciar grabación: ' + (err instanceof Error ? err.message : String(err)))
-    }
-  }
-
-  function stopRecordingAudio() {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop()
-    }
-    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current)
-    setIsRecordingAudio(false)
-    setRecordingSeconds(0)
-  }
-
-  // Maneja el audio ya listo (grabado o seleccionado desde archivo)
-  async function handleAudioReady(blobOrFile: Blob | File, mimeType?: string) {
-    const type = mimeType || (blobOrFile instanceof File ? blobOrFile.type : 'audio/webm')
-    const ext = type.includes('ogg') ? 'ogg' : type.includes('mp3') || type.includes('mpeg') ? 'mp3' : type.includes('wav') ? 'wav' : 'webm'
-    const file = blobOrFile instanceof File ? blobOrFile : new File([blobOrFile], `audio-${Date.now()}.${ext}`, { type })
-
-    if (!product) {
-      // Sin producto aún — guardar en pendiente, se sube al guardar el producto
-      const localUrl = URL.createObjectURL(file)
-      setPendingAudio({ file, localUrl })
-      return
-    }
-    await uploadAudioFile(file, product.id)
-  }
-
-  async function uploadAudioFile(file: File, productId: string) {
-    setUploadingAudio(true)
-    try {
-      const fd = new FormData()
-      fd.append('file', file)
-      const res = await fetch(`/api/products/${productId}/audio`, { method: 'POST', body: fd })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error al subir audio')
-      setAudioUrl(data.audioUrl)
-      setPendingAudio(null)
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al subir audio')
-    } finally {
-      setUploadingAudio(false)
-    }
-  }
-
-  async function deleteAudio() {
-    if (!product) {
-      // Solo limpiar pendiente local
-      if (pendingAudio) { URL.revokeObjectURL(pendingAudio.localUrl); setPendingAudio(null) }
-      return
-    }
-    try {
-      await fetch(`/api/products/${product.id}/audio`, { method: 'DELETE' })
-      setAudioUrl(null)
-    } catch {
-      setError('Error al eliminar audio')
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -1484,10 +1370,6 @@ function ProductForm({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ productId: newProductId }),
         })
-      }
-      // Si hay audio pendiente y acabamos de crear el producto, subirlo ahora
-      if (!product && newProductId && pendingAudio) {
-        await uploadAudioFile(pendingAudio.file, newProductId)
       }
       onSaved()
     } catch (err: unknown) {
@@ -1562,77 +1444,6 @@ function ProductForm({
             placeholder="Hola {nombre}! Te presento nuestro increíble producto..."
             className={textareaClass}
           />
-        </div>
-
-        {/* Audio nota de voz — solo Baileys */}
-        <div className="space-y-2">
-          <label className={labelClass}>
-            🎙️ Audio nota de voz (Baileys) — el prompt controla cuándo enviarlo
-          </label>
-          {/* Audio ya guardado en Supabase */}
-          {audioUrl ? (
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-green-500/10 border border-green-500/20">
-              <Mic className="w-4 h-4 text-green-400 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-white/60 truncate">{audioUrl.split('/').pop()?.split('?')[0]}</p>
-                <audio src={audioUrl} controls className="mt-1 h-8 w-full opacity-70" />
-              </div>
-              <button type="button" onClick={deleteAudio} className="text-white/30 hover:text-red-400 transition-colors shrink-0" title="Eliminar audio">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ) : pendingAudio ? (
-            /* Audio pendiente — se sube al guardar el producto */
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
-              <Mic className="w-4 h-4 text-amber-400 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-amber-400/80 font-bold">Audio listo — se sube al guardar</p>
-                <audio src={pendingAudio.localUrl} controls className="mt-1 h-8 w-full opacity-70" />
-              </div>
-              <button type="button" onClick={deleteAudio} className="text-white/30 hover:text-red-400 transition-colors shrink-0" title="Quitar audio">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ) : isRecordingAudio ? (
-            <button
-              type="button"
-              onClick={stopRecordingAudio}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-black animate-pulse"
-            >
-              <span className="w-2 h-2 rounded-full bg-red-400" /> Detener grabación ({recordingSeconds}s)
-            </button>
-          ) : uploadingAudio ? (
-            <div className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 text-white/40 text-xs">
-              <Loader2 className="w-3 h-3 animate-spin" /> Subiendo audio...
-            </div>
-          ) : (
-            <>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={startRecordingAudio}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold hover:bg-green-500/20 transition-all"
-                >
-                  <Mic className="w-3.5 h-3.5" /> Grabar
-                </button>
-                <label className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/50 text-xs font-bold hover:bg-white/10 transition-all cursor-pointer">
-                  <FileText className="w-3.5 h-3.5" /> Subir archivo
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    className="hidden"
-                    onChange={e => { const f = e.target.files?.[0]; if (f) handleAudioReady(f) }}
-                  />
-                </label>
-              </div>
-              {audioError && (
-                <div className="mt-2 flex items-start gap-2 p-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[11px]">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                  <span>{audioError}</span>
-                </div>
-              )}
-            </>
-          )}
         </div>
 
         <div className="flex items-center gap-3">
