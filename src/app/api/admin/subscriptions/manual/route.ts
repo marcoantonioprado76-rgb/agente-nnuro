@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
@@ -7,21 +8,10 @@ export const dynamic = 'force-dynamic'
 // POST: Activar suscripción manual para un usuario
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: adminProfile } = await supabase
-      .from('profiles')
-      .select('role, tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    if (adminProfile?.role !== 'admin') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const body = await request.json()
     const { user_id, plan_id } = body
@@ -69,7 +59,7 @@ export async function POST(request: NextRequest) {
         payment_provider: 'manual',
         start_date: now.toISOString(),
         end_date: endDate.toISOString(),
-        approved_by: user.id,
+        approved_by: session.sub,
         approved_at: now.toISOString(),
         admin_notes: `Activación manual por administrador`,
         created_at: now.toISOString(),
@@ -90,7 +80,7 @@ export async function POST(request: NextRequest) {
         status: 'cancelled',
         approval_status: 'rejected',
         cancelled_at: now.toISOString(),
-        cancelled_by: user.id,
+        cancelled_by: session.sub,
         updated_at: now.toISOString(),
       })
       .eq('user_id', user_id)
@@ -107,15 +97,15 @@ export async function POST(request: NextRequest) {
       payment_status: 'completed',
       notes: `Activación manual - ${plan.name}`,
       admin_notes: `Aprobado manualmente por admin`,
-      reviewed_by: user.id,
+      reviewed_by: session.sub,
       reviewed_at: now.toISOString(),
       created_at: now.toISOString(),
     })
 
     // Auditoría
     await logAudit({
-      userId: user.id,
-      tenantId: adminProfile.tenant_id,
+      userId: session.sub,
+      tenantId: session.tenant_id ?? undefined,
       action: 'crear_suscripcion',
       entityType: 'suscripcion',
       entityId: subscription.id,

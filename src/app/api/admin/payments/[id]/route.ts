@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 
 export async function PATCH(
@@ -8,13 +10,10 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: profile } = await supabase.from('profiles').select('role, tenant_id').eq('id', user.id).single()
+    const { data: profile } = await db.from('profiles').select('role, tenant_id').eq('id', session.sub).single()
     if (profile?.role !== 'admin') {
       return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
     }
@@ -28,12 +27,12 @@ export async function PATCH(
       await service.from('payments').update({
         payment_status: 'completed',
         admin_notes: admin_notes || null,
-        reviewed_by: user.id,
+        reviewed_by: session.sub,
         reviewed_at: new Date().toISOString(),
       }).eq('id', id)
 
       await logAudit({
-        userId: user.id,
+        userId: session.sub,
         tenantId: profile.tenant_id,
         action: 'aprobar_pago',
         entityType: 'pago',
@@ -44,12 +43,12 @@ export async function PATCH(
       await service.from('payments').update({
         payment_status: 'failed',
         admin_notes: admin_notes || null,
-        reviewed_by: user.id,
+        reviewed_by: session.sub,
         reviewed_at: new Date().toISOString(),
       }).eq('id', id)
 
       await logAudit({
-        userId: user.id,
+        userId: session.sub,
         tenantId: profile.tenant_id,
         action: 'rechazar_pago',
         entityType: 'pago',

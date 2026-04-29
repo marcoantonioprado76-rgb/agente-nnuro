@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 
-async function isAdmin(supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>) {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return false
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  return profile?.role === 'admin'
-}
 
 // GET all plans (including inactive)
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient()
-    if (!(await isAdmin(supabase))) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const service = await createServiceRoleClient()
     const { data, error } = await service
@@ -34,10 +28,9 @@ export async function GET() {
 // POST - create a new plan
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    if (!(await isAdmin(supabase))) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const body = await request.json()
     const { name, slug, price, currency, max_bots, max_products, max_conversations, max_whatsapp_numbers, features, is_active, sort_order, stripe_price_id } = body

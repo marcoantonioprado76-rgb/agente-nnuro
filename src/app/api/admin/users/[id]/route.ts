@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
@@ -11,21 +12,10 @@ export async function PATCH(
 ) {
   try {
     const { id: targetId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: adminProfile } = await supabase
-      .from('profiles')
-      .select('role, tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    if (adminProfile?.role !== 'admin') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const body = await request.json()
     const { role, is_active, full_name, email, action: userAction } = body
@@ -38,13 +28,13 @@ export async function PATCH(
     if (userAction === 'block') {
       updateData.is_active = false
       updateData.blocked_at = now
-      updateData.blocked_by = user.id
+      updateData.blocked_by = session.sub
       updateData.suspended_at = now
-      updateData.suspended_by = user.id
+      updateData.suspended_by = session.sub
     } else if (userAction === 'suspend') {
       updateData.is_active = false
       updateData.suspended_at = now
-      updateData.suspended_by = user.id
+      updateData.suspended_by = session.sub
     } else if (userAction === 'reactivate') {
       updateData.is_active = true
       updateData.suspended_at = null
@@ -58,7 +48,7 @@ export async function PATCH(
         updateData.is_active = is_active
         if (is_active === false) {
           updateData.suspended_at = now
-          updateData.suspended_by = user.id
+          updateData.suspended_by = session.sub
         } else {
           updateData.suspended_at = null
           updateData.suspended_by = null
@@ -106,8 +96,8 @@ export async function PATCH(
     if (email) action = 'editar_email_usuario'
 
     await logAudit({
-      userId: user.id,
-      tenantId: adminProfile.tenant_id,
+      userId: session.sub,
+      tenantId: session.sub,
       action: action as import('@/lib/audit').AuditAction,
       entityType: 'usuario',
       entityId: targetId,
@@ -128,25 +118,14 @@ export async function DELETE(
 ) {
   try {
     const { id: targetId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    if (user.id === targetId) {
+    if (session.sub === targetId) {
       return NextResponse.json({ error: 'No puedes eliminar tu propia cuenta' }, { status: 400 })
     }
 
-    const { data: adminProfile } = await supabase
-      .from('profiles')
-      .select('role, tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    if (adminProfile?.role !== 'admin') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const service = await createServiceRoleClient()
 
@@ -169,8 +148,8 @@ export async function DELETE(
     }
 
     await logAudit({
-      userId: user.id,
-      tenantId: adminProfile.tenant_id,
+      userId: session.sub,
+      tenantId: session.sub,
       action: 'eliminar_usuario',
       entityType: 'usuario',
       entityId: targetId,

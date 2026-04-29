@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -7,32 +8,24 @@ export const dynamic = 'force-dynamic'
 // Admin users get admin_notifications, regular users get user_notifications
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-
     const service = await createServiceRoleClient()
-    const { searchParams } = new URL(request.url)
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    
+        const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '30')
 
-    if (profile?.role === 'admin') {
+    if (session.role === 'admin') {
       // Admin: fetch from admin_notifications
       const { data: notifications } = await service
-        .from('admin_notifications')
+        .from('notifications')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(limit)
 
       const { count } = await service
-        .from('admin_notifications')
+        .from('notifications')
         .select('id', { count: 'exact', head: true })
         .eq('is_read', false)
 
@@ -49,14 +42,14 @@ export async function GET(request: NextRequest) {
     const { data: notifications } = await service
       .from('user_notifications')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', session.sub)
       .order('created_at', { ascending: false })
       .limit(limit)
 
     const { count } = await service
       .from('user_notifications')
       .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
+      .eq('user_id', session.sub)
       .eq('is_read', false)
 
     return NextResponse.json({
@@ -72,23 +65,20 @@ export async function GET(request: NextRequest) {
 // PATCH: Mark notifications as read
 export async function PATCH(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const service = await createServiceRoleClient()
+        const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: profile } = await supabase
+    const { data: profile } = await service
       .from('profiles')
       .select('role')
-      .eq('id', user.id)
+      .eq('id', session.sub)
       .single()
 
-    const service = await createServiceRoleClient()
-    const body = await request.json()
+        const body = await request.json()
     const { notification_ids, mark_all } = body
 
-    const table = profile?.role === 'admin' ? 'admin_notifications' : 'user_notifications'
+    const table = session.role === 'admin' ? 'notifications' : 'user_notifications'
 
     if (mark_all) {
       let query = service
@@ -97,8 +87,8 @@ export async function PATCH(request: NextRequest) {
         .eq('is_read', false)
 
       // Regular users: only update their own
-      if (profile?.role !== 'admin') {
-        query = query.eq('user_id', user.id)
+      if (session.role !== 'admin') {
+        query = query.eq('user_id', session.sub)
       }
 
       await query
@@ -108,8 +98,8 @@ export async function PATCH(request: NextRequest) {
         .update({ is_read: true })
         .in('id', notification_ids)
 
-      if (profile?.role !== 'admin') {
-        query = query.eq('user_id', user.id)
+      if (session.role !== 'admin') {
+        query = query.eq('user_id', session.sub)
       }
 
       await query

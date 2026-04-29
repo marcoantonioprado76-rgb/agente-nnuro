@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,16 +16,13 @@ interface SearchResult {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: profile } = await supabase
+    const { data: profile } = await db
       .from('profiles')
       .select('tenant_id, role')
-      .eq('id', user.id)
+      .eq('id', session.sub)
       .single()
 
     if (!profile) {
@@ -224,7 +223,7 @@ export async function GET(request: NextRequest) {
         service
           .from('stores')
           .select('id, name, slug, status')
-          .eq('user_id', user.id)
+          .eq('user_id', session.sub)
           .or(`name.ilike.${pattern},slug.ilike.${pattern}`)
           .limit(5)
           .then(({ data }) => {
@@ -242,7 +241,7 @@ export async function GET(request: NextRequest) {
         service
           .from('store_orders')
           .select('id, customer_name, customer_phone, amount, currency, status')
-          .eq('user_id', user.id)
+          .eq('user_id', session.sub)
           .or(`customer_name.ilike.${pattern},customer_phone.ilike.${pattern}`)
           .eq('status', 'confirmed')
           .limit(5)
@@ -261,7 +260,7 @@ export async function GET(request: NextRequest) {
         service
           .from('subscriptions')
           .select('id, status, plans(name)')
-          .eq('user_id', user.id)
+          .eq('user_id', session.sub)
           .limit(3)
           .then(({ data }) => {
             data?.forEach(s => {

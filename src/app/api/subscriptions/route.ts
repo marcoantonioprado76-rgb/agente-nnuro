@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 import { getPaymentMethodsSettings } from '@/lib/settings'
 
@@ -8,17 +9,14 @@ export const dynamic = 'force-dynamic'
 // GET: Obtener suscripción actual del usuario
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const service = await createServiceRoleClient()
     const { data: subscription } = await service
       .from('subscriptions')
       .select('*, plan:plan_id(*)')
-      .eq('user_id', user.id)
+      .eq('user_id', session.sub)
       .order('created_at', { ascending: false })
       .limit(1)
       .single()
@@ -32,11 +30,8 @@ export async function GET() {
 // POST: Crear suscripción (usuario elige plan y registra pago)
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const body = await request.json()
     const { plan_id, payment_method, transaction_id, payment_proof_url } = body
@@ -63,7 +58,7 @@ export async function POST(request: NextRequest) {
     const { data: existing } = await service
       .from('subscriptions')
       .select('id, status, approval_status')
-      .eq('user_id', user.id)
+      .eq('user_id', session.sub)
       .in('status', ['active', 'pending'])
       .limit(1)
       .single()
@@ -94,7 +89,7 @@ export async function POST(request: NextRequest) {
     const { data: subscription, error: subError } = await service
       .from('subscriptions')
       .insert({
-        user_id: user.id,
+        user_id: session.sub,
         plan_id,
         status: 'pending',
         approval_status: 'pending_review',
@@ -108,7 +103,7 @@ export async function POST(request: NextRequest) {
 
     // Registrar pago
     await service.from('payments').insert({
-      user_id: user.id,
+      user_id: session.sub,
       subscription_id: subscription.id,
       amount: plan.price,
       currency: plan.currency,
@@ -119,10 +114,10 @@ export async function POST(request: NextRequest) {
     })
 
     // Obtener tenant_id para auditoría
-    const { data: profile } = await service.from('profiles').select('tenant_id').eq('id', user.id).single()
+    const { data: profile } = await service.from('profiles').select('tenant_id').eq('id', session.sub).single()
 
     await logAudit({
-      userId: user.id,
+      userId: session.sub,
       tenantId: profile?.tenant_id,
       action: 'crear_suscripcion',
       entityType: 'suscripcion',

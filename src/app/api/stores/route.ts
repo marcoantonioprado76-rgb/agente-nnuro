@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { createUserNotification } from '@/lib/notifications'
 
 /* ── Font option map (mirrors dashboard FONT_OPTIONS) ── */
@@ -53,17 +55,14 @@ function extractVisualFields(fontConfig: Record<string, unknown> | null, bgConfi
 
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const service = await createServiceRoleClient()
     const { data: stores, error } = await service
       .from('stores')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', session.sub)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -90,16 +89,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: profile } = await supabase
+    const { data: profile } = await db
       .from('profiles')
       .select('tenant_id')
-      .eq('id', user.id)
+      .eq('id', session.sub)
       .single()
 
     if (!profile) {
@@ -136,7 +132,7 @@ export async function POST(request: NextRequest) {
     const { data: store, error } = await service
       .from('stores')
       .insert({
-        user_id: user.id,
+        user_id: session.sub,
         tenant_id: profile.tenant_id,
         name: name.trim(),
         slug: slugClean,
@@ -157,7 +153,7 @@ export async function POST(request: NextRequest) {
     }
 
     createUserNotification({
-      userId: user.id,
+      userId: session.sub,
       type: 'tienda_creada',
       title: 'Tienda virtual creada',
       message: `Tu tienda "${name.trim()}" está lista. Agrega productos para empezar a vender.`,

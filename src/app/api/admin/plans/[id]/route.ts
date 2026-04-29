@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 
-async function isAdmin(supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>) {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return false
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  return profile?.role === 'admin'
-}
 
 // PUT - update a plan
 export async function PUT(
@@ -15,10 +10,9 @@ export async function PUT(
 ) {
   try {
     const { id } = await params
-    const supabase = await createServerSupabaseClient()
-    if (!(await isAdmin(supabase))) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const body = await request.json()
     const service = await createServiceRoleClient()
@@ -55,10 +49,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const supabase = await createServerSupabaseClient()
-    if (!(await isAdmin(supabase))) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const service = await createServiceRoleClient()
 

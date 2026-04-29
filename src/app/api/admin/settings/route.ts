@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,12 +10,10 @@ const DEFAULTS: Record<string, unknown> = {
 }
 
 async function verifyAdmin() {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user }, error } = await supabase.auth.getUser()
-  if (error || !user) return null
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') return null
-  return user
+  const { getServerSession } = await import('@/lib/auth')
+  const s = await getServerSession()
+  if (!s || s.role !== 'admin') return null
+  return { id: s.sub }
 }
 
 // GET /api/admin/settings — retorna todos los settings

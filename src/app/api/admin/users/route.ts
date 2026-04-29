@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
@@ -7,21 +8,9 @@ export const dynamic = 'force-dynamic'
 // GET: Obtener todos los usuarios con datos enriquecidos (admin global)
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-
-    if (profile?.role !== 'admin') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    if (session.role !== 'admin') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     // Parse query params
     const { searchParams } = new URL(request.url)
@@ -176,22 +165,10 @@ export async function GET(request: NextRequest) {
 // POST: Crear usuario manual (admin)
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: adminProfile } = await supabase
-      .from('profiles')
-      .select('role, tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    if (adminProfile?.role !== 'admin') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
-
+    if (session.role !== "admin") return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
     const body = await request.json()
     const { email, password, full_name, role } = body
 
@@ -218,19 +195,19 @@ export async function POST(request: NextRequest) {
       await service
         .from('profiles')
         .update({ role })
-        .eq('id', newAuth.user.id)
+        .eq('id', newAuth.user.id || "")
     }
 
     await logAudit({
-      userId: user.id,
-      tenantId: adminProfile.tenant_id,
+      userId: session?.sub || "",
+      tenantId: session.tenant_id ?? undefined,
       action: 'crear_usuario_manual',
       entityType: 'usuario',
-      entityId: newAuth.user.id,
+      entityId: newAuth.user.id || "",
       details: { email, role: role || 'user' },
     })
 
-    return NextResponse.json({ message: 'Usuario creado exitosamente', id: newAuth.user.id }, { status: 201 })
+    return NextResponse.json({ message: 'Usuario creado exitosamente', id: newAuth.user.id || "" }, { status: 201 })
   } catch (error) {
     console.error('Error en POST /api/admin/users:', error)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })

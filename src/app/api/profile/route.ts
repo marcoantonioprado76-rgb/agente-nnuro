@@ -1,98 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
+import bcrypt from 'bcryptjs'
 
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single()
-
-    if (error || !profile) {
-      return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
-    }
-
-    return NextResponse.json(profile)
-  } catch (error) {
-    console.error('Error GET /api/profile:', error)
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const service = await createServiceRoleClient()
+    const { data, error } = await service.from('profiles').select('id,email,full_name,avatar_url,role,tenant_id,country,city,phone_number,country_code,phone_with_code,status,is_active,ai_credits_usd,created_at,updated_at').eq('id', session.sub).single()
+    if (error || !data) return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
+    return NextResponse.json(data)
+  } catch {
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const body = await request.json()
     const { full_name, avatar_url, country, city, phone_number, current_password, new_password } = body
+    const service = await createServiceRoleClient()
 
-    // Update profile fields
-    const updateData: Record<string, unknown> = {}
+    const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() }
     if (full_name !== undefined) updateData.full_name = full_name
     if (avatar_url !== undefined) updateData.avatar_url = avatar_url
     if (country !== undefined) updateData.country = country
     if (city !== undefined) updateData.city = city
     if (phone_number !== undefined) updateData.phone_number = phone_number
 
-    if (Object.keys(updateData).length > 0) {
-      updateData.updated_at = new Date().toISOString()
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update(updateData)
-        .eq('id', user.id)
-
-      if (updateError) {
-        console.error('Profile update error:', updateError)
-        return NextResponse.json({ error: 'Error al actualizar perfil' }, { status: 500 })
-      }
-    }
-
-    // Handle password change
     if (new_password && current_password) {
-      // Verify current password by re-signing in
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email!,
-        password: current_password,
-      })
-
-      if (signInError) {
-        return NextResponse.json({ error: 'La contraseña actual es incorrecta' }, { status: 400 })
-      }
-
-      const service = await createServiceRoleClient()
-      const { error: pwError } = await service.auth.admin.updateUserById(user.id, {
-        password: new_password,
-      })
-
-      if (pwError) {
-        console.error('Password update error:', pwError)
-        return NextResponse.json({ error: 'Error al cambiar contraseña' }, { status: 500 })
-      }
+      const { data: profile } = await service.from('profiles').select('password_hash').eq('id', session.sub).single()
+      const valid = profile?.password_hash ? await bcrypt.compare(current_password, profile.password_hash) : false
+      if (!valid) return NextResponse.json({ error: 'La contraseña actual es incorrecta' }, { status: 400 })
+      updateData.password_hash = await bcrypt.hash(new_password, 12)
     }
 
-    // Return updated profile
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single()
-
-    return NextResponse.json(profile)
-  } catch (error) {
-    console.error('Error PUT /api/profile:', error)
+    await service.from('profiles').update(updateData).eq('id', session.sub)
+    const { data } = await service.from('profiles').select('*').eq('id', session.sub).single()
+    return NextResponse.json(data)
+  } catch {
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }
+
+export const PATCH = PUT

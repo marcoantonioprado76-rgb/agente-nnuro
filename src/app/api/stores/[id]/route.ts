@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 
 /* ── Font option map (mirrors dashboard FONT_OPTIONS) ── */
 const FONT_MAP: Record<string, string> = {
@@ -61,18 +62,15 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const service = await createServiceRoleClient()
     const { data: store, error } = await service
       .from('stores')
       .select('*')
       .eq('id', id)
-      .eq('user_id', user.id)
+      .eq('user_id', session.sub)
       .single()
 
     if (error || !store) {
@@ -92,13 +90,10 @@ export async function PUT(
 ) {
   try {
     const { id } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    if (!(await verifyStoreOwner(user.id, id))) {
+    if (!(await verifyStoreOwner(session.sub, id))) {
       return NextResponse.json({ error: 'No tienes acceso a esta tienda' }, { status: 403 })
     }
 
@@ -150,13 +145,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    if (!(await verifyStoreOwner(user.id, id))) {
+    if (!(await verifyStoreOwner(session.sub, id))) {
       return NextResponse.json({ error: 'No tienes acceso a esta tienda' }, { status: 403 })
     }
 

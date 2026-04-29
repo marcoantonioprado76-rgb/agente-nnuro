@@ -1,29 +1,16 @@
 import { NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    if (!profile) {
-      return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
-    }
-
-    const tenantId = profile.tenant_id
+    const tenantId = session.tenant_id ?? session.sub
 
     // Fetch tenant bots first (needed for conversations count)
-    const { data: bots } = await supabase
+    const { data: bots } = await db
       .from('bots')
       .select('id, name')
       .eq('tenant_id', tenantId)
@@ -32,21 +19,21 @@ export async function GET() {
 
     // Fetch counts in parallel
     const [botsRes, activeBotsRes, productsRes, conversationsRes, leadsRes, ordersRes] = await Promise.all([
-      supabase.from('bots').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
-      supabase.from('bots').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('is_active', true),
-      supabase.from('products').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+      db.from('bots').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+      db.from('bots').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('is_active', true),
+      db.from('products').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
       botIds.length > 0
-        ? supabase.from('conversations').select('id', { count: 'exact', head: true }).in('bot_id', botIds)
+        ? db.from('conversations').select('id', { count: 'exact', head: true }).in('bot_id', botIds)
         : Promise.resolve({ count: 0 }),
-      supabase.from('leads').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
-      supabase.from('orders').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('status', 'confirmed'),
+      db.from('leads').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId),
+      db.from('orders').select('id', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('status', 'confirmed'),
     ])
     const botNameMap: Record<string, string> = {}
     bots?.forEach(b => { botNameMap[b.id] = b.name })
 
     let recentConversations: Array<Record<string, unknown>> = []
     if (botIds.length > 0) {
-      const { data: convs } = await supabase
+      const { data: convs } = await db
         .from('conversations')
         .select('id, bot_id, status, last_message_at, contact_id, contacts(name, push_name, phone)')
         .in('bot_id', botIds)

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
@@ -11,13 +13,10 @@ export async function PATCH(
 ) {
   try {
     const { id: subId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: adminProfile } = await supabase.from('profiles').select('role, tenant_id').eq('id', user.id).single()
+    const { data: adminProfile } = await db.from('profiles').select('role, tenant_id').eq('id', session.sub).single()
     if (adminProfile?.role !== 'admin') {
       return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
     }
@@ -41,7 +40,7 @@ export async function PATCH(
       case 'approve': {
         updateData.status = 'active'
         updateData.approval_status = 'approved'
-        updateData.approved_by = user.id
+        updateData.approved_by = session.sub
         updateData.approved_at = new Date().toISOString()
         updateData.start_date = new Date().toISOString()
         const endDate = new Date()
@@ -51,7 +50,7 @@ export async function PATCH(
 
         await service
           .from('payments')
-          .update({ payment_status: 'completed', reviewed_by: user.id, reviewed_at: new Date().toISOString() })
+          .update({ payment_status: 'completed', reviewed_by: session.sub, reviewed_at: new Date().toISOString() })
           .eq('subscription_id', subId)
           .eq('payment_status', 'pending')
         break
@@ -64,7 +63,7 @@ export async function PATCH(
 
         await service
           .from('payments')
-          .update({ payment_status: 'failed', reviewed_by: user.id, reviewed_at: new Date().toISOString() })
+          .update({ payment_status: 'failed', reviewed_by: session.sub, reviewed_at: new Date().toISOString() })
           .eq('subscription_id', subId)
           .eq('payment_status', 'pending')
         break
@@ -94,7 +93,7 @@ export async function PATCH(
         updateData.status = 'cancelled'
         updateData.approval_status = 'rejected'
         updateData.cancelled_at = new Date().toISOString()
-        updateData.cancelled_by = user.id
+        updateData.cancelled_by = session.sub
         auditAction = 'cancel_subscription'
         break
 
@@ -105,7 +104,7 @@ export async function PATCH(
         baseDate.setDate(baseDate.getDate() + days)
         updateData.end_date = baseDate.toISOString()
         updateData.extended_at = new Date().toISOString()
-        updateData.extended_by = user.id
+        updateData.extended_by = session.sub
         if (sub.status !== 'active') {
           updateData.status = 'active'
           updateData.approval_status = 'approved'
@@ -154,7 +153,7 @@ export async function PATCH(
     }
 
     await logAudit({
-      userId: user.id,
+      userId: session.sub,
       tenantId: adminProfile.tenant_id,
       action: auditAction as import('@/lib/audit').AuditAction,
       entityType: 'suscripcion',
