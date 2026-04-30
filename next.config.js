@@ -19,6 +19,7 @@ const nextConfig = {
       'pino-pretty',
       'qrcode',
       '@hapi/boom',
+      'sharp',
     ],
     serverActions: {
       bodySizeLimit: '100mb',
