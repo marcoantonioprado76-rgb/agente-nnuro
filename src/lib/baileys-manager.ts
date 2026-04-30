@@ -42,7 +42,7 @@ declare global {
 const connections: Map<string, BaileysConnection> =
   global.__baileys_connections ?? (global.__baileys_connections = new Map())
 
-const SESSIONS_DIR = process.env.BAILEYS_SESSIONS_DIR || path.join(process.cwd(), 'baileys-sessions')
+const SESSIONS_DIR = process.env.WHATSAPP_SESSIONS_DIR || process.env.BAILEYS_SESSIONS_DIR || path.join(process.cwd(), 'baileys-sessions')
 const MAX_HISTORY  = 10
 const BUFFER_DELAY = 15_000
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms))

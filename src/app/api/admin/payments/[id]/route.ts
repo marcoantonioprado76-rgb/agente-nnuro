@@ -23,6 +23,9 @@ export async function PATCH(
 
     const service = await createServiceRoleClient()
 
+    // Obtener el pago para saber a qué suscripción pertenece
+    const { data: payment } = await service.from('payments').select('subscription_id').eq('id', id).single()
+
     if (action === 'approve') {
       await service.from('payments').update({
         payment_status: 'completed',
@@ -31,13 +34,30 @@ export async function PATCH(
         reviewed_at: new Date().toISOString(),
       }).eq('id', id)
 
+      // Activar la suscripción vinculada al pago
+      if (payment?.subscription_id) {
+        const endDate = new Date()
+        endDate.setDate(endDate.getDate() + 30)
+        await service.from('subscriptions').update({
+          status: 'active',
+          approval_status: 'approved',
+          approved_by: session.sub,
+          approved_at: new Date().toISOString(),
+          start_date: new Date().toISOString(),
+          end_date: endDate.toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+          .eq('id', payment.subscription_id)
+          .in('status', ['pending', 'rejected', 'expired'])
+      }
+
       await logAudit({
         userId: session.sub,
         tenantId: profile.tenant_id,
         action: 'aprobar_pago',
         entityType: 'pago',
         entityId: id,
-        details: { admin_notes },
+        details: { admin_notes, subscription_id: payment?.subscription_id },
       })
     } else if (action === 'reject') {
       await service.from('payments').update({
@@ -47,13 +67,24 @@ export async function PATCH(
         reviewed_at: new Date().toISOString(),
       }).eq('id', id)
 
+      // Marcar la suscripción como rechazada
+      if (payment?.subscription_id) {
+        await service.from('subscriptions').update({
+          status: 'rejected',
+          approval_status: 'rejected',
+          updated_at: new Date().toISOString(),
+        })
+          .eq('id', payment.subscription_id)
+          .eq('status', 'pending')
+      }
+
       await logAudit({
         userId: session.sub,
         tenantId: profile.tenant_id,
         action: 'rechazar_pago',
         entityType: 'pago',
         entityId: id,
-        details: { admin_notes },
+        details: { admin_notes, subscription_id: payment?.subscription_id },
       })
     } else {
       return NextResponse.json({ error: 'Acción no válida' }, { status: 400 })
