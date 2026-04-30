@@ -332,34 +332,48 @@ export const BaileysManager = {
     const existing = connections.get(botId)
     if (existing?.status === 'connected' || existing?.status === 'connecting') return
 
-    // Register connection FIRST so status polling shows 'connecting' immediately
+    // Register FIRST so status polling immediately shows 'connecting'
     const conn: BaileysConnection = { status: 'connecting', botId, botName, reportPhone }
     connections.set(botId, conn)
+    console.log(`[BAILEYS][1] Iniciando conexión bot=${botId}`)
 
     try {
-      // Resolve session directory with fallback in case primary path is not writable
-      let sessionDir = path.join(SESSIONS_DIR, botId)
-      try {
-        fs.mkdirSync(sessionDir, { recursive: true })
-      } catch {
-        sessionDir = path.join(process.cwd(), 'baileys-sessions', botId)
-        fs.mkdirSync(sessionDir, { recursive: true })
-        console.warn(`[BAILEYS] Primary sessions dir not writable, using fallback: ${sessionDir}`)
+      // ── PASO 2: Directorio de sesión con múltiples fallbacks ──────────────
+      let sessionDir = ''
+      const candidates = [
+        path.join(SESSIONS_DIR, botId),
+        path.join(process.cwd(), 'baileys-sessions', botId),
+        path.join('/tmp', 'baileys-sessions', botId),
+      ]
+      for (const dir of candidates) {
+        try {
+          fs.mkdirSync(dir, { recursive: true })
+          sessionDir = dir
+          console.log(`[BAILEYS][2] Session dir: ${dir}`)
+          break
+        } catch (e) {
+          console.warn(`[BAILEYS][2] No se pudo crear ${dir}: ${(e as Error).message}`)
+        }
       }
+      if (!sessionDir) throw new Error('No se pudo crear ningún directorio de sesión')
 
+      // ── PASO 3: Auth state ────────────────────────────────────────────────
+      console.log(`[BAILEYS][3] Cargando auth state...`)
       const { state, saveCreds } = await useMultiFileAuthState(sessionDir)
+      console.log(`[BAILEYS][3] Auth state ok, creds registradas: ${!!state.creds.me}`)
 
-      // Fetch latest WA version with fallback to avoid network failures blocking QR
+      // ── PASO 4: Versión de WhatsApp ───────────────────────────────────────
       let version: [number, number, number]
       try {
         const result = await fetchLatestBaileysVersion()
         version = result.version
-      } catch {
-        version = [2, 3000, 1015901307]
-        console.warn('[BAILEYS] fetchLatestBaileysVersion failed, using fallback version')
+        console.log(`[BAILEYS][4] WA version: ${version}`)
+      } catch (e) {
+        version = [2, 3000, 1035194821]
+        console.warn(`[BAILEYS][4] fetchLatestBaileysVersion falló (${(e as Error).message}), usando fallback: ${version}`)
       }
 
-      // Build a silent logger without requiring pino as a direct dependency
+      // ── PASO 5: Logger ────────────────────────────────────────────────────
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let logger: any
       try {
@@ -368,59 +382,81 @@ export const BaileysManager = {
       } catch {
         const noop = () => {}
         logger = { level: 'silent', trace: noop, debug: noop, info: noop, warn: noop, error: noop, fatal: noop, child: () => logger }
+        console.warn('[BAILEYS][5] pino no disponible, usando logger noop')
       }
 
+      // ── PASO 6: Crear socket ──────────────────────────────────────────────
+      console.log(`[BAILEYS][6] Creando WASocket...`)
       const sock = makeWASocket({
         version,
         auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger) },
         logger,
-        browser: ['Ubuntu', 'Chrome', '120.0.0'],
+        browser: ['Chrome (Linux)', 'Chrome', '120.0.0'],
         syncFullHistory: false,
         markOnlineOnConnect: false,
+        connectTimeoutMs: 30_000,
+        defaultQueryTimeoutMs: 30_000,
+        keepAliveIntervalMs: 10_000,
       })
       conn.sock = sock
+      console.log(`[BAILEYS][6] WASocket creado, esperando eventos...`)
+
       sock.ev.on('creds.update', saveCreds)
+
       sock.ev.on('connection.update', async update => {
         const { connection, qr } = update
+        console.log(`[BAILEYS] connection.update bot=${botId} connection=${connection} hasQr=${!!qr}`)
+
         if (qr) {
           conn.qrBase64 = await toDataURL(qr)
           conn.status = 'qr_ready'
           conn.lastError = undefined
-          console.log(`[BAILEYS] QR ready for bot ${botId}`)
+          console.log(`[BAILEYS] ✅ QR generado para bot=${botId}`)
         }
+
         if (connection === 'open') {
           conn.status = 'connected'
           conn.lastError = undefined
           const phone = sock.user?.id?.split(':')[0] ?? ''
           conn.phone  = phone
-          console.log(`[BAILEYS] Connected for bot ${botId}, phone: ${phone}`)
+          console.log(`[BAILEYS] ✅ Conectado bot=${botId} phone=${phone}`)
           await (prisma as any).bot.update({ where: { id: botId }, data: { baileys_phone: phone } }).catch(() => {})
         }
+
         if (connection === 'close') {
           const code = new Boom(update.lastDisconnect?.error)?.output?.statusCode
-          const reason = update.lastDisconnect?.error?.message || 'unknown'
-          console.log(`[BAILEYS] Connection closed for bot ${botId}, code: ${code}, reason: ${reason}`)
+          const reason = update.lastDisconnect?.error?.message || 'desconocido'
+          console.error(`[BAILEYS] ❌ Conexión cerrada bot=${botId} code=${code} reason=${reason}`)
           conn.status = 'disconnected'
-          connections.delete(botId)
+          conn.lastError = `Cierre: ${reason} (código ${code})`
+
           const isLoggedOut = code === DisconnectReason.loggedOut || code === DisconnectReason.connectionReplaced
           if (isLoggedOut) {
+            console.log(`[BAILEYS] Sesión cerrada definitivamente, borrando sesión...`)
+            connections.delete(botId)
             if (fs.existsSync(sessionDir)) fs.rmSync(sessionDir, { recursive: true, force: true })
             await (prisma as any).bot.update({ where: { id: botId }, data: { baileys_phone: null } }).catch(() => {})
           } else {
-            setTimeout(() => BaileysManager.connect(botId, botName, '', reportPhone), 5000)
+            // Mantener en el mapa 5s para que el UI lea el error, luego reconectar
+            setTimeout(() => {
+              connections.delete(botId)
+              console.log(`[BAILEYS] Reconectando bot=${botId}...`)
+              BaileysManager.connect(botId, botName, '', reportPhone)
+            }, 5000)
           }
         }
       })
+
       sock.ev.on('messages.upsert', async ({ messages, type }) => {
         if (type !== 'notify') return
-        for (const msg of messages) handleMessage(conn, msg).catch(e => console.error('[BAILEYS] Error:', e))
+        for (const msg of messages) handleMessage(conn, msg).catch(e => console.error('[BAILEYS] Error msg:', e))
       })
+
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err)
-      console.error('[BAILEYS] connect error:', errMsg)
+      console.error(`[BAILEYS] ❌ Error fatal en connect bot=${botId}: ${errMsg}`)
       conn.status = 'disconnected'
       conn.lastError = errMsg
-      // Keep in map briefly so UI can read the error, then remove
       setTimeout(() => {
         if (connections.get(botId)?.status === 'disconnected') connections.delete(botId)
       }, 8000)
