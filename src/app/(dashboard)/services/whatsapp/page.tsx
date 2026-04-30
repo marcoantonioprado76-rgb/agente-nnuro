@@ -2333,6 +2333,9 @@ function QRTab({ bot }: { bot: Bot }) {
         setStatus(data.status)
         setQrBase64(data.qrBase64)
         if (data.phone) setPhone(data.phone)
+        if (data.lastError && data.status === 'disconnected') {
+          setMsg({ type: 'error', text: `Error al conectar: ${data.lastError}` })
+        }
       } catch { /* ignore */ }
     }
     poll()

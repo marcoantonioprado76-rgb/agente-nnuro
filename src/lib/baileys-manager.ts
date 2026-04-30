@@ -32,6 +32,7 @@ interface BaileysConnection {
   botId: string
   botName: string
   reportPhone: string
+  lastError?: string
 }
 
 declare global {
@@ -302,7 +303,7 @@ export const BaileysManager = {
   getStatus(botId: string) {
     const conn = connections.get(botId)
     if (!conn) return { status: 'disconnected' as BaileysStatus }
-    return { status: conn.status, qrBase64: conn.qrBase64, phone: conn.phone }
+    return { status: conn.status, qrBase64: conn.qrBase64, phone: conn.phone, lastError: conn.lastError }
   },
 
   disconnect(botId: string) {
@@ -330,19 +331,49 @@ export const BaileysManager = {
   async connect(botId: string, botName: string, _openaiKey: string, reportPhone: string) {
     const existing = connections.get(botId)
     if (existing?.status === 'connected' || existing?.status === 'connecting') return
-    const sessionDir = path.join(SESSIONS_DIR, botId)
-    if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true })
+
+    // Register connection FIRST so status polling shows 'connecting' immediately
     const conn: BaileysConnection = { status: 'connecting', botId, botName, reportPhone }
     connections.set(botId, conn)
+
     try {
+      // Resolve session directory with fallback in case primary path is not writable
+      let sessionDir = path.join(SESSIONS_DIR, botId)
+      try {
+        fs.mkdirSync(sessionDir, { recursive: true })
+      } catch {
+        sessionDir = path.join(process.cwd(), 'baileys-sessions', botId)
+        fs.mkdirSync(sessionDir, { recursive: true })
+        console.warn(`[BAILEYS] Primary sessions dir not writable, using fallback: ${sessionDir}`)
+      }
+
       const { state, saveCreds } = await useMultiFileAuthState(sessionDir)
-      const { version }          = await fetchLatestBaileysVersion()
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pino = require('pino')({ level: 'silent' })
+
+      // Fetch latest WA version with fallback to avoid network failures blocking QR
+      let version: [number, number, number]
+      try {
+        const result = await fetchLatestBaileysVersion()
+        version = result.version
+      } catch {
+        version = [2, 3000, 1015901307]
+        console.warn('[BAILEYS] fetchLatestBaileysVersion failed, using fallback version')
+      }
+
+      // Build a silent logger without requiring pino as a direct dependency
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let logger: any
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        logger = require('pino')({ level: 'silent' })
+      } catch {
+        const noop = () => {}
+        logger = { level: 'silent', trace: noop, debug: noop, info: noop, warn: noop, error: noop, fatal: noop, child: () => logger }
+      }
+
       const sock = makeWASocket({
         version,
-        auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino) },
-        logger: pino,
+        auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, logger) },
+        logger,
         browser: ['Ubuntu', 'Chrome', '120.0.0'],
         syncFullHistory: false,
         markOnlineOnConnect: false,
@@ -351,15 +382,24 @@ export const BaileysManager = {
       sock.ev.on('creds.update', saveCreds)
       sock.ev.on('connection.update', async update => {
         const { connection, qr } = update
-        if (qr) { conn.qrBase64 = await toDataURL(qr); conn.status = 'qr_ready' }
+        if (qr) {
+          conn.qrBase64 = await toDataURL(qr)
+          conn.status = 'qr_ready'
+          conn.lastError = undefined
+          console.log(`[BAILEYS] QR ready for bot ${botId}`)
+        }
         if (connection === 'open') {
           conn.status = 'connected'
+          conn.lastError = undefined
           const phone = sock.user?.id?.split(':')[0] ?? ''
           conn.phone  = phone
+          console.log(`[BAILEYS] Connected for bot ${botId}, phone: ${phone}`)
           await (prisma as any).bot.update({ where: { id: botId }, data: { baileys_phone: phone } }).catch(() => {})
         }
         if (connection === 'close') {
           const code = new Boom(update.lastDisconnect?.error)?.output?.statusCode
+          const reason = update.lastDisconnect?.error?.message || 'unknown'
+          console.log(`[BAILEYS] Connection closed for bot ${botId}, code: ${code}, reason: ${reason}`)
           conn.status = 'disconnected'
           connections.delete(botId)
           const isLoggedOut = code === DisconnectReason.loggedOut || code === DisconnectReason.connectionReplaced
@@ -376,8 +416,14 @@ export const BaileysManager = {
         for (const msg of messages) handleMessage(conn, msg).catch(e => console.error('[BAILEYS] Error:', e))
       })
     } catch (err) {
-      console.error('[BAILEYS] connect error:', err)
-      connections.delete(botId)
+      const errMsg = err instanceof Error ? err.message : String(err)
+      console.error('[BAILEYS] connect error:', errMsg)
+      conn.status = 'disconnected'
+      conn.lastError = errMsg
+      // Keep in map briefly so UI can read the error, then remove
+      setTimeout(() => {
+        if (connections.get(botId)?.status === 'disconnected') connections.delete(botId)
+      }, 8000)
     }
   },
 }
