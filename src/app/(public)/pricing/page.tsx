@@ -10,20 +10,37 @@ import { Label } from '@/components/ui/label'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
-import { Zap, Check, Loader2, Crown, CreditCard, Landmark, Upload, ImageIcon, X } from 'lucide-react'
+import { Zap, Check, Loader2, Crown, CreditCard, Landmark, Upload, ImageIcon, X, Copy, QrCode } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Plan } from '@/types'
+
+interface TransferDetails {
+  bank_name: string
+  account_holder: string
+  account_number: string
+  account_type: string
+  document_id: string
+  cci: string
+  qr_image_url: string
+  instructions: string
+}
 
 interface PaymentMethods {
   stripe: boolean
   transfer: boolean
+  transfer_details: TransferDetails
+}
+
+const emptyTransferDetails: TransferDetails = {
+  bank_name: '', account_holder: '', account_number: '', account_type: '',
+  document_id: '', cci: '', qr_image_url: '', instructions: '',
 }
 
 export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [subscribing, setSubscribing] = useState<string | null>(null)
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethods>({ stripe: true, transfer: true })
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethods>({ stripe: true, transfer: true, transfer_details: emptyTransferDetails })
 
   // Transfer dialog state
   const [transferDialog, setTransferDialog] = useState(false)
@@ -46,11 +63,27 @@ export default function PricingPage() {
         fetch('/api/payment-methods'),
       ])
       if (plansRes.ok) setPlans(await plansRes.json())
-      if (methodsRes.ok) setPaymentMethods(await methodsRes.json())
+      if (methodsRes.ok) {
+        const data = await methodsRes.json()
+        setPaymentMethods({
+          stripe: data.stripe ?? true,
+          transfer: data.transfer ?? true,
+          transfer_details: { ...emptyTransferDetails, ...(data.transfer_details ?? {}) },
+        })
+      }
       setLoading(false)
     }
     load()
   }, [])
+
+  const copyToClipboard = (value: string, label: string) => {
+    if (!value) return
+    navigator.clipboard.writeText(value).then(() => {
+      toast.success(`${label} copiado`)
+    }).catch(() => {
+      toast.error('No se pudo copiar')
+    })
+  }
 
   const handleStripeCheckout = async (plan: Plan) => {
     const meRes = await fetch('/api/auth/me')
@@ -397,6 +430,58 @@ export default function PricingPage() {
                 </ol>
               </div>
 
+              {/* QR de pago */}
+              {paymentMethods.transfer_details.qr_image_url && (
+                <div className="bg-white rounded-xl p-4 flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2 text-xs text-gray-700 font-medium">
+                    <QrCode className="h-4 w-4" /> Escanea el QR para pagar
+                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={paymentMethods.transfer_details.qr_image_url}
+                    alt="QR de pago"
+                    className="w-48 h-48 object-contain"
+                  />
+                </div>
+              )}
+
+              {/* Datos bancarios */}
+              {(paymentMethods.transfer_details.bank_name
+                || paymentMethods.transfer_details.account_holder
+                || paymentMethods.transfer_details.account_number
+                || paymentMethods.transfer_details.cci) && (
+                <div className="rounded-xl border border-border/50 bg-secondary/20 p-4 space-y-2">
+                  <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                    <Landmark className="h-4 w-4 text-cyan-400" /> Datos para la transferencia
+                  </p>
+                  <div className="space-y-1.5">
+                    {paymentMethods.transfer_details.bank_name && (
+                      <DetailRow label="Banco" value={paymentMethods.transfer_details.bank_name} onCopy={copyToClipboard} />
+                    )}
+                    {paymentMethods.transfer_details.account_holder && (
+                      <DetailRow label="Titular" value={paymentMethods.transfer_details.account_holder} onCopy={copyToClipboard} />
+                    )}
+                    {paymentMethods.transfer_details.account_number && (
+                      <DetailRow label="Cuenta" value={paymentMethods.transfer_details.account_number} onCopy={copyToClipboard} mono />
+                    )}
+                    {paymentMethods.transfer_details.account_type && (
+                      <DetailRow label="Tipo" value={paymentMethods.transfer_details.account_type} onCopy={copyToClipboard} />
+                    )}
+                    {paymentMethods.transfer_details.cci && (
+                      <DetailRow label="CCI" value={paymentMethods.transfer_details.cci} onCopy={copyToClipboard} mono />
+                    )}
+                    {paymentMethods.transfer_details.document_id && (
+                      <DetailRow label="DNI/RUC" value={paymentMethods.transfer_details.document_id} onCopy={copyToClipboard} mono />
+                    )}
+                  </div>
+                  {paymentMethods.transfer_details.instructions && (
+                    <p className="text-[11px] text-muted-foreground pt-2 border-t border-border/30 leading-relaxed">
+                      {paymentMethods.transfer_details.instructions}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Form */}
               <div className="space-y-3">
                 {/* Upload comprobante */}
@@ -482,6 +567,30 @@ export default function PricingPage() {
           )}
         </DialogContent>
       </Dialog>
+    </div>
+  )
+}
+
+function DetailRow({ label, value, onCopy, mono }: {
+  label: string
+  value: string
+  onCopy: (value: string, label: string) => void
+  mono?: boolean
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2 text-xs">
+      <span className="text-muted-foreground shrink-0">{label}</span>
+      <div className="flex items-center gap-1.5 min-w-0 flex-1 justify-end">
+        <span className={`text-foreground truncate ${mono ? 'font-mono' : 'font-medium'}`}>{value}</span>
+        <button
+          type="button"
+          onClick={() => onCopy(value, label)}
+          className="text-muted-foreground hover:text-cyan-400 transition-colors shrink-0 p-1 rounded hover:bg-cyan-500/10"
+          title={`Copiar ${label}`}
+        >
+          <Copy className="h-3 w-3" />
+        </button>
+      </div>
     </div>
   )
 }

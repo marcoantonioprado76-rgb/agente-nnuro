@@ -16,10 +16,26 @@ import {
 import {
   Settings, CreditCard, Bot, MessageSquare, Smartphone, Loader2,
   Plus, Pencil, Trash2, Save, X, Package, DollarSign, Hash,
-  AlertCircle, Check, Landmark, Zap, FileText,
+  AlertCircle, Check, Landmark, Zap, FileText, QrCode, Upload, ImageIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Plan } from '@/types'
+
+interface TransferDetails {
+  bank_name: string
+  account_holder: string
+  account_number: string
+  account_type: string
+  document_id: string
+  cci: string
+  qr_image_url: string
+  instructions: string
+}
+
+const emptyTransferDetails: TransferDetails = {
+  bank_name: '', account_holder: '', account_number: '', account_type: '',
+  document_id: '', cci: '', qr_image_url: '', instructions: '',
+}
 
 interface PlanForm {
   name: string
@@ -55,6 +71,11 @@ export default function AdminSettingsPage() {
   // Payment methods state
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodsSettings>({ stripe: true, transfer: true })
   const [savingPayments, setSavingPayments] = useState(false)
+
+  // Transfer details state
+  const [transferDetails, setTransferDetails] = useState<TransferDetails>(emptyTransferDetails)
+  const [savingTransferDetails, setSavingTransferDetails] = useState(false)
+  const [uploadingQR, setUploadingQR] = useState(false)
 
   // Plan dialog
   const [planDialog, setPlanDialog] = useState(false)
@@ -92,9 +113,85 @@ export default function AdminSettingsPage() {
       if (res.ok) {
         const data = await res.json()
         if (data.payment_methods) setPaymentMethods(data.payment_methods)
+        if (data.payment_transfer_details) {
+          setTransferDetails({ ...emptyTransferDetails, ...data.payment_transfer_details })
+        }
       }
     } catch { /* silent */ }
   }, [])
+
+  const updateTransferField = (field: keyof TransferDetails, value: string) => {
+    setTransferDetails(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleSaveTransferDetails = async () => {
+    setSavingTransferDetails(true)
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'payment_transfer_details', value: transferDetails }),
+      })
+      if (res.ok) {
+        toast.success('Datos de cobro guardados')
+      } else {
+        toast.error('Error al guardar')
+      }
+    } catch {
+      toast.error('Error de conexión')
+    } finally {
+      setSavingTransferDetails(false)
+    }
+  }
+
+  const handleQRUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast.error('Solo imágenes')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Máximo 5MB')
+      return
+    }
+    setUploadingQR(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('bucket', 'store-qr')
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(data.error || 'Error al subir QR')
+        return
+      }
+      const updated = { ...transferDetails, qr_image_url: data.url }
+      setTransferDetails(updated)
+      await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'payment_transfer_details', value: updated }),
+      })
+      toast.success('QR subido')
+    } catch {
+      toast.error('Error al subir')
+    } finally {
+      setUploadingQR(false)
+      e.target.value = ''
+    }
+  }
+
+  const handleRemoveQR = async () => {
+    const updated = { ...transferDetails, qr_image_url: '' }
+    setTransferDetails(updated)
+    await fetch('/api/admin/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: 'payment_transfer_details', value: updated }),
+    })
+    toast.success('QR eliminado')
+  }
 
   const handleSavePaymentMethods = async (updated: PaymentMethodsSettings) => {
     setSavingPayments(true)
@@ -407,6 +504,139 @@ export default function AdminSettingsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* DATOS DE COBRO POR TRANSFERENCIA */}
+      {paymentMethods.transfer && (
+        <Card className="glow-card bg-gradient-card border-border/50">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <Landmark className="h-5 w-5 text-cyan-400" />
+              Datos de Cobro por Transferencia
+            </CardTitle>
+            <p className="text-xs text-muted-foreground mt-1">
+              Esta información se muestra a los usuarios al momento de pagar su suscripción.
+              Sube el QR para que puedan escanearlo desde su app bancaria.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {/* Banco / Titular / Cuenta */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Banco</Label>
+                <Input
+                  value={transferDetails.bank_name}
+                  onChange={(e) => updateTransferField('bank_name', e.target.value)}
+                  placeholder="Ej: BCP, Interbank, BBVA"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Titular de la cuenta</Label>
+                <Input
+                  value={transferDetails.account_holder}
+                  onChange={(e) => updateTransferField('account_holder', e.target.value)}
+                  placeholder="Nombre completo o razón social"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Número de cuenta</Label>
+                <Input
+                  value={transferDetails.account_number}
+                  onChange={(e) => updateTransferField('account_number', e.target.value)}
+                  placeholder="Ej: 194-12345678-0-12"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">Tipo de cuenta</Label>
+                <Input
+                  value={transferDetails.account_type}
+                  onChange={(e) => updateTransferField('account_type', e.target.value)}
+                  placeholder="Ej: Cuenta corriente, Ahorros"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">CCI (cuenta interbancaria)</Label>
+                <Input
+                  value={transferDetails.cci}
+                  onChange={(e) => updateTransferField('cci', e.target.value)}
+                  placeholder="20 dígitos para transferencias entre bancos"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs text-muted-foreground">DNI / RUC del titular</Label>
+                <Input
+                  value={transferDetails.document_id}
+                  onChange={(e) => updateTransferField('document_id', e.target.value)}
+                  placeholder="Ej: 12345678 o 20123456789"
+                />
+              </div>
+            </div>
+
+            {/* Instrucciones */}
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Instrucciones adicionales</Label>
+              <textarea
+                value={transferDetails.instructions}
+                onChange={(e) => updateTransferField('instructions', e.target.value)}
+                placeholder="Ej: Una vez realizada la transferencia, envía el comprobante junto con tu correo."
+                rows={3}
+                className="w-full rounded-xl px-4 py-3 text-sm text-foreground bg-secondary/30 border border-border/50 focus:outline-none focus:ring-1 focus:ring-primary/30 resize-y"
+              />
+            </div>
+
+            {/* QR Code Upload */}
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                <QrCode className="h-3.5 w-3.5" /> Código QR de pago (Yape / Plin / banco)
+              </Label>
+              <p className="text-[11px] text-muted-foreground/70">
+                El QR aparecerá visible al usuario para que pueda escanearlo y pagar de inmediato.
+              </p>
+
+              {transferDetails.qr_image_url ? (
+                <div className="flex items-start gap-4 mt-2">
+                  <div className="relative rounded-xl border border-border/50 overflow-hidden bg-white p-2 w-48">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={transferDetails.qr_image_url} alt="QR de pago" className="w-full aspect-square object-contain" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="cursor-pointer">
+                      <input type="file" accept="image/*" onChange={handleQRUpload} className="hidden" disabled={uploadingQR} />
+                      <span className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border/50 bg-secondary/30 hover:bg-secondary/50 text-sm transition-colors">
+                        {uploadingQR ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                        Reemplazar QR
+                      </span>
+                    </label>
+                    <Button variant="outline" size="sm" onClick={handleRemoveQR} className="gap-1.5 text-red-400 border-red-500/30 hover:bg-red-500/10">
+                      <Trash2 className="h-4 w-4" /> Eliminar QR
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <label className="block cursor-pointer">
+                  <input type="file" accept="image/*" onChange={handleQRUpload} className="hidden" disabled={uploadingQR} />
+                  <div className="rounded-xl border-2 border-dashed border-border/50 hover:border-cyan-500/50 bg-secondary/10 hover:bg-cyan-500/5 transition-colors py-8 flex flex-col items-center gap-2">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500/10">
+                      {uploadingQR ? <Loader2 className="h-6 w-6 animate-spin text-cyan-400" /> : <ImageIcon className="h-6 w-6 text-cyan-400" />}
+                    </div>
+                    <p className="text-sm font-medium text-foreground">
+                      {uploadingQR ? 'Subiendo...' : 'Subir QR de pago'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">PNG o JPG · Máx. 5MB</p>
+                  </div>
+                </label>
+              )}
+            </div>
+
+            {/* Save */}
+            <div className="flex justify-end pt-2 border-t border-border/30">
+              <Button onClick={handleSaveTransferDetails} disabled={savingTransferDetails} className="gap-1.5">
+                {savingTransferDetails ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                Guardar datos de cobro
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* PLANES */}
       <Card className="glow-card bg-gradient-card border-border/50">
