@@ -163,82 +163,101 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
     }
   }
 
+  const TYPES = [
+    { key: 'YCLOUD',         label: 'YCloud',    sub: 'WhatsApp API',     icon: Webhook,        accent: 'indigo' },
+    { key: 'BAILEYS',        label: 'WA Web',    sub: 'Escanear QR',      icon: Smartphone,     accent: 'red'    },
+    { key: 'META',           label: 'Messenger', sub: 'Facebook / IG',    icon: MessageSquare,  accent: 'blue'   },
+    { key: 'WHATSAPP_CLOUD', label: 'WA Cloud',  sub: 'API Oficial Meta', icon: Wifi,           accent: 'green'  },
+  ] as const
+
+  const accentMap: Record<string, { border: string; bg: string; icon: string; glow: string }> = {
+    indigo: { border: 'border-indigo-400/60', bg: 'bg-indigo-400/10', icon: 'text-indigo-300', glow: 'shadow-[0_0_20px_-4px_rgba(129,140,248,0.55)]' },
+    red:    { border: 'border-red-500/60',    bg: 'bg-red-500/10',    icon: 'text-red-400',    glow: 'shadow-[0_0_20px_-4px_rgba(239,68,68,0.55)]'  },
+    blue:   { border: 'border-blue-400/60',   bg: 'bg-blue-400/10',   icon: 'text-blue-300',   glow: 'shadow-[0_0_20px_-4px_rgba(96,165,250,0.55)]' },
+    green:  { border: 'border-green-400/60',  bg: 'bg-green-400/10',  icon: 'text-green-300',  glow: 'shadow-[0_0_20px_-4px_rgba(74,222,128,0.55)]' },
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white/5 border border-amber-400/20 p-6 rounded-2xl">
-      <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-        <Plus className="w-4 h-4 text-amber-400" />
-        Crear nuevo bot
-      </h3>
+    <form
+      onSubmit={handleSubmit}
+      className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/[0.04] via-white/[0.02] to-transparent backdrop-blur-xl p-5 sm:p-7 shadow-[0_0_30px_-10px_rgba(239,68,68,0.35)]"
+    >
+      {/* Decorative corner accents */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+      <div className="pointer-events-none absolute -top-20 -right-20 w-60 h-60 rounded-full bg-red-500/10 blur-[80px]" />
 
-      {/* Tipo de bot */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-        <button
-          type="button"
-          onClick={() => setType('YCLOUD')}
-          className={`p-3 rounded-xl border text-left transition-all ${type === 'YCLOUD'
-            ? 'border-indigo-400/50 bg-indigo-400/10 text-white'
-            : 'border-white/10 text-white/35 hover:border-white/20'
-            }`}
-        >
-          <Webhook className="w-4 h-4 mb-1.5" />
-          <div className="text-xs font-bold">YCloud</div>
-          <div className="text-[10px] text-white/25 mt-0.5">WhatsApp API</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setType('BAILEYS')}
-          className={`p-3 rounded-xl border text-left transition-all ${type === 'BAILEYS'
-            ? 'border-amber-400/50 bg-amber-400/10 text-white'
-            : 'border-white/10 text-white/35 hover:border-white/20'
-            }`}
-        >
-          <Smartphone className="w-4 h-4 mb-1.5" />
-          <div className="text-xs font-bold">WA Web</div>
-          <div className="text-[10px] text-white/25 mt-0.5">Escanear QR</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setType('META')}
-          className={`p-3 rounded-xl border text-left transition-all ${type === 'META'
-            ? 'border-blue-400/50 bg-blue-400/10 text-white'
-            : 'border-white/10 text-white/35 hover:border-white/20'
-            }`}
-        >
-          <MessageSquare className="w-4 h-4 mb-1.5" />
-          <div className="text-xs font-bold">Messenger</div>
-          <div className="text-[10px] text-white/25 mt-0.5">Facebook/Instagram</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setType('WHATSAPP_CLOUD')}
-          className={`p-3 rounded-xl border text-left transition-all ${type === 'WHATSAPP_CLOUD'
-            ? 'border-green-400/50 bg-green-400/10 text-white'
-            : 'border-white/10 text-white/35 hover:border-white/20'
-            }`}
-        >
-          <Wifi className="w-4 h-4 mb-1.5" />
-          <div className="text-xs font-bold">WA Cloud</div>
-          <div className="text-[10px] text-white/25 mt-0.5">API Oficial Meta</div>
-        </button>
-      </div>
+      <div className="relative">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500/20 to-red-500/[0.05] border border-red-500/30 flex items-center justify-center shadow-[inset_0_0_15px_rgba(239,68,68,0.2)]">
+            <Sparkles className="w-5 h-5 text-red-400" strokeWidth={1.5} />
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">Inicializar nuevo agente IA</h3>
+            <p className="text-[11px] text-white/40 tracking-wider uppercase mt-0.5">Selecciona conexión y asigna identidad</p>
+          </div>
+        </div>
 
-      {error && <Alert type="error" msg={error} />}
-      <div className="flex flex-col sm:flex-row gap-3 mt-4">
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Nombre del agente (ej: Agente Ventas Bolivia)"
-          className="flex-1 bg-[#0B0B12]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-amber-400/40"
-          required
-        />
-        <button
-          type="submit"
-          disabled={loading || !name.trim()}
-          className="w-full sm:w-auto px-5 py-2.5 bg-amber-400 text-[#0B0B12] font-bold rounded-xl text-sm hover:bg-amber-400/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
-        >
-          {loading ? <Spinner /> : <Plus className="w-4 h-4" />}
-          Crear Bot
-        </button>
+        {/* Tipo de bot */}
+        <div className="mb-5">
+          <div className="text-[10px] text-white/40 uppercase tracking-[0.18em] font-semibold mb-2.5 flex items-center gap-2">
+            <span className="h-px w-4 bg-white/20" />
+            Tipo de conexión
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {TYPES.map((t) => {
+              const Icon = t.icon
+              const selected = type === t.key
+              const acc = accentMap[t.accent]
+              return (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => setType(t.key)}
+                  className={`group/btn relative p-3.5 rounded-xl border text-left transition-all duration-300 overflow-hidden
+                    ${selected
+                      ? `${acc.border} ${acc.bg} ${acc.glow} text-white -translate-y-0.5`
+                      : 'border-white/10 bg-white/[0.02] text-white/45 hover:border-white/25 hover:bg-white/[0.04] hover:-translate-y-0.5'
+                    }`}
+                >
+                  {selected && <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-current to-transparent opacity-60" />}
+                  <Icon className={`w-5 h-5 mb-2 ${selected ? acc.icon : 'text-white/40 group-hover/btn:text-white/70'} transition-colors`} strokeWidth={1.5} />
+                  <div className="text-xs font-bold tracking-tight">{t.label}</div>
+                  <div className={`text-[10px] mt-0.5 ${selected ? 'text-white/60' : 'text-white/30'}`}>{t.sub}</div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {error && <div className="mb-3"><Alert type="error" msg={error} /></div>}
+
+        <div className="text-[10px] text-white/40 uppercase tracking-[0.18em] font-semibold mb-2.5 flex items-center gap-2">
+          <span className="h-px w-4 bg-white/20" />
+          Identidad del agente
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Nombre del agente (ej: Agente Ventas Bolivia)"
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 h-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-red-500/50 focus:bg-black/60 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.08)] transition-all"
+            required
+          />
+          <button
+            type="submit"
+            disabled={loading || !name.trim()}
+            className="relative group/cta w-full sm:w-auto h-12 px-6 rounded-xl font-bold text-sm tracking-wide overflow-hidden transition-all
+              bg-gradient-to-br from-red-500 to-red-600 text-white
+              shadow-[0_0_25px_-5px_rgba(239,68,68,0.6)]
+              hover:shadow-[0_0_35px_-3px_rgba(239,68,68,0.8)] hover:from-red-400 hover:to-red-500
+              disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-[0_0_25px_-5px_rgba(239,68,68,0.6)]
+              flex items-center justify-center gap-2"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-700" />
+            {loading ? <Spinner color="text-white" /> : <Sparkles className="w-4 h-4" strokeWidth={2} />}
+            <span className="relative">Crear agente</span>
+          </button>
+        </div>
       </div>
     </form>
   )
@@ -249,53 +268,114 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) {
   const isActive = bot.status === 'ACTIVE'
   return (
-    <div className={`bg-white/5 p-3 sm:p-5 rounded-2xl border relative overflow-hidden transition-all ${isActive ? 'border-amber-400/20 hover:border-amber-400/35' : 'border-white/8 opacity-80 hover:border-white/15'}`}>
-      {/* Active left border glow */}
+    <div
+      className={`group relative overflow-hidden rounded-2xl backdrop-blur-xl transition-all duration-300 ease-out
+        ${isActive
+          ? 'bg-gradient-to-br from-red-500/[0.06] via-white/[0.02] to-transparent border border-red-500/25 shadow-[0_0_25px_-8px_rgba(239,68,68,0.45)] hover:border-red-500/55 hover:shadow-[0_0_45px_-6px_rgba(239,68,68,0.55)] hover:-translate-y-0.5'
+          : 'bg-white/[0.02] border border-white/10 hover:border-white/20 hover:-translate-y-0.5'
+        }`}
+    >
+      {/* Top accent line — futurista */}
+      <div
+        className={`absolute inset-x-0 top-0 h-px ${isActive ? 'bg-gradient-to-r from-transparent via-red-500/70 to-transparent' : 'bg-gradient-to-r from-transparent via-white/15 to-transparent'}`}
+      />
+      {/* Active corner indicator */}
       {isActive && (
-        <div className="absolute left-0 top-3 bottom-3 w-0.5 bg-amber-400/70 rounded-full" />
+        <>
+          <div className="absolute top-0 left-0 w-12 h-12 bg-gradient-to-br from-red-500/20 to-transparent rounded-tl-2xl pointer-events-none" />
+          <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-transparent via-red-500/80 to-transparent rounded-full" />
+        </>
       )}
-      <div className={`absolute inset-0 bg-gradient-to-br to-transparent opacity-0 hover:opacity-100 transition-opacity ${isActive ? 'from-amber-400/5' : 'from-white/3'}`} />
+      {/* Hover halo */}
+      <div className={`absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${isActive ? 'bg-gradient-to-br from-red-500/10 via-transparent to-transparent' : 'bg-gradient-to-br from-white/[0.04] via-transparent to-transparent'}`} />
+
       <button
         onClick={() => onSelect(bot)}
-        className="relative z-10 w-full text-left group"
+        className="relative z-10 w-full text-left p-5 sm:p-6"
       >
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${isActive ? 'bg-amber-400/10 border-amber-400/20' : 'bg-white/5 border-white/10'}`}>
-              <Bot className={`w-5 h-5 ${isActive ? 'text-amber-400' : 'text-white/35'}`} />
-            </div>
-            <div>
-              <div className="font-bold text-white text-sm">{bot.name}</div>
-              <div className="text-xs text-white/35 mt-0.5">
-                <span className="inline-flex items-center gap-1">
-                  <ShoppingBag className="w-3 h-3" /> {bot._count?.assignedProducts ?? 0}
-                </span>
-                <span className="mx-1.5 text-white/15">·</span>
-                <span className="inline-flex items-center gap-1">
-                  <MessageCircle className="w-3 h-3" /> {bot._count?.conversations ?? 0}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className={`flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-full border ${isActive ? 'bg-amber-400/10 text-amber-400 border-amber-400/20' : 'bg-white/5/50 text-white/35 border-white/10'}`}>
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+            <div
+              className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center border shrink-0 transition-all
+                ${isActive
+                  ? 'bg-gradient-to-br from-red-500/15 to-red-500/[0.03] border-red-500/30 shadow-[inset_0_0_15px_rgba(239,68,68,0.15)] group-hover:shadow-[inset_0_0_20px_rgba(239,68,68,0.25),0_0_20px_-4px_rgba(239,68,68,0.4)]'
+                  : 'bg-white/[0.04] border-white/10 group-hover:border-white/20'
+                }`}
+            >
+              <Bot className={`w-6 h-6 sm:w-7 sm:h-7 ${isActive ? 'text-red-400' : 'text-white/40'}`} strokeWidth={1.5} />
               {isActive && (
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" />
+                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
                 </span>
               )}
-              {isActive ? 'ACTIVO' : 'PAUSADO'}
-            </span>
-            <ChevronRight className="w-4 h-4 text-white/25 group-hover:text-white transition-colors" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-bold text-white text-base sm:text-lg truncate tracking-tight">{bot.name}</div>
+              {bot.secret?.whatsappInstanceNumber ? (
+                <div className="text-[11px] text-white/40 mt-0.5 flex items-center gap-1.5 font-mono">
+                  <Smartphone className="w-3 h-3" />
+                  {bot.secret.whatsappInstanceNumber}
+                </div>
+              ) : (
+                <div className="text-[11px] text-white/30 mt-0.5 uppercase tracking-wider">
+                  {bot.type === 'BAILEYS' ? 'WhatsApp Web' : bot.type === 'META' ? 'Messenger' : bot.type === 'WHATSAPP_CLOUD' ? 'WhatsApp Cloud' : 'YCloud'}
+                </div>
+              )}
+            </div>
+          </div>
+          <span
+            className={`flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border tracking-wider shrink-0
+              ${isActive
+                ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                : 'bg-white/[0.04] text-white/40 border-white/10'
+              }`}
+          >
+            {isActive && (
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+              </span>
+            )}
+            {isActive ? 'ACTIVO' : 'PAUSADO'}
+          </span>
+        </div>
+
+        {/* Stats row */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-xl border ${isActive ? 'bg-white/[0.02] border-white/10' : 'bg-white/[0.02] border-white/8'}`}>
+            <div className="w-7 h-7 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0">
+              <ShoppingBag className="w-3.5 h-3.5 text-violet-400" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-bold text-white leading-none">{bot._count?.assignedProducts ?? 0}</div>
+              <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">Productos</div>
+            </div>
+          </div>
+          <div className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-xl border ${isActive ? 'bg-white/[0.02] border-white/10' : 'bg-white/[0.02] border-white/8'}`}>
+            <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
+              <MessageCircle className="w-3.5 h-3.5 text-cyan-400" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-bold text-white leading-none">{bot._count?.conversations ?? 0}</div>
+              <div className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">Chats</div>
+            </div>
           </div>
         </div>
-        {bot.secret?.whatsappInstanceNumber && (
-          <div className="text-xs text-white/35 flex items-center gap-1">
-            <Smartphone className="w-3 h-3" />
-            {bot.secret.whatsappInstanceNumber}
-          </div>
-        )}
+
+        {/* Open / configure CTA */}
+        <div
+          className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border transition-all
+            ${isActive
+              ? 'bg-red-500/[0.06] border-red-500/20 group-hover:bg-red-500/10 group-hover:border-red-500/40'
+              : 'bg-white/[0.03] border-white/10 group-hover:bg-white/[0.05] group-hover:border-white/20'
+            }`}
+        >
+          <span className={`text-[11px] font-bold tracking-wider uppercase ${isActive ? 'text-red-400' : 'text-white/50'}`}>
+            Configurar agente
+          </span>
+          <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isActive ? 'text-red-400' : 'text-white/40'}`} />
+        </div>
       </button>
     </div>
   )
@@ -3013,28 +3093,53 @@ export default function WhatsAppPage() {
 
   const activeBots = bots.filter(b => b.status === 'ACTIVE').length
 
+  const totalProducts = bots.reduce((acc, b) => acc + (b._count?.assignedProducts ?? 0), 0)
+  const totalChats    = bots.reduce((acc, b) => acc + (b._count?.conversations ?? 0), 0)
+
   return (
-    <div className="min-h-screen px-4 py-7 md:px-10 md:py-9 pb-20" style={{ background: '#0B0B12' }}>
+    <div className="relative min-h-screen px-4 py-7 md:px-10 md:py-9 pb-20 overflow-hidden" style={{ background: '#050507' }}>
+      {/* Ambient background glow */}
+      {!selectedBot && (
+        <>
+          <div className="pointer-events-none absolute -top-40 -left-40 w-[480px] h-[480px] rounded-full bg-red-500/[0.08] blur-[120px]" />
+          <div className="pointer-events-none absolute top-1/3 -right-40 w-[420px] h-[420px] rounded-full bg-red-500/[0.05] blur-[140px]" />
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+              backgroundSize: '64px 64px',
+              maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 70%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 70%)',
+            }}
+          />
+        </>
+      )}
+
       {/* Page Header */}
-      <div className="flex items-center gap-4 mb-8">
+      <div className="relative flex items-center gap-4 mb-8">
         <Link
           href="/dashboard"
           className="p-2 hover:bg-white/5 rounded-lg transition-colors group"
         >
-          <ArrowLeft className="w-5 h-5 text-white/35 group-hover:text-white transition-colors" />
+          <ArrowLeft className="w-5 h-5 text-white/40 group-hover:text-white transition-colors" />
         </Link>
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-400/10 flex items-center justify-center border border-amber-400/20 shadow-[0_0_15px_rgba(245,158,11,0.15)]">
-            <MessageCircle className="w-6 h-6 text-amber-400" />
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-500/20 to-red-500/[0.04] flex items-center justify-center border border-red-500/30 shadow-[0_0_25px_-4px_rgba(239,68,68,0.45)]">
+            <Bot className="w-6 h-6 sm:w-7 sm:h-7 text-red-400" strokeWidth={1.5} />
+            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+            </span>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-              WhatsApp Bots
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-md bg-amber-400/10 text-amber-400 border border-amber-400/20">
-                Multi-Tenant
+            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3 tracking-tight">
+              Agentes AI
+              <span className="text-[10px] uppercase font-bold tracking-[0.18em] px-2 py-1 rounded-md bg-red-500/10 text-red-400 border border-red-500/25">
+                Live
               </span>
             </h1>
-            <p className="text-sm text-white/50">Configura y gestiona tus agentes AI de ventas.</p>
+            <p className="text-xs sm:text-sm text-white/45 mt-0.5">Centro de control · Configura y supervisa tus agentes de ventas.</p>
           </div>
         </div>
       </div>
@@ -3047,60 +3152,101 @@ export default function WhatsAppPage() {
           onDeleted={handleBotDeleted}
         />
       ) : (
-        <div className="space-y-6">
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                <Bot className="w-5 h-5 text-white/50" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-white">{bots.length}</div>
-                <div className="text-xs text-white/35">Total agentes</div>
-              </div>
-            </div>
-            <div className="bg-white/5 border border-amber-400/20 p-4 rounded-xl flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center shrink-0">
-                <Zap className="w-5 h-5 text-amber-400" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-amber-400">{activeBots}</div>
-                <div className="text-xs text-white/35">Activos ahora</div>
-              </div>
-            </div>
-            <div className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-400/10 border border-indigo-400/20 flex items-center justify-center shrink-0">
-                <ShoppingBag className="w-5 h-5 text-indigo-400" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-indigo-400">
-                  {bots.reduce((acc, b) => acc + (b._count?.assignedProducts ?? 0), 0)}
+        <div className="relative space-y-6">
+          {/* Stats — premium HUD */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-4 sm:p-5 hover:border-white/20 transition-all group">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-white/60" strokeWidth={1.5} />
                 </div>
-                <div className="text-xs text-white/35">Productos totales</div>
+                <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-semibold">Total</span>
               </div>
+              <div className="text-3xl sm:text-4xl font-bold text-white leading-none tracking-tight">{bots.length}</div>
+              <div className="text-[11px] text-white/40 mt-1.5 uppercase tracking-wider">Agentes</div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-red-500/25 bg-gradient-to-br from-red-500/[0.06] to-transparent backdrop-blur-xl p-4 sm:p-5 shadow-[0_0_25px_-10px_rgba(239,68,68,0.45)] hover:border-red-500/45 transition-all group">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/70 to-transparent" />
+              <div className="pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full bg-red-500/10 blur-2xl" />
+              <div className="relative flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center shadow-[inset_0_0_15px_rgba(239,68,68,0.2)]">
+                  <Zap className="w-5 h-5 text-red-400" strokeWidth={1.8} />
+                </div>
+                <span className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.18em] text-red-400 font-semibold">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+                  </span>
+                  Live
+                </span>
+              </div>
+              <div className="relative text-3xl sm:text-4xl font-bold text-red-400 leading-none tracking-tight">{activeBots}</div>
+              <div className="relative text-[11px] text-white/45 mt-1.5 uppercase tracking-wider">Activos ahora</div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-4 sm:p-5 hover:border-violet-400/30 transition-all">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/40 to-transparent" />
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/25 flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-violet-400" strokeWidth={1.5} />
+                </div>
+                <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-semibold">Catálogo</span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold text-violet-400 leading-none tracking-tight">{totalProducts}</div>
+              <div className="text-[11px] text-white/40 mt-1.5 uppercase tracking-wider">Productos</div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-4 sm:p-5 hover:border-cyan-400/30 transition-all">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/25 flex items-center justify-center">
+                  <MessageCircle className="w-5 h-5 text-cyan-400" strokeWidth={1.5} />
+                </div>
+                <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-semibold">Tráfico</span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold text-cyan-400 leading-none tracking-tight">{totalChats}</div>
+              <div className="text-[11px] text-white/40 mt-1.5 uppercase tracking-wider">Conversaciones</div>
             </div>
           </div>
 
           {/* Create bot form */}
           <CreateBotForm onCreated={handleBotCreated} />
 
+          {/* Bot list header */}
+          {!loading && bots.length > 0 && (
+            <div className="flex items-center justify-between pt-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">Tus agentes</span>
+                <span className="text-[10px] text-white/30 font-mono">[ {bots.length} ]</span>
+              </div>
+              <div className="flex-1 h-px bg-gradient-to-r from-white/10 via-white/[0.03] to-transparent ml-3" />
+            </div>
+          )}
+
           {/* Bot list */}
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-white/35" />
+            <div className="flex items-center justify-center py-16">
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 className="w-7 h-7 animate-spin text-red-400" />
+                <span className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">Cargando agentes</span>
+              </div>
             </div>
           ) : bots.length === 0 ? (
-            <div className="bg-white/5 border border-white/8 p-12 rounded-2xl text-center">
-              <div className="w-16 h-16 rounded-2xl bg-amber-400/5 border border-amber-400/10 flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(245,158,11,0.08)]">
-                <Bot className="w-8 h-8 text-white/25" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-red-500/[0.04] via-white/[0.02] to-transparent border border-red-500/15 p-12 rounded-2xl text-center">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.06),transparent_60%)]" />
+              <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500/15 to-red-500/[0.03] border border-red-500/25 flex items-center justify-center mx-auto mb-5 shadow-[0_0_30px_-8px_rgba(239,68,68,0.4)]">
+                <Bot className="w-10 h-10 text-red-400/80" strokeWidth={1.5} />
               </div>
-              <div className="text-white font-semibold mb-1">Sin agentes configurados</div>
-              <div className="text-white/35 text-sm max-w-xs mx-auto">
-                Crea tu primer agente AI de ventas usando el formulario de arriba.
+              <div className="relative text-white font-bold text-lg mb-1.5 tracking-tight">Sin agentes desplegados</div>
+              <div className="relative text-white/45 text-sm max-w-sm mx-auto leading-relaxed">
+                Inicializa tu primer agente AI con el módulo de arriba — toma menos de 30 segundos.
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {bots.map(bot => (
                 <BotCard key={bot.id} bot={bot} onSelect={handleSelectBot} />
               ))}
@@ -3108,22 +3254,27 @@ export default function WhatsAppPage() {
           )}
 
           {/* How it works */}
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-400" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-5 sm:p-6">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+            <h3 className="text-sm font-bold text-white mb-5 flex items-center gap-2 tracking-tight">
+              <Zap className="w-4 h-4 text-red-400" strokeWidth={2} />
               ¿Cómo funciona?
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/30 font-semibold ml-1">4 pasos</span>
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {([
-                { icon: <Plus className="w-4 h-4 text-amber-400" />, title: '1. Crea el agente', desc: 'Dale un nombre y obtén la URL de webhook.', border: 'border-l-amber-400/50', bg: 'bg-amber-400/5' },
-                { icon: <Key className="w-4 h-4 text-indigo-400" />, title: '2. Configura credenciales', desc: 'Agrega tus API keys de YCloud y OpenAI.', border: 'border-l-indigo-400/50', bg: 'bg-indigo-400/5' },
-                { icon: <ShoppingBag className="w-4 h-4 text-violet-400" />, title: '3. Agrega productos', desc: 'Define la base de conocimiento del agente.', border: 'border-l-violet-400/50', bg: 'bg-violet-400/5' },
-                { icon: <Webhook className="w-4 h-4 text-amber-400" />, title: '4. Conecta YCloud', desc: 'Apunta el webhook en tu panel de YCloud.', border: 'border-l-amber-400/50', bg: 'bg-amber-400/5' },
+                { num: '01', icon: <Plus className="w-4 h-4" />,         title: 'Crea el agente',         desc: 'Dale un nombre y obtén la URL de webhook.',     accent: 'text-red-400',    ring: 'border-red-500/30 bg-red-500/[0.06]' },
+                { num: '02', icon: <Key className="w-4 h-4" />,          title: 'Configura credenciales', desc: 'Agrega tus API keys de la conexión y OpenAI.',  accent: 'text-indigo-300', ring: 'border-indigo-400/30 bg-indigo-400/[0.06]' },
+                { num: '03', icon: <ShoppingBag className="w-4 h-4" />,  title: 'Agrega productos',       desc: 'Define la base de conocimiento del agente.',    accent: 'text-violet-300', ring: 'border-violet-400/30 bg-violet-400/[0.06]' },
+                { num: '04', icon: <Webhook className="w-4 h-4" />,      title: 'Conecta el canal',       desc: 'Apunta el webhook en tu panel del proveedor.',  accent: 'text-cyan-300',   ring: 'border-cyan-400/30 bg-cyan-400/[0.06]' },
               ] as const).map((step, i) => (
-                <div key={i} className={`${step.bg} border border-white/5 border-l-2 ${step.border} rounded-xl p-4`}>
-                  <div className="mb-2">{step.icon}</div>
-                  <div className="text-xs font-bold text-white mb-1">{step.title}</div>
-                  <div className="text-[11px] text-white/35 leading-relaxed">{step.desc}</div>
+                <div key={i} className="relative overflow-hidden rounded-xl border border-white/8 bg-white/[0.02] p-4 hover:border-white/20 hover:bg-white/[0.04] transition-all group">
+                  <span className="absolute top-3 right-3 text-[10px] font-mono text-white/20 tracking-wider">{step.num}</span>
+                  <div className={`w-9 h-9 rounded-xl border flex items-center justify-center mb-3 ${step.ring} ${step.accent}`}>
+                    {step.icon}
+                  </div>
+                  <div className="text-xs font-bold text-white mb-1 tracking-tight">{step.title}</div>
+                  <div className="text-[11px] text-white/40 leading-relaxed">{step.desc}</div>
                 </div>
               ))}
             </div>
