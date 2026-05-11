@@ -11,56 +11,66 @@ const PRODUCT_INCLUDE = {
 }
 
 export async function GET(_req: NextRequest, { params }: Ctx) {
-  const session = await getServerSession()
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  try {
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-  const bot = await (prisma as any).bot.findFirst({
-    where: { id: params.botId, tenant_id: session.sub },
-    select: { id: true },
-  })
-  if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
+    const bot = await (prisma as any).bot.findFirst({
+      where: { id: params.botId, tenant_id: session.sub },
+      select: { id: true },
+    })
+    if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
 
-  const [assigned, all] = await Promise.all([
-    (prisma as any).product.findMany({
-      where: { bot_id: params.botId, tenant_id: session.sub },
-      include: PRODUCT_INCLUDE,
-      orderBy: { created_at: 'asc' },
-    }),
-    (prisma as any).product.findMany({
-      where: { tenant_id: session.sub },
-      include: PRODUCT_INCLUDE,
-      orderBy: { created_at: 'asc' },
-    }),
-  ])
+    const [assigned, all] = await Promise.all([
+      (prisma as any).product.findMany({
+        where: { bot_id: params.botId, tenant_id: session.sub },
+        include: PRODUCT_INCLUDE,
+        orderBy: { created_at: 'asc' },
+      }),
+      (prisma as any).product.findMany({
+        where: { tenant_id: session.sub },
+        include: PRODUCT_INCLUDE,
+        orderBy: { created_at: 'asc' },
+      }),
+    ])
 
-  const assignedIds = new Set((assigned ?? []).map((p: any) => p.id))
-  const available   = (all ?? []).filter((p: any) => !assignedIds.has(p.id))
+    const assignedIds = new Set((assigned ?? []).map((p: any) => p.id))
+    const available   = (all ?? []).filter((p: any) => !assignedIds.has(p.id))
 
-  return NextResponse.json({ assigned: assigned ?? [], available })
+    return NextResponse.json({ assigned: assigned ?? [], available })
+  } catch (err) {
+    console.error('[GET /api/bots/[botId]/products]', err)
+    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
+  }
 }
 
 export async function POST(request: NextRequest, { params }: Ctx) {
-  const session = await getServerSession()
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  try {
+    const session = await getServerSession()
+    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-  const bot = await (prisma as any).bot.findFirst({
-    where: { id: params.botId, tenant_id: session.sub },
-    select: { id: true },
-  })
-  if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
+    const bot = await (prisma as any).bot.findFirst({
+      where: { id: params.botId, tenant_id: session.sub },
+      select: { id: true },
+    })
+    if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
 
-  const body = await request.json().catch(() => ({})) as { productId?: string }
-  if (!body.productId) return NextResponse.json({ error: 'productId requerido' }, { status: 400 })
+    const body = await request.json().catch(() => ({})) as { productId?: string }
+    if (!body.productId) return NextResponse.json({ error: 'productId requerido' }, { status: 400 })
 
-  const product = await (prisma as any).product.findFirst({
-    where: { id: body.productId, tenant_id: session.sub },
-    select: { id: true },
-  })
-  if (!product) return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 })
+    const product = await (prisma as any).product.findFirst({
+      where: { id: body.productId, tenant_id: session.sub },
+      select: { id: true },
+    })
+    if (!product) return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 })
 
-  await (prisma as any).product.update({
-    where: { id: body.productId },
-    data: { bot_id: params.botId },
-  })
-  return NextResponse.json({ ok: true })
+    await (prisma as any).product.update({
+      where: { id: body.productId },
+      data: { bot_id: params.botId },
+    })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('[POST /api/bots/[botId]/products]', err)
+    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
+  }
 }
