@@ -219,43 +219,47 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
                       : 'bg-white/[0.02] ring-1 ring-white/[0.05] hover:bg-white/[0.04] hover:ring-white/[0.14] hover:-translate-y-0.5'
                     }`}
                 >
-                  {/* Ambient image — fades from top-right, never near the text */}
+                  {/* Cinematic background image — visible, no harsh darkening */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={t.image}
                     alt=""
                     aria-hidden="true"
                     className={`pointer-events-none absolute inset-0 w-full h-full object-cover transition-all duration-500
-                      ${selected ? 'opacity-30 saturate-100' : 'opacity-[0.14] saturate-75 group-hover/btn:opacity-25'}`}
-                    style={{
-                      maskImage: 'radial-gradient(ellipse 90% 80% at top right, black 0%, rgba(0,0,0,0.6) 30%, transparent 75%)',
-                      WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at top right, black 0%, rgba(0,0,0,0.6) 30%, transparent 75%)',
-                      filter: 'blur(0.5px)',
-                    }}
+                      ${selected ? 'opacity-90 saturate-110' : 'opacity-70 saturate-95 group-hover/btn:opacity-85 group-hover/btn:saturate-105'}`}
                     loading="lazy"
                   />
 
-                  {/* Dark base wash so text always reads */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-transparent via-[#05070A]/40 to-[#05070A]/70" />
+                  {/* Local readability gradient — only behind the text (bottom-left), not the whole card */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#05070A]/85 via-[#05070A]/35 to-transparent" />
+
+                  {/* Soft blue ambient — premium cinematic feel */}
+                  <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500
+                    ${selected ? 'opacity-100' : 'opacity-70 group-hover/btn:opacity-85'}`}
+                    style={{ background: 'linear-gradient(135deg, rgba(8,17,32,0.25) 0%, transparent 50%, rgba(56,189,248,0.06) 100%)' }}
+                  />
 
                   {/* Sky tint on selected */}
                   {selected && (
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-sky-400/[0.10]" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-sky-400/[0.18]" />
                   )}
+
+                  {/* Top edge sheen */}
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
                   {/* Content — text protagonist */}
                   <div className="relative">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 backdrop-blur-md transition-colors
                       ${selected
-                        ? 'bg-sky-500/15 ring-1 ring-sky-400/35 text-sky-300'
-                        : 'bg-black/30 ring-1 ring-white/10 text-slate-300 group-hover/btn:bg-black/40 group-hover/btn:text-slate-100'
+                        ? 'bg-sky-500/25 ring-1 ring-sky-300/45 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+                        : 'bg-black/40 ring-1 ring-white/15 text-white group-hover/btn:bg-black/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
                       }`}>
-                      <Icon className="w-5 h-5" strokeWidth={1.7} />
+                      <Icon className="w-5 h-5" strokeWidth={1.8} />
                     </div>
-                    <div className={`text-[13px] font-semibold tracking-tight leading-tight ${selected ? 'text-slate-50' : 'text-slate-100'}`}>
+                    <div className="text-[13px] font-semibold tracking-tight leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]">
                       {t.label}
                     </div>
-                    <div className={`text-[11px] mt-1 leading-relaxed ${selected ? 'text-slate-300' : 'text-slate-400'}`}>
+                    <div className="text-[11px] mt-1 leading-relaxed text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                       {t.sub}
                     </div>
                   </div>
