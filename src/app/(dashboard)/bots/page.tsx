@@ -164,18 +164,11 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
   }
 
   const TYPES = [
-    { key: 'YCLOUD',         label: 'YCloud',         sub: 'WhatsApp API',           icon: Webhook,       accent: 'indigo' },
-    { key: 'BAILEYS',        label: 'WhatsApp Web',   sub: 'Escanear código QR',     icon: Smartphone,    accent: 'sky'    },
-    { key: 'META',           label: 'Messenger',      sub: 'Facebook / Instagram',   icon: MessageSquare, accent: 'blue'   },
-    { key: 'WHATSAPP_CLOUD', label: 'WhatsApp Cloud', sub: 'API oficial de Meta',    icon: Wifi,          accent: 'emerald'},
+    { key: 'YCLOUD',         label: 'YCloud',         sub: 'WhatsApp API',         icon: Webhook,       image: 'https://i.ibb.co/sdPpdrd5/1-YCloud-D.png' },
+    { key: 'BAILEYS',        label: 'WhatsApp Web',   sub: 'Escanear código QR',   icon: Smartphone,    image: 'https://i.ibb.co/hF4HDXLX/Captura-de-pantalla-2026-05-12-a-la-s-13-27-08.png' },
+    { key: 'META',           label: 'Messenger',      sub: 'Facebook / Instagram', icon: MessageSquare, image: 'https://i.ibb.co/9HV3sKxk/A-MESENSEG.jpg' },
+    { key: 'WHATSAPP_CLOUD', label: 'WhatsApp Cloud', sub: 'API oficial de Meta',  icon: Wifi,          image: 'https://i.ibb.co/tMCqR4yz/Captura-de-pantalla-2026-05-12-a-la-s-13-30-34.png' },
   ] as const
-
-  const accentMap: Record<string, { ring: string; bg: string; icon: string; glow: string }> = {
-    indigo:  { ring: 'ring-indigo-400/40', bg: 'bg-indigo-400/[0.06]', icon: 'text-indigo-300', glow: 'shadow-[0_0_30px_-10px_rgba(129,140,248,0.7)]' },
-    sky:     { ring: 'ring-sky-400/40',    bg: 'bg-sky-400/[0.06]',    icon: 'text-sky-300',    glow: 'shadow-[0_0_30px_-10px_rgba(56,189,248,0.7)]'  },
-    blue:    { ring: 'ring-blue-400/40',   bg: 'bg-blue-400/[0.06]',   icon: 'text-blue-300',   glow: 'shadow-[0_0_30px_-10px_rgba(96,165,250,0.7)]'  },
-    emerald: { ring: 'ring-emerald-400/40', bg: 'bg-emerald-400/[0.06]', icon: 'text-emerald-300', glow: 'shadow-[0_0_30px_-10px_rgba(52,211,153,0.7)]' },
-  }
 
   return (
     <form
@@ -215,35 +208,66 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
             {TYPES.map((t) => {
               const Icon = t.icon
               const selected = type === t.key
-              const acc = accentMap[t.accent]
               return (
                 <button
                   key={t.key}
                   type="button"
                   onClick={() => setType(t.key)}
-                  className={`group/btn relative p-4 sm:p-5 rounded-2xl text-left transition-all duration-300 ease-out
+                  className={`group/btn relative aspect-[5/6] rounded-2xl overflow-hidden text-left transition-all duration-500 ease-out
                     ${selected
-                      ? `${acc.bg} ring-1 ${acc.ring} ${acc.glow} -translate-y-0.5`
-                      : 'bg-white/[0.02] ring-1 ring-white/[0.04] hover:bg-white/[0.04] hover:ring-white/[0.1] hover:-translate-y-0.5'
+                      ? 'ring-1 ring-sky-400/50 shadow-[0_10px_30px_-10px_rgba(56,189,248,0.55)] -translate-y-0.5'
+                      : 'ring-1 ring-white/[0.06] hover:ring-white/[0.18] hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-12px_rgba(0,0,0,0.5)]'
                     }`}
                 >
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-colors
-                      ${selected ? `${acc.bg} ${acc.icon}` : 'bg-white/[0.04] text-slate-400 group-hover/btn:bg-white/[0.06] group-hover/btn:text-slate-200'}`}
-                  >
-                    <Icon className="w-5 h-5" strokeWidth={1.7} />
+                  {/* Background image */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={t.image}
+                    alt={t.label}
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out
+                      ${selected ? 'scale-[1.04] saturate-110' : 'scale-100 saturate-90 group-hover/btn:scale-[1.04] group-hover/btn:saturate-100'}`}
+                    loading="lazy"
+                  />
+
+                  {/* Dark base — bottom-up gradient for readability */}
+                  <div className={`pointer-events-none absolute inset-0 bg-gradient-to-t transition-opacity duration-500
+                    ${selected
+                      ? 'from-black/80 via-black/35 to-black/15'
+                      : 'from-black/90 via-black/55 to-black/35 group-hover/btn:from-black/80 group-hover/btn:via-black/45'
+                    }`} />
+
+                  {/* Sky tint when selected/hover */}
+                  <div className={`pointer-events-none absolute inset-0 bg-gradient-to-tr from-sky-500/0 via-transparent to-sky-400/[0.15] transition-opacity duration-500
+                    ${selected ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-60'}`} />
+
+                  {/* Top edge sheen — premium */}
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                  {/* Icon badge — glassmorphism */}
+                  <div className={`absolute top-3 left-3 w-9 h-9 rounded-xl backdrop-blur-md flex items-center justify-center transition-all duration-300
+                    ${selected
+                      ? 'bg-sky-500/25 ring-1 ring-sky-300/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
+                      : 'bg-black/35 ring-1 ring-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
+                    }`}>
+                    <Icon className="w-4 h-4 text-white" strokeWidth={1.9} />
                   </div>
-                  <div className={`text-[13px] font-semibold tracking-tight leading-tight ${selected ? 'text-slate-50' : 'text-slate-200'}`}>
-                    {t.label}
-                  </div>
-                  <div className={`text-[11px] mt-1 leading-relaxed ${selected ? 'text-slate-300' : 'text-slate-500'}`}>
-                    {t.sub}
-                  </div>
+
+                  {/* Selected indicator */}
                   {selected && (
-                    <div className="absolute top-3 right-3">
-                      <div className={`w-2 h-2 rounded-full ${acc.icon.replace('text-', 'bg-')} shadow-[0_0_8px_currentColor]`} />
+                    <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-sky-400 text-[#05070A] flex items-center justify-center shadow-[0_0_12px_rgba(56,189,248,0.6)]">
+                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
                     </div>
                   )}
+
+                  {/* Content — anchored bottom */}
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <div className="text-[14px] sm:text-[15px] font-semibold tracking-tight leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
+                      {t.label}
+                    </div>
+                    <div className="text-[11.5px] mt-1 leading-snug text-white/75 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                      {t.sub}
+                    </div>
+                  </div>
                 </button>
               )
             })}
