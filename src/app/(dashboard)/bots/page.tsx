@@ -231,7 +231,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
                   />
 
                   {/* Local readability gradient — only behind the text (bottom-left), not the whole card */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#05070A]/95 via-[#05070A]/55 to-[#05070A]/10" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#05070A] via-[#05070A]/75 to-[#05070A]/25" />
 
                   {/* Soft blue ambient — premium cinematic feel */}
                   <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500
