@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Bot, ShoppingBag, MessageSquare, TrendingUp, ArrowRight, Sparkles, CheckCircle2, Zap } from 'lucide-react'
 import { Navbar } from '@/components/layout/navbar'
+import { DashboardHero } from '@/components/dashboard/dashboard-hero'
 import { useAuth } from '@/hooks/use-auth'
 import Link from 'next/link'
 
@@ -24,7 +25,6 @@ export default function DashboardPage() {
     fetch('/api/dashboard').then(r => r.ok ? r.json() : null).then(d => { if (d) setData(d) }).finally(() => setLoading(false))
   }, [])
 
-  const firstName = profile?.full_name?.split(' ')[0] || 'Usuario'
   const d = data ?? { total_bots: 0, active_bots: 0, total_products: 0, total_conversations: 0, total_sales: 0, bots: [] }
 
   const stats = [
@@ -51,31 +51,8 @@ export default function DashboardPage() {
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 md:p-6 space-y-6">
 
-          {/* Hero */}
-          <div className="relative overflow-hidden rounded-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/20 via-[#EC4899]/10 to-[#06B6D4]/15" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg,rgba(12,11,24,0.85),rgba(18,17,28,0.9))' }} />
-            <div className="relative p-6 sm:p-8">
-              <div className="flex items-center gap-3 mb-1">
-                <Sparkles className="h-5 w-5 text-[#8B5CF6]" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#8B5CF6]/70">Dashboard</span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">
-                Hola, <span className="text-[#8B5CF6]">{firstName}</span> 👋
-              </h1>
-              <p className="text-[#94A3B8] mt-1 text-sm">Aquí tienes el resumen de tu actividad.</p>
-              <div className="flex flex-wrap gap-3 mt-6">
-                <Link href="/bots" className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:opacity-90"
-                  style={{ background: 'linear-gradient(135deg,#8B5CF6,#06B6D4)', boxShadow: '0 4px 14px rgba(139,92,246,0.3)' }}>
-                  <Bot className="h-4 w-4" /> Ver Agentes AI <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-                <Link href="/subscription" className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:opacity-90"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <TrendingUp className="h-4 w-4" /> Mi Suscripción
-                </Link>
-              </div>
-            </div>
-          </div>
+          {/* Premium hero — carousel + user badge + subscription countdown */}
+          <DashboardHero profile={profile} />
 
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
