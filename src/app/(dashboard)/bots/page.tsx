@@ -3201,26 +3201,7 @@ export default function WhatsAppPage() {
   const totalChats    = bots.reduce((acc, b) => acc + (b._count?.conversations ?? 0), 0)
 
   return (
-    <div className="relative min-h-screen overflow-hidden" style={{ background: 'linear-gradient(180deg, #05070A 0%, #050810 50%, #03060d 100%)' }}>
-      {/* Ambient cinematic backdrop */}
-      {!selectedBot && (
-        <>
-          <div className="pointer-events-none absolute top-0 left-1/4 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-sky-500/[0.07] blur-[140px]" />
-          <div className="pointer-events-none absolute top-1/3 right-0 translate-x-1/4 w-[600px] h-[500px] rounded-full bg-cyan-500/[0.05] blur-[140px]" />
-          <div className="pointer-events-none absolute bottom-0 left-1/3 w-[500px] h-[400px] rounded-full bg-indigo-500/[0.04] blur-[120px]" />
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.02]"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
-              backgroundSize: '80px 80px',
-              maskImage: 'radial-gradient(ellipse at top, black 0%, transparent 70%)',
-              WebkitMaskImage: 'radial-gradient(ellipse at top, black 0%, transparent 70%)',
-            }}
-          />
-        </>
-      )}
-
+    <div className="relative min-h-screen">
       <div className="relative px-5 py-6 md:px-10 md:py-8 pb-20 max-w-[1280px] mx-auto">
         {/* Page Header — compact */}
         <div className="flex items-center gap-3 mb-6 md:mb-8">
