@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { Crown, Zap, ArrowRight, Clock, Sparkles } from 'lucide-react'
+import { Crown, Zap, ArrowRight, Clock, Sparkles, AlertTriangle, ShieldCheck, XCircle } from 'lucide-react'
 import type { Profile } from '@/types'
 
 const SLIDES = [
@@ -191,91 +191,129 @@ export function DashboardHero({ profile }: Props) {
 
       {/* BOTTOM — subscription countdown panel */}
       <div className="absolute inset-x-5 bottom-5 sm:inset-x-6 sm:bottom-6">
-        {showCountdown ? (
-          <div className="relative overflow-hidden rounded-2xl bg-black/40 backdrop-blur-xl ring-1 ring-white/[0.08] p-4 sm:p-5">
-            {/* Subtle inner glow */}
-            <div className="pointer-events-none absolute -top-20 -left-10 w-40 h-40 rounded-full bg-sky-500/15 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-20 -right-10 w-40 h-40 rounded-full bg-violet-500/10 blur-3xl" />
+        {showCountdown ? (() => {
+          // Urgency tier system
+          const tier = days <= 1 ? 'critical' : days <= 3 ? 'urgent' : days <= 7 ? 'soon' : 'normal'
+          const styles = {
+            normal:   { label: 'Activo',            message: 'Tu plan premium está activo y funcionando.',  ring: 'ring-sky-400/20',     iconCls: 'text-sky-300',     Icon: ShieldCheck,    halo1: 'bg-sky-500/15',     halo2: 'bg-violet-500/10',  tile: 'ring-white/[0.07]',         num: 'text-white',          colon: 'text-sky-300/60',     progress: 'from-sky-400 via-cyan-400 to-violet-400',         pGlow: 'shadow-[0_0_10px_rgba(56,189,248,0.6)]',     pct: 'text-sky-200',     btnGrad: 'from-sky-400 to-sky-500',         btnHover: 'hover:from-sky-300 hover:to-sky-400',         btnShadow: 'shadow-[0_8px_24px_-6px_rgba(56,189,248,0.7),inset_0_1px_0_rgba(255,255,255,0.2)]',  badge: 'bg-sky-500/15 text-sky-200 ring-sky-400/25' },
+            soon:     { label: 'Próximo a vencer',  message: 'Tu suscripción vence pronto. Considera renovar.', ring: 'ring-violet-400/25',  iconCls: 'text-violet-300',  Icon: Clock,          halo1: 'bg-violet-500/22',  halo2: 'bg-fuchsia-500/12', tile: 'ring-violet-400/15',        num: 'text-white',          colon: 'text-violet-300/70',  progress: 'from-violet-400 via-fuchsia-400 to-pink-400',     pGlow: 'shadow-[0_0_12px_rgba(167,139,250,0.6)]',    pct: 'text-violet-200',  btnGrad: 'from-violet-500 to-fuchsia-500',  btnHover: 'hover:from-violet-400 hover:to-fuchsia-400',  btnShadow: 'shadow-[0_8px_24px_-6px_rgba(167,139,250,0.7),inset_0_1px_0_rgba(255,255,255,0.2)]', badge: 'bg-violet-500/15 text-violet-200 ring-violet-400/30' },
+            urgent:   { label: 'Renovación urgente', message: 'Renueva ahora para evitar interrupciones del servicio.', ring: 'ring-orange-400/30', iconCls: 'text-orange-300',  Icon: AlertTriangle,  halo1: 'bg-orange-500/22',  halo2: 'bg-amber-500/15',   tile: 'ring-orange-400/20',        num: 'text-white',          colon: 'text-orange-300/70',  progress: 'from-orange-400 via-amber-400 to-yellow-400',     pGlow: 'shadow-[0_0_14px_rgba(251,146,60,0.7)]',     pct: 'text-orange-200',  btnGrad: 'from-orange-500 to-amber-500',    btnHover: 'hover:from-orange-400 hover:to-amber-400',    btnShadow: 'shadow-[0_8px_24px_-6px_rgba(251,146,60,0.75)],inset_0_1px_0_rgba(255,255,255,0.2)]',  badge: 'bg-orange-500/15 text-orange-200 ring-orange-400/35' },
+            critical: { label: 'Última oportunidad', message: 'Tu acceso premium está por expirar — renueva ya.',     ring: 'ring-red-400/35',     iconCls: 'text-red-300',     Icon: AlertTriangle,  halo1: 'bg-red-500/25',     halo2: 'bg-rose-500/15',    tile: 'ring-red-400/25 animate-pulse', num: 'text-white',          colon: 'text-red-300/80',     progress: 'from-red-400 via-rose-400 to-orange-400',         pGlow: 'shadow-[0_0_16px_rgba(239,68,68,0.8)]',      pct: 'text-red-200',     btnGrad: 'from-red-500 to-rose-500',        btnHover: 'hover:from-red-400 hover:to-rose-400',        btnShadow: 'shadow-[0_8px_28px_-4px_rgba(239,68,68,0.8),inset_0_1px_0_rgba(255,255,255,0.2)]',   badge: 'bg-red-500/15 text-red-200 ring-red-400/40' },
+          }[tier]
+          const TierIcon = styles.Icon
+          return (
+            <div className={`relative overflow-hidden rounded-2xl bg-black/45 backdrop-blur-xl ring-1 ${styles.ring} p-4 sm:p-5 transition-all duration-500`}>
+              {/* Ambient halos */}
+              <div className={`pointer-events-none absolute -top-24 -left-10 w-48 h-48 rounded-full ${styles.halo1} blur-3xl`} />
+              <div className={`pointer-events-none absolute -bottom-24 -right-10 w-48 h-48 rounded-full ${styles.halo2} blur-3xl`} />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+              <div className="relative flex flex-col gap-4 lg:flex-row lg:items-end lg:gap-6">
+                {/* Left: status + countdown + bar */}
+                <div className="flex-1 min-w-0">
+                  {/* Status row */}
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <TierIcon className={`w-4 h-4 shrink-0 ${styles.iconCls}`} strokeWidth={2} />
+                      <div className="min-w-0">
+                        <div className={`text-[10px] uppercase tracking-[0.18em] font-semibold ${styles.iconCls}`}>
+                          {styles.label}
+                        </div>
+                        <div className="text-[12px] sm:text-[12.5px] text-white/80 mt-0.5 leading-snug truncate">
+                          {styles.message}
+                        </div>
+                      </div>
+                    </div>
+                    <span className={`hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide ring-1 ${styles.badge} shrink-0`}>
+                      <Clock className="w-3 h-3" strokeWidth={2.2} />
+                      {planName}
+                    </span>
+                  </div>
+
+                  {/* Clock-style countdown with separators */}
+                  <div className="flex items-stretch gap-1.5 sm:gap-2">
+                    {([
+                      { v: days, l: 'Días' },
+                      { v: hours, l: 'Horas' },
+                      { v: minutes, l: 'Min' },
+                      { v: seconds, l: 'Seg' },
+                    ] as const).map(({ v, l }, i, arr) => (
+                      <div key={l} className="flex items-stretch gap-1.5 sm:gap-2 flex-1 min-w-0">
+                        <div className={`flex-1 rounded-xl bg-gradient-to-b from-white/[0.06] to-white/[0.02] ring-1 ${styles.tile} px-2 py-2 sm:px-3 sm:py-2.5 text-center min-w-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]`}>
+                          <div className={`text-[22px] sm:text-[26px] font-semibold tabular-nums leading-none tracking-tight ${styles.num} drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]`}>
+                            {String(v).padStart(2, '0')}
+                          </div>
+                          <div className="text-[9px] sm:text-[10px] text-white/45 mt-1 uppercase tracking-[0.14em] font-medium">{l}</div>
+                        </div>
+                        {i < arr.length - 1 && (
+                          <div className={`flex items-center text-[20px] sm:text-[24px] font-semibold leading-none ${styles.colon} pb-3 sm:pb-4`}>:</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Usage bar */}
+                  <div className="mt-3.5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[10px] text-white/50 uppercase tracking-[0.14em] font-medium">Consumido del periodo</span>
+                      <span className={`text-[10.5px] ${styles.pct} font-semibold tabular-nums`}>{Math.round(percent)}%</span>
+                    </div>
+                    <div className="relative h-1.5 rounded-full bg-white/[0.05] overflow-hidden ring-1 ring-white/[0.03]">
+                      <div
+                        className={`h-full rounded-full bg-gradient-to-r ${styles.progress} ${styles.pGlow} transition-all duration-700 ease-out`}
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: CTA */}
+                <Link
+                  href="/subscription"
+                  className={`relative group/cta inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[13px] font-semibold tracking-tight text-white shrink-0 overflow-hidden
+                    bg-gradient-to-b ${styles.btnGrad} ${styles.btnHover}
+                    ${styles.btnShadow}
+                    transition-all duration-300`}
+                >
+                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000 ease-out" />
+                  <Zap className="relative w-4 h-4" strokeWidth={2.2} />
+                  <span className="relative">Renovar plan</span>
+                  <ArrowRight className="relative w-3.5 h-3.5 transition-transform duration-300 group-hover/cta:translate-x-0.5" strokeWidth={2.2} />
+                </Link>
+              </div>
+            </div>
+          )
+        })() : (
+          <div className="relative overflow-hidden rounded-2xl bg-black/45 backdrop-blur-xl ring-1 ring-slate-500/20 p-4 sm:p-5">
+            <div className="pointer-events-none absolute -top-24 -left-10 w-48 h-48 rounded-full bg-slate-500/10 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -right-10 w-48 h-48 rounded-full bg-sky-500/10 blur-3xl" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
             <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
-              {/* Countdown */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 mb-2.5">
-                  <Clock className="w-3.5 h-3.5 text-sky-300" strokeWidth={2} />
-                  <span className="text-[10.5px] uppercase tracking-[0.18em] text-white/60 font-semibold">
-                    Tu plan renueva en
-                  </span>
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-slate-500/15 ring-1 ring-slate-400/25 flex items-center justify-center shrink-0">
+                  <XCircle className="w-5 h-5 text-slate-300" strokeWidth={1.7} />
                 </div>
-                <div className="flex items-stretch gap-2">
-                  {[
-                    { v: days,    l: 'Días' },
-                    { v: hours,   l: 'Horas' },
-                    { v: minutes, l: 'Min' },
-                    { v: seconds, l: 'Seg' },
-                  ].map(({ v, l }, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-xl bg-white/[0.04] ring-1 ring-white/[0.06] px-2.5 py-2 sm:px-3 sm:py-2.5 text-center min-w-0"
-                    >
-                      <div className="text-[20px] sm:text-[24px] font-semibold text-white tabular-nums leading-none tracking-tight">
-                        {String(v).padStart(2, '0')}
-                      </div>
-                      <div className="text-[9.5px] sm:text-[10px] text-white/45 mt-1 uppercase tracking-[0.12em] font-medium">{l}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Usage bar */}
-                <div className="mt-3.5">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] text-white/45 uppercase tracking-wider">Consumido</span>
-                    <span className="text-[10.5px] text-sky-200 font-semibold tabular-nums">{Math.round(percent)}%</span>
+                <div className="min-w-0">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-slate-300 font-semibold">
+                    Sin suscripción activa
                   </div>
-                  <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-sky-400 via-cyan-400 to-violet-400 transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(56,189,248,0.5)]"
-                      style={{ width: `${percent}%` }}
-                    />
+                  <div className="text-[13px] text-white/80 mt-1 leading-snug">
+                    Activa un plan para desbloquear todos los agentes y la IA premium.
                   </div>
                 </div>
               </div>
-
-              {/* CTA */}
               <Link
-                href="/subscription"
+                href="/pricing"
                 className="relative group/cta inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[13px] font-semibold tracking-tight text-white shrink-0 overflow-hidden
                   bg-gradient-to-b from-sky-400 to-sky-500
                   shadow-[0_8px_24px_-6px_rgba(56,189,248,0.7),inset_0_1px_0_rgba(255,255,255,0.2)]
                   hover:from-sky-300 hover:to-sky-400 transition-all duration-300"
               >
-                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-                <Zap className="relative w-4 h-4" strokeWidth={2.2} />
-                <span className="relative">Renovar plan</span>
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000 ease-out" />
+                <Sparkles className="relative w-4 h-4" strokeWidth={2.2} />
+                <span className="relative">Ver planes</span>
                 <ArrowRight className="relative w-3.5 h-3.5" strokeWidth={2.2} />
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="relative overflow-hidden rounded-2xl bg-black/40 backdrop-blur-xl ring-1 ring-white/[0.08] p-4 sm:p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="text-[10.5px] uppercase tracking-[0.18em] text-sky-300/80 font-semibold mb-1.5">
-                  Sin suscripción activa
-                </div>
-                <div className="text-[14px] text-white/85 leading-snug">
-                  Activa un plan para liberar todos los agentes y la IA premium.
-                </div>
-              </div>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[13px] font-semibold tracking-tight text-white shrink-0
-                  bg-gradient-to-b from-sky-400 to-sky-500
-                  shadow-[0_8px_24px_-6px_rgba(56,189,248,0.7),inset_0_1px_0_rgba(255,255,255,0.2)]
-                  hover:from-sky-300 hover:to-sky-400 transition-all"
-              >
-                <Sparkles className="w-4 h-4" strokeWidth={2.2} />
-                Ver planes
-                <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.2} />
               </Link>
             </div>
           </div>
