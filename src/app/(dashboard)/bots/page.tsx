@@ -288,6 +288,8 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 
 // ─── Bot List ─────────────────────────────────────────────────────────────────
 
+const AI_AVATAR_URL = 'https://i.ibb.co/pBxwp28R/envato-labs-image-edit-70.png'
+
 function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) {
   const isActive = bot.status === 'ACTIVE'
   const channel = bot.type === 'BAILEYS' ? 'WhatsApp Web'
@@ -297,53 +299,66 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
 
   return (
     <div
-      className={`group relative rounded-3xl transition-all duration-500 ease-out
+      className={`group relative rounded-2xl transition-all duration-500 ease-out
         ${isActive
-          ? 'bg-gradient-to-b from-white/[0.04] to-white/[0.015] shadow-[0_8px_40px_-12px_rgba(14,165,233,0.25)] ring-1 ring-white/[0.06] hover:ring-sky-400/30 hover:shadow-[0_20px_60px_-15px_rgba(14,165,233,0.45)] hover:-translate-y-1'
+          ? 'bg-gradient-to-b from-white/[0.04] to-white/[0.015] shadow-[0_4px_24px_-10px_rgba(14,165,233,0.25)] ring-1 ring-white/[0.06] hover:ring-sky-400/30 hover:shadow-[0_12px_40px_-12px_rgba(14,165,233,0.45)] hover:-translate-y-0.5'
           : 'bg-white/[0.02] ring-1 ring-white/[0.04] hover:ring-white/[0.1] hover:bg-white/[0.03] hover:-translate-y-0.5'
         }`}
     >
       {/* Soft inner glow for active */}
       {isActive && (
-        <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.08),transparent_60%)]" />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.10),transparent_55%)]" />
       )}
 
       <button
         onClick={() => onSelect(bot)}
-        className="relative z-10 w-full text-left p-6 sm:p-7"
+        className="relative z-10 w-full text-left p-5"
       >
-        {/* Header: Avatar + Name + Status */}
-        <div className="flex items-start gap-4 mb-6">
-          {/* Premium AI avatar */}
-          <div
-            className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-500
-              ${isActive
-                ? 'bg-gradient-to-br from-sky-500/25 via-sky-500/10 to-cyan-500/[0.05] shadow-[0_0_30px_-8px_rgba(56,189,248,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]'
-                : 'bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
-              }`}
-          >
-            <Bot
-              className={`w-7 h-7 sm:w-8 sm:h-8 ${isActive ? 'text-sky-300' : 'text-slate-400'}`}
-              strokeWidth={1.5}
-            />
-            {/* Online indicator */}
+        {/* Header: Holographic avatar + Name + Status */}
+        <div className="flex items-start gap-4 mb-5">
+          {/* Holographic AI avatar */}
+          <div className="relative shrink-0">
+            {/* Sky glow halo behind avatar */}
             {isActive && (
-              <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#05070A] flex items-center justify-center">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-50" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
+              <div className="absolute -inset-1.5 rounded-full bg-sky-500/20 blur-xl opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+            )}
+            <div
+              className={`relative w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden ring-1 transition-all duration-500
+                ${isActive
+                  ? 'ring-sky-400/40 shadow-[inset_0_0_20px_rgba(56,189,248,0.15),0_4px_20px_-4px_rgba(56,189,248,0.4)]'
+                  : 'ring-white/10 shadow-[inset_0_0_15px_rgba(255,255,255,0.04)] grayscale opacity-70'
+                }`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={AI_AVATAR_URL}
+                alt={`Agente ${bot.name}`}
+                className="absolute inset-0 w-full h-full object-cover scale-105"
+                loading="lazy"
+              />
+              {/* Holographic sheen overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-tr ${isActive ? 'from-sky-500/10 via-transparent to-cyan-400/[0.08]' : 'from-transparent via-transparent to-white/[0.04]'} mix-blend-screen pointer-events-none`} />
+              {/* Top highlight */}
+              <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
+            </div>
+            {/* Online indicator dot */}
+            {isActive && (
+              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-[#05070A] flex items-center justify-center ring-2 ring-[#05070A]">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
                 </span>
               </span>
             )}
           </div>
 
           <div className="min-w-0 flex-1 pt-0.5">
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
-                <div className="font-semibold text-slate-50 text-[17px] sm:text-lg truncate tracking-tight leading-tight">
+                <div className="font-semibold text-slate-50 text-[15px] sm:text-base truncate tracking-tight leading-tight">
                   {bot.name}
                 </div>
-                <div className="text-[12px] text-slate-500 mt-1 flex items-center gap-1.5">
+                <div className="text-[11.5px] text-slate-500 mt-1 flex items-center gap-1.5 flex-wrap">
                   <span>{channel}</span>
                   {bot.secret?.whatsappInstanceNumber && (
                     <>
@@ -354,7 +369,7 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
                 </div>
               </div>
               <span
-                className={`flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full shrink-0 tracking-wide
+                className={`flex items-center gap-1.5 text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 tracking-wide
                   ${isActive
                     ? 'bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/20'
                     : 'bg-white/[0.04] text-slate-400 ring-1 ring-white/[0.06]'
@@ -372,45 +387,45 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
           </div>
         </div>
 
-        {/* Stats — clean, no harsh borders */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-            <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-4 h-4 text-violet-300" strokeWidth={1.8} />
+        {/* Stats — compact tiles */}
+        <div className="grid grid-cols-2 gap-2.5 mb-4">
+          <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.035] transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
+              <ShoppingBag className="w-3.5 h-3.5 text-violet-300" strokeWidth={1.8} />
             </div>
             <div className="min-w-0">
-              <div className="text-lg font-semibold text-slate-100 leading-none tracking-tight">
+              <div className="text-[15px] font-semibold text-slate-100 leading-none tracking-tight">
                 {bot._count?.assignedProducts ?? 0}
               </div>
-              <div className="text-[10px] text-slate-500 mt-1 uppercase tracking-[0.12em] font-medium">Productos</div>
+              <div className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-[0.1em] font-medium">Productos</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-            <div className="w-9 h-9 rounded-xl bg-sky-500/10 flex items-center justify-center shrink-0">
-              <MessageCircle className="w-4 h-4 text-sky-300" strokeWidth={1.8} />
+          <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.035] transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0">
+              <MessageCircle className="w-3.5 h-3.5 text-sky-300" strokeWidth={1.8} />
             </div>
             <div className="min-w-0">
-              <div className="text-lg font-semibold text-slate-100 leading-none tracking-tight">
+              <div className="text-[15px] font-semibold text-slate-100 leading-none tracking-tight">
                 {bot._count?.conversations ?? 0}
               </div>
-              <div className="text-[10px] text-slate-500 mt-1 uppercase tracking-[0.12em] font-medium">Chats</div>
+              <div className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-[0.1em] font-medium">Chats</div>
             </div>
           </div>
         </div>
 
         {/* CTA */}
         <div
-          className={`flex items-center justify-between gap-2 px-4 py-3 rounded-2xl transition-all duration-300
+          className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl transition-all duration-300
             ${isActive
               ? 'bg-gradient-to-r from-sky-500/15 to-sky-500/[0.05] group-hover:from-sky-500/25 group-hover:to-sky-500/10'
               : 'bg-white/[0.03] group-hover:bg-white/[0.05]'
             }`}
         >
-          <span className={`text-[13px] font-medium tracking-tight ${isActive ? 'text-sky-200' : 'text-slate-300'}`}>
+          <span className={`text-[12.5px] font-medium tracking-tight ${isActive ? 'text-sky-200' : 'text-slate-300'}`}>
             Abrir agente
           </span>
-          <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-sky-400/20 text-sky-200 group-hover:bg-sky-400/30' : 'bg-white/[0.04] text-slate-400 group-hover:bg-white/[0.08]'}`}>
-            <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
+          <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-sky-400/20 text-sky-200 group-hover:bg-sky-400/30' : 'bg-white/[0.04] text-slate-400 group-hover:bg-white/[0.08]'}`}>
+            <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
           </div>
         </div>
       </button>
@@ -3154,33 +3169,36 @@ export default function WhatsAppPage() {
         </>
       )}
 
-      <div className="relative px-5 py-8 md:px-12 md:py-12 pb-24 max-w-7xl mx-auto">
-        {/* Page Header */}
-        <div className="flex items-center gap-4 mb-10 md:mb-12">
+      <div className="relative px-5 py-6 md:px-10 md:py-8 pb-20 max-w-[1280px] mx-auto">
+        {/* Page Header — compact */}
+        <div className="flex items-center gap-3 mb-6 md:mb-8">
           <Link
             href="/dashboard"
-            className="p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group"
+            className="p-2 rounded-lg hover:bg-white/[0.04] transition-colors group"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-500 group-hover:text-slate-200 transition-colors" />
+            <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-slate-200 transition-colors" />
           </Link>
-          <div className="flex items-center gap-4">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-sky-500/25 via-sky-500/10 to-cyan-500/[0.05] flex items-center justify-center shadow-[0_0_40px_-6px_rgba(56,189,248,0.5),inset_0_1px_0_rgba(255,255,255,0.1)]">
-              <Bot className="w-7 h-7 sm:w-8 sm:h-8 text-sky-300" strokeWidth={1.5} />
-              <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#05070A] flex items-center justify-center">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-50" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
-                </span>
-              </span>
+          <div className="flex items-center gap-3.5 flex-1 min-w-0">
+            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl overflow-hidden ring-1 ring-sky-400/25 shadow-[0_0_25px_-6px_rgba(56,189,248,0.5)] shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={AI_AVATAR_URL} alt="AI" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-transparent to-cyan-400/10 mix-blend-screen" />
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-[10px] uppercase tracking-[0.16em] text-sky-300/70 font-medium">Centro de control</span>
+                <span className="hidden sm:flex items-center gap-1.5 text-[10px] text-emerald-300 font-medium tracking-wide">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
+                  </span>
+                  Online
+                </span>
               </div>
-              <h1 className="text-2xl sm:text-[32px] font-semibold text-slate-50 tracking-tight leading-none">
+              <h1 className="text-xl sm:text-[26px] font-semibold text-slate-50 tracking-tight leading-tight">
                 Agentes IA
               </h1>
-              <p className="text-[13px] sm:text-sm text-slate-400 mt-2 leading-relaxed">
+              <p className="hidden sm:block text-[12.5px] text-slate-400 mt-0.5 leading-relaxed">
                 Configura, supervisa y orquesta tus agentes de ventas.
               </p>
             </div>
@@ -3195,131 +3213,133 @@ export default function WhatsAppPage() {
             onDeleted={handleBotDeleted}
           />
         ) : (
-          <div className="space-y-8 md:space-y-10">
-            {/* Stats — premium, no harsh borders */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <div className="group relative rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.015] ring-1 ring-white/[0.05] backdrop-blur-xl p-5 sm:p-6 hover:ring-white/[0.1] transition-all duration-300">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-11 h-11 rounded-2xl bg-slate-500/10 flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-slate-300" strokeWidth={1.7} />
+          <div className="space-y-5 md:space-y-6">
+            {/* Stats — compact KPI row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-4 hover:ring-white/[0.1] transition-all duration-300">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-slate-500/10 flex items-center justify-center">
+                    <Bot className="w-4 h-4 text-slate-300" strokeWidth={1.7} />
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500 font-medium">Total</span>
                 </div>
-                <div className="text-[36px] sm:text-[44px] font-semibold text-slate-50 leading-none tracking-tight">{bots.length}</div>
-                <div className="text-[12px] text-slate-400 mt-2">Agentes</div>
+                <div className="text-[26px] sm:text-[30px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{bots.length}</div>
+                <div className="text-[11.5px] text-slate-400 mt-1.5">Agentes</div>
               </div>
 
-              <div className="group relative rounded-3xl bg-gradient-to-b from-sky-500/[0.07] to-sky-500/[0.015] ring-1 ring-sky-400/15 backdrop-blur-xl p-5 sm:p-6 shadow-[0_8px_40px_-12px_rgba(56,189,248,0.4)] hover:ring-sky-400/30 hover:shadow-[0_12px_50px_-8px_rgba(56,189,248,0.55)] transition-all duration-300">
-                <div className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full bg-sky-500/15 blur-3xl" />
-                <div className="relative flex items-center justify-between mb-5">
-                  <div className="w-11 h-11 rounded-2xl bg-sky-500/15 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                    <Zap className="w-5 h-5 text-sky-300" strokeWidth={1.8} />
+              <div className="group relative rounded-2xl bg-gradient-to-b from-sky-500/[0.08] to-sky-500/[0.015] ring-1 ring-sky-400/20 backdrop-blur-xl p-4 shadow-[0_4px_24px_-10px_rgba(56,189,248,0.4)] hover:ring-sky-400/35 hover:shadow-[0_8px_32px_-8px_rgba(56,189,248,0.5)] transition-all duration-300 overflow-hidden">
+                <div className="pointer-events-none absolute -top-10 -right-10 w-28 h-28 rounded-full bg-sky-500/15 blur-2xl" />
+                <div className="relative flex items-center justify-between mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-sky-500/15 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                    <Zap className="w-4 h-4 text-sky-300" strokeWidth={1.9} />
                   </div>
                   <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-emerald-300 font-medium">
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
                     </span>
-                    Online
+                    Live
                   </span>
                 </div>
-                <div className="relative text-[36px] sm:text-[44px] font-semibold text-sky-300 leading-none tracking-tight">{activeBots}</div>
-                <div className="relative text-[12px] text-slate-400 mt-2">Activos ahora</div>
+                <div className="relative text-[26px] sm:text-[30px] font-semibold text-sky-300 leading-none tracking-tight tabular-nums">{activeBots}</div>
+                <div className="relative text-[11.5px] text-slate-400 mt-1.5">Activos</div>
               </div>
 
-              <div className="group relative rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.015] ring-1 ring-white/[0.05] backdrop-blur-xl p-5 sm:p-6 hover:ring-violet-400/20 transition-all duration-300">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-11 h-11 rounded-2xl bg-violet-500/10 flex items-center justify-center">
-                    <ShoppingBag className="w-5 h-5 text-violet-300" strokeWidth={1.7} />
+              <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-4 hover:ring-violet-400/20 transition-all duration-300">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                    <ShoppingBag className="w-4 h-4 text-violet-300" strokeWidth={1.7} />
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500 font-medium">Catálogo</span>
                 </div>
-                <div className="text-[36px] sm:text-[44px] font-semibold text-slate-50 leading-none tracking-tight">{totalProducts}</div>
-                <div className="text-[12px] text-slate-400 mt-2">Productos</div>
+                <div className="text-[26px] sm:text-[30px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{totalProducts}</div>
+                <div className="text-[11.5px] text-slate-400 mt-1.5">Productos</div>
               </div>
 
-              <div className="group relative rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.015] ring-1 ring-white/[0.05] backdrop-blur-xl p-5 sm:p-6 hover:ring-cyan-400/20 transition-all duration-300">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="w-11 h-11 rounded-2xl bg-cyan-500/10 flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5 text-cyan-300" strokeWidth={1.7} />
+              <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-4 hover:ring-cyan-400/20 transition-all duration-300">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                    <MessageCircle className="w-4 h-4 text-cyan-300" strokeWidth={1.7} />
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500 font-medium">Tráfico</span>
                 </div>
-                <div className="text-[36px] sm:text-[44px] font-semibold text-slate-50 leading-none tracking-tight">{totalChats}</div>
-                <div className="text-[12px] text-slate-400 mt-2">Conversaciones</div>
+                <div className="text-[26px] sm:text-[30px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{totalChats}</div>
+                <div className="text-[11.5px] text-slate-400 mt-1.5">Chats</div>
               </div>
             </div>
 
             {/* Create bot form */}
             <CreateBotForm onCreated={handleBotCreated} />
 
-            {/* Bot list */}
+            {/* Bot list section header */}
             {!loading && bots.length > 0 && (
-              <div className="flex items-end justify-between gap-4 pt-2">
+              <div className="flex items-end justify-between gap-4 pt-1">
                 <div>
-                  <h2 className="text-lg sm:text-xl font-semibold text-slate-50 tracking-tight leading-none">Tus agentes</h2>
-                  <p className="text-[13px] text-slate-400 mt-1.5">
-                    {bots.length} {bots.length === 1 ? 'agente desplegado' : 'agentes desplegados'} · {activeBots} {activeBots === 1 ? 'activo' : 'activos'}
+                  <h2 className="text-base sm:text-lg font-semibold text-slate-50 tracking-tight leading-none">Tus agentes</h2>
+                  <p className="text-[12px] text-slate-400 mt-1">
+                    {bots.length} {bots.length === 1 ? 'agente' : 'agentes'} · {activeBots} {activeBots === 1 ? 'activo' : 'activos'}
                   </p>
                 </div>
               </div>
             )}
 
             {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="flex flex-col items-center gap-3">
-                  <Loader2 className="w-7 h-7 animate-spin text-sky-400" />
-                  <span className="text-[12px] text-slate-400">Cargando agentes…</span>
+              <div className="flex items-center justify-center py-14">
+                <div className="flex flex-col items-center gap-2.5">
+                  <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
+                  <span className="text-[11.5px] text-slate-400">Cargando agentes…</span>
                 </div>
               </div>
             ) : bots.length === 0 ? (
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-12 sm:p-16 text-center">
-                <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-sky-500/[0.08] blur-[100px]" />
-                <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-sky-500/20 via-sky-500/10 to-cyan-500/[0.05] flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_-8px_rgba(56,189,248,0.5),inset_0_1px_0_rgba(255,255,255,0.1)]">
-                  <Bot className="w-10 h-10 text-sky-300" strokeWidth={1.4} />
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-10 sm:p-14 text-center">
+                <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[380px] h-[180px] bg-sky-500/[0.08] blur-[100px]" />
+                <div className="relative w-20 h-20 rounded-full overflow-hidden ring-1 ring-sky-400/30 mx-auto mb-5 shadow-[0_0_40px_-8px_rgba(56,189,248,0.55)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={AI_AVATAR_URL} alt="AI" className="absolute inset-0 w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-transparent to-cyan-400/10 mix-blend-screen" />
                 </div>
-                <div className="relative text-slate-50 font-semibold text-xl mb-2 tracking-tight">
+                <div className="relative text-slate-50 font-semibold text-lg mb-1.5 tracking-tight">
                   Sin agentes aún
                 </div>
-                <div className="relative text-slate-400 text-[14px] max-w-md mx-auto leading-relaxed">
-                  Inicializa tu primer agente de IA usando el módulo de arriba. Solo toma 30 segundos.
+                <div className="relative text-slate-400 text-[13px] max-w-sm mx-auto leading-relaxed">
+                  Inicializa tu primer agente usando el módulo de arriba. Toma 30 segundos.
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3.5">
                 {bots.map(bot => (
                   <BotCard key={bot.id} bot={bot} onSelect={handleSelectBot} />
                 ))}
               </div>
             )}
 
-            {/* How it works */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-6 sm:p-8">
-              <div className="flex items-center gap-3 mb-7">
-                <div className="w-9 h-9 rounded-xl bg-sky-500/10 flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-sky-300" strokeWidth={1.8} />
+            {/* How it works — compact */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.025] to-white/[0.008] ring-1 ring-white/[0.05] backdrop-blur-xl p-5 sm:p-6">
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center">
+                  <Zap className="w-3.5 h-3.5 text-sky-300" strokeWidth={1.9} />
                 </div>
                 <div>
-                  <h3 className="text-[15px] font-semibold text-slate-50 tracking-tight leading-none">¿Cómo funciona?</h3>
-                  <p className="text-[12px] text-slate-500 mt-1">Pon tu agente en marcha en 4 pasos.</p>
+                  <h3 className="text-[14px] font-semibold text-slate-50 tracking-tight leading-none">¿Cómo funciona?</h3>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5">4 pasos para activar tu agente.</p>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
                 {([
-                  { num: '01', icon: <Plus className="w-4 h-4" />,         title: 'Crea el agente',         desc: 'Dale un nombre y obtén la URL de webhook.' },
-                  { num: '02', icon: <Key className="w-4 h-4" />,          title: 'Configura credenciales', desc: 'Agrega las API keys de la conexión y OpenAI.' },
-                  { num: '03', icon: <ShoppingBag className="w-4 h-4" />,  title: 'Agrega productos',       desc: 'Define la base de conocimiento del agente.' },
-                  { num: '04', icon: <Webhook className="w-4 h-4" />,      title: 'Conecta el canal',       desc: 'Apunta el webhook en tu panel del proveedor.' },
+                  { num: '01', icon: <Plus className="w-3.5 h-3.5" />,         title: 'Crea el agente',         desc: 'Dale un nombre y obtén la URL de webhook.' },
+                  { num: '02', icon: <Key className="w-3.5 h-3.5" />,          title: 'Configura credenciales', desc: 'Agrega las API keys de la conexión y OpenAI.' },
+                  { num: '03', icon: <ShoppingBag className="w-3.5 h-3.5" />,  title: 'Agrega productos',       desc: 'Define la base de conocimiento del agente.' },
+                  { num: '04', icon: <Webhook className="w-3.5 h-3.5" />,      title: 'Conecta el canal',       desc: 'Apunta el webhook en tu panel del proveedor.' },
                 ] as const).map((step, i) => (
-                  <div key={i} className="group relative rounded-2xl bg-white/[0.02] ring-1 ring-white/[0.04] p-4 sm:p-5 hover:bg-white/[0.04] hover:ring-white/[0.08] transition-all duration-300">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-300 flex items-center justify-center group-hover:bg-sky-500/15 transition-colors">
+                  <div key={i} className="group relative rounded-xl bg-white/[0.02] ring-1 ring-white/[0.04] p-3.5 hover:bg-white/[0.04] hover:ring-white/[0.08] transition-all duration-300">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-300 flex items-center justify-center group-hover:bg-sky-500/15 transition-colors">
                         {step.icon}
                       </div>
-                      <span className="text-[11px] font-mono text-slate-600 tracking-wider">{step.num}</span>
+                      <span className="text-[10.5px] font-mono text-slate-600 tracking-wider">{step.num}</span>
                     </div>
-                    <div className="text-[13px] font-semibold text-slate-100 mb-1.5 tracking-tight leading-tight">{step.title}</div>
-                    <div className="text-[12px] text-slate-400 leading-relaxed">{step.desc}</div>
+                    <div className="text-[12.5px] font-semibold text-slate-100 mb-1 tracking-tight leading-tight">{step.title}</div>
+                    <div className="text-[11.5px] text-slate-400 leading-relaxed">{step.desc}</div>
                   </div>
                 ))}
               </div>
