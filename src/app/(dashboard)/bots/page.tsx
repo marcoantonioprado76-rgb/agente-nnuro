@@ -288,7 +288,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 
 // ─── Bot List ─────────────────────────────────────────────────────────────────
 
-const AI_AVATAR_URL = 'https://i.ibb.co/RGjyrFWc/IMAGEN-DE-NUERO-PNG.png'
+const AI_AVATAR_URL = 'https://i.ibb.co/YF6smdRk/NURO-123.png'
 
 // Premium holographic AI avatar — full robot visible, no crop, ambient glow
 function AIAvatar({
@@ -318,14 +318,14 @@ function AIAvatar({
             : 'bg-[radial-gradient(circle_at_30%_25%,rgba(148,163,184,0.10),rgba(2,6,15,0.95)_70%)] ring-1 ring-white/[0.08]'
           }`}
       >
-        {/* Robot — contained, with breathing room, slightly raised for "floating" feel */}
-        <div className="absolute inset-0 flex items-end justify-center pb-[6%]">
+        {/* Robot — larger, slightly raised for "floating" feel */}
+        <div className="absolute inset-0 flex items-end justify-center pb-[2%]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={AI_AVATAR_URL}
             alt="Agente IA"
-            className={`w-[82%] h-[82%] object-contain transition-all duration-500 ${active ? '' : 'grayscale opacity-65'}`}
-            style={{ filter: active ? 'drop-shadow(0 2px 6px rgba(56,189,248,0.35))' : 'none' }}
+            className={`w-[96%] h-[96%] object-contain transition-all duration-500 ${active ? '' : 'grayscale opacity-65'}`}
+            style={{ filter: active ? 'drop-shadow(0 2px 8px rgba(56,189,248,0.4))' : 'none' }}
             loading="lazy"
           />
         </div>
