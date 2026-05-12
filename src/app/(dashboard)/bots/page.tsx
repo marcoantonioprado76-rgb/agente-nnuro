@@ -373,110 +373,111 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
 
   return (
     <div
-      className={`group relative rounded-2xl transition-all duration-500 ease-out
+      className={`group relative overflow-hidden rounded-2xl transition-all duration-500 ease-out
         ${isActive
-          ? 'bg-gradient-to-b from-white/[0.04] to-white/[0.015] shadow-[0_4px_24px_-10px_rgba(14,165,233,0.25)] ring-1 ring-white/[0.06] hover:ring-sky-400/30 hover:shadow-[0_12px_40px_-12px_rgba(14,165,233,0.45)] hover:-translate-y-0.5'
-          : 'bg-white/[0.02] ring-1 ring-white/[0.04] hover:ring-white/[0.1] hover:bg-white/[0.03] hover:-translate-y-0.5'
+          ? 'bg-gradient-to-b from-white/[0.05] via-white/[0.02] to-white/[0.01] ring-1 ring-white/[0.07] shadow-[0_8px_30px_-12px_rgba(14,165,233,0.35)] hover:ring-sky-400/30 hover:shadow-[0_16px_50px_-14px_rgba(14,165,233,0.55)] hover:-translate-y-1'
+          : 'bg-white/[0.02] ring-1 ring-white/[0.04] hover:ring-white/[0.12] hover:bg-white/[0.03] hover:-translate-y-0.5'
         }`}
     >
-      {/* Soft inner glow for active */}
+      {/* Top sheen */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+      {/* Ambient sky glow */}
       {isActive && (
-        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.10),transparent_55%)]" />
+        <>
+          <div className="pointer-events-none absolute -top-20 -right-16 w-48 h-48 rounded-full bg-sky-500/[0.18] blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-16 w-44 h-44 rounded-full bg-cyan-500/[0.08] blur-3xl" />
+        </>
       )}
 
       <button
         onClick={() => onSelect(bot)}
         className="relative z-10 w-full text-left p-5"
       >
-        {/* Header: Holographic avatar + Name + Status */}
-        <div className="flex items-start gap-4 mb-5">
-          <div className="relative">
-            <AIAvatar size="md" active={isActive} />
-            {/* Online indicator dot */}
-            {isActive && (
-              <span className="absolute bottom-0 right-0.5 w-3.5 h-3.5 rounded-full bg-[#05070A] flex items-center justify-center ring-2 ring-[#05070A] z-10">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
+        {/* Header: avatar + identity */}
+        <div className="flex items-start gap-4 mb-4">
+          <AIAvatar size="md" active={isActive} />
+
+          <div className="min-w-0 flex-1 pt-1.5">
+            {/* Status row — Status · Channel */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`flex items-center gap-1.5 text-[10px] font-medium tracking-[0.12em] uppercase
+                ${isActive ? 'text-emerald-300' : 'text-slate-500'}`}>
+                <span className="relative flex h-1.5 w-1.5">
+                  {isActive && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />}
+                  <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${isActive ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]' : 'bg-slate-600'}`} />
                 </span>
+                {isActive ? 'En línea' : 'Pausado'}
               </span>
+              <span className="text-slate-700">·</span>
+              <span className="text-[10px] text-slate-400 font-medium uppercase tracking-[0.12em] truncate">{channel}</span>
+            </div>
+
+            {/* Name */}
+            <h3 className="text-[16px] sm:text-[17px] font-semibold text-slate-50 tracking-tight leading-tight truncate">
+              {bot.name}
+            </h3>
+
+            {/* Phone — mono */}
+            {bot.secret?.whatsappInstanceNumber && (
+              <div className="text-[11.5px] font-mono text-slate-400 mt-1 truncate flex items-center gap-1.5">
+                <Smartphone className="w-3 h-3 shrink-0 opacity-60" strokeWidth={2} />
+                {bot.secret.whatsappInstanceNumber}
+              </div>
             )}
           </div>
-
-          <div className="min-w-0 flex-1 pt-0.5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <div className="font-semibold text-slate-50 text-[15px] sm:text-base truncate tracking-tight leading-tight">
-                  {bot.name}
-                </div>
-                <div className="text-[11.5px] text-slate-500 mt-1 flex items-center gap-1.5 flex-wrap">
-                  <span>{channel}</span>
-                  {bot.secret?.whatsappInstanceNumber && (
-                    <>
-                      <span className="text-slate-700">·</span>
-                      <span className="font-mono text-slate-400">{bot.secret.whatsappInstanceNumber}</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <span
-                className={`flex items-center gap-1.5 text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 tracking-wide
-                  ${isActive
-                    ? 'bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/20'
-                    : 'bg-white/[0.04] text-slate-400 ring-1 ring-white/[0.06]'
-                  }`}
-              >
-                {isActive && (
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
-                  </span>
-                )}
-                {isActive ? 'Online' : 'Pausado'}
-              </span>
-            </div>
-          </div>
         </div>
 
-        {/* Stats — compact tiles */}
+        {/* Soft separator */}
+        <div className="pointer-events-none mb-4 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+        {/* Metrics — premium pills */}
         <div className="grid grid-cols-2 gap-2.5 mb-4">
-          <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.035] transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-3.5 h-3.5 text-violet-300" strokeWidth={1.8} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-[15px] font-semibold text-slate-100 leading-none tracking-tight">
-                {bot._count?.assignedProducts ?? 0}
+          <div className="group/m relative overflow-hidden rounded-xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] ring-1 ring-white/[0.05] px-3 py-2.5 hover:ring-violet-400/25 transition-all duration-300">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-violet-500/15 flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <ShoppingBag className="w-4 h-4 text-violet-300" strokeWidth={1.8} />
               </div>
-              <div className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-[0.1em] font-medium">Productos</div>
+              <div className="min-w-0">
+                <div className="text-[18px] font-semibold text-slate-50 tabular-nums leading-none tracking-tight">{bot._count?.assignedProducts ?? 0}</div>
+                <div className="text-[9.5px] text-slate-400 mt-1 uppercase tracking-[0.14em] font-medium">Productos</div>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.035] transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0">
-              <MessageCircle className="w-3.5 h-3.5 text-sky-300" strokeWidth={1.8} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-[15px] font-semibold text-slate-100 leading-none tracking-tight">
-                {bot._count?.conversations ?? 0}
+          <div className="group/m relative overflow-hidden rounded-xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] ring-1 ring-white/[0.05] px-3 py-2.5 hover:ring-sky-400/25 transition-all duration-300">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-sky-500/15 flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <MessageCircle className="w-4 h-4 text-sky-300" strokeWidth={1.8} />
               </div>
-              <div className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-[0.1em] font-medium">Chats</div>
+              <div className="min-w-0">
+                <div className="text-[18px] font-semibold text-slate-50 tabular-nums leading-none tracking-tight">{bot._count?.conversations ?? 0}</div>
+                <div className="text-[9.5px] text-slate-400 mt-1 uppercase tracking-[0.14em] font-medium">Chats</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* CTA */}
-        <div
-          className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl transition-all duration-300
+        {/* Premium CTA */}
+        <div className={`relative overflow-hidden flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ring-1
+          ${isActive
+            ? 'bg-gradient-to-r from-sky-500/[0.22] via-sky-500/[0.10] to-sky-500/[0.04] ring-sky-400/25 group-hover:from-sky-500/[0.32] group-hover:via-sky-500/[0.16] group-hover:ring-sky-400/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+            : 'bg-white/[0.03] ring-white/[0.06] group-hover:bg-white/[0.05] group-hover:ring-white/[0.12]'
+          }`}>
+          {/* Shimmer on hover */}
+          <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+
+          <div className="relative flex items-center gap-2">
+            <Sparkles className={`w-3.5 h-3.5 ${isActive ? 'text-sky-300' : 'text-slate-400'}`} strokeWidth={1.9} />
+            <span className={`text-[12.5px] font-medium tracking-tight ${isActive ? 'text-sky-50' : 'text-slate-200'}`}>
+              Abrir agente
+            </span>
+          </div>
+          <div className={`relative w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300
             ${isActive
-              ? 'bg-gradient-to-r from-sky-500/15 to-sky-500/[0.05] group-hover:from-sky-500/25 group-hover:to-sky-500/10'
-              : 'bg-white/[0.03] group-hover:bg-white/[0.05]'
-            }`}
-        >
-          <span className={`text-[12.5px] font-medium tracking-tight ${isActive ? 'text-sky-200' : 'text-slate-300'}`}>
-            Abrir agente
-          </span>
-          <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-sky-400/20 text-sky-200 group-hover:bg-sky-400/30' : 'bg-white/[0.04] text-slate-400 group-hover:bg-white/[0.08]'}`}>
-            <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
+              ? 'bg-sky-400/20 text-sky-100 group-hover:bg-sky-400/35'
+              : 'bg-white/[0.04] text-slate-300 group-hover:bg-white/[0.08]'
+            }`}>
+            <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.2} />
           </div>
         </div>
       </button>
