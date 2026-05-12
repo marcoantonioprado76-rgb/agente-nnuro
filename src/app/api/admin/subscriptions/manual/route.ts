@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { getServerSession } from '@/lib/auth'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
@@ -74,9 +75,12 @@ export async function POST(request: NextRequest) {
     }
 
     // 2) Crear la nueva suscripción activa
+    // Generamos el id en la app porque Prisma define @default(uuid()) a nivel
+    // de cliente, no a nivel de base de datos.
     const { data: subscription, error: subError } = await service
       .from('subscriptions')
       .insert({
+        id: randomUUID(),
         user_id,
         plan_id,
         status: 'active',
@@ -103,6 +107,7 @@ export async function POST(request: NextRequest) {
 
     // 3) Registro de pago manual (no bloqueamos si falla — la suscripción ya está activa)
     const { error: payError } = await service.from('payments').insert({
+      id: randomUUID(),
       user_id,
       subscription_id: subscription.id,
       amount: 0,
