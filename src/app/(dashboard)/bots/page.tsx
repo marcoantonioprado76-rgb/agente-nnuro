@@ -288,7 +288,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 
 // ─── Bot List ─────────────────────────────────────────────────────────────────
 
-const AI_AVATAR_URL = 'https://i.ibb.co/pBxwp28R/envato-labs-image-edit-70.png'
+const AI_AVATAR_URL = 'https://i.ibb.co/RGjyrFWc/IMAGEN-DE-NUERO-PNG.png'
 
 // Premium holographic AI avatar — full robot visible, no crop, ambient glow
 function AIAvatar({
