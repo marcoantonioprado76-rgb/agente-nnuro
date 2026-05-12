@@ -47,8 +47,33 @@ export async function POST(request: NextRequest) {
     const now = new Date()
     const endDate = new Date(now)
     endDate.setDate(endDate.getDate() + 30)
+    const nowIso = now.toISOString()
+    const endIso = endDate.toISOString()
 
-    // Primero crear la nueva suscripción
+    // 1) Cancelar cualquier suscripción previa activa/pendiente de este usuario
+    //    Lo hacemos PRIMERO para evitar conflictos con un posible índice único
+    //    (status='active' único por user_id) en la base de datos.
+    const { error: cancelError } = await service
+      .from('subscriptions')
+      .update({
+        status: 'cancelled',
+        approval_status: 'rejected',
+        cancelled_at: nowIso,
+        cancelled_by: session.sub,
+        updated_at: nowIso,
+      })
+      .eq('user_id', user_id)
+      .in('status', ['active', 'pending'])
+
+    if (cancelError) {
+      console.error('[manual sub] error cancelando previas:', cancelError)
+      return NextResponse.json(
+        { error: `Error al cancelar suscripciones previas: ${cancelError.message}` },
+        { status: 500 }
+      )
+    }
+
+    // 2) Crear la nueva suscripción activa
     const { data: subscription, error: subError } = await service
       .from('subscriptions')
       .insert({
@@ -57,38 +82,27 @@ export async function POST(request: NextRequest) {
         status: 'active',
         approval_status: 'approved',
         payment_provider: 'manual',
-        start_date: now.toISOString(),
-        end_date: endDate.toISOString(),
+        start_date: nowIso,
+        end_date: endIso,
         approved_by: session.sub,
-        approved_at: now.toISOString(),
-        admin_notes: `Activación manual por administrador`,
-        created_at: now.toISOString(),
-        updated_at: now.toISOString(),
+        approved_at: nowIso,
+        admin_notes: 'Activación manual por administrador',
+        created_at: nowIso,
+        updated_at: nowIso,
       })
       .select()
       .single()
 
-    if (subError) {
-      console.error('Error creando suscripción manual:', subError)
-      return NextResponse.json({ error: 'Error al crear suscripción' }, { status: 500 })
+    if (subError || !subscription) {
+      console.error('[manual sub] error creando suscripción:', subError)
+      return NextResponse.json(
+        { error: `Error al crear suscripción: ${subError?.message ?? 'sin detalle'}` },
+        { status: 500 }
+      )
     }
 
-    // Solo cancelar las anteriores DESPUÉS de que la nueva se creó exitosamente
-    await service
-      .from('subscriptions')
-      .update({
-        status: 'cancelled',
-        approval_status: 'rejected',
-        cancelled_at: now.toISOString(),
-        cancelled_by: session.sub,
-        updated_at: now.toISOString(),
-      })
-      .eq('user_id', user_id)
-      .in('status', ['active', 'pending'])
-      .neq('id', subscription.id)
-
-    // Crear registro de pago manual
-    await service.from('payments').insert({
+    // 3) Registro de pago manual (no bloqueamos si falla — la suscripción ya está activa)
+    const { error: payError } = await service.from('payments').insert({
       user_id,
       subscription_id: subscription.id,
       amount: 0,
@@ -96,14 +110,17 @@ export async function POST(request: NextRequest) {
       payment_method: 'manual',
       payment_status: 'completed',
       notes: `Activación manual - ${plan.name}`,
-      admin_notes: `Aprobado manualmente por admin`,
+      admin_notes: 'Aprobado manualmente por admin',
       reviewed_by: session.sub,
-      reviewed_at: now.toISOString(),
-      created_at: now.toISOString(),
+      reviewed_at: nowIso,
+      created_at: nowIso,
     })
+    if (payError) {
+      console.warn('[manual sub] payments insert (no bloqueante):', payError.message)
+    }
 
-    // Auditoría
-    await logAudit({
+    // 4) Auditoría — fire and forget
+    logAudit({
       userId: session.sub,
       tenantId: session.tenant_id ?? undefined,
       action: 'crear_suscripcion',
@@ -114,20 +131,21 @@ export async function POST(request: NextRequest) {
         target_user: user_id,
         target_email: targetProfile.email,
         plan_name: plan.name,
-        start_date: now.toISOString(),
-        end_date: endDate.toISOString(),
+        start_date: nowIso,
+        end_date: endIso,
       },
-    })
+    }).catch(err => console.warn('[manual sub] audit log:', err))
 
     return NextResponse.json({
       message: 'Suscripción activada manualmente',
       subscription,
-      start_date: now.toISOString(),
-      end_date: endDate.toISOString(),
+      start_date: nowIso,
+      end_date: endIso,
       plan_name: plan.name,
     })
   } catch (error) {
     console.error('Error en POST /api/admin/subscriptions/manual:', error)
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : 'Error interno'
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
