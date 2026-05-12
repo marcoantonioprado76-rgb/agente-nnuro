@@ -299,10 +299,10 @@ function AIAvatar({
   active?: boolean
 }) {
   const dim =
-    size === 'sm' ? 'w-10 h-10'
-    : size === 'md' ? 'w-[60px] h-[60px] sm:w-[68px] sm:h-[68px]'
-    : size === 'lg' ? 'w-20 h-20'
-    : 'w-24 h-24'
+    size === 'sm' ? 'w-14 h-14 sm:w-[60px] sm:h-[60px]'
+    : size === 'md' ? 'w-[84px] h-[84px] sm:w-[96px] sm:h-[96px]'
+    : size === 'lg' ? 'w-32 h-32 sm:w-36 sm:h-36'
+    : 'w-40 h-40'
 
   return (
     <div className={`relative shrink-0 ${dim}`}>
