@@ -290,6 +290,54 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 
 const AI_AVATAR_URL = 'https://i.ibb.co/pBxwp28R/envato-labs-image-edit-70.png'
 
+// Premium holographic AI avatar — full robot visible, no crop, ambient glow
+function AIAvatar({
+  size = 'md',
+  active = true,
+}: {
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  active?: boolean
+}) {
+  const dim =
+    size === 'sm' ? 'w-10 h-10'
+    : size === 'md' ? 'w-[60px] h-[60px] sm:w-[68px] sm:h-[68px]'
+    : size === 'lg' ? 'w-20 h-20'
+    : 'w-24 h-24'
+
+  return (
+    <div className={`relative shrink-0 ${dim}`}>
+      {/* Ambient sky halo — behind the disc, not framing the robot */}
+      {active && (
+        <div className="pointer-events-none absolute -inset-2 rounded-full bg-sky-500/[0.18] blur-2xl opacity-70 transition-opacity duration-500" />
+      )}
+      {/* Holographic disc — dark gradient that blends with the page so the PNG bg disappears */}
+      <div
+        className={`relative h-full w-full rounded-full overflow-hidden transition-all duration-500
+          ${active
+            ? 'bg-[radial-gradient(circle_at_30%_25%,rgba(56,189,248,0.22),rgba(2,6,15,0.95)_70%)] ring-1 ring-sky-400/25 shadow-[inset_0_0_20px_rgba(56,189,248,0.18),0_6px_20px_-6px_rgba(56,189,248,0.45)]'
+            : 'bg-[radial-gradient(circle_at_30%_25%,rgba(148,163,184,0.10),rgba(2,6,15,0.95)_70%)] ring-1 ring-white/[0.08]'
+          }`}
+      >
+        {/* Robot — contained, with breathing room, slightly raised for "floating" feel */}
+        <div className="absolute inset-0 flex items-end justify-center pb-[6%]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={AI_AVATAR_URL}
+            alt="Agente IA"
+            className={`w-[82%] h-[82%] object-contain transition-all duration-500 ${active ? '' : 'grayscale opacity-65'}`}
+            style={{ filter: active ? 'drop-shadow(0 2px 6px rgba(56,189,248,0.35))' : 'none' }}
+            loading="lazy"
+          />
+        </div>
+        {/* Top arc highlight — gives holographic feel */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.06] to-transparent rounded-t-full" />
+        {/* Inner rim subtle */}
+        <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-white/[0.04]" />
+      </div>
+    </div>
+  )
+}
+
 function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) {
   const isActive = bot.status === 'ACTIVE'
   const channel = bot.type === 'BAILEYS' ? 'WhatsApp Web'
@@ -316,34 +364,11 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
       >
         {/* Header: Holographic avatar + Name + Status */}
         <div className="flex items-start gap-4 mb-5">
-          {/* Holographic AI avatar */}
-          <div className="relative shrink-0">
-            {/* Sky glow halo behind avatar */}
-            {isActive && (
-              <div className="absolute -inset-1.5 rounded-full bg-sky-500/20 blur-xl opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
-            )}
-            <div
-              className={`relative w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden ring-1 transition-all duration-500
-                ${isActive
-                  ? 'ring-sky-400/40 shadow-[inset_0_0_20px_rgba(56,189,248,0.15),0_4px_20px_-4px_rgba(56,189,248,0.4)]'
-                  : 'ring-white/10 shadow-[inset_0_0_15px_rgba(255,255,255,0.04)] grayscale opacity-70'
-                }`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={AI_AVATAR_URL}
-                alt={`Agente ${bot.name}`}
-                className="absolute inset-0 w-full h-full object-cover scale-105"
-                loading="lazy"
-              />
-              {/* Holographic sheen overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-tr ${isActive ? 'from-sky-500/10 via-transparent to-cyan-400/[0.08]' : 'from-transparent via-transparent to-white/[0.04]'} mix-blend-screen pointer-events-none`} />
-              {/* Top highlight */}
-              <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
-            </div>
+          <div className="relative">
+            <AIAvatar size="md" active={isActive} />
             {/* Online indicator dot */}
             {isActive && (
-              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-[#05070A] flex items-center justify-center ring-2 ring-[#05070A]">
+              <span className="absolute bottom-0 right-0.5 w-3.5 h-3.5 rounded-full bg-[#05070A] flex items-center justify-center ring-2 ring-[#05070A] z-10">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]" />
@@ -3179,11 +3204,7 @@ export default function WhatsAppPage() {
             <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:text-slate-200 transition-colors" />
           </Link>
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
-            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-2xl overflow-hidden ring-1 ring-sky-400/25 shadow-[0_0_25px_-6px_rgba(56,189,248,0.5)] shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={AI_AVATAR_URL} alt="AI" className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-transparent to-cyan-400/10 mix-blend-screen" />
-            </div>
+            <AIAvatar size="sm" active />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-[10px] uppercase tracking-[0.16em] text-sky-300/70 font-medium">Centro de control</span>
@@ -3214,57 +3235,61 @@ export default function WhatsAppPage() {
           />
         ) : (
           <div className="space-y-5 md:space-y-6">
-            {/* Stats — compact KPI row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-4 hover:ring-white/[0.1] transition-all duration-300">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-slate-500/10 flex items-center justify-center">
+            {/* Stats — compact horizontal KPI row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+              <div className="group relative rounded-xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl px-3.5 py-3 hover:ring-white/[0.1] transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-slate-500/10 flex items-center justify-center shrink-0">
                     <Bot className="w-4 h-4 text-slate-300" strokeWidth={1.7} />
                   </div>
-                  <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500 font-medium">Total</span>
+                  <div className="min-w-0">
+                    <div className="text-[22px] sm:text-[24px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{bots.length}</div>
+                    <div className="text-[10.5px] text-slate-400 mt-1 uppercase tracking-[0.1em] font-medium">Agentes</div>
+                  </div>
                 </div>
-                <div className="text-[26px] sm:text-[30px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{bots.length}</div>
-                <div className="text-[11.5px] text-slate-400 mt-1.5">Agentes</div>
               </div>
 
-              <div className="group relative rounded-2xl bg-gradient-to-b from-sky-500/[0.08] to-sky-500/[0.015] ring-1 ring-sky-400/20 backdrop-blur-xl p-4 shadow-[0_4px_24px_-10px_rgba(56,189,248,0.4)] hover:ring-sky-400/35 hover:shadow-[0_8px_32px_-8px_rgba(56,189,248,0.5)] transition-all duration-300 overflow-hidden">
-                <div className="pointer-events-none absolute -top-10 -right-10 w-28 h-28 rounded-full bg-sky-500/15 blur-2xl" />
-                <div className="relative flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-sky-500/15 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+              <div className="group relative rounded-xl bg-gradient-to-b from-sky-500/[0.09] to-sky-500/[0.02] ring-1 ring-sky-400/20 backdrop-blur-xl px-3.5 py-3 shadow-[0_4px_20px_-10px_rgba(56,189,248,0.4)] hover:ring-sky-400/35 hover:shadow-[0_6px_24px_-8px_rgba(56,189,248,0.5)] transition-all duration-300 overflow-hidden">
+                <div className="pointer-events-none absolute -top-8 -right-8 w-24 h-24 rounded-full bg-sky-500/15 blur-2xl" />
+                <div className="relative flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-sky-500/15 flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] shrink-0">
                     <Zap className="w-4 h-4 text-sky-300" strokeWidth={1.9} />
                   </div>
-                  <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-emerald-300 font-medium">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
-                    </span>
-                    Live
-                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <div className="text-[22px] sm:text-[24px] font-semibold text-sky-300 leading-none tracking-tight tabular-nums">{activeBots}</div>
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
+                      </span>
+                    </div>
+                    <div className="text-[10.5px] text-slate-400 mt-1 uppercase tracking-[0.1em] font-medium">Activos</div>
+                  </div>
                 </div>
-                <div className="relative text-[26px] sm:text-[30px] font-semibold text-sky-300 leading-none tracking-tight tabular-nums">{activeBots}</div>
-                <div className="relative text-[11.5px] text-slate-400 mt-1.5">Activos</div>
               </div>
 
-              <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-4 hover:ring-violet-400/20 transition-all duration-300">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-violet-500/10 flex items-center justify-center">
+              <div className="group relative rounded-xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl px-3.5 py-3 hover:ring-violet-400/20 transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
                     <ShoppingBag className="w-4 h-4 text-violet-300" strokeWidth={1.7} />
                   </div>
-                  <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500 font-medium">Catálogo</span>
+                  <div className="min-w-0">
+                    <div className="text-[22px] sm:text-[24px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{totalProducts}</div>
+                    <div className="text-[10.5px] text-slate-400 mt-1 uppercase tracking-[0.1em] font-medium">Productos</div>
+                  </div>
                 </div>
-                <div className="text-[26px] sm:text-[30px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{totalProducts}</div>
-                <div className="text-[11.5px] text-slate-400 mt-1.5">Productos</div>
               </div>
 
-              <div className="group relative rounded-2xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-4 hover:ring-cyan-400/20 transition-all duration-300">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+              <div className="group relative rounded-xl bg-gradient-to-b from-white/[0.035] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl px-3.5 py-3 hover:ring-cyan-400/20 transition-all duration-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-cyan-500/10 flex items-center justify-center shrink-0">
                     <MessageCircle className="w-4 h-4 text-cyan-300" strokeWidth={1.7} />
                   </div>
-                  <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500 font-medium">Tráfico</span>
+                  <div className="min-w-0">
+                    <div className="text-[22px] sm:text-[24px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{totalChats}</div>
+                    <div className="text-[10.5px] text-slate-400 mt-1 uppercase tracking-[0.1em] font-medium">Chats</div>
+                  </div>
                 </div>
-                <div className="text-[26px] sm:text-[30px] font-semibold text-slate-50 leading-none tracking-tight tabular-nums">{totalChats}</div>
-                <div className="text-[11.5px] text-slate-400 mt-1.5">Chats</div>
               </div>
             </div>
 
@@ -3293,10 +3318,8 @@ export default function WhatsAppPage() {
             ) : bots.length === 0 ? (
               <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white/[0.03] to-white/[0.01] ring-1 ring-white/[0.05] backdrop-blur-xl p-10 sm:p-14 text-center">
                 <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[380px] h-[180px] bg-sky-500/[0.08] blur-[100px]" />
-                <div className="relative w-20 h-20 rounded-full overflow-hidden ring-1 ring-sky-400/30 mx-auto mb-5 shadow-[0_0_40px_-8px_rgba(56,189,248,0.55)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={AI_AVATAR_URL} alt="AI" className="absolute inset-0 w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-transparent to-cyan-400/10 mix-blend-screen" />
+                <div className="relative flex justify-center mb-5">
+                  <AIAvatar size="lg" active />
                 </div>
                 <div className="relative text-slate-50 font-semibold text-lg mb-1.5 tracking-tight">
                   Sin agentes aún
