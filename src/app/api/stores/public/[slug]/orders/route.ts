@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { createUserNotification } from '@/lib/notifications'
 
@@ -66,6 +67,7 @@ export async function POST(
     const { data: order, error: orderError } = await service
       .from('store_orders')
       .insert({
+        id: randomUUID(),
         store_id: store.id,
         user_id: store.user_id,
         tenant_id: store.tenant_id,

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { getServerSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { createServiceRoleClient } from '@/lib/supabase/server'
@@ -129,9 +130,12 @@ export async function POST(request: NextRequest) {
     // Extract flat visual fields from config objects
     const visual = extractVisualFields(font_config, bg_config)
 
+    // Generamos el id en la app porque Prisma define @default(uuid()) a nivel
+    // de cliente, no a nivel de base de datos.
     const { data: store, error } = await service
       .from('stores')
       .insert({
+        id: randomUUID(),
         user_id: session.sub,
         tenant_id: profile.tenant_id,
         name: name.trim(),

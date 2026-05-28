@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
 
 export async function GET(
@@ -77,10 +78,11 @@ export async function POST(
       return NextResponse.json({ error: 'El nombre del producto es requerido' }, { status: 400 })
     }
 
-    // Create product
+    // Create product (id generated app-side; Prisma default doesn't run on Supabase direct insert)
     const { data: product, error } = await service
       .from('store_products')
       .insert({
+        id: randomUUID(),
         store_id: storeId,
         user_id: user.id,
         tenant_id: profile.tenant_id,
@@ -96,7 +98,7 @@ export async function POST(
 
     if (error) {
       console.error('Error creating store product:', error)
-      return NextResponse.json({ error: 'Error al crear el producto' }, { status: 500 })
+      return NextResponse.json({ error: error.message || 'Error al crear el producto' }, { status: 500 })
     }
 
     // Insert images if provided
@@ -104,6 +106,7 @@ export async function POST(
       const imageRows = images
         .filter((url: string) => url && url.trim())
         .map((url: string, i: number) => ({
+          id: randomUUID(),
           product_id: product.id,
           image_url: url.trim(),
           sort_order: i,
