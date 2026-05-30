@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/server'
 import { getServerSession } from '@/lib/auth'
 
 export async function GET(
@@ -47,9 +47,9 @@ export async function POST(
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
     const user = { id: auth.sub, email: auth.email }
-    const supabase = await createServerSupabaseClient()
 
-    const { data: profile } = await supabase
+    const service = await createServiceRoleClient()
+    const { data: profile } = await service
       .from('profiles')
       .select('tenant_id')
       .eq('id', user.id)
@@ -58,8 +58,7 @@ export async function POST(
     if (!profile) {
       return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
     }
-
-    const service = await createServiceRoleClient()
+    const tenantId = profile.tenant_id || auth.tenant_id || user.id
 
     // Verify store ownership
     const { data: store } = await service
@@ -87,7 +86,7 @@ export async function POST(
         id: randomUUID(),
         store_id: storeId,
         user_id: user.id,
-        tenant_id: profile.tenant_id,
+        tenant_id: tenantId,
         name: name.trim(),
         category: category || 'General',
         currency: currency || 'USD',

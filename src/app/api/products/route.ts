@@ -84,9 +84,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
     const user = { id: auth.sub, email: auth.email };
-    const supabase = await createServerSupabaseClient();
+    const service = await createServiceRoleClient();
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile, error: profileError } = await service
       .from('profiles')
       .select('tenant_id')
       .eq('id', user.id)
@@ -98,6 +98,7 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       );
     }
+    const tenantId = profile.tenant_id || auth.tenant_id || user.id;
 
     const body = await request.json();
     const { botId, product_images, product_testimonials, ...productFields } = body;
@@ -110,11 +111,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify bot belongs to user's tenant
-    const { data: bot } = await supabase
+    const { data: bot } = await service
       .from('bots')
       .select('id')
       .eq('id', botId)
-      .eq('tenant_id', profile.tenant_id)
+      .eq('tenant_id', tenantId)
       .single();
 
     if (!bot) {
@@ -132,7 +133,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar límite del plan
-    const service = await createServiceRoleClient()
     const { data: subscription } = await service
       .from('subscriptions')
       .select('plan_id, plan:plan_id(max_products)')
@@ -145,10 +145,10 @@ export async function POST(request: NextRequest) {
 
     if (subscription) {
       const maxProducts = (subscription.plan as unknown as { max_products: number })?.max_products ?? 999
-      const { count: currentProducts } = await supabase
+      const { count: currentProducts } = await service
         .from('products')
         .select('id', { count: 'exact', head: true })
-        .eq('tenant_id', profile.tenant_id)
+        .eq('tenant_id', tenantId)
 
       if ((currentProducts || 0) >= maxProducts) {
         return NextResponse.json(
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
         id: randomUUID(),
         ...safeFields,
         bot_id: botId,
-        tenant_id: profile.tenant_id,
+        tenant_id: tenantId,
       })
       .select()
       .single();

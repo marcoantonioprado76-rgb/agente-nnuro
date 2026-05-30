@@ -103,6 +103,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
     }
 
+    // Fallback: si el perfil no tiene tenant_id (cuentas OAuth o antiguas),
+    // usamos el propio user_id como tenant — single-tenant por usuario.
+    const tenantId = profile.tenant_id || session.tenant_id || session.sub
+    if (!profile.tenant_id) {
+      // Backfill silencioso para que futuras inserciones encuentren el tenant
+      await db.from('profiles').update({ tenant_id: tenantId }).eq('id', session.sub)
+    }
+
     const body = await request.json()
     const { name, slug, store_type, whatsapp_number, payment_qr_url, visibility, font_config, bg_config } = body
 
@@ -137,7 +145,7 @@ export async function POST(request: NextRequest) {
       .insert({
         id: randomUUID(),
         user_id: session.sub,
-        tenant_id: profile.tenant_id,
+        tenant_id: tenantId,
         name: name.trim(),
         slug: slugClean,
         store_type: store_type || 'business',
