@@ -4,19 +4,22 @@
 -- Estas tablas NO están en el schema de Prisma, por eso
 -- `prisma db push` no las creó. Súbelo y córrelo una sola vez
 -- en el SQL Editor de Supabase.
+--
+-- NOTA: las columnas usan TEXT porque Prisma db push creó las
+-- tablas existentes (stores, profiles, etc.) con id TEXT, no UUID.
+-- Para que las FKs funcionen los tipos deben coincidir.
 -- ============================================================
 
--- Asegurar extensión para gen_random_uuid() si no estaba
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ─────────────────────────────────────────────
 -- store_products
 -- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.store_products (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  store_id    UUID NOT NULL REFERENCES public.stores(id) ON DELETE CASCADE,
-  user_id     UUID NOT NULL,
-  tenant_id   UUID NOT NULL,
+  id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  store_id    TEXT NOT NULL REFERENCES public.stores(id) ON DELETE CASCADE,
+  user_id     TEXT NOT NULL,
+  tenant_id   TEXT NOT NULL,
   name        TEXT NOT NULL,
   category    TEXT NOT NULL DEFAULT 'General',
   currency    TEXT NOT NULL DEFAULT 'USD',
@@ -36,8 +39,8 @@ CREATE INDEX IF NOT EXISTS idx_store_products_tenant ON public.store_products(te
 -- store_product_images
 -- ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.store_product_images (
-  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  product_id UUID NOT NULL REFERENCES public.store_products(id) ON DELETE CASCADE,
+  id         TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  product_id TEXT NOT NULL REFERENCES public.store_products(id) ON DELETE CASCADE,
   image_url  TEXT NOT NULL,
   sort_order INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -52,7 +55,6 @@ CREATE INDEX IF NOT EXISTS idx_store_product_images_product ON public.store_prod
 ALTER TABLE public.store_products       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.store_product_images ENABLE ROW LEVEL SECURITY;
 
--- Lectura pública para mostrar productos en la vitrina pública (/tienda/[slug])
 DROP POLICY IF EXISTS "store_products_public_read" ON public.store_products;
 CREATE POLICY "store_products_public_read" ON public.store_products
   FOR SELECT USING (is_active = TRUE);
