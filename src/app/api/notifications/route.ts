@@ -19,13 +19,13 @@ export async function GET(request: NextRequest) {
     if (session.role === 'admin') {
       // Admin: fetch from admin_notifications
       const { data: notifications } = await service
-        .from('notifications')
+        .from('admin_notifications')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(limit)
 
       const { count } = await service
-        .from('notifications')
+        .from('admin_notifications')
         .select('id', { count: 'exact', head: true })
         .eq('is_read', false)
 
