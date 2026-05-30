@@ -585,6 +585,261 @@ type ChannelType = {
   accentLight: string
 }
 
+// ── ChannelArt — premium vector illustrations per channel ────────────────
+function ChannelArt({ k, acc, accL, selected }: { k: string; acc: string; accL: string; selected: boolean }) {
+  const baseOpacity = selected ? 0.85 : 0.55
+  const stroke = `rgba(${accL},${selected ? 0.85 : 0.6})`
+  const fill   = `rgba(${acc},${selected ? 0.18 : 0.10})`
+  const dim    = `rgba(${accL},${selected ? 0.55 : 0.32})`
+  // Soft fade mask so the art sits behind the icon+text without competing
+  const maskStyle: React.CSSProperties = {
+    maskImage: 'linear-gradient(180deg, black 0%, black 32%, transparent 78%)',
+    WebkitMaskImage: 'linear-gradient(180deg, black 0%, black 32%, transparent 78%)',
+    opacity: baseOpacity,
+  }
+
+  if (k === 'YCLOUD') {
+    return (
+      <svg
+        className="pointer-events-none absolute inset-x-0 top-0 w-full h-[70%]"
+        viewBox="0 0 100 70"
+        preserveAspectRatio="xMidYMid meet"
+        style={maskStyle}
+        aria-hidden
+      >
+        {/* Cloud */}
+        <path d="M28 24 Q 22 13, 38 13 Q 44 5, 54 9 Q 64 5, 70 17 Q 82 17, 76 28 L 28 28 Z"
+          fill={fill} stroke={stroke} strokeWidth="0.6" />
+        {/* Connection lines (dashed) */}
+        {[35, 50, 65].map(x => (
+          <line key={x} x1={x} y1="30" x2={x} y2="50" stroke={dim} strokeWidth="0.5" strokeDasharray="2 2.4" />
+        ))}
+        {/* Servers */}
+        {[28, 43, 58].map(x => (
+          <g key={x}>
+            <rect x={x} y="50" width="14" height="14" rx="1.5"
+              fill={fill} stroke={stroke} strokeWidth="0.5" />
+            <circle cx={x + 2.5} cy="53" r="0.7" fill={stroke} />
+            <line x1={x + 5} y1="53" x2={x + 11} y2="53" stroke={dim} strokeWidth="0.35" />
+            <line x1={x + 2.5} y1="56" x2={x + 11} y2="56" stroke={dim} strokeWidth="0.35" />
+            <line x1={x + 2.5} y1="59" x2={x + 11} y2="59" stroke={dim} strokeWidth="0.35" />
+          </g>
+        ))}
+        {/* Animated data packet */}
+        <motion.circle
+          r={0.9}
+          fill={`rgb(${accL})`}
+          style={{ filter: `drop-shadow(0 0 3px rgb(${accL}))` }}
+          animate={{ cx: [35, 50, 65, 35], cy: [30, 30, 30, 30], opacity: [0, 1, 0, 0] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.circle
+          r={0.9}
+          fill={`rgb(${accL})`}
+          style={{ filter: `drop-shadow(0 0 3px rgb(${accL}))` }}
+          animate={{ cy: [30, 50], opacity: [0, 1, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+          cx={50}
+        />
+      </svg>
+    )
+  }
+
+  if (k === 'BAILEYS') {
+    return (
+      <svg
+        className="pointer-events-none absolute inset-x-0 top-0 w-full h-[70%]"
+        viewBox="0 0 100 70"
+        preserveAspectRatio="xMidYMid meet"
+        style={maskStyle}
+        aria-hidden
+      >
+        {/* Phone */}
+        <rect x="20" y="8" width="28" height="54" rx="5" fill={fill} stroke={stroke} strokeWidth="0.6" />
+        <rect x="22.5" y="13" width="23" height="42" rx="1.5" fill={`rgba(${acc},0.18)`} stroke={dim} strokeWidth="0.35" />
+        <line x1="30" y1="58.5" x2="38" y2="58.5" stroke={stroke} strokeWidth="0.6" strokeLinecap="round" />
+        {/* Chat preview lines inside screen */}
+        <rect x="25" y="17" width="11" height="2" rx="0.5" fill={dim} />
+        <rect x="25" y="21" width="16" height="2" rx="0.5" fill={dim} />
+        <rect x="25" y="25" width="8" height="2" rx="0.5" fill={dim} />
+        <rect x="32" y="29" width="11" height="2" rx="0.5" fill={`rgba(${accL},0.6)`} />
+        <rect x="35" y="33" width="8" height="2" rx="0.5" fill={`rgba(${accL},0.6)`} />
+
+        {/* QR floating */}
+        <g transform="translate(58, 18)">
+          <rect width="28" height="28" rx="2" fill={fill} stroke={stroke} strokeWidth="0.6" />
+          {/* Position markers */}
+          <rect x="2.5" y="2.5" width="6" height="6" rx="0.8" fill="none" stroke={stroke} strokeWidth="0.6" />
+          <rect x="4.2" y="4.2" width="2.6" height="2.6" fill={stroke} />
+          <rect x="19.5" y="2.5" width="6" height="6" rx="0.8" fill="none" stroke={stroke} strokeWidth="0.6" />
+          <rect x="21.2" y="4.2" width="2.6" height="2.6" fill={stroke} />
+          <rect x="2.5" y="19.5" width="6" height="6" rx="0.8" fill="none" stroke={stroke} strokeWidth="0.6" />
+          <rect x="4.2" y="21.2" width="2.6" height="2.6" fill={stroke} />
+          {/* QR data cells */}
+          {[
+            [10, 4],[12, 6],[14, 4],[16, 6],
+            [10, 10],[12, 12],[14, 10],[16, 12],
+            [10, 16],[12, 14],[14, 18],
+            [18, 18],[20, 20],[22, 18],
+            [12, 22],[16, 22],[20, 24],[22, 22],
+          ].map(([x,y],i) => (
+            <rect key={i} x={x} y={y} width="1.6" height="1.6" fill={stroke} />
+          ))}
+        </g>
+
+        {/* Signal waves between phone and QR */}
+        <motion.path
+          d="M50 26 Q 55 22 60 26"
+          fill="none" stroke={stroke} strokeWidth="0.6" strokeLinecap="round"
+          animate={{ opacity: [0.2, 1, 0.2] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.path
+          d="M50 32 Q 55 28 60 32"
+          fill="none" stroke={stroke} strokeWidth="0.6" strokeLinecap="round"
+          animate={{ opacity: [0.2, 1, 0.2] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+        />
+        <motion.path
+          d="M50 38 Q 55 34 60 38"
+          fill="none" stroke={stroke} strokeWidth="0.6" strokeLinecap="round"
+          animate={{ opacity: [0.2, 1, 0.2] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+        />
+      </svg>
+    )
+  }
+
+  if (k === 'META') {
+    return (
+      <svg
+        className="pointer-events-none absolute inset-x-0 top-0 w-full h-[70%]"
+        viewBox="0 0 100 70"
+        preserveAspectRatio="xMidYMid meet"
+        style={maskStyle}
+        aria-hidden
+      >
+        {/* Main chat bubble */}
+        <path
+          d="M18 14 L 64 14 Q 72 14, 72 22 L 72 38 Q 72 46, 64 46 L 36 46 L 26 56 L 30 46 L 18 46 Q 10 46, 10 38 L 10 22 Q 10 14, 18 14 Z"
+          fill={fill} stroke={stroke} strokeWidth="0.7"
+        />
+        {/* Dots inside bubble */}
+        <circle cx="28" cy="30" r="2.5" fill={stroke} />
+        <circle cx="41" cy="30" r="2.5" fill={stroke} />
+        <circle cx="54" cy="30" r="2.5" fill={stroke} />
+
+        {/* Secondary smaller bubble (overlapping bottom-right) */}
+        <ellipse cx="78" cy="50" rx="16" ry="11" fill={`rgba(${acc},0.18)`} stroke={stroke} strokeWidth="0.6" />
+        <path d="M68 58 L 64 64 L 70 60 Z" fill={`rgba(${acc},0.18)`} stroke={stroke} strokeWidth="0.6" strokeLinejoin="round" />
+        {/* Heart reaction inside small bubble */}
+        <path
+          d="M75 47 Q 73 44 70 46 Q 67 49 75 55 Q 83 49 80 46 Q 77 44 75 47 Z"
+          fill={`rgba(${accL},0.6)`} stroke={stroke} strokeWidth="0.5"
+        />
+
+        {/* Animated typing dots */}
+        <motion.circle
+          cx="28" cy="30" r="2.5"
+          fill={`rgb(${accL})`}
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.circle
+          cx="41" cy="30" r="2.5"
+          fill={`rgb(${accL})`}
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+        />
+        <motion.circle
+          cx="54" cy="30" r="2.5"
+          fill={`rgb(${accL})`}
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+        />
+      </svg>
+    )
+  }
+
+  // WHATSAPP_CLOUD — Meta cloud + network mesh
+  return (
+    <svg
+      className="pointer-events-none absolute inset-x-0 top-0 w-full h-[70%]"
+      viewBox="0 0 100 70"
+      preserveAspectRatio="xMidYMid meet"
+      style={maskStyle}
+      aria-hidden
+    >
+      {/* Large cloud */}
+      <path
+        d="M20 24 Q 14 11, 32 11 Q 38 2, 50 6 Q 62 2, 68 14 Q 84 12, 78 26 L 20 26 Z"
+        fill={fill} stroke={stroke} strokeWidth="0.7"
+      />
+      {/* Tiny gear on cloud (Cloud API indicator) */}
+      <g transform="translate(50, 16)">
+        <circle r="3" fill="none" stroke={stroke} strokeWidth="0.6" />
+        <circle r="1.2" fill={stroke} />
+        {[0, 60, 120, 180, 240, 300].map(deg => (
+          <rect
+            key={deg}
+            x="-0.6"
+            y="-4.5"
+            width="1.2"
+            height="1.5"
+            fill={stroke}
+            transform={`rotate(${deg})`}
+          />
+        ))}
+      </g>
+
+      {/* Network mesh nodes (3x3 grid) */}
+      {[
+        { x: 22, y: 42 }, { x: 50, y: 42 }, { x: 78, y: 42 },
+        { x: 30, y: 58 }, { x: 50, y: 58 }, { x: 70, y: 58 },
+      ].map((n, i) => (
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r="2.2" fill={fill} stroke={stroke} strokeWidth="0.6" />
+          <circle cx={n.x} cy={n.y} r="0.7" fill={stroke} />
+        </g>
+      ))}
+
+      {/* Mesh connections */}
+      <line x1="22" y1="42" x2="50" y2="42" stroke={dim} strokeWidth="0.35" />
+      <line x1="50" y1="42" x2="78" y2="42" stroke={dim} strokeWidth="0.35" />
+      <line x1="22" y1="42" x2="30" y2="58" stroke={dim} strokeWidth="0.35" />
+      <line x1="50" y1="42" x2="30" y2="58" stroke={dim} strokeWidth="0.35" />
+      <line x1="50" y1="42" x2="70" y2="58" stroke={dim} strokeWidth="0.35" />
+      <line x1="50" y1="42" x2="50" y2="58" stroke={dim} strokeWidth="0.35" />
+      <line x1="78" y1="42" x2="70" y2="58" stroke={dim} strokeWidth="0.35" />
+      <line x1="30" y1="58" x2="50" y2="58" stroke={dim} strokeWidth="0.35" />
+      <line x1="50" y1="58" x2="70" y2="58" stroke={dim} strokeWidth="0.35" />
+
+      {/* Vertical data flows from cloud */}
+      <line x1="35" y1="28" x2="35" y2="40" stroke={dim} strokeWidth="0.35" strokeDasharray="1.5 1.5" />
+      <line x1="50" y1="28" x2="50" y2="40" stroke={dim} strokeWidth="0.35" strokeDasharray="1.5 1.5" />
+      <line x1="65" y1="28" x2="65" y2="40" stroke={dim} strokeWidth="0.35" strokeDasharray="1.5 1.5" />
+
+      {/* Animated data packet flowing down */}
+      <motion.circle
+        r={1}
+        fill={`rgb(${accL})`}
+        style={{ filter: `drop-shadow(0 0 3px rgb(${accL}))` }}
+        animate={{ cy: [28, 42], opacity: [0, 1, 0] }}
+        transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
+        cx={50}
+      />
+      <motion.circle
+        r={1}
+        fill={`rgb(${accL})`}
+        style={{ filter: `drop-shadow(0 0 3px rgb(${accL}))` }}
+        animate={{ cx: [22, 50, 78], opacity: [0, 1, 0] }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+        cy={42}
+      />
+    </svg>
+  )
+}
+
 function ChannelNode({ t, idx, selected, onSelect, className }: {
   t: ChannelType
   idx: number
@@ -629,6 +884,9 @@ function ChannelNode({ t, idx, selected, onSelect, className }: {
           />
         )}
       </AnimatePresence>
+
+      {/* Background channel illustration (vector premium, no images) */}
+      <ChannelArt k={t.key} acc={acc} accL={accL} selected={selected} />
 
       <div className="relative p-4 sm:p-5 flex flex-col items-center text-center">
         <div className="relative mb-3">
