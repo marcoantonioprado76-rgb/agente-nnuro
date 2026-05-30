@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { UploadField } from '@/components/UploadField'
 import GlobalAiKeyToggle from '@/components/GlobalAiKeyToggle'
@@ -166,10 +167,46 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
   }
 
   const TYPES = [
-    { key: 'YCLOUD',         label: 'YCloud',         sub: 'Conexión vía API empresarial',   icon: Cloud        },
-    { key: 'BAILEYS',        label: 'WhatsApp Web',   sub: 'Conexión mediante código QR',    icon: Smartphone   },
-    { key: 'META',           label: 'Messenger',      sub: 'Facebook · Instagram Direct',    icon: MessageCircle },
-    { key: 'WHATSAPP_CLOUD', label: 'WhatsApp Cloud', sub: 'API oficial gestionada por Meta', icon: CloudCog    },
+    {
+      key: 'YCLOUD',
+      label: 'YCloud',
+      sub: 'Conexión vía API empresarial',
+      icon: Cloud,
+      benefits: ['API empresarial', 'Alta disponibilidad', 'Multi-número'] as readonly string[],
+      // Cyan tecnológico
+      accent: '6,182,212',   // #06B6D4
+      accentLight: '34,211,238', // #22D3EE
+    },
+    {
+      key: 'BAILEYS',
+      label: 'WhatsApp Web',
+      sub: 'Conexión mediante código QR',
+      icon: Smartphone,
+      benefits: ['Conexión QR', 'Tiempo real', 'Multimedia'] as readonly string[],
+      // Verde premium
+      accent: '16,185,129',   // #10B981
+      accentLight: '52,211,153', // #34D399
+    },
+    {
+      key: 'META',
+      label: 'Messenger',
+      sub: 'Facebook · Instagram Direct',
+      icon: MessageCircle,
+      benefits: ['Messenger + IG', 'Verificación oficial', 'Audiencia masiva'] as readonly string[],
+      // Violeta moderno
+      accent: '139,92,246',   // #8B5CF6
+      accentLight: '167,139,250', // #A78BFA
+    },
+    {
+      key: 'WHATSAPP_CLOUD',
+      label: 'WhatsApp Cloud',
+      sub: 'API oficial gestionada por Meta',
+      icon: CloudCog,
+      benefits: ['API oficial Meta', 'Plantillas HSM', 'Escalable global'] as readonly string[],
+      // Azul Meta
+      accent: '59,130,246',   // #3B82F6
+      accentLight: '96,165,250', // #60A5FA
+    },
   ] as const
 
   return (
@@ -215,111 +252,226 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
             <span className="h-px w-4 bg-slate-700" />
             Canal de conexión
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {TYPES.map((t, idx) => {
               const Icon = t.icon
               const selected = type === t.key
+              const acc  = t.accent
+              const accL = t.accentLight
               return (
-                <button
+                <motion.button
                   key={t.key}
                   type="button"
                   onClick={() => setType(t.key)}
-                  className="nuro-card-rise group/btn relative rounded-2xl text-left transition-all duration-300 ease-out overflow-hidden"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: idx * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -6, scale: 1.025 }}
+                  whileTap={{ scale: 0.985 }}
+                  className="group/btn relative rounded-3xl text-left overflow-hidden"
                   style={{
-                    background: selected
-                      ? 'linear-gradient(160deg, rgba(59,130,246,0.18) 0%, rgba(59,130,246,0.04) 100%)'
-                      : 'linear-gradient(160deg, rgba(15,30,55,0.6) 0%, rgba(10,25,47,0.4) 100%)',
+                    background: `linear-gradient(160deg, rgba(${acc},0.10) 0%, rgba(10,25,47,0.55) 45%, rgba(8,18,36,0.7) 100%)`,
                     border: selected
-                      ? '1px solid rgba(59,130,246,0.55)'
-                      : '1px solid rgba(59,130,246,0.12)',
+                      ? `1px solid rgba(${accL},0.65)`
+                      : `1px solid rgba(${acc},0.18)`,
                     boxShadow: selected
-                      ? '0 10px 30px -10px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.06)'
-                      : '0 4px 16px -8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)',
-                    transform: selected ? 'translateY(-4px) scale(1.015)' : undefined,
-                    animationDelay: `${idx * 60}ms`,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!selected) {
-                      e.currentTarget.style.transform = 'translateY(-5px) scale(1.02)'
-                      e.currentTarget.style.borderColor = 'rgba(59,130,246,0.35)'
-                      e.currentTarget.style.boxShadow = '0 12px 32px -10px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.06)'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!selected) {
-                      e.currentTarget.style.transform = ''
-                      e.currentTarget.style.borderColor = 'rgba(59,130,246,0.12)'
-                      e.currentTarget.style.boxShadow = '0 4px 16px -8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)'
-                    }
+                      ? `0 18px 50px -14px rgba(${acc},0.65), 0 0 0 1px rgba(${accL},0.25), inset 0 1px 0 rgba(255,255,255,0.08)`
+                      : `0 6px 20px -10px rgba(${acc},0.35), inset 0 1px 0 rgba(255,255,255,0.04)`,
+                    transform: selected ? 'translateY(-6px) scale(1.02)' : undefined,
                   }}
                 >
-                  {/* Top edge sheen */}
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
-
-                  {/* Inner ambient when selected */}
-                  {selected && (
-                    <div className="pointer-events-none absolute -inset-px rounded-2xl"
-                      style={{ background: 'radial-gradient(ellipse at top, rgba(59,130,246,0.18), transparent 60%)' }} />
-                  )}
-
-                  {/* Selected check badge */}
-                  {selected && (
-                    <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-full"
-                      style={{
-                        background: 'rgba(59,130,246,0.2)',
-                        border: '1px solid rgba(59,130,246,0.5)',
-                        boxShadow: '0 0 12px rgba(59,130,246,0.5)',
-                      }}
-                    >
-                      <Check className="w-3 h-3 text-blue-200" strokeWidth={3} />
-                      <span className="text-[9.5px] font-semibold text-blue-100 tracking-wider uppercase">Seleccionado</span>
-                    </div>
-                  )}
-
-                  {/* Content — centered tech tile */}
-                  <div className="relative p-5 sm:p-6 flex flex-col items-center text-center">
-                    {/* Icon tile */}
-                    <div
-                      className="relative w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300"
-                      style={{
-                        background: selected
-                          ? 'linear-gradient(135deg, rgba(59,130,246,0.35), rgba(59,130,246,0.1))'
-                          : 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.03))',
-                        border: selected
-                          ? '1px solid rgba(59,130,246,0.5)'
-                          : '1px solid rgba(59,130,246,0.18)',
-                        boxShadow: selected
-                          ? '0 0 24px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
-                          : 'inset 0 1px 0 rgba(255,255,255,0.05)',
-                      }}
-                    >
-                      <Icon
-                        className={`w-7 h-7 transition-colors duration-300 ${selected ? 'text-blue-200' : 'text-blue-300/85 group-hover/btn:text-blue-200'}`}
-                        strokeWidth={1.6}
+                  {/* Energy pulse ring — selected only */}
+                  <AnimatePresence>
+                    {selected && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0.55, 0.2, 0.55], scale: [1, 1.025, 1] }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                        className="pointer-events-none absolute -inset-px rounded-3xl"
+                        style={{ background: `radial-gradient(circle at top, rgba(${accL},0.45), transparent 65%)` }}
                       />
+                    )}
+                  </AnimatePresence>
+
+                  {/* Holographic top line */}
+                  <div
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                    style={{ background: `linear-gradient(90deg, transparent, rgba(${accL},0.6), transparent)` }}
+                  />
+
+                  {/* Glass refraction (diagonal sheen) */}
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-60 group-hover/btn:opacity-100 transition-opacity duration-500"
+                    style={{ background: `linear-gradient(115deg, transparent 30%, rgba(${accL},0.10) 50%, transparent 70%)` }}
+                  />
+
+                  {/* Animated holographic shimmer sweep */}
+                  <motion.span
+                    className="pointer-events-none absolute top-0 -left-1/3 w-1/2 h-[140%] block"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+                      filter: 'blur(8px)',
+                    }}
+                    animate={{ x: ['-30%', '420%'], opacity: [0, 0.45, 0] }}
+                    transition={{ duration: 6.5 + idx * 0.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.5 }}
+                  />
+
+                  {/* Bottom ambient glow */}
+                  <div
+                    className="pointer-events-none absolute -bottom-12 left-1/2 -translate-x-1/2 w-[150%] h-32 rounded-full"
+                    style={{
+                      background: `radial-gradient(ellipse, rgba(${acc},0.28), transparent 65%)`,
+                      filter: 'blur(30px)',
+                    }}
+                  />
+
+                  {/* Floating particles */}
+                  <motion.span
+                    className="pointer-events-none absolute top-[32%] left-[18%] w-1 h-1 rounded-full"
+                    style={{ background: `rgba(${accL},0.9)`, boxShadow: `0 0 8px rgba(${accL},0.8)` }}
+                    animate={{ y: [0, -14, -4, 0], x: [0, 6, -4, 0], opacity: [0.3, 0.9, 0.4, 0.7, 0.3] }}
+                    transition={{ duration: 9 + idx, repeat: Infinity, ease: 'easeInOut' }}
+                  />
+                  <motion.span
+                    className="pointer-events-none absolute top-[55%] right-[22%] w-1.5 h-1.5 rounded-full"
+                    style={{ background: `rgba(${accL},0.75)`, boxShadow: `0 0 10px rgba(${accL},0.7)` }}
+                    animate={{ y: [0, 10, -6, 0], x: [0, -8, 6, 0], opacity: [0.2, 0.8, 0.45, 0.2] }}
+                    transition={{ duration: 11 + idx, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+                  />
+                  <motion.span
+                    className="pointer-events-none absolute bottom-[32%] left-[40%] w-[3px] h-[3px] rounded-full"
+                    style={{ background: `rgba(${accL},0.85)`, boxShadow: `0 0 12px rgba(${accL},0.7)` }}
+                    animate={{ y: [0, -8, 6, 0], x: [0, 10, -4, 0], opacity: [0.35, 0.85, 0.5, 0.35] }}
+                    transition={{ duration: 8 + idx, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+                  />
+
+                  {/* Selected badge — top right */}
+                  <AnimatePresence>
+                    {selected && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.6, y: -4 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.6, y: -4 }}
+                        transition={{ type: 'spring', stiffness: 380, damping: 22 }}
+                        className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md"
+                        style={{
+                          background: `rgba(${acc},0.25)`,
+                          border: `1px solid rgba(${accL},0.55)`,
+                          boxShadow: `0 0 16px rgba(${acc},0.6)`,
+                        }}
+                      >
+                        <Check className="w-3 h-3" style={{ color: `rgb(${accL})` }} strokeWidth={3} />
+                        <span className="text-[9.5px] font-bold tracking-[0.14em] uppercase" style={{ color: `rgb(${accL})` }}>
+                          Activo
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Content */}
+                  <div className="relative p-5 sm:p-6 flex flex-col items-center text-center">
+                    {/* 3D Icon tile with stacked depth */}
+                    <div className="relative mb-5">
+                      <motion.span
+                        className="absolute -inset-3 rounded-full pointer-events-none"
+                        style={{
+                          background: `radial-gradient(circle, rgba(${accL},0.45), transparent 60%)`,
+                          filter: 'blur(12px)',
+                        }}
+                        animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.08, 1] }}
+                        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+                      />
+                      <span
+                        className="absolute inset-0 rounded-3xl pointer-events-none"
+                        style={{
+                          background: `linear-gradient(135deg, rgba(${accL},0.4), rgba(${acc},0.08))`,
+                          filter: 'blur(2px)',
+                          transform: 'scale(1.15)',
+                        }}
+                      />
+                      <motion.div
+                        whileHover={{ rotate: [0, -3, 3, 0] }}
+                        transition={{ duration: 0.6 }}
+                        className="relative w-16 h-16 rounded-2xl flex items-center justify-center"
+                        style={{
+                          background: `linear-gradient(135deg, rgba(${accL},0.30) 0%, rgba(${acc},0.15) 50%, rgba(${acc},0.08) 100%)`,
+                          border: `1px solid rgba(${accL},0.5)`,
+                          boxShadow: selected
+                            ? `0 0 30px rgba(${acc},0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(${acc},0.4)`
+                            : `0 0 20px rgba(${acc},0.35), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(${acc},0.25)`,
+                        }}
+                      >
+                        <span
+                          className="absolute inset-x-1 top-1 h-1/2 rounded-t-xl pointer-events-none"
+                          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.18), transparent)' }}
+                        />
+                        <Icon
+                          className="relative w-8 h-8 transition-transform duration-300 group-hover/btn:scale-110"
+                          style={{
+                            color: `rgb(${accL})`,
+                            filter: `drop-shadow(0 0 8px rgba(${acc},0.7))`,
+                          }}
+                          strokeWidth={1.6}
+                        />
+                      </motion.div>
                     </div>
 
                     {/* Title */}
-                    <div className="text-[14px] sm:text-[15px] font-semibold tracking-tight text-white mb-1.5">
+                    <div className="text-[15px] sm:text-[16px] font-semibold tracking-tight text-white mb-1.5">
                       {t.label}
                     </div>
                     {/* Description */}
-                    <div className="text-[11.5px] text-slate-400 leading-snug mb-4 min-h-[2.5em]">
+                    <div className="text-[11px] sm:text-[11.5px] text-slate-400 leading-snug mb-4 min-h-[2.5em]">
                       {t.sub}
                     </div>
+
+                    {/* Benefits list */}
+                    <ul className="w-full space-y-1.5 mb-5 text-left">
+                      {t.benefits.map((b, i) => (
+                        <motion.li
+                          key={i}
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: idx * 0.07 + 0.15 + i * 0.05 }}
+                          className="flex items-center gap-2 text-[11px] text-slate-300/90"
+                        >
+                          <span
+                            className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
+                            style={{
+                              background: `rgba(${acc},0.18)`,
+                              border: `1px solid rgba(${accL},0.45)`,
+                              boxShadow: `0 0 6px rgba(${acc},0.4)`,
+                            }}
+                          >
+                            <Check className="w-2 h-2" style={{ color: `rgb(${accL})` }} strokeWidth={4} />
+                          </span>
+                          <span className="leading-tight">{b}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+
+                    {/* Divider */}
+                    <div
+                      className="w-full h-px mb-3"
+                      style={{ background: `linear-gradient(90deg, transparent, rgba(${acc},0.3), transparent)` }}
+                    />
 
                     {/* Availability indicator */}
                     <div className="flex items-center gap-1.5 mt-auto">
                       <span className="relative flex h-1.5 w-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
+                          style={{ background: `rgb(${accL})` }} />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                          style={{ background: `rgb(${accL})`, boxShadow: `0 0 8px rgba(${acc},0.8)` }} />
                       </span>
-                      <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-emerald-300/80">
+                      <span className="text-[10px] uppercase tracking-[0.16em] font-semibold"
+                        style={{ color: `rgba(${accL},0.95)` }}>
                         Disponible
                       </span>
                     </div>
                   </div>
-                </button>
+                </motion.button>
               )
             })}
           </div>
