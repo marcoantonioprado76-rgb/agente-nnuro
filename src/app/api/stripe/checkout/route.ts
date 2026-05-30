@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
 import { stripe } from '@/lib/stripe'
 import { getPaymentMethodsSettings } from '@/lib/settings'
 
@@ -8,12 +9,12 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Verify authenticated user
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    // 1. Verify authenticated user — app uses custom JWT, not Supabase auth
+    const auth = await getServerSession()
+    if (!auth) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
+    const user = { id: auth.sub, email: auth.email }
 
     const body = await request.json()
     const { plan_id } = body

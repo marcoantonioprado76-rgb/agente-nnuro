@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
 import { stripe, calculateEndDate } from '@/lib/stripe'
 import { logAudit } from '@/lib/audit'
 
@@ -12,11 +13,11 @@ export const dynamic = 'force-dynamic'
  */
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const auth = await getServerSession()
+    if (!auth) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
+    const user = { id: auth.sub, email: auth.email }
 
     const { session_id } = await request.json()
     if (!session_id) {
