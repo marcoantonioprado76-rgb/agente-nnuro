@@ -209,29 +209,85 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
     },
   ] as const
 
+  // Position helpers for the 3x3 constellation grid
+  const gridAt = (idx: number) =>
+    idx === 0 ? 'col-start-1 row-start-1'
+    : idx === 1 ? 'col-start-3 row-start-1'
+    : idx === 2 ? 'col-start-1 row-start-3'
+    : 'col-start-3 row-start-3'
+
+  const lineCoords = (idx: number) =>
+    idx === 0 ? { x1: 22, y1: 22 }
+    : idx === 1 ? { x1: 78, y1: 22 }
+    : idx === 2 ? { x1: 22, y1: 78 }
+    : { x1: 78, y1: 78 }
+
+  const selectedType = TYPES.find(t => t.key === type) ?? TYPES[0]
+  const trimmedName = name.trim()
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="nuro-fade-up relative overflow-hidden rounded-3xl backdrop-blur-2xl p-6 sm:p-8"
-      style={{
-        background: 'linear-gradient(180deg, rgba(10,25,47,0.72) 0%, rgba(10,25,47,0.55) 100%)',
-        boxShadow: '0 8px 40px -12px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
-        border: '1px solid rgba(59,130,246,0.15)',
-      }}
+      className="relative grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 sm:gap-5"
     >
-      {/* Soft ambient glow */}
-      <div className="pointer-events-none absolute -top-32 -left-32 w-80 h-80 rounded-full bg-blue-500/[0.12] blur-[100px]" />
-      <div className="pointer-events-none absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-sky-500/[0.07] blur-[100px]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
+      {/* ============================================================
+           LEFT — Constellation workspace
+         ============================================================ */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="relative overflow-hidden rounded-3xl backdrop-blur-2xl p-5 sm:p-7"
+        style={{
+          background: 'linear-gradient(180deg, rgba(11,21,42,0.78) 0%, rgba(8,15,32,0.62) 100%)',
+          border: '1px solid rgba(59,130,246,0.2)',
+          boxShadow: '0 20px 60px -20px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.05)',
+        }}
+      >
+        {/* — Background: animated tech grid (slow pan) — */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
+            backgroundSize: '52px 52px',
+            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
+          }}
+          animate={{ backgroundPosition: ['0px 0px', '52px 52px'] }}
+          transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+        />
 
-      <div className="relative">
-        {/* Module header */}
-        <div className="flex items-start gap-4 mb-8">
+        {/* — Ambient halos — */}
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[460px] h-[320px] rounded-full bg-blue-500/[0.18] blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 left-0 w-[280px] h-[280px] rounded-full bg-cyan-500/[0.10] blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 w-[280px] h-[280px] rounded-full bg-violet-500/[0.10] blur-[120px]" />
+
+        {/* — Slow drifting particles — */}
+        {[...Array(10)].map((_, i) => (
+          <motion.span
+            key={i}
+            className="pointer-events-none absolute w-px h-px rounded-full bg-blue-200"
+            style={{
+              left: `${8 + (i * 11) % 84}%`,
+              top: `${12 + (i * 19) % 76}%`,
+              boxShadow: '0 0 10px rgba(96,165,250,0.85)',
+            }}
+            animate={{ y: [0, -32, 12, 0], opacity: [0.15, 0.85, 0.4, 0.15] }}
+            transition={{ duration: 18 + i * 1.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
+          />
+        ))}
+
+        {/* — Top sheen — */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+
+        {/* — Module header — */}
+        <div className="relative flex items-start gap-4 mb-6">
           <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
             style={{
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05))',
-              border: '1px solid rgba(59,130,246,0.25)',
-              boxShadow: '0 0 30px -6px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
+              background: 'linear-gradient(135deg, rgba(59,130,246,0.28), rgba(59,130,246,0.05))',
+              border: '1px solid rgba(59,130,246,0.3)',
+              boxShadow: '0 0 30px -6px rgba(59,130,246,0.6), inset 0 1px 0 rgba(255,255,255,0.1)',
             }}
           >
             <Sparkles className="w-5 h-5 text-blue-300" strokeWidth={1.6} />
@@ -246,297 +302,456 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
           </div>
         </div>
 
-        {/* Tipo de bot — Premium tech cards (no images) */}
-        <div className="mb-8">
-          <div className="text-[11px] text-slate-500 uppercase tracking-[0.14em] font-medium mb-3.5 flex items-center gap-2">
-            <span className="h-px w-4 bg-slate-700" />
-            Canal de conexión
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {/* — Constellation (desktop md+) — */}
+        <div className="hidden md:block relative mt-4">
+          {/* SVG connection lines from each channel to the core */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <defs>
+              {TYPES.map((t, idx) => {
+                const lc = lineCoords(idx)
+                return (
+                  <linearGradient
+                    key={t.key}
+                    id={`line-${t.key}`}
+                    gradientUnits="userSpaceOnUse"
+                    x1={lc.x1}
+                    y1={lc.y1}
+                    x2={50}
+                    y2={50}
+                  >
+                    <stop offset="0%" stopColor={`rgb(${t.accentLight})`} stopOpacity="0.08" />
+                    <stop offset="60%" stopColor={`rgb(${t.accentLight})`} stopOpacity={t.key === type ? 0.7 : 0.25} />
+                    <stop offset="100%" stopColor={`rgb(${t.accentLight})`} stopOpacity={t.key === type ? 0.95 : 0.4} />
+                  </linearGradient>
+                )
+              })}
+            </defs>
             {TYPES.map((t, idx) => {
-              const Icon = t.icon
-              const selected = type === t.key
-              const acc  = t.accent
-              const accL = t.accentLight
+              const sel = t.key === type
+              const lc = lineCoords(idx)
               return (
-                <motion.button
-                  key={t.key}
-                  type="button"
-                  onClick={() => setType(t.key)}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: idx * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -6, scale: 1.025 }}
-                  whileTap={{ scale: 0.985 }}
-                  className="group/btn relative rounded-3xl text-left overflow-hidden"
-                  style={{
-                    background: `linear-gradient(160deg, rgba(${acc},0.10) 0%, rgba(10,25,47,0.55) 45%, rgba(8,18,36,0.7) 100%)`,
-                    border: selected
-                      ? `1px solid rgba(${accL},0.65)`
-                      : `1px solid rgba(${acc},0.18)`,
-                    boxShadow: selected
-                      ? `0 18px 50px -14px rgba(${acc},0.65), 0 0 0 1px rgba(${accL},0.25), inset 0 1px 0 rgba(255,255,255,0.08)`
-                      : `0 6px 20px -10px rgba(${acc},0.35), inset 0 1px 0 rgba(255,255,255,0.04)`,
-                    transform: selected ? 'translateY(-6px) scale(1.02)' : undefined,
-                  }}
-                >
-                  {/* Energy pulse ring — selected only */}
-                  <AnimatePresence>
-                    {selected && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: [0.55, 0.2, 0.55], scale: [1, 1.025, 1] }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                        className="pointer-events-none absolute -inset-px rounded-3xl"
-                        style={{ background: `radial-gradient(circle at top, rgba(${accL},0.45), transparent 65%)` }}
-                      />
-                    )}
-                  </AnimatePresence>
-
-                  {/* Holographic top line */}
-                  <div
-                    className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                    style={{ background: `linear-gradient(90deg, transparent, rgba(${accL},0.6), transparent)` }}
-                  />
-
-                  {/* Glass refraction (diagonal sheen) */}
-                  <div
-                    className="pointer-events-none absolute inset-0 opacity-60 group-hover/btn:opacity-100 transition-opacity duration-500"
-                    style={{ background: `linear-gradient(115deg, transparent 30%, rgba(${accL},0.10) 50%, transparent 70%)` }}
-                  />
-
-                  {/* Animated holographic shimmer sweep */}
-                  <motion.span
-                    className="pointer-events-none absolute top-0 -left-1/3 w-1/2 h-[140%] block"
+                <g key={t.key}>
+                  <line
+                    x1={lc.x1} y1={lc.y1} x2={50} y2={50}
+                    stroke={`url(#line-${t.key})`}
+                    strokeWidth={sel ? 0.8 : 0.4}
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
                     style={{
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-                      filter: 'blur(8px)',
-                    }}
-                    animate={{ x: ['-30%', '420%'], opacity: [0, 0.45, 0] }}
-                    transition={{ duration: 6.5 + idx * 0.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.5 }}
-                  />
-
-                  {/* Bottom ambient glow */}
-                  <div
-                    className="pointer-events-none absolute -bottom-12 left-1/2 -translate-x-1/2 w-[150%] h-32 rounded-full"
-                    style={{
-                      background: `radial-gradient(ellipse, rgba(${acc},0.28), transparent 65%)`,
-                      filter: 'blur(30px)',
+                      filter: sel ? `drop-shadow(0 0 4px rgb(${t.accentLight}))` : 'none',
+                      transition: 'all 0.3s ease',
                     }}
                   />
-
-                  {/* Floating particles */}
-                  <motion.span
-                    className="pointer-events-none absolute top-[32%] left-[18%] w-1 h-1 rounded-full"
-                    style={{ background: `rgba(${accL},0.9)`, boxShadow: `0 0 8px rgba(${accL},0.8)` }}
-                    animate={{ y: [0, -14, -4, 0], x: [0, 6, -4, 0], opacity: [0.3, 0.9, 0.4, 0.7, 0.3] }}
-                    transition={{ duration: 9 + idx, repeat: Infinity, ease: 'easeInOut' }}
-                  />
-                  <motion.span
-                    className="pointer-events-none absolute top-[55%] right-[22%] w-1.5 h-1.5 rounded-full"
-                    style={{ background: `rgba(${accL},0.75)`, boxShadow: `0 0 10px rgba(${accL},0.7)` }}
-                    animate={{ y: [0, 10, -6, 0], x: [0, -8, 6, 0], opacity: [0.2, 0.8, 0.45, 0.2] }}
-                    transition={{ duration: 11 + idx, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-                  />
-                  <motion.span
-                    className="pointer-events-none absolute bottom-[32%] left-[40%] w-[3px] h-[3px] rounded-full"
-                    style={{ background: `rgba(${accL},0.85)`, boxShadow: `0 0 12px rgba(${accL},0.7)` }}
-                    animate={{ y: [0, -8, 6, 0], x: [0, 10, -4, 0], opacity: [0.35, 0.85, 0.5, 0.35] }}
-                    transition={{ duration: 8 + idx, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-                  />
-
-                  {/* Selected badge — top right */}
-                  <AnimatePresence>
-                    {selected && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.6, y: -4 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.6, y: -4 }}
-                        transition={{ type: 'spring', stiffness: 380, damping: 22 }}
-                        className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md"
-                        style={{
-                          background: `rgba(${acc},0.25)`,
-                          border: `1px solid rgba(${accL},0.55)`,
-                          boxShadow: `0 0 16px rgba(${acc},0.6)`,
-                        }}
-                      >
-                        <Check className="w-3 h-3" style={{ color: `rgb(${accL})` }} strokeWidth={3} />
-                        <span className="text-[9.5px] font-bold tracking-[0.14em] uppercase" style={{ color: `rgb(${accL})` }}>
-                          Activo
-                        </span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Content */}
-                  <div className="relative p-5 sm:p-6 flex flex-col items-center text-center">
-                    {/* 3D Icon tile with stacked depth */}
-                    <div className="relative mb-5">
-                      <motion.span
-                        className="absolute -inset-3 rounded-full pointer-events-none"
-                        style={{
-                          background: `radial-gradient(circle, rgba(${accL},0.45), transparent 60%)`,
-                          filter: 'blur(12px)',
-                        }}
-                        animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.08, 1] }}
-                        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
-                      />
-                      <span
-                        className="absolute inset-0 rounded-3xl pointer-events-none"
-                        style={{
-                          background: `linear-gradient(135deg, rgba(${accL},0.4), rgba(${acc},0.08))`,
-                          filter: 'blur(2px)',
-                          transform: 'scale(1.15)',
-                        }}
-                      />
-                      <motion.div
-                        whileHover={{ rotate: [0, -3, 3, 0] }}
-                        transition={{ duration: 0.6 }}
-                        className="relative w-16 h-16 rounded-2xl flex items-center justify-center"
-                        style={{
-                          background: `linear-gradient(135deg, rgba(${accL},0.30) 0%, rgba(${acc},0.15) 50%, rgba(${acc},0.08) 100%)`,
-                          border: `1px solid rgba(${accL},0.5)`,
-                          boxShadow: selected
-                            ? `0 0 30px rgba(${acc},0.55), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(${acc},0.4)`
-                            : `0 0 20px rgba(${acc},0.35), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(${acc},0.25)`,
-                        }}
-                      >
-                        <span
-                          className="absolute inset-x-1 top-1 h-1/2 rounded-t-xl pointer-events-none"
-                          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.18), transparent)' }}
-                        />
-                        <Icon
-                          className="relative w-8 h-8 transition-transform duration-300 group-hover/btn:scale-110"
-                          style={{
-                            color: `rgb(${accL})`,
-                            filter: `drop-shadow(0 0 8px rgba(${acc},0.7))`,
-                          }}
-                          strokeWidth={1.6}
-                        />
-                      </motion.div>
-                    </div>
-
-                    {/* Title */}
-                    <div className="text-[15px] sm:text-[16px] font-semibold tracking-tight text-white mb-1.5">
-                      {t.label}
-                    </div>
-                    {/* Description */}
-                    <div className="text-[11px] sm:text-[11.5px] text-slate-400 leading-snug mb-4 min-h-[2.5em]">
-                      {t.sub}
-                    </div>
-
-                    {/* Benefits list */}
-                    <ul className="w-full space-y-1.5 mb-5 text-left">
-                      {t.benefits.map((b, i) => (
-                        <motion.li
-                          key={i}
-                          initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: idx * 0.07 + 0.15 + i * 0.05 }}
-                          className="flex items-center gap-2 text-[11px] text-slate-300/90"
-                        >
-                          <span
-                            className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
-                            style={{
-                              background: `rgba(${acc},0.18)`,
-                              border: `1px solid rgba(${accL},0.45)`,
-                              boxShadow: `0 0 6px rgba(${acc},0.4)`,
-                            }}
-                          >
-                            <Check className="w-2 h-2" style={{ color: `rgb(${accL})` }} strokeWidth={4} />
-                          </span>
-                          <span className="leading-tight">{b}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-
-                    {/* Divider */}
-                    <div
-                      className="w-full h-px mb-3"
-                      style={{ background: `linear-gradient(90deg, transparent, rgba(${acc},0.3), transparent)` }}
+                  {sel && (
+                    <motion.circle
+                      r={0.9}
+                      fill={`rgb(${t.accentLight})`}
+                      style={{ filter: `drop-shadow(0 0 5px rgb(${t.accentLight}))` }}
+                      animate={{ cx: [lc.x1, 50], cy: [lc.y1, 50] }}
+                      transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
                     />
-
-                    {/* Availability indicator */}
-                    <div className="flex items-center gap-1.5 mt-auto">
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
-                          style={{ background: `rgb(${accL})` }} />
-                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                          style={{ background: `rgb(${accL})`, boxShadow: `0 0 8px rgba(${acc},0.8)` }} />
-                      </span>
-                      <span className="text-[10px] uppercase tracking-[0.16em] font-semibold"
-                        style={{ color: `rgba(${accL},0.95)` }}>
-                        Disponible
-                      </span>
-                    </div>
-                  </div>
-                </motion.button>
+                  )}
+                </g>
               )
             })}
+          </svg>
+
+          {/* 3×3 grid: corners hold channels, center holds the NÜRO core */}
+          <div className="relative grid grid-cols-3 grid-rows-3 gap-4 min-h-[440px]">
+            <div className="col-start-2 row-start-2 self-center justify-self-center">
+              <NuroCore selectedAccent={selectedType.accent} selectedAccentLight={selectedType.accentLight} />
+            </div>
+            {TYPES.map((t, idx) => (
+              <ChannelNode
+                key={t.key}
+                t={t}
+                idx={idx}
+                selected={t.key === type}
+                onSelect={() => setType(t.key)}
+                className={gridAt(idx)}
+              />
+            ))}
           </div>
         </div>
 
-        {error && <div className="mb-5"><Alert type="error" msg={error} /></div>}
+        {/* — Mobile fallback (no constellation lines) — */}
+        <div className="md:hidden mt-4">
+          <div className="flex justify-center mb-6">
+            <NuroCore selectedAccent={selectedType.accent} selectedAccentLight={selectedType.accentLight} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {TYPES.map((t, idx) => (
+              <ChannelNode
+                key={t.key}
+                t={t}
+                idx={idx}
+                selected={t.key === type}
+                onSelect={() => setType(t.key)}
+              />
+            ))}
+          </div>
+        </div>
+      </motion.div>
 
-        {/* Identidad */}
-        <div>
-          <div className="text-[11px] text-slate-500 uppercase tracking-[0.14em] font-medium mb-3.5 flex items-center gap-2">
-            <span className="h-px w-4 bg-slate-700" />
-            Nombre del agente
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Ej: Ventas Bolivia · Asistente Comercial · Soporte NÜRO"
-              className="flex-1 rounded-2xl px-5 h-14 text-[15px] text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
-              style={{
-                background: 'rgba(10,25,47,0.55)',
-                border: '1px solid rgba(59,130,246,0.18)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'
-                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.04)'
-                e.currentTarget.style.background = 'rgba(10,25,47,0.75)'
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.18)'
-                e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.03)'
-                e.currentTarget.style.background = 'rgba(10,25,47,0.55)'
-              }}
-              required
+      {/* ============================================================
+           RIGHT — Preview panel
+         ============================================================ */}
+      <PreviewPanel
+        t={selectedType}
+        name={name}
+        setName={setName}
+        loading={loading}
+        error={error}
+      />
+    </form>
+  )
+}
+
+// ── NuroCore — central animated AI orb ────────────────────────────────────
+function NuroCore({ selectedAccent, selectedAccentLight }: { selectedAccent: string; selectedAccentLight: string }) {
+  return (
+    <div className="relative w-[148px] h-[148px] sm:w-[168px] sm:h-[168px] flex items-center justify-center">
+      {/* Outer rotating energy ring */}
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: `conic-gradient(from 0deg, rgba(${selectedAccentLight},0.7), transparent 35%, rgba(${selectedAccentLight},0.4) 55%, transparent 90%, rgba(${selectedAccentLight},0.7))`,
+          maskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 67%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 67%, transparent 70%)',
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+      />
+      {/* Middle counter-rotating ring */}
+      <motion.div
+        className="absolute inset-2 rounded-full"
+        style={{
+          background: `conic-gradient(from 180deg, transparent, rgba(${selectedAccent},0.55), transparent 45%, rgba(${selectedAccent},0.3) 70%, transparent)`,
+          maskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 77%)',
+          WebkitMaskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 77%)',
+        }}
+        animate={{ rotate: -360 }}
+        transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
+      />
+      {/* Breathing outer halo */}
+      <motion.div
+        className="absolute -inset-5 rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle, rgba(${selectedAccentLight},0.4), transparent 60%)`,
+          filter: 'blur(14px)',
+        }}
+        animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.08, 1] }}
+        transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      {/* Inner orb with avatar */}
+      <div
+        className="relative w-[78px] h-[78px] sm:w-[88px] sm:h-[88px] rounded-full flex items-center justify-center overflow-hidden"
+        style={{
+          background: `radial-gradient(circle at 30% 25%, rgba(${selectedAccentLight},0.4), rgba(8,15,32,0.95) 70%)`,
+          border: `1px solid rgba(${selectedAccentLight},0.5)`,
+          boxShadow: `0 0 40px rgba(${selectedAccent},0.55), inset 0 0 20px rgba(${selectedAccent},0.22), inset 0 1px 0 rgba(255,255,255,0.14)`,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={AI_AVATAR_URL}
+          alt="NÜRO core"
+          className="absolute w-[140%] h-[140%] object-contain"
+          style={{ filter: `drop-shadow(0 0 8px rgba(${selectedAccentLight},0.6))` }}
+        />
+        <span
+          className="absolute inset-x-2 top-1.5 h-1/3 rounded-full pointer-events-none"
+          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)' }}
+        />
+      </div>
+      {/* Label below */}
+      <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.32em] font-bold text-blue-200/90 whitespace-nowrap">
+        NÜRO · core
+      </div>
+    </div>
+  )
+}
+
+// ── ChannelNode — compact tech module ─────────────────────────────────────
+type ChannelType = {
+  key: string
+  label: string
+  sub: string
+  icon: typeof Cloud
+  benefits: readonly string[]
+  accent: string
+  accentLight: string
+}
+
+function ChannelNode({ t, idx, selected, onSelect, className }: {
+  t: ChannelType
+  idx: number
+  selected: boolean
+  onSelect: () => void
+  className?: string
+}) {
+  const Icon = t.icon
+  const acc = t.accent
+  const accL = t.accentLight
+  return (
+    <motion.button
+      type="button"
+      onClick={onSelect}
+      initial={{ opacity: 0, scale: 0.85 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, delay: 0.18 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4, scale: 1.04 }}
+      whileTap={{ scale: 0.97 }}
+      className={`group/node relative rounded-2xl text-center overflow-hidden ${className ?? ''}`}
+      style={{
+        background: `linear-gradient(160deg, rgba(${acc},0.14) 0%, rgba(10,25,47,0.7) 100%)`,
+        border: selected ? `1px solid rgba(${accL},0.7)` : `1px solid rgba(${acc},0.22)`,
+        boxShadow: selected
+          ? `0 14px 40px -10px rgba(${acc},0.65), 0 0 0 1px rgba(${accL},0.3), inset 0 1px 0 rgba(255,255,255,0.08)`
+          : `0 4px 16px -8px rgba(${acc},0.4), inset 0 1px 0 rgba(255,255,255,0.04)`,
+        backdropFilter: 'blur(20px)',
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: `linear-gradient(90deg, transparent, rgba(${accL},0.6), transparent)` }} />
+
+      <AnimatePresence>
+        {selected && (
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.5, 0.2, 0.5] }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 2.4, repeat: Infinity }}
+            className="pointer-events-none absolute -inset-px rounded-2xl"
+            style={{ background: `radial-gradient(circle at top, rgba(${accL},0.35), transparent 65%)` }}
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="relative p-4 sm:p-5 flex flex-col items-center text-center">
+        <div className="relative mb-3">
+          <motion.span
+            className="absolute -inset-2 rounded-full pointer-events-none"
+            style={{
+              background: `radial-gradient(circle, rgba(${accL},0.5), transparent 60%)`,
+              filter: 'blur(10px)',
+            }}
+            animate={{ opacity: [0.5, 0.9, 0.5], scale: [1, 1.12, 1] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <div
+            className="relative w-12 h-12 rounded-2xl flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, rgba(${accL},0.3) 0%, rgba(${acc},0.1) 50%, rgba(${acc},0.06) 100%)`,
+              border: `1px solid rgba(${accL},0.45)`,
+              boxShadow: selected
+                ? `0 0 22px rgba(${acc},0.55), inset 0 1px 0 rgba(255,255,255,0.16)`
+                : `0 0 14px rgba(${acc},0.3), inset 0 1px 0 rgba(255,255,255,0.08)`,
+            }}
+          >
+            <span
+              className="absolute inset-x-1 top-0.5 h-1/2 rounded-t-xl pointer-events-none"
+              style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.18), transparent)' }}
             />
-            <button
-              type="submit"
-              disabled={loading || !name.trim()}
-              className="relative group/cta w-full sm:w-auto h-14 px-7 rounded-2xl font-semibold text-[14px] tracking-tight overflow-hidden transition-all duration-300
-                text-white
-                disabled:opacity-40 disabled:cursor-not-allowed
-                flex items-center justify-center gap-2 shrink-0"
-              style={{
-                background: 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)',
-                boxShadow: '0 10px 28px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.22)',
-              }}
-              onMouseEnter={(e) => {
-                if (e.currentTarget.disabled) return
-                e.currentTarget.style.boxShadow = '0 14px 36px -6px rgba(59,130,246,0.9), inset 0 1px 0 rgba(255,255,255,0.28)'
-                e.currentTarget.style.background = 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = '0 10px 28px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.22)'
-                e.currentTarget.style.background = 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)'
-              }}
-            >
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-              {loading ? <Spinner color="text-white" /> : <Sparkles className="w-4 h-4 relative" strokeWidth={2} />}
-              <span className="relative">Desplegar agente</span>
-            </button>
+            <Icon
+              className="relative w-6 h-6"
+              style={{ color: `rgb(${accL})`, filter: `drop-shadow(0 0 6px rgba(${acc},0.7))` }}
+              strokeWidth={1.7}
+            />
           </div>
+        </div>
+        <div className="text-[13px] sm:text-[14px] font-semibold tracking-tight text-white leading-tight">
+          {t.label}
+        </div>
+        <div className="text-[10.5px] text-slate-400 mt-1 leading-snug">
+          {t.sub}
         </div>
       </div>
-    </form>
+    </motion.button>
+  )
+}
+
+// ── PreviewPanel — agent preview + CTA ────────────────────────────────────
+function PreviewPanel({ t, name, setName, loading, error }: {
+  t: ChannelType
+  name: string
+  setName: (v: string) => void
+  loading: boolean
+  error: string
+}) {
+  const Icon = t.icon
+  const acc = t.accent
+  const accL = t.accentLight
+  const trimmedName = name.trim()
+  const ready = !!trimmedName
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 16 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+      className="relative overflow-hidden rounded-3xl backdrop-blur-2xl p-5 sm:p-6 flex flex-col"
+      style={{
+        background: `linear-gradient(180deg, rgba(${acc},0.12) 0%, rgba(10,20,42,0.78) 60%, rgba(8,15,32,0.85) 100%)`,
+        border: `1px solid rgba(${accL},0.28)`,
+        boxShadow: `0 24px 60px -20px rgba(${acc},0.55), inset 0 1px 0 rgba(255,255,255,0.05)`,
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: `linear-gradient(90deg, transparent, rgba(${accL},0.6), transparent)` }} />
+      <div className="pointer-events-none absolute -top-24 -right-20 w-60 h-60 rounded-full"
+        style={{ background: `radial-gradient(circle, rgba(${acc},0.32), transparent 65%)`, filter: 'blur(50px)' }} />
+
+      {/* Header label */}
+      <div className="relative flex items-center gap-2 mb-4">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-slate-400 font-semibold">Vista previa</span>
+        <span className="flex-1 h-px"
+          style={{ background: `linear-gradient(90deg, rgba(${accL},0.35), transparent)` }} />
+      </div>
+
+      {/* Agent identity preview */}
+      <div className="relative flex items-center gap-3.5 mb-5">
+        <motion.div
+          key={t.key}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.35 }}
+          className="relative w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+          style={{
+            background: `linear-gradient(135deg, rgba(${accL},0.32), rgba(${acc},0.1))`,
+            border: `1px solid rgba(${accL},0.55)`,
+            boxShadow: `0 0 24px rgba(${acc},0.5), inset 0 1px 0 rgba(255,255,255,0.16)`,
+          }}
+        >
+          <Icon className="w-7 h-7"
+            style={{ color: `rgb(${accL})`, filter: `drop-shadow(0 0 6px rgba(${acc},0.7))` }}
+            strokeWidth={1.6} />
+        </motion.div>
+        <div className="min-w-0 flex-1">
+          <motion.div
+            key={trimmedName || 'empty'}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="text-[15px] font-semibold text-white tracking-tight truncate"
+          >
+            {trimmedName || 'Tu nuevo agente'}
+          </motion.div>
+          <motion.div
+            key={t.key + '-label'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="text-[11.5px] mt-0.5 font-medium"
+            style={{ color: `rgba(${accL},0.95)` }}
+          >
+            {t.label}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Benefits list — auto re-staggers on channel change */}
+      <ul className="relative space-y-1.5 mb-5">
+        {t.benefits.map((b, i) => (
+          <motion.li
+            key={`${t.key}-${i}`}
+            initial={{ opacity: 0, x: -6 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: i * 0.07 }}
+            className="flex items-center gap-2 text-[12px] text-slate-300/90"
+          >
+            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
+              style={{
+                background: `rgba(${acc},0.22)`,
+                border: `1px solid rgba(${accL},0.5)`,
+                boxShadow: `0 0 6px rgba(${acc},0.45)`,
+              }}
+            >
+              <Check className="w-2 h-2" style={{ color: `rgb(${accL})` }} strokeWidth={4} />
+            </span>
+            {b}
+          </motion.li>
+        ))}
+      </ul>
+
+      {/* Name input */}
+      <div className="relative mb-3">
+        <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500 font-semibold mb-2">
+          Nombre del agente
+        </div>
+        <input
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Ej: Ventas NÜRO"
+          className="w-full rounded-2xl px-4 h-12 text-[14px] text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
+          style={{
+            background: 'rgba(10,20,42,0.55)',
+            border: `1px solid rgba(${accL},0.25)`,
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = `rgba(${accL},0.7)`
+            e.currentTarget.style.boxShadow = `0 0 0 3px rgba(${acc},0.16), inset 0 1px 0 rgba(255,255,255,0.04)`
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = `rgba(${accL},0.25)`
+            e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.03)'
+          }}
+          required
+        />
+      </div>
+
+      {error && <div className="mb-3"><Alert type="error" msg={error} /></div>}
+
+      {/* Ready indicator */}
+      <div className="relative flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl"
+        style={{
+          background: `rgba(${acc},0.08)`,
+          border: `1px solid rgba(${accL},0.22)`,
+        }}
+      >
+        <span className="relative flex h-2 w-2">
+          <motion.span
+            className="absolute inline-flex h-full w-full rounded-full"
+            style={{ background: `rgb(${accL})` }}
+            animate={{ scale: [1, 1.9, 1], opacity: [0.6, 0, 0.6] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <span className="relative inline-flex h-2 w-2 rounded-full"
+            style={{ background: `rgb(${accL})`, boxShadow: `0 0 8px rgba(${acc},0.8)` }} />
+        </span>
+        <span className="text-[11.5px] font-semibold"
+          style={{ color: `rgba(${accL},0.95)` }}>
+          {ready ? 'Listo para desplegar' : 'Asigna un nombre al agente'}
+        </span>
+      </div>
+
+      {/* CTA — focal point */}
+      <motion.button
+        type="submit"
+        disabled={loading || !ready}
+        whileHover={ready && !loading ? { scale: 1.02 } : undefined}
+        whileTap={ready && !loading ? { scale: 0.98 } : undefined}
+        className="relative group/cta w-full h-14 rounded-2xl font-bold text-[14.5px] tracking-tight overflow-hidden text-white disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-auto"
+        style={{
+          background: `linear-gradient(180deg, rgb(${accL}) 0%, rgb(${acc}) 100%)`,
+          boxShadow: `0 14px 40px -8px rgba(${acc},0.85), 0 0 0 1px rgba(${accL},0.4), inset 0 1px 0 rgba(255,255,255,0.3)`,
+        }}
+      >
+        <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
+        {loading ? <Spinner color="text-white" /> : <Sparkles className="w-4 h-4 relative" strokeWidth={2.2} />}
+        <span className="relative">Desplegar agente</span>
+      </motion.button>
+
+      <p className="text-[10.5px] text-slate-500 text-center mt-3">
+        El despliegue tarda menos de 30 segundos.
+      </p>
+    </motion.div>
   )
 }
 
