@@ -4,8 +4,9 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
-// GET: Fetch user notifications (for regular users)
-// Admin users get admin_notifications, regular users get user_notifications
+// GET: Fetch notifications
+// Admin users → table "admin_notifications" (column is_read)
+// Regular users → table "notifications" (column read) — Prisma maps it from UserNotification
 export async function GET(request: NextRequest) {
   try {
     const service = await createServiceRoleClient()
