@@ -175,8 +175,8 @@ function getAccentColor(bgHex: string): string {
 /* ============================================================
    MAIN COMPONENT
    ============================================================ */
-export default function PublicStorePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = React.use(params)
+export default function PublicStorePage({ params }: { params: { slug: string } }) {
+  const { slug } = params
   const [store, setStore] = useState<StoreData | null>(null)
   const [products, setProducts] = useState<StoreProductPublic[]>([])
   const [loading, setLoading] = useState(true)

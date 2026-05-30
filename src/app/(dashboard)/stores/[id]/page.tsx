@@ -106,9 +106,9 @@ const currencySymbol: Record<string, string> = {
 export default function StoreInventoryPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }) {
-  const { id: storeId } = React.use(params)
+  const { id: storeId } = params
   const [store, setStore] = useState<StoreMeta | null>(null)
   const [products, setProducts] = useState<StoreProduct[]>([])
   const [loading, setLoading] = useState(true)
