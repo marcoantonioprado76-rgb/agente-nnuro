@@ -15,23 +15,23 @@ export function TechBackground() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
-      {/* 1 — Base gradient */}
+      {/* 1 — Base gradient (Linear / Stripe — azul noche, no negro absoluto) */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, #05070A 0%, #050810 50%, #03060d 100%)',
+            'linear-gradient(180deg, #0B1020 0%, #0E1428 45%, #0A0F1F 100%)',
         }}
       />
       {/* 2a — Sky ambient halo (top-left) */}
-      <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-sky-500/[0.06] blur-[140px]" />
+      <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-sky-500/[0.10] blur-[140px]" />
       {/* 2b — Cyan ambient halo (mid-right) */}
-      <div className="absolute top-1/3 right-0 translate-x-1/4 w-[600px] h-[500px] rounded-full bg-cyan-500/[0.04] blur-[140px]" />
+      <div className="absolute top-1/3 right-0 translate-x-1/4 w-[600px] h-[500px] rounded-full bg-cyan-500/[0.07] blur-[140px]" />
       {/* 2c — Indigo ambient halo (bottom-left) */}
-      <div className="absolute bottom-0 left-1/3 w-[500px] h-[400px] rounded-full bg-indigo-500/[0.03] blur-[120px]" />
+      <div className="absolute bottom-0 left-1/3 w-[500px] h-[400px] rounded-full bg-indigo-500/[0.05] blur-[120px]" />
       {/* 3 — Subtle futuristic tech grid */}
       <div
-        className="absolute inset-0 opacity-[0.025]"
+        className="absolute inset-0 opacity-[0.035]"
         style={{
           backgroundImage:
             'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
