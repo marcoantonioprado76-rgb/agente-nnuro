@@ -302,6 +302,52 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
           </div>
         </div>
 
+        {/* — Metric strip (sistema operativo) — */}
+        <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-6">
+          {[
+            { icon: Wifi,     label: 'Canales',    value: '4',       sub: 'disponibles', acc: '6,182,212' },
+            { icon: Sparkles, label: 'IA',         value: 'Activa',  sub: 'GPT-5 ready', acc: '139,92,246' },
+            { icon: Zap,      label: 'Despliegue', value: '< 30s',   sub: 'tiempo medio', acc: '52,211,153' },
+            { icon: Key,      label: 'Cifrado',    value: 'AES-256', sub: 'end-to-end',   acc: '59,130,246' },
+          ].map((m, i) => {
+            const Icn = m.icon
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.12 + i * 0.06 }}
+                className="relative overflow-hidden rounded-2xl px-3 py-2.5 flex items-center gap-2.5"
+                style={{
+                  background: `linear-gradient(135deg, rgba(${m.acc},0.10), rgba(10,20,42,0.6))`,
+                  border: `1px solid rgba(${m.acc},0.22)`,
+                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 18px -10px rgba(${m.acc},0.4)`,
+                }}
+              >
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                  style={{ background: `linear-gradient(90deg, transparent, rgba(${m.acc},0.55), transparent)` }} />
+                <div
+                  className="relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: `linear-gradient(135deg, rgba(${m.acc},0.3), rgba(${m.acc},0.08))`,
+                    border: `1px solid rgba(${m.acc},0.4)`,
+                    boxShadow: `0 0 12px rgba(${m.acc},0.4), inset 0 1px 0 rgba(255,255,255,0.1)`,
+                  }}
+                >
+                  <Icn className="w-4 h-4" style={{ color: `rgba(${m.acc},1)`, filter: `drop-shadow(0 0 4px rgba(${m.acc},0.6))` }} strokeWidth={1.8} />
+                </div>
+                <div className="relative min-w-0">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-[14.5px] font-bold text-white tracking-tight leading-none tabular-nums">{m.value}</span>
+                    <span className="text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color: `rgba(${m.acc},0.85)` }}>{m.label}</span>
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-0.5 truncate">{m.sub}</div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+
         {/* — Constellation (desktop md+) — */}
         <div className="hidden md:block relative mt-4">
           {/* SVG connection lines from each channel to the core */}
@@ -415,46 +461,69 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 // ── NuroCore — central animated AI orb ────────────────────────────────────
 function NuroCore({ selectedAccent, selectedAccentLight }: { selectedAccent: string; selectedAccentLight: string }) {
   return (
-    <div className="relative w-[148px] h-[148px] sm:w-[168px] sm:h-[168px] flex items-center justify-center">
+    <div className="relative w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] flex items-center justify-center">
       {/* Outer rotating energy ring */}
       <motion.div
         className="absolute inset-0 rounded-full"
         style={{
-          background: `conic-gradient(from 0deg, rgba(${selectedAccentLight},0.7), transparent 35%, rgba(${selectedAccentLight},0.4) 55%, transparent 90%, rgba(${selectedAccentLight},0.7))`,
-          maskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 67%, transparent 70%)',
-          WebkitMaskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 67%, transparent 70%)',
+          background: `conic-gradient(from 0deg, rgba(${selectedAccentLight},0.75), transparent 32%, rgba(${selectedAccentLight},0.45) 52%, transparent 88%, rgba(${selectedAccentLight},0.75))`,
+          maskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 66%, transparent 69%)',
+          WebkitMaskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 66%, transparent 69%)',
         }}
         animate={{ rotate: 360 }}
         transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
       />
       {/* Middle counter-rotating ring */}
       <motion.div
-        className="absolute inset-2 rounded-full"
+        className="absolute inset-3 rounded-full"
         style={{
-          background: `conic-gradient(from 180deg, transparent, rgba(${selectedAccent},0.55), transparent 45%, rgba(${selectedAccent},0.3) 70%, transparent)`,
+          background: `conic-gradient(from 180deg, transparent, rgba(${selectedAccent},0.6), transparent 45%, rgba(${selectedAccent},0.32) 70%, transparent)`,
           maskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 77%)',
           WebkitMaskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 77%)',
         }}
         animate={{ rotate: -360 }}
         transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
       />
+      {/* Inner dashed orbit (decorative HUD) */}
+      <motion.div
+        className="absolute inset-6 rounded-full pointer-events-none"
+        style={{
+          border: `1px dashed rgba(${selectedAccentLight},0.35)`,
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+      />
+      {/* Tick marks around the orbit */}
+      {[0, 60, 120, 180, 240, 300].map((deg) => (
+        <span
+          key={deg}
+          className="absolute left-1/2 top-1/2 origin-bottom pointer-events-none"
+          style={{
+            transform: `translate(-50%, -100%) rotate(${deg}deg) translateY(-105px)`,
+            width: '2px',
+            height: '8px',
+            background: `linear-gradient(180deg, rgba(${selectedAccentLight},0.9), transparent)`,
+            boxShadow: `0 0 6px rgba(${selectedAccentLight},0.8)`,
+          }}
+        />
+      ))}
       {/* Breathing outer halo */}
       <motion.div
-        className="absolute -inset-5 rounded-full pointer-events-none"
+        className="absolute -inset-8 rounded-full pointer-events-none"
         style={{
-          background: `radial-gradient(circle, rgba(${selectedAccentLight},0.4), transparent 60%)`,
-          filter: 'blur(14px)',
+          background: `radial-gradient(circle, rgba(${selectedAccentLight},0.42), transparent 60%)`,
+          filter: 'blur(18px)',
         }}
         animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.08, 1] }}
         transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
       />
       {/* Inner orb with avatar */}
       <div
-        className="relative w-[78px] h-[78px] sm:w-[88px] sm:h-[88px] rounded-full flex items-center justify-center overflow-hidden"
+        className="relative w-[125px] h-[125px] sm:w-[145px] sm:h-[145px] rounded-full flex items-center justify-center overflow-hidden"
         style={{
-          background: `radial-gradient(circle at 30% 25%, rgba(${selectedAccentLight},0.4), rgba(8,15,32,0.95) 70%)`,
-          border: `1px solid rgba(${selectedAccentLight},0.5)`,
-          boxShadow: `0 0 40px rgba(${selectedAccent},0.55), inset 0 0 20px rgba(${selectedAccent},0.22), inset 0 1px 0 rgba(255,255,255,0.14)`,
+          background: `radial-gradient(circle at 30% 25%, rgba(${selectedAccentLight},0.45), rgba(8,15,32,0.95) 72%)`,
+          border: `1px solid rgba(${selectedAccentLight},0.55)`,
+          boxShadow: `0 0 50px rgba(${selectedAccent},0.6), inset 0 0 24px rgba(${selectedAccent},0.25), inset 0 1px 0 rgba(255,255,255,0.16)`,
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -462,16 +531,44 @@ function NuroCore({ selectedAccent, selectedAccentLight }: { selectedAccent: str
           src={AI_AVATAR_URL}
           alt="NÜRO core"
           className="absolute w-[140%] h-[140%] object-contain"
-          style={{ filter: `drop-shadow(0 0 8px rgba(${selectedAccentLight},0.6))` }}
+          style={{ filter: `drop-shadow(0 0 10px rgba(${selectedAccentLight},0.65))` }}
         />
         <span
-          className="absolute inset-x-2 top-1.5 h-1/3 rounded-full pointer-events-none"
-          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)' }}
+          className="absolute inset-x-3 top-2 h-1/3 rounded-full pointer-events-none"
+          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.22), transparent)' }}
         />
       </div>
-      {/* Label below */}
-      <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.32em] font-bold text-blue-200/90 whitespace-nowrap">
-        NÜRO · core
+
+      {/* Top-center HUD: system status */}
+      <motion.div
+        className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md whitespace-nowrap"
+        style={{
+          background: 'rgba(16,185,129,0.18)',
+          border: '1px solid rgba(52,211,153,0.4)',
+          boxShadow: '0 0 14px rgba(16,185,129,0.4)',
+        }}
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <span className="relative flex h-1.5 w-1.5">
+          <motion.span
+            className="absolute inline-flex h-full w-full rounded-full bg-emerald-300"
+            animate={{ scale: [1, 2.4, 1], opacity: [0.7, 0, 0.7] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+          />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
+        </span>
+        <span className="text-[9.5px] font-bold tracking-[0.16em] uppercase text-emerald-200">Sistema activo</span>
+      </motion.div>
+
+      {/* Bottom-center label */}
+      <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
+        <div className="text-[11px] uppercase tracking-[0.32em] font-bold text-blue-200/90">NÜRO · CORE</div>
+        <div className="text-[9.5px] tracking-[0.12em] mt-0.5"
+          style={{ color: `rgba(${selectedAccentLight},0.95)` }}>
+          4 canales conectados
+        </div>
       </div>
     </div>
   )
@@ -655,29 +752,102 @@ function PreviewPanel({ t, name, setName, loading, error }: {
         </div>
       </div>
 
-      {/* Benefits list — auto re-staggers on channel change */}
-      <ul className="relative space-y-1.5 mb-5">
-        {t.benefits.map((b, i) => (
-          <motion.li
-            key={`${t.key}-${i}`}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: i * 0.07 }}
-            className="flex items-center gap-2 text-[12px] text-slate-300/90"
-          >
-            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
+      {/* === Capacidades del agente (universales) === */}
+      <div className="relative mb-4">
+        <div className="flex items-center gap-2 mb-2.5">
+          <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500 font-semibold">Capacidades</span>
+          <span className="flex-1 h-px"
+            style={{ background: `linear-gradient(90deg, rgba(${accL},0.25), transparent)` }} />
+        </div>
+        <ul className="space-y-1.5">
+          {[
+            'Respuestas naturales 24/7',
+            'Memoria contextual de 30 días',
+            'Multimedia (audio · imagen · video)',
+            'Follow-ups inteligentes',
+            'Cierre de ventas autónomo',
+          ].map((cap, i) => (
+            <motion.li
+              key={cap}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
+              className="flex items-center gap-2 text-[12px] text-slate-200/90"
+            >
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
+                style={{
+                  background: 'rgba(52,211,153,0.18)',
+                  border: '1px solid rgba(52,211,153,0.4)',
+                  boxShadow: '0 0 5px rgba(16,185,129,0.4)',
+                }}
+              >
+                <Check className="w-2 h-2 text-emerald-300" strokeWidth={4} />
+              </span>
+              <span className="leading-tight">{cap}</span>
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+
+      {/* === Especificaciones técnicas === */}
+      <div className="relative mb-4">
+        <div className="flex items-center gap-2 mb-2.5">
+          <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500 font-semibold">Especificaciones</span>
+          <span className="flex-1 h-px"
+            style={{ background: `linear-gradient(90deg, rgba(${accL},0.25), transparent)` }} />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { label: 'Modelo',    value: 'GPT-5' },
+            { label: 'Respuesta', value: '< 2s' },
+            { label: 'Idiomas',   value: '30+' },
+            { label: 'Memoria',   value: '30 días' },
+          ].map((s) => (
+            <div key={s.label} className="rounded-xl px-3 py-2"
               style={{
-                background: `rgba(${acc},0.22)`,
-                border: `1px solid rgba(${accL},0.5)`,
-                boxShadow: `0 0 6px rgba(${acc},0.45)`,
+                background: 'rgba(10,20,42,0.55)',
+                border: `1px solid rgba(${accL},0.18)`,
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
               }}
             >
-              <Check className="w-2 h-2" style={{ color: `rgb(${accL})` }} strokeWidth={4} />
-            </span>
-            {b}
-          </motion.li>
-        ))}
-      </ul>
+              <div className="text-[9.5px] uppercase tracking-[0.12em] text-slate-500 font-medium">{s.label}</div>
+              <div className="text-[12.5px] font-bold text-white tracking-tight mt-0.5 tabular-nums">{s.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* === Beneficios del canal (auto re-staggers on change) === */}
+      <div className="relative mb-4">
+        <div className="flex items-center gap-2 mb-2.5">
+          <span className="text-[10px] uppercase tracking-[0.16em] font-semibold"
+            style={{ color: `rgba(${accL},0.95)` }}>Canal · {t.label}</span>
+          <span className="flex-1 h-px"
+            style={{ background: `linear-gradient(90deg, rgba(${accL},0.3), transparent)` }} />
+        </div>
+        <ul className="space-y-1.5">
+          {t.benefits.map((b, i) => (
+            <motion.li
+              key={`${t.key}-${i}`}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.06 }}
+              className="flex items-center gap-2 text-[12px] text-slate-300/90"
+            >
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
+                style={{
+                  background: `rgba(${acc},0.22)`,
+                  border: `1px solid rgba(${accL},0.5)`,
+                  boxShadow: `0 0 6px rgba(${acc},0.45)`,
+                }}
+              >
+                <Check className="w-2 h-2" style={{ color: `rgb(${accL})` }} strokeWidth={4} />
+              </span>
+              {b}
+            </motion.li>
+          ))}
+        </ul>
+      </div>
 
       {/* Name input */}
       <div className="relative mb-3">
