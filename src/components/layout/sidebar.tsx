@@ -93,8 +93,8 @@ export function Sidebar() {
         collapsed ? 'w-[72px]' : 'w-[260px]'
       )}
       style={{
-        background: 'linear-gradient(180deg, #000000 0%, #050508 50%, #050508 100%)',
-        borderColor: 'rgba(139, 92, 246, 0.08)',
+        background: 'linear-gradient(180deg, #0F1525 0%, #0D1322 50%, #0B1020 100%)',
+        borderColor: 'rgba(148, 163, 184, 0.08)',
       }}
     >
       {/* Brand Header */}

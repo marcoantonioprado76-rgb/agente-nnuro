@@ -71,8 +71,8 @@ export function AdminSidebar() {
     <aside
       className="fixed left-0 top-0 z-40 hidden lg:flex h-screen w-[280px] flex-col"
       style={{
-        background: 'linear-gradient(180deg, #000000 0%, #050508 50%, #050508 100%)',
-        borderRight: '1px solid rgba(139, 92, 246, 0.08)',
+        background: 'linear-gradient(180deg, #0F1525 0%, #0D1322 50%, #0B1020 100%)',
+        borderRight: '1px solid rgba(148, 163, 184, 0.08)',
       }}
     >
       {/* Brand Header */}
