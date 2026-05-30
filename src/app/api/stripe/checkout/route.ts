@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
 import { getPaymentMethodsSettings } from '@/lib/settings'
@@ -135,6 +136,7 @@ export async function POST(request: NextRequest) {
     const { data: subscription, error: subError } = await service
       .from('subscriptions')
       .insert({
+        id: randomUUID(),
         user_id: user.id,
         plan_id: plan.id,
         status: 'pending',
@@ -155,6 +157,7 @@ export async function POST(request: NextRequest) {
     // 8. Create pending payment record
     if (subscription) {
       await service.from('payments').insert({
+        id: randomUUID(),
         user_id: user.id,
         subscription_id: subscription.id,
         amount: plan.price,

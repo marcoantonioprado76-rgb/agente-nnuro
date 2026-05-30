@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server';
 
 // Only allow known product columns to prevent Supabase errors from unknown fields
@@ -166,6 +167,7 @@ export async function POST(request: NextRequest) {
     const { data: product, error } = await service
       .from('products')
       .insert({
+        id: randomUUID(),
         ...safeFields,
         bot_id: botId,
         tenant_id: profile.tenant_id,
@@ -184,6 +186,7 @@ export async function POST(request: NextRequest) {
     // Insert product images if provided
     if (product_images && product_images.length > 0) {
       const imageRows = product_images.map((img: { url: string; sort_order: number; is_primary: boolean; image_type: string }) => ({
+        id: randomUUID(),
         product_id: product.id,
         url: img.url,
         sort_order: img.sort_order,
@@ -196,6 +199,7 @@ export async function POST(request: NextRequest) {
     // Insert testimonials if provided
     if (product_testimonials && product_testimonials.length > 0) {
       const testRows = product_testimonials.map((t: { type: string; url: string; content?: string; description?: string }) => ({
+        id: randomUUID(),
         product_id: product.id,
         type: t.type || 'image',
         url: t.url,

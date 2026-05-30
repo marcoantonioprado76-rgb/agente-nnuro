@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
 import nodemailer from 'nodemailer'
 
@@ -62,6 +63,7 @@ export async function POST(request: NextRequest) {
       const { data: newProduct, error: insertError } = await service
         .from('products')
         .insert({
+          id: randomUUID(),
           bot_id: recipientBot.id,
           tenant_id: recipient.tenant_id,
           name: product.name,
@@ -92,6 +94,7 @@ export async function POST(request: NextRequest) {
       if (product.product_images?.length) {
         await service.from('product_images').insert(
           product.product_images.map((img: Record<string, unknown>) => ({
+            id: randomUUID(),
             product_id: newProduct.id,
             url: img.url,
             sort_order: img.sort_order,
@@ -105,6 +108,7 @@ export async function POST(request: NextRequest) {
       if (product.product_testimonials?.length) {
         await service.from('product_testimonials').insert(
           product.product_testimonials.map((t: Record<string, unknown>) => ({
+            id: randomUUID(),
             product_id: newProduct.id,
             type: t.type,
             url: t.url,
@@ -151,6 +155,7 @@ export async function POST(request: NextRequest) {
 
     // Notify recipient in-app
     await service.from('user_notifications').insert({
+      id: randomUUID(),
       user_id: recipient.id,
       type: 'productos_compartidos',
       title: `${senderProfile.full_name} te compartió productos`,

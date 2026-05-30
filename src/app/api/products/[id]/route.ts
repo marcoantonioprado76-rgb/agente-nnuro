@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { getServerSession } from '@/lib/auth'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
@@ -34,11 +35,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     if (Array.isArray(product_images)) {
       await service.from('product_images').delete().eq('product_id', id)
-      if (product_images.length > 0) await service.from('product_images').insert(product_images.map((img: any, i: number) => ({ product_id: id, url: img.url, sort_order: img.sort_order ?? i, is_primary: img.is_primary ?? i === 0, image_type: img.image_type ?? 'product' })))
+      if (product_images.length > 0) await service.from('product_images').insert(product_images.map((img: any, i: number) => ({ id: randomUUID(), product_id: id, url: img.url, sort_order: img.sort_order ?? i, is_primary: img.is_primary ?? i === 0, image_type: img.image_type ?? 'product' })))
     }
     if (Array.isArray(product_testimonials)) {
       await service.from('product_testimonials').delete().eq('product_id', id)
-      if (product_testimonials.length > 0) await service.from('product_testimonials').insert(product_testimonials.map((t: any) => ({ product_id: id, type: t.type ?? 'image', url: t.url, content: t.content ?? '', description: t.description ?? '' })))
+      if (product_testimonials.length > 0) await service.from('product_testimonials').insert(product_testimonials.map((t: any) => ({ id: randomUUID(), product_id: id, type: t.type ?? 'image', url: t.url, content: t.content ?? '', description: t.description ?? '' })))
     }
 
     const { data: full } = await service.from('products').select('*, product_images(*), product_testimonials(*)').eq('id', id).single()

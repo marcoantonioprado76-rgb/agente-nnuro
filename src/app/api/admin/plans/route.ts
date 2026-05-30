@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { getServerSession } from '@/lib/auth'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await service
       .from('plans')
       .insert({
+        id: randomUUID(),
         name,
         slug,
         price: price || 0,

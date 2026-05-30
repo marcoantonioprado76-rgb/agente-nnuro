@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
 import { getServerSession } from '@/lib/auth'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
@@ -89,6 +90,7 @@ export async function POST(request: NextRequest) {
     const { data: subscription, error: subError } = await service
       .from('subscriptions')
       .insert({
+        id: randomUUID(),
         user_id: session.sub,
         plan_id,
         status: 'pending',
@@ -103,6 +105,7 @@ export async function POST(request: NextRequest) {
 
     // Registrar pago
     await service.from('payments').insert({
+      id: randomUUID(),
       user_id: session.sub,
       subscription_id: subscription.id,
       amount: plan.price,
