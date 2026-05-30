@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server';
+import { getServerSession } from '@/lib/auth';
 
 // Only allow known product columns to prevent Supabase errors from unknown fields
 const PRODUCT_COLUMNS = new Set([
@@ -22,15 +23,12 @@ function pickProductFields(obj: Record<string, unknown>) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
+    const auth = await getServerSession();
+    if (!auth) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
+    const user = { id: auth.sub, email: auth.email };
+    const supabase = await createServerSupabaseClient();
 
     // Get user profile for tenant isolation
     const { data: profile } = await supabase
@@ -81,15 +79,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
+    const auth = await getServerSession();
+    if (!auth) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
+    const user = { id: auth.sub, email: auth.email };
+    const supabase = await createServerSupabaseClient();
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles')

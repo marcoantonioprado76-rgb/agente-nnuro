@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
 
 export async function PUT(
   request: NextRequest,
@@ -7,11 +8,11 @@ export async function PUT(
 ) {
   try {
     const { productId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const auth = await getServerSession()
+    if (!auth) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
+    const user = { id: auth.sub, email: auth.email }
 
     const service = await createServiceRoleClient()
 
@@ -83,11 +84,11 @@ export async function DELETE(
 ) {
   try {
     const { productId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const auth = await getServerSession()
+    if (!auth) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
+    const user = { id: auth.sub, email: auth.email }
 
     const service = await createServiceRoleClient()
 

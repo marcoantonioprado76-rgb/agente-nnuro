@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server';
+import { getServerSession } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
+    const auth = await getServerSession();
+    if (!auth) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
+    const user = { id: auth.sub, email: auth.email };
+    const supabase = await createServerSupabaseClient();
 
     // Verificar que el usuario es admin
     const { data: profile, error: profileError } = await supabase
@@ -60,15 +58,12 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'No autorizado' },
-        { status: 401 }
-      );
+    const auth = await getServerSession();
+    if (!auth) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
+    const user = { id: auth.sub, email: auth.email };
+    const supabase = await createServerSupabaseClient();
 
     // Verificar que el usuario es admin
     const { data: adminProfile, error: profileError } = await supabase

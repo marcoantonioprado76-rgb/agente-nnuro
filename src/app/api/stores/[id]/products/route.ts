@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
 
 export async function GET(
   _request: NextRequest,
@@ -8,11 +9,11 @@ export async function GET(
 ) {
   try {
     const { id: storeId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const auth = await getServerSession()
+    if (!auth) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
+    const user = { id: auth.sub, email: auth.email }
 
     const service = await createServiceRoleClient()
 
@@ -41,11 +42,12 @@ export async function POST(
 ) {
   try {
     const { id: storeId } = await params
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
+    const auth = await getServerSession()
+    if (!auth) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
+    const user = { id: auth.sub, email: auth.email }
+    const supabase = await createServerSupabaseClient()
 
     const { data: profile } = await supabase
       .from('profiles')

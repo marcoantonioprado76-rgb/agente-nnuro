@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server'
+import { createServiceRoleClient } from '@/lib/supabase/server'
+import { getServerSession } from '@/lib/auth'
 import nodemailer from 'nodemailer'
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const auth = await getServerSession()
+    if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const user = { id: auth.sub, email: auth.email }
 
     const { product_ids, recipient_email } = await request.json()
     if (!product_ids?.length || !recipient_email) {
