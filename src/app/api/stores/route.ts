@@ -137,9 +137,11 @@ export async function POST(request: NextRequest) {
 
     // Extract flat visual fields from config objects
     const visual = extractVisualFields(font_config, bg_config)
+    const nowIso = new Date().toISOString()
 
-    // Generamos el id en la app porque Prisma define @default(uuid()) a nivel
-    // de cliente, no a nivel de base de datos.
+    // Pasamos TODOS los defaults explícitos porque la DB se creó vía
+    // Prisma db push y los @default(...) sólo se aplican al pasar por
+    // el cliente Prisma, no en inserts directos via Supabase.
     const { data: store, error } = await service
       .from('stores')
       .insert({
@@ -149,12 +151,16 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         slug: slugClean,
         store_type: store_type || 'business',
+        status: 'active',
+        is_active: true,
         whatsapp_number: whatsapp_number || null,
         payment_qr_url: payment_qr_url || null,
         visibility: visibility || 'public',
         font_config: font_config || null,
         bg_config: bg_config || null,
         ...visual,
+        created_at: nowIso,
+        updated_at: nowIso,
       })
       .select()
       .single()
