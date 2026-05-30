@@ -40,6 +40,8 @@ import {
   Share2,
   UserCheck,
   Sparkles,
+  Cloud,
+  CloudCog,
 } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -164,48 +166,57 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
   }
 
   const TYPES = [
-    { key: 'YCLOUD',         label: 'YCloud',         sub: 'WhatsApp API',         icon: Webhook,       image: 'https://i.ibb.co/sdPpdrd5/1-YCloud-D.png' },
-    { key: 'BAILEYS',        label: 'WhatsApp Web',   sub: 'Escanear código QR',   icon: Smartphone,    image: 'https://i.ibb.co/hF4HDXLX/Captura-de-pantalla-2026-05-12-a-la-s-13-27-08.png' },
-    { key: 'META',           label: 'Messenger',      sub: 'Facebook / Instagram', icon: MessageSquare, image: 'https://i.ibb.co/9HV3sKxk/A-MESENSEG.jpg' },
-    { key: 'WHATSAPP_CLOUD', label: 'WhatsApp Cloud', sub: 'API oficial de Meta',  icon: Wifi,          image: 'https://i.ibb.co/tMCqR4yz/Captura-de-pantalla-2026-05-12-a-la-s-13-30-34.png' },
+    { key: 'YCLOUD',         label: 'YCloud',         sub: 'Conexión vía API empresarial',   icon: Cloud        },
+    { key: 'BAILEYS',        label: 'WhatsApp Web',   sub: 'Conexión mediante código QR',    icon: Smartphone   },
+    { key: 'META',           label: 'Messenger',      sub: 'Facebook · Instagram Direct',    icon: MessageCircle },
+    { key: 'WHATSAPP_CLOUD', label: 'WhatsApp Cloud', sub: 'API oficial gestionada por Meta', icon: CloudCog    },
   ] as const
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.015] ring-1 ring-white/[0.06] backdrop-blur-2xl p-6 sm:p-8 shadow-[0_8px_40px_-12px_rgba(14,165,233,0.2)]"
+      className="nuro-fade-up relative overflow-hidden rounded-3xl backdrop-blur-2xl p-6 sm:p-8"
+      style={{
+        background: 'linear-gradient(180deg, rgba(10,25,47,0.72) 0%, rgba(10,25,47,0.55) 100%)',
+        boxShadow: '0 8px 40px -12px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
+        border: '1px solid rgba(59,130,246,0.15)',
+      }}
     >
       {/* Soft ambient glow */}
-      <div className="pointer-events-none absolute -top-32 -left-32 w-80 h-80 rounded-full bg-sky-500/[0.08] blur-[100px]" />
-      <div className="pointer-events-none absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-cyan-500/[0.05] blur-[100px]" />
+      <div className="pointer-events-none absolute -top-32 -left-32 w-80 h-80 rounded-full bg-blue-500/[0.12] blur-[100px]" />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-sky-500/[0.07] blur-[100px]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
 
       <div className="relative">
         {/* Module header */}
-        <div className="flex items-start gap-4 mb-7">
-          <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500/25 via-sky-500/10 to-cyan-500/[0.05] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_25px_-6px_rgba(56,189,248,0.5)]">
-            <Sparkles className="w-5 h-5 text-sky-300" strokeWidth={1.5} />
+        <div className="flex items-start gap-4 mb-8">
+          <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05))',
+              border: '1px solid rgba(59,130,246,0.25)',
+              boxShadow: '0 0 30px -6px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
+            }}
+          >
+            <Sparkles className="w-5 h-5 text-blue-300" strokeWidth={1.6} />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] uppercase tracking-[0.16em] text-sky-300/80 font-medium">Nuevo</span>
-              <span className="h-px flex-1 bg-gradient-to-r from-sky-400/20 via-white/[0.05] to-transparent" />
-            </div>
-            <h3 className="text-xl sm:text-2xl font-semibold text-slate-50 tracking-tight leading-tight">
-              Inicializar agente IA
+            <h3 className="text-xl sm:text-2xl font-semibold text-white tracking-tight leading-tight">
+              Crear nuevo agente
             </h3>
-            <p className="text-[13px] text-slate-400 mt-1 leading-relaxed">
-              Selecciona el canal de conexión y dale un nombre a tu agente.
+            <p className="text-[13.5px] text-slate-400 mt-1.5 leading-relaxed">
+              Conecta un canal de comunicación y despliega un nuevo agente inteligente.
             </p>
           </div>
         </div>
 
-        {/* Tipo de bot — Premium card grid */}
-        <div className="mb-7">
-          <div className="text-[11px] text-slate-500 uppercase tracking-[0.14em] font-medium mb-3">
+        {/* Tipo de bot — Premium tech cards (no images) */}
+        <div className="mb-8">
+          <div className="text-[11px] text-slate-500 uppercase tracking-[0.14em] font-medium mb-3.5 flex items-center gap-2">
+            <span className="h-px w-4 bg-slate-700" />
             Canal de conexión
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {TYPES.map((t) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+            {TYPES.map((t, idx) => {
               const Icon = t.icon
               const selected = type === t.key
               return (
@@ -213,97 +224,162 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
                   key={t.key}
                   type="button"
                   onClick={() => setType(t.key)}
-                  className={`group/btn relative p-4 sm:p-5 rounded-2xl overflow-hidden text-left transition-all duration-300 ease-out
-                    ${selected
-                      ? 'bg-sky-500/[0.05] ring-1 ring-sky-400/35 shadow-[0_6px_24px_-12px_rgba(56,189,248,0.5)] -translate-y-0.5'
-                      : 'bg-white/[0.02] ring-1 ring-white/[0.05] hover:bg-white/[0.04] hover:ring-white/[0.14] hover:-translate-y-0.5'
-                    }`}
+                  className="nuro-card-rise group/btn relative rounded-2xl text-left transition-all duration-300 ease-out overflow-hidden"
+                  style={{
+                    background: selected
+                      ? 'linear-gradient(160deg, rgba(59,130,246,0.18) 0%, rgba(59,130,246,0.04) 100%)'
+                      : 'linear-gradient(160deg, rgba(15,30,55,0.6) 0%, rgba(10,25,47,0.4) 100%)',
+                    border: selected
+                      ? '1px solid rgba(59,130,246,0.55)'
+                      : '1px solid rgba(59,130,246,0.12)',
+                    boxShadow: selected
+                      ? '0 10px 30px -10px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.06)'
+                      : '0 4px 16px -8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)',
+                    transform: selected ? 'translateY(-4px) scale(1.015)' : undefined,
+                    animationDelay: `${idx * 60}ms`,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selected) {
+                      e.currentTarget.style.transform = 'translateY(-5px) scale(1.02)'
+                      e.currentTarget.style.borderColor = 'rgba(59,130,246,0.35)'
+                      e.currentTarget.style.boxShadow = '0 12px 32px -10px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.06)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selected) {
+                      e.currentTarget.style.transform = ''
+                      e.currentTarget.style.borderColor = 'rgba(59,130,246,0.12)'
+                      e.currentTarget.style.boxShadow = '0 4px 16px -8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)'
+                    }
+                  }}
                 >
-                  {/* Cinematic background image — visible, no harsh darkening */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={t.image}
-                    alt=""
-                    aria-hidden="true"
-                    className={`pointer-events-none absolute inset-0 w-full h-full object-cover transition-all duration-500
-                      ${selected ? 'opacity-90 saturate-110' : 'opacity-70 saturate-95 group-hover/btn:opacity-85 group-hover/btn:saturate-105'}`}
-                    loading="lazy"
-                  />
+                  {/* Top edge sheen */}
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
 
-                  {/* Local readability gradient — only behind the text (bottom-left), not the whole card */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#05070A] via-[#05070A]/75 to-[#05070A]/25" />
-
-                  {/* Soft blue ambient — premium cinematic feel */}
-                  <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500
-                    ${selected ? 'opacity-100' : 'opacity-70 group-hover/btn:opacity-85'}`}
-                    style={{ background: 'linear-gradient(135deg, rgba(8,17,32,0.25) 0%, transparent 50%, rgba(56,189,248,0.06) 100%)' }}
-                  />
-
-                  {/* Sky tint on selected */}
+                  {/* Inner ambient when selected */}
                   {selected && (
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-sky-400/[0.18]" />
+                    <div className="pointer-events-none absolute -inset-px rounded-2xl"
+                      style={{ background: 'radial-gradient(ellipse at top, rgba(59,130,246,0.18), transparent 60%)' }} />
                   )}
 
-                  {/* Top edge sheen */}
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-
-                  {/* Content — text protagonist */}
-                  <div className="relative">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 backdrop-blur-md transition-colors
-                      ${selected
-                        ? 'bg-sky-500/25 ring-1 ring-sky-300/45 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]'
-                        : 'bg-black/40 ring-1 ring-white/15 text-white group-hover/btn:bg-black/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
-                      }`}>
-                      <Icon className="w-5 h-5" strokeWidth={1.8} />
+                  {/* Selected check badge */}
+                  {selected && (
+                    <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-full"
+                      style={{
+                        background: 'rgba(59,130,246,0.2)',
+                        border: '1px solid rgba(59,130,246,0.5)',
+                        boxShadow: '0 0 12px rgba(59,130,246,0.5)',
+                      }}
+                    >
+                      <Check className="w-3 h-3 text-blue-200" strokeWidth={3} />
+                      <span className="text-[9.5px] font-semibold text-blue-100 tracking-wider uppercase">Seleccionado</span>
                     </div>
-                    <div className="text-[13px] font-semibold tracking-tight leading-tight text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]">
+                  )}
+
+                  {/* Content — centered tech tile */}
+                  <div className="relative p-5 sm:p-6 flex flex-col items-center text-center">
+                    {/* Icon tile */}
+                    <div
+                      className="relative w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300"
+                      style={{
+                        background: selected
+                          ? 'linear-gradient(135deg, rgba(59,130,246,0.35), rgba(59,130,246,0.1))'
+                          : 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.03))',
+                        border: selected
+                          ? '1px solid rgba(59,130,246,0.5)'
+                          : '1px solid rgba(59,130,246,0.18)',
+                        boxShadow: selected
+                          ? '0 0 24px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
+                          : 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      <Icon
+                        className={`w-7 h-7 transition-colors duration-300 ${selected ? 'text-blue-200' : 'text-blue-300/85 group-hover/btn:text-blue-200'}`}
+                        strokeWidth={1.6}
+                      />
+                    </div>
+
+                    {/* Title */}
+                    <div className="text-[14px] sm:text-[15px] font-semibold tracking-tight text-white mb-1.5">
                       {t.label}
                     </div>
-                    <div className="text-[11px] mt-1 leading-relaxed text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                    {/* Description */}
+                    <div className="text-[11.5px] text-slate-400 leading-snug mb-4 min-h-[2.5em]">
                       {t.sub}
                     </div>
-                  </div>
 
-                  {/* Selected dot */}
-                  {selected && (
-                    <div className="absolute top-3 right-3 z-10">
-                      <div className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
+                    {/* Availability indicator */}
+                    <div className="flex items-center gap-1.5 mt-auto">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      </span>
+                      <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-emerald-300/80">
+                        Disponible
+                      </span>
                     </div>
-                  )}
+                  </div>
                 </button>
               )
             })}
           </div>
         </div>
 
-        {error && <div className="mb-4"><Alert type="error" msg={error} /></div>}
+        {error && <div className="mb-5"><Alert type="error" msg={error} /></div>}
 
         {/* Identidad */}
         <div>
-          <div className="text-[11px] text-slate-500 uppercase tracking-[0.14em] font-medium mb-3">
+          <div className="text-[11px] text-slate-500 uppercase tracking-[0.14em] font-medium mb-3.5 flex items-center gap-2">
+            <span className="h-px w-4 bg-slate-700" />
             Nombre del agente
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="Ej: Agente Ventas Bolivia"
-              className="flex-1 bg-white/[0.02] ring-1 ring-white/[0.06] rounded-2xl px-5 h-14 text-[15px] text-slate-50 placeholder-slate-500 focus:outline-none focus:ring-sky-400/40 focus:bg-white/[0.04] transition-all duration-200"
+              placeholder="Ej: Ventas Bolivia · Asistente Comercial · Soporte NÜRO"
+              className="flex-1 rounded-2xl px-5 h-14 text-[15px] text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
+              style={{
+                background: 'rgba(10,25,47,0.55)',
+                border: '1px solid rgba(59,130,246,0.18)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'
+                e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.04)'
+                e.currentTarget.style.background = 'rgba(10,25,47,0.75)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.18)'
+                e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.03)'
+                e.currentTarget.style.background = 'rgba(10,25,47,0.55)'
+              }}
               required
             />
             <button
               type="submit"
               disabled={loading || !name.trim()}
               className="relative group/cta w-full sm:w-auto h-14 px-7 rounded-2xl font-semibold text-[14px] tracking-tight overflow-hidden transition-all duration-300
-                bg-gradient-to-b from-sky-400 to-sky-500 text-white
-                shadow-[0_8px_24px_-8px_rgba(14,165,233,0.7),inset_0_1px_0_rgba(255,255,255,0.2)]
-                hover:from-sky-300 hover:to-sky-400 hover:shadow-[0_12px_32px_-6px_rgba(14,165,233,0.85),inset_0_1px_0_rgba(255,255,255,0.25)]
+                text-white
                 disabled:opacity-40 disabled:cursor-not-allowed
                 flex items-center justify-center gap-2 shrink-0"
+              style={{
+                background: 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)',
+                boxShadow: '0 10px 28px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.22)',
+              }}
+              onMouseEnter={(e) => {
+                if (e.currentTarget.disabled) return
+                e.currentTarget.style.boxShadow = '0 14px 36px -6px rgba(59,130,246,0.9), inset 0 1px 0 rgba(255,255,255,0.28)'
+                e.currentTarget.style.background = 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 10px 28px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.22)'
+                e.currentTarget.style.background = 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)'
+              }}
             >
               <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
               {loading ? <Spinner color="text-white" /> : <Sparkles className="w-4 h-4 relative" strokeWidth={2} />}
-              <span className="relative">Crear agente</span>
+              <span className="relative">Desplegar agente</span>
             </button>
           </div>
         </div>

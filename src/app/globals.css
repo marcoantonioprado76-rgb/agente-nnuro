@@ -1300,3 +1300,24 @@ html, body {
     height: 100dvh;
   }
 }
+
+/* ============================================================
+   NURO — animaciones premium SaaS (sin Framer Motion)
+   ============================================================ */
+@keyframes nuro-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nuro-card-rise {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.nuro-fade-up {
+  animation: nuro-fade-up 0.4s ease-out both;
+}
+
+.nuro-card-rise {
+  animation: nuro-card-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
