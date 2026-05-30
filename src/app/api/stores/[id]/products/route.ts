@@ -26,7 +26,10 @@ export async function GET(
 
     if (error) {
       console.error('Error fetching store products:', error)
-      return NextResponse.json({ error: 'Error al obtener productos' }, { status: 500 })
+      return NextResponse.json(
+        { error: error.message || 'Error al obtener productos' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json(products)
