@@ -154,8 +154,8 @@ export async function POST(request: NextRequest) {
       })
     } catch { /* email is non-critical */ }
 
-    // Notify recipient in-app
-    await service.from('user_notifications').insert({
+    // Notify recipient in-app (Prisma maps UserNotification → notifications)
+    await service.from('notifications').insert({
       id: randomUUID(),
       user_id: recipient.id,
       type: 'productos_compartidos',

@@ -38,19 +38,19 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Regular user: fetch from user_notifications
+    // Regular user: fetch from notifications (Prisma maps UserNotification → notifications)
     const { data: notifications } = await service
-      .from('user_notifications')
+      .from('notifications')
       .select('*')
       .eq('user_id', session.sub)
       .order('created_at', { ascending: false })
       .limit(limit)
 
     const { count } = await service
-      .from('user_notifications')
+      .from('notifications')
       .select('id', { count: 'exact', head: true })
       .eq('user_id', session.sub)
-      .eq('is_read', false)
+      .eq('read', false)
 
     return NextResponse.json({
       notifications: notifications || [],
@@ -78,16 +78,19 @@ export async function PATCH(request: NextRequest) {
         const body = await request.json()
     const { notification_ids, mark_all } = body
 
-    const table = session.role === 'admin' ? 'notifications' : 'user_notifications'
+    // admin_notifications uses column "is_read"; notifications (user) uses column "read"
+    const isAdmin = session.role === 'admin'
+    const table = isAdmin ? 'admin_notifications' : 'notifications'
+    const readField = isAdmin ? 'is_read' : 'read'
 
     if (mark_all) {
       let query = service
         .from(table)
-        .update({ is_read: true })
-        .eq('is_read', false)
+        .update({ [readField]: true })
+        .eq(readField, false)
 
       // Regular users: only update their own
-      if (session.role !== 'admin') {
+      if (!isAdmin) {
         query = query.eq('user_id', session.sub)
       }
 
@@ -95,10 +98,10 @@ export async function PATCH(request: NextRequest) {
     } else if (notification_ids?.length) {
       let query = service
         .from(table)
-        .update({ is_read: true })
+        .update({ [readField]: true })
         .in('id', notification_ids)
 
-      if (session.role !== 'admin') {
+      if (!isAdmin) {
         query = query.eq('user_id', session.sub)
       }
 
