@@ -22,6 +22,89 @@ export default function LandingPage() {
     <div className="relative min-h-screen overflow-x-hidden" style={{ background: '#020817' }}>
       <BackgroundLayers />
 
+      {/* ── Energy sphere BEHIND the NÜRO — radial glow + neural mesh + breathing halo ── */}
+      <div
+        className="pointer-events-none fixed inset-0 flex items-center justify-center lg:justify-end overflow-hidden lg:pr-[3vw]"
+        style={{ zIndex: 0 }}
+        aria-hidden
+      >
+        <div
+          className="relative flex items-center justify-center"
+          style={{ width: 'min(92vh, 100vw)', height: 'min(92vh, 100vw)', maxWidth: '780px', maxHeight: '780px', marginTop: '6vh' }}
+        >
+          {/* Big radial halo */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.42), transparent 60%)', filter: 'blur(60px)' }}
+            animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.05, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          {/* Second halo, slightly offset for depth */}
+          <motion.div
+            className="absolute inset-[8%] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.32), transparent 65%)', filter: 'blur(40px)' }}
+            animate={{ opacity: [0.5, 0.9, 0.5], scale: [1, 1.06, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+          />
+          {/* Slow energy ring (conic gradient) */}
+          <motion.div
+            className="absolute inset-[14%] rounded-full"
+            style={{
+              background: 'conic-gradient(from 0deg, rgba(96,165,250,0.55), transparent 30%, rgba(96,165,250,0.35) 55%, transparent 88%, rgba(96,165,250,0.55))',
+              maskImage: 'radial-gradient(circle, transparent 64%, black 66%, black 72%, transparent 74%)',
+              WebkitMaskImage: 'radial-gradient(circle, transparent 64%, black 66%, black 72%, transparent 74%)',
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+          />
+          {/* Counter ring */}
+          <motion.div
+            className="absolute inset-[26%] rounded-full"
+            style={{
+              background: 'conic-gradient(from 180deg, transparent, rgba(34,211,238,0.5), transparent 45%, rgba(34,211,238,0.28) 70%, transparent)',
+              maskImage: 'radial-gradient(circle, transparent 72%, black 74%, black 78%, transparent 80%)',
+              WebkitMaskImage: 'radial-gradient(circle, transparent 72%, black 74%, black 78%, transparent 80%)',
+            }}
+            animate={{ rotate: -360 }}
+            transition={{ duration: 44, repeat: Infinity, ease: 'linear' }}
+          />
+          {/* Dashed outer orbit */}
+          <motion.div
+            className="absolute -inset-[6%] rounded-full"
+            style={{ border: '1px dashed rgba(96,165,250,0.28)' }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 70, repeat: Infinity, ease: 'linear' }}
+          >
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-200"
+              style={{ boxShadow: '0 0 12px rgba(96,165,250,1)' }} />
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300"
+              style={{ boxShadow: '0 0 10px rgba(103,232,249,1)' }} />
+          </motion.div>
+          {/* Orbital energy nodes scattered around */}
+          {[20, 75, 140, 200, 260, 320].map((angle, i) => {
+            const rad = (angle * Math.PI) / 180
+            const r = 47 + (i % 2) * 3
+            return (
+              <motion.span
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  left: `${50 + Math.cos(rad) * r}%`,
+                  top: `${50 + Math.sin(rad) * r}%`,
+                  width: i % 2 === 0 ? '6px' : '4px',
+                  height: i % 2 === 0 ? '6px' : '4px',
+                  background: 'rgba(96,165,250,1)',
+                  boxShadow: '0 0 14px rgba(96,165,250,1), 0 0 28px rgba(59,130,246,0.55)',
+                  transform: 'translate(-50%, -50%)',
+                }}
+                animate={{ opacity: [0.45, 1, 0.45], scale: [1, 1.3, 1] }}
+                transition={{ duration: 3 + (i % 3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.35 }}
+              />
+            )
+          })}
+        </div>
+      </div>
+
       {/* ── NÜRO watermark — sized to never crop, shifted to the right so the text column stays clean ── */}
       <motion.div
         className="pointer-events-none fixed inset-0 flex items-center justify-center lg:justify-end overflow-hidden lg:pr-[6vw]"
@@ -36,17 +119,17 @@ export default function LandingPage() {
           alt=""
           className="object-contain"
           style={{
-            height: 'min(62vh, 78vw)',
+            height: 'min(86vh, 110vw)',
             width: 'auto',
-            maxWidth: 'min(48vw, 600px)',
-            marginTop: '14vh',
-            opacity: 0.55,
-            filter: 'drop-shadow(0 0 220px rgba(59,130,246,1)) drop-shadow(0 0 400px rgba(96,165,250,0.6)) brightness(1.08) saturate(1.2)',
+            maxWidth: 'min(62vw, 820px)',
+            marginTop: '8vh',
+            opacity: 0.7,
+            filter: 'drop-shadow(0 0 280px rgba(59,130,246,1)) drop-shadow(0 0 520px rgba(96,165,250,0.7)) brightness(1.1) saturate(1.22)',
           }}
           animate={{
-            y: [0, -14, 6, 0],
-            rotate: [0, 1.2, -0.8, 0],
-            scale: [1, 1.018, 0.99, 1],
+            y: [0, -16, 7, 0],
+            rotate: [0, 1.3, -0.9, 0],
+            scale: [1, 1.02, 0.99, 1],
           }}
           transition={{
             y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
@@ -820,19 +903,19 @@ function HeroVisual() {
         />
       </div>
 
-      {/* Floating holographic indicators — positioned around the orbit, not over the robot's face/torso */}
+      {/* Floating holographic indicators — close to NÜRO (orbital feel), still away from face/hands/torso */}
       <FloatingChip
-        className="absolute top-[2%] left-[-6%] sm:left-[-2%]"
+        className="absolute top-[6%] left-[2%] sm:left-[5%]"
         icon={MessageCircle} label="Mensaje recibido" value="124 chats" acc="52,211,153"
         delay={0.4}
       />
       <FloatingChip
-        className="absolute top-[88%] left-[-4%] sm:left-[0%]"
+        className="absolute bottom-[8%] left-[8%] sm:left-[10%]"
         icon={Package} label="Pedido confirmado" value="$345 USD" acc="167,139,250"
         delay={0.7}
       />
       <FloatingChip
-        className="absolute top-[58%] right-[-6%] sm:right-[-2%]"
+        className="absolute top-[50%] right-[2%] sm:right-[4%] -translate-y-1/2"
         icon={TrendingUp} label="Venta cerrada" value="+$1,420" acc="34,211,238"
         delay={1.0}
       />
