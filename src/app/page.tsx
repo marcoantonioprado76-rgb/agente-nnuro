@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -40,11 +40,11 @@ export default function LandingPage() {
 function BackgroundLayers() {
   return (
     <>
-      {/* Fixed grid + halos */}
+      {/* Fixed wrapper */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         {/* Tech grid */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage:
               'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
@@ -53,25 +53,61 @@ function BackgroundLayers() {
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 75%)',
           }}
         />
-        {/* Halos */}
-        <div className="absolute -top-40 left-1/4 -translate-x-1/2 w-[700px] h-[460px] rounded-full bg-blue-500/[0.18] blur-[160px]" />
-        <div className="absolute top-1/3 right-0 translate-x-1/4 w-[560px] h-[420px] rounded-full bg-cyan-500/[0.10] blur-[150px]" />
-        <div className="absolute bottom-0 left-0 w-[480px] h-[380px] rounded-full bg-indigo-500/[0.10] blur-[140px]" />
+
+        {/* Animated mesh gradient blobs — they drift slowly */}
+        <motion.div
+          className="absolute -top-40 -left-20 w-[640px] h-[520px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.30), transparent 60%)', filter: 'blur(80px)' }}
+          animate={{ x: [0, 140, -60, 0], y: [0, 80, -40, 0] }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute top-[20%] right-[-10%] w-[520px] h-[480px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.18), transparent 60%)', filter: 'blur(80px)' }}
+          animate={{ x: [0, -160, 80, 0], y: [0, -90, 60, 0] }}
+          transition={{ duration: 38, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-[10%] w-[600px] h-[460px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.16), transparent 60%)', filter: 'blur(90px)' }}
+          animate={{ x: [0, 120, -90, 0], y: [0, -60, 80, 0] }}
+          transition={{ duration: 34, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute top-[60%] left-[40%] w-[400px] h-[380px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.18), transparent 60%)', filter: 'blur(70px)' }}
+          animate={{ x: [0, -100, 60, 0], y: [0, 60, -80, 0] }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Scan line (subtle, slow vertical) */}
+        <motion.div
+          className="absolute inset-x-0 h-px"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.4), transparent)' }}
+          animate={{ y: ['-5%', '105%'] }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+        />
+
+        {/* Subtle vignette */}
+        <div className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse at top, transparent 30%, rgba(2,8,23,0.6) 100%)' }} />
       </div>
 
       {/* Floating particles */}
-      {[...Array(14)].map((_, i) => (
+      {[...Array(22)].map((_, i) => (
         <motion.span
           key={i}
-          className="pointer-events-none fixed w-px h-px rounded-full bg-blue-200/80"
+          className="pointer-events-none fixed rounded-full bg-blue-200/80"
           style={{
-            left: `${(i * 11) % 95}%`,
-            top: `${15 + (i * 17) % 70}%`,
-            boxShadow: '0 0 8px rgba(96,165,250,0.85)',
+            left: `${(i * 7) % 96}%`,
+            top: `${10 + (i * 13) % 78}%`,
+            width: i % 4 === 0 ? '2px' : '1px',
+            height: i % 4 === 0 ? '2px' : '1px',
+            boxShadow: '0 0 10px rgba(96,165,250,0.9)',
             zIndex: -1,
           }}
-          animate={{ y: [0, -36, 12, 0], opacity: [0.15, 0.9, 0.4, 0.15] }}
-          transition={{ duration: 20 + i * 1.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
+          animate={{ y: [0, -45, 15, 0], opacity: [0.1, 0.95, 0.4, 0.1] }}
+          transition={{ duration: 18 + i * 1.1, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 }}
         />
       ))}
     </>
@@ -134,18 +170,30 @@ function Navbar({
             ))}
           </div>
 
-          {/* CTA — desktop */}
-          <Link
-            href="/login"
-            className="hidden sm:inline-flex items-center gap-2 h-10 px-5 rounded-xl text-white font-bold text-[12px] tracking-[0.15em] uppercase transition-all"
-            style={{
-              background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-              boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
-            }}
-          >
-            Iniciar sesión
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          {/* CTAs — desktop */}
+          <div className="hidden sm:flex items-center gap-2.5">
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl text-white/85 font-bold text-[12px] tracking-[0.14em] uppercase transition-all hover:text-white"
+              style={{
+                background: 'rgba(59,130,246,0.08)',
+                border: '1px solid rgba(96,165,250,0.28)',
+              }}
+            >
+              Registrarse
+            </Link>
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-white font-bold text-[12px] tracking-[0.15em] uppercase transition-all"
+              style={{
+                background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
+              }}
+            >
+              Iniciar sesión
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
 
           {/* Mobile hamburger */}
           <button
@@ -184,8 +232,18 @@ function Navbar({
                   </button>
                 ))}
                 <Link
-                  href="/login"
+                  href="/register"
                   className="mt-2 flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
+                  style={{
+                    background: 'rgba(59,130,246,0.10)',
+                    border: '1px solid rgba(96,165,250,0.32)',
+                  }}
+                >
+                  Registrarse
+                </Link>
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
                   style={{
                     background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
                     boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.25)',
@@ -208,8 +266,42 @@ function Navbar({
    ═══════════════════════════════════════════════════════════════ */
 function Hero({ onNav }: { onNav: (id: string) => void }) {
   return (
-    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6 grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-10 items-center">
+    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 overflow-hidden">
+      {/* ── Giant ghost NÜRO floating in the background (right side) ── */}
+      <motion.div
+        className="pointer-events-none absolute -right-[18%] sm:-right-[10%] top-[2%] w-[720px] h-[720px] sm:w-[900px] sm:h-[900px] opacity-[0.22] sm:opacity-[0.28] z-0"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{
+          opacity: [0, 0.28],
+          y: [0, -30, 0],
+          rotate: [0, 3, -2, 0],
+        }}
+        transition={{
+          opacity: { duration: 1.6, ease: 'easeOut' },
+          y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
+          rotate: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={AVATAR}
+          alt=""
+          aria-hidden
+          className="w-full h-full object-contain"
+          style={{ filter: 'drop-shadow(0 0 100px rgba(59,130,246,0.6)) drop-shadow(0 0 200px rgba(96,165,250,0.3))' }}
+        />
+      </motion.div>
+
+      {/* ── Decorative grid lines on the left ── */}
+      <div className="pointer-events-none absolute -left-12 top-1/4 hidden lg:block opacity-30">
+        <svg width="100" height="280" viewBox="0 0 100 280">
+          {[0, 20, 40, 60, 80].map(x => (
+            <line key={x} x1={x} y1="0" x2={x} y2="280" stroke="rgba(96,165,250,0.3)" strokeWidth="0.5" strokeDasharray="3 4" />
+          ))}
+        </svg>
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-12 items-center">
         {/* Left — copy */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -259,7 +351,7 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
           </p>
 
           {/* CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 flex-wrap">
             <Link
               href="/login"
               className="relative group/cta inline-flex items-center justify-center gap-2.5 h-14 px-8 rounded-2xl text-white font-bold overflow-hidden"
@@ -274,12 +366,26 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
               <span className="relative">INICIAR SESIÓN</span>
               <ArrowRight className="w-4 h-4 relative" />
             </Link>
-            <button
-              onClick={() => onNav('video')}
-              className="inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white font-semibold transition-all"
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white font-bold transition-all"
               style={{
                 background: 'rgba(59,130,246,0.10)',
-                border: '1px solid rgba(59,130,246,0.3)',
+                border: '1px solid rgba(96,165,250,0.4)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+                fontSize: '13.5px',
+                letterSpacing: '0.16em',
+              }}
+            >
+              <Sparkles className="w-4 h-4" />
+              CREAR CUENTA
+            </Link>
+            <button
+              onClick={() => onNav('video')}
+              className="inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white/85 font-semibold transition-all hover:text-white"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.10)',
                 fontSize: '13.5px',
                 letterSpacing: '0.16em',
               }}
@@ -430,9 +536,21 @@ function FloatingChip({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   VIDEO DEMO
+   VIDEO DEMO — real playback
    ═══════════════════════════════════════════════════════════════ */
+const VIDEO_URL = 'https://files.catbox.moe/kmqx7r.mp4'
+
 function VideoDemo() {
+  const [playing, setPlaying] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const handlePlay = () => {
+    const v = videoRef.current
+    if (!v) return
+    v.play().catch(() => { /* ignore */ })
+    setPlaying(true)
+  }
+
   return (
     <section id="video" className="relative py-20 sm:py-24">
       <div className="max-w-5xl mx-auto px-5 sm:px-6">
@@ -446,50 +564,61 @@ function VideoDemo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mt-10 rounded-3xl overflow-hidden backdrop-blur-2xl group/v"
+          className="relative mt-10 rounded-3xl overflow-hidden backdrop-blur-2xl"
           style={{
             background: 'linear-gradient(180deg, rgba(11,21,42,0.7) 0%, rgba(8,15,32,0.85) 100%)',
             border: '1px solid rgba(59,130,246,0.3)',
-            boxShadow: '0 30px 80px -20px rgba(59,130,246,0.45), inset 0 1px 0 rgba(255,255,255,0.05)',
+            boxShadow: '0 30px 80px -20px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.05)',
           }}
         >
-          {/* Glow border line */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent z-20" />
+
           {/* Aspect 16:9 wrapper */}
-          <div className="relative aspect-video">
-            {/*
-              ───── To embed a real video, replace this block with:
-                <iframe
-                  src="https://www.youtube.com/embed/VIDEO_ID"
-                  className="absolute inset-0 w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-                  allowFullScreen
-                />
-              ─────
-            */}
-            {/* Placeholder backdrop with play button */}
-            <div className="absolute inset-0 flex items-center justify-center"
-              style={{ background: 'radial-gradient(circle at center, rgba(59,130,246,0.25), transparent 60%)' }}>
-              <motion.button
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                  boxShadow: '0 20px 50px -10px rgba(59,130,246,0.85), 0 0 0 8px rgba(59,130,246,0.15), inset 0 2px 0 rgba(255,255,255,0.3)',
-                }}
-                aria-label="Reproducir demo"
-              >
-                <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white relative" style={{ marginLeft: 4 }} strokeWidth={2.2} fill="white" />
-                {/* Outer ripple */}
-                <motion.span
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{ border: '2px solid rgba(96,165,250,0.6)' }}
-                  animate={{ scale: [1, 1.5], opacity: [0.7, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
-                />
-              </motion.button>
-            </div>
+          <div className="relative aspect-video bg-black">
+            <video
+              ref={videoRef}
+              src={VIDEO_URL}
+              controls={playing}
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-contain bg-black"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+              onEnded={() => setPlaying(false)}
+            />
+
+            {/* Click-to-play overlay */}
+            <AnimatePresence>
+              {!playing && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={handlePlay}
+                  className="absolute inset-0 flex items-center justify-center group/play"
+                  style={{ background: 'radial-gradient(circle at center, rgba(59,130,246,0.32), rgba(2,8,23,0.55) 60%)' }}
+                  aria-label="Reproducir demo"
+                >
+                  <motion.span
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                      boxShadow: '0 20px 50px -10px rgba(59,130,246,0.9), 0 0 0 8px rgba(59,130,246,0.18), inset 0 2px 0 rgba(255,255,255,0.32)',
+                    }}
+                  >
+                    <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white relative" style={{ marginLeft: 4 }} strokeWidth={2.2} fill="white" />
+                    <motion.span
+                      className="absolute inset-0 rounded-full pointer-events-none"
+                      style={{ border: '2px solid rgba(96,165,250,0.6)' }}
+                      animate={{ scale: [1, 1.7], opacity: [0.7, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+                    />
+                  </motion.span>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
 
@@ -741,21 +870,37 @@ function FinalCTA() {
             Activa AGENTE NÜRO y convierte conversaciones en ventas.
           </p>
 
-          <Link
-            href="/login"
-            className="relative group/cta inline-flex items-center justify-center gap-2.5 h-16 px-10 rounded-2xl text-white font-bold overflow-hidden"
-            style={{
-              background: 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)',
-              boxShadow: '0 20px 50px -10px rgba(59,130,246,0.9), 0 0 0 1px rgba(96,165,250,0.45), inset 0 1px 0 rgba(255,255,255,0.32)',
-              fontSize: '14px',
-              letterSpacing: '0.18em',
-            }}
-          >
-            <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-            <Sparkles className="w-5 h-5 relative" strokeWidth={2.2} />
-            <span className="relative">INICIAR SESIÓN</span>
-            <ArrowRight className="w-4 h-4 relative" />
-          </Link>
+          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/login"
+              className="relative group/cta inline-flex items-center justify-center gap-2.5 h-16 px-10 rounded-2xl text-white font-bold overflow-hidden w-full sm:w-auto"
+              style={{
+                background: 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)',
+                boxShadow: '0 20px 50px -10px rgba(59,130,246,0.9), 0 0 0 1px rgba(96,165,250,0.45), inset 0 1px 0 rgba(255,255,255,0.32)',
+                fontSize: '14px',
+                letterSpacing: '0.18em',
+              }}
+            >
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
+              <Sparkles className="w-5 h-5 relative" strokeWidth={2.2} />
+              <span className="relative">INICIAR SESIÓN</span>
+              <ArrowRight className="w-4 h-4 relative" />
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2.5 h-16 px-9 rounded-2xl text-white font-bold w-full sm:w-auto"
+              style={{
+                background: 'rgba(59,130,246,0.10)',
+                border: '1px solid rgba(96,165,250,0.4)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
+                fontSize: '14px',
+                letterSpacing: '0.18em',
+              }}
+            >
+              CREAR CUENTA
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>
