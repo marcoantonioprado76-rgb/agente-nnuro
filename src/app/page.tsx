@@ -8,7 +8,7 @@ import {
   Check, Menu, X, Package, TrendingUp, Zap, Wifi, Brain, Shield,
 } from 'lucide-react'
 
-const AVATAR = 'https://i.ibb.co/YF6smdRk/NURO-123.png'
+const AVATAR = '/nuro-3d.png'
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -203,27 +203,32 @@ function Navbar({
 
           {/* CTAs — desktop */}
           <div className="hidden sm:flex items-center gap-2.5">
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl text-white/85 font-bold text-[12px] tracking-[0.14em] uppercase transition-all hover:text-white"
-              style={{
-                background: 'rgba(59,130,246,0.08)',
-                border: '1px solid rgba(96,165,250,0.28)',
-              }}
-            >
-              Registrarse
-            </Link>
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-white font-bold text-[12px] tracking-[0.15em] uppercase transition-all"
-              style={{
-                background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
-              }}
-            >
-              Iniciar sesión
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+              <Link
+                href="/register"
+                className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl text-white/85 font-bold text-[12px] tracking-[0.14em] uppercase transition-colors hover:text-white hover:bg-blue-500/20"
+                style={{
+                  background: 'rgba(59,130,246,0.08)',
+                  border: '1px solid rgba(96,165,250,0.28)',
+                }}
+              >
+                Registrarse
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05, y: -1 }} whileTap={{ scale: 0.96 }}>
+              <Link
+                href="/login"
+                className="relative group/nl inline-flex items-center gap-2 h-10 px-5 rounded-xl text-white font-bold text-[12px] tracking-[0.15em] uppercase overflow-hidden"
+                style={{
+                  background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                  boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
+                }}
+              >
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/nl:translate-x-full transition-transform duration-700" />
+                <span className="relative">Iniciar sesión</span>
+                <ArrowRight className="w-3.5 h-3.5 relative" />
+              </Link>
+            </motion.div>
           </div>
 
           {/* Mobile hamburger */}
@@ -262,27 +267,33 @@ function Navbar({
                     {it.label}
                   </button>
                 ))}
-                <Link
-                  href="/register"
-                  className="mt-2 flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
-                  style={{
-                    background: 'rgba(59,130,246,0.10)',
-                    border: '1px solid rgba(96,165,250,0.32)',
-                  }}
-                >
-                  Registrarse
-                </Link>
-                <Link
-                  href="/login"
-                  className="flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
-                  style={{
-                    background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                    boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.25)',
-                  }}
-                >
-                  Iniciar sesión
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                <motion.div whileTap={{ scale: 0.97 }}>
+                  <Link
+                    href="/register"
+                    className="mt-2 flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
+                    style={{
+                      background: 'rgba(59,130,246,0.10)',
+                      border: '1px solid rgba(96,165,250,0.32)',
+                    }}
+                  >
+                    Registrarse
+                  </Link>
+                </motion.div>
+                <motion.div whileTap={{ scale: 0.97 }}>
+                  <Link
+                    href="/login"
+                    className="flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
+                    style={{
+                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                      boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    }}
+                  >
+                    Iniciar sesión
+                    <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.span>
+                  </Link>
+                </motion.div>
               </div>
             </motion.div>
           )}
@@ -493,47 +504,80 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
 
           {/* CTAs */}
           <div className="mt-8 flex flex-col sm:flex-row gap-3 flex-wrap">
-            <Link
-              href="/login"
-              className="relative group/cta inline-flex items-center justify-center gap-2.5 h-14 px-8 rounded-2xl text-white font-bold overflow-hidden"
-              style={{
-                background: 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)',
-                boxShadow: '0 14px 40px -8px rgba(59,130,246,0.8), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.28)',
-                fontSize: '13.5px',
-                letterSpacing: '0.16em',
-              }}
-            >
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-              <span className="relative">INICIAR SESIÓN</span>
-              <ArrowRight className="w-4 h-4 relative" />
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white font-bold transition-all"
-              style={{
-                background: 'rgba(59,130,246,0.10)',
-                border: '1px solid rgba(96,165,250,0.4)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
-                fontSize: '13.5px',
-                letterSpacing: '0.16em',
-              }}
-            >
-              <Sparkles className="w-4 h-4" />
-              CREAR CUENTA
-            </Link>
-            <button
+            <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}>
+              <Link
+                href="/login"
+                className="relative group/cta inline-flex items-center justify-center gap-2.5 h-14 px-8 rounded-2xl text-white font-bold overflow-hidden w-full sm:w-auto"
+                style={{
+                  background: 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
+                  boxShadow: '0 14px 40px -8px rgba(59,130,246,0.85), 0 0 0 1px rgba(96,165,250,0.4), 0 0 0 6px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.32)',
+                  fontSize: '13.5px',
+                  letterSpacing: '0.16em',
+                }}
+              >
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
+                <motion.span
+                  className="relative inline-flex items-center gap-2.5"
+                  animate={{ x: [0, 1, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  INICIAR SESIÓN
+                  <ArrowRight className="w-4 h-4" />
+                </motion.span>
+              </Link>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}>
+              <Link
+                href="/register"
+                className="relative group/reg inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white font-bold overflow-hidden w-full sm:w-auto transition-colors hover:bg-blue-500/15"
+                style={{
+                  background: 'rgba(59,130,246,0.10)',
+                  border: '1px solid rgba(96,165,250,0.45)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 20px -8px rgba(59,130,246,0.4)',
+                  fontSize: '13.5px',
+                  letterSpacing: '0.16em',
+                }}
+              >
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-blue-300/20 to-transparent -translate-x-full group-hover/reg:translate-x-full transition-transform duration-700" />
+                <motion.span
+                  animate={{ rotate: [0, 12, 0, -12, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative inline-flex"
+                >
+                  <Sparkles className="w-4 h-4" />
+                </motion.span>
+                <span className="relative">CREAR CUENTA</span>
+              </Link>
+            </motion.div>
+
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => onNav('video')}
-              className="inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white/85 font-semibold transition-all hover:text-white"
+              className="relative group/v inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white/85 font-bold hover:text-white transition-colors w-full sm:w-auto"
               style={{
                 background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.10)',
+                border: '1px solid rgba(255,255,255,0.12)',
                 fontSize: '13.5px',
                 letterSpacing: '0.16em',
               }}
             >
-              <Play className="w-4 h-4" />
+              <span className="relative w-7 h-7 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'rgba(96,165,250,0.18)',
+                  border: '1px solid rgba(96,165,250,0.45)',
+                }}>
+                <Play className="w-3 h-3 text-blue-200 ml-0.5" fill="currentColor" />
+                <motion.span
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{ border: '1px solid rgba(96,165,250,0.7)' }}
+                  animate={{ scale: [1, 1.6], opacity: [0.7, 0] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                />
+              </span>
               VER VIDEO
-            </button>
+            </motion.button>
           </div>
 
           {/* Quick stats */}
@@ -1275,21 +1319,40 @@ function FinalCTA() {
           </p>
 
           <div className="relative flex items-center justify-center">
-            <Link
-              href="/login"
-              className="relative group/cta inline-flex items-center justify-center gap-3 h-16 px-12 rounded-2xl text-white font-bold overflow-hidden"
-              style={{
-                background: 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
-                boxShadow: '0 26px 60px -8px rgba(59,130,246,1), 0 0 0 1px rgba(96,165,250,0.55), 0 0 0 8px rgba(59,130,246,0.18), inset 0 2px 0 rgba(255,255,255,0.35)',
-                fontSize: '14px',
-                letterSpacing: '0.2em',
-              }}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              animate={{ y: [0, -3, 0] }}
+              transition={{ y: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' } }}
             >
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-              <Sparkles className="w-5 h-5 relative" strokeWidth={2.2} />
-              <span className="relative">INICIAR SESIÓN</span>
-              <ArrowRight className="w-4 h-4 relative" />
-            </Link>
+              <Link
+                href="/login"
+                className="relative group/cta inline-flex items-center justify-center gap-3 h-16 px-12 rounded-2xl text-white font-bold overflow-hidden"
+                style={{
+                  background: 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
+                  boxShadow: '0 26px 60px -8px rgba(59,130,246,1), 0 0 0 1px rgba(96,165,250,0.55), 0 0 0 10px rgba(59,130,246,0.18), inset 0 2px 0 rgba(255,255,255,0.35)',
+                  fontSize: '14px',
+                  letterSpacing: '0.2em',
+                }}
+              >
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
+                <motion.span
+                  animate={{ rotate: [0, 12, -12, 0], scale: [1, 1.15, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative"
+                >
+                  <Sparkles className="w-5 h-5" strokeWidth={2.2} />
+                </motion.span>
+                <span className="relative">INICIAR SESIÓN</span>
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative inline-flex"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </motion.span>
+              </Link>
+            </motion.div>
           </div>
 
           <p className="relative text-[11px] text-white/45 mt-5"
