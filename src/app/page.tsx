@@ -773,26 +773,9 @@ function VideoDemo() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SERVICES — 2 glass cards premium
+   SERVICES — demos reales del ecosistema NÜRO
    ═══════════════════════════════════════════════════════════════ */
 function Services() {
-  const services = [
-    {
-      id: 'agentes',
-      icon: Bot,
-      label: 'Agentes IA',
-      desc: 'Atienden clientes en tiempo real, hacen seguimiento y cierran ventas — sin guiones, sin pausas.',
-      benefits: ['Atención 24/7', 'Seguimiento automático', 'Multi-canal', 'Análisis avanzado'],
-    },
-    {
-      id: 'tiendas',
-      icon: ShoppingBag,
-      label: 'Tiendas Virtuales',
-      desc: 'Catálogo, pedidos y pagos integrados con tu agente. Una experiencia, todo conectado.',
-      benefits: ['Catálogo ilimitado', 'Pedidos en línea', 'Pagos integrados', 'Admin simple'],
-    },
-  ]
-
   return (
     <section id="producto" className="relative py-24 lg:py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -803,97 +786,353 @@ function Services() {
         />
 
         <div className="grid lg:grid-cols-2 gap-5 lg:gap-6 mt-14 lg:mt-20">
-          {services.map((s, idx) => {
-            const Icon = s.icon
-            return (
-              <motion.div
-                key={s.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -4 }}
-                className="group relative rounded-[28px] p-9 lg:p-12 backdrop-blur-xl overflow-hidden transition-all duration-500"
-                style={{
-                  background:
-                    'linear-gradient(180deg, rgba(29,46,109,0.45) 0%, rgba(11,16,38,0.75) 100%)',
-                  border: '1px solid rgba(142,68,255,0.18)',
-                  boxShadow:
-                    '0 24px 60px -20px rgba(142,68,255,0.30), inset 0 1px 0 rgba(255,255,255,0.04)',
-                }}
-              >
-                {/* Hover border glow */}
-                <div className="pointer-events-none absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    boxShadow:
-                      '0 0 0 1px rgba(212,91,255,0.40), 0 30px 80px -20px rgba(142,68,255,0.55)',
-                  }}
-                />
+          {/* ── PANEL IZQ: AGENTE IA ── */}
+          <ServiceCard
+            badge="IA / 001"
+            icon={Bot}
+            title="Agente IA de Ventas"
+            desc="Atiende clientes, responde preguntas, hace seguimiento y ayuda a cerrar ventas automáticamente."
+            delay={0}
+          >
+            <ChatDemo />
+          </ServiceCard>
 
-                {/* Top hairline */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                  style={{
-                    background:
-                      'linear-gradient(90deg, transparent, rgba(212,91,255,0.55), transparent)',
-                  }} />
-
-                {/* Ambient glow corner */}
-                <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-70"
-                  style={{
-                    background:
-                      'radial-gradient(circle, rgba(142,68,255,0.30), transparent 65%)',
-                    filter: 'blur(50px)',
-                  }} />
-
-                <div className="relative">
-                  {/* Icon */}
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, rgba(142,68,255,0.25), rgba(11,16,38,0.6))',
-                      border: '1px solid rgba(212,91,255,0.32)',
-                      boxShadow:
-                        '0 0 28px -6px rgba(142,68,255,0.6), inset 0 1px 0 rgba(255,255,255,0.14)',
-                    }}
-                  >
-                    <Icon className="w-6 h-6" strokeWidth={1.5}
-                      style={{ color: '#D45BFF' }} />
-                  </div>
-
-                  <h3
-                    className="text-[28px] lg:text-[32px] font-medium text-white leading-[1.1] mb-3"
-                    style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}
-                  >
-                    {s.label}
-                  </h3>
-                  <p className="text-[15px] lg:text-[16px] text-white/60 leading-relaxed mb-8 max-w-md"
-                    style={{ letterSpacing: '-0.005em' }}>
-                    {s.desc}
-                  </p>
-
-                  <ul className="space-y-3">
-                    {s.benefits.map((b, i) => (
-                      <li key={i} className="flex items-center gap-3 text-[14px] text-white/80">
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full shrink-0"
-                          style={{
-                            background: 'rgba(142,68,255,0.18)',
-                            border: '1px solid rgba(212,91,255,0.35)',
-                          }}>
-                          <Check className="w-3 h-3" strokeWidth={3}
-                            style={{ color: '#D45BFF' }} />
-                        </span>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            )
-          })}
+          {/* ── PANEL DER: TIENDA VIRTUAL ── */}
+          <ServiceCard
+            badge="STORE / 002"
+            icon={ShoppingBag}
+            title="Tienda Virtual Inteligente"
+            desc="Muestra productos, recibe pedidos y conecta tus ventas con atención automática."
+            delay={0.12}
+          >
+            <OrderDemo />
+          </ServiceCard>
         </div>
       </div>
     </section>
+  )
+}
+
+function ServiceCard({
+  badge, icon: Icon, title, desc, delay, children,
+}: {
+  badge: string
+  icon: typeof Bot
+  title: string
+  desc: string
+  delay: number
+  children: React.ReactNode
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -5 }}
+      className="group relative rounded-[32px] p-7 sm:p-9 lg:p-10 backdrop-blur-2xl overflow-hidden transition-all duration-500"
+      style={{
+        background: 'linear-gradient(180deg, rgba(29,46,109,0.45) 0%, rgba(11,16,38,0.78) 100%)',
+        border: '1px solid rgba(142,68,255,0.20)',
+        boxShadow:
+          '0 28px 70px -22px rgba(142,68,255,0.35), inset 0 1px 0 rgba(255,255,255,0.05)',
+      }}
+    >
+      {/* Hover border glow */}
+      <div className="pointer-events-none absolute inset-0 rounded-[32px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          boxShadow:
+            '0 0 0 1px rgba(212,91,255,0.45), 0 36px 90px -22px rgba(142,68,255,0.65)',
+        }} />
+
+      {/* Top hairline */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{
+          background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.6), transparent)',
+        }} />
+
+      {/* Ambient glow — top right corner */}
+      <div className="pointer-events-none absolute -top-28 -right-24 w-80 h-80 rounded-full opacity-80"
+        style={{
+          background: 'radial-gradient(circle, rgba(142,68,255,0.34), transparent 65%)',
+          filter: 'blur(60px)',
+        }} />
+
+      {/* Floating ambient particle */}
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          top: '18%',
+          left: '12%',
+          width: 3,
+          height: 3,
+          background: '#D45BFF',
+          boxShadow: '0 0 10px rgba(212,91,255,0.9)',
+        }}
+        animate={{ y: [0, -16, 0], opacity: [0.4, 0.9, 0.4] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          top: '40%',
+          right: '14%',
+          width: 2,
+          height: 2,
+          background: '#6B5CFF',
+          boxShadow: '0 0 8px rgba(107,92,255,0.9)',
+        }}
+        animate={{ y: [0, -10, 0], opacity: [0.35, 0.85, 0.35] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
+      />
+
+      {/* Header: badge + icon */}
+      <div className="relative flex items-start justify-between mb-6">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, rgba(142,68,255,0.28), rgba(11,16,38,0.6))',
+            border: '1px solid rgba(212,91,255,0.35)',
+            boxShadow:
+              '0 0 30px -6px rgba(142,68,255,0.7), inset 0 1px 0 rgba(255,255,255,0.16)',
+          }}>
+          <Icon className="w-6 h-6" strokeWidth={1.5} style={{ color: '#D45BFF' }} />
+        </div>
+
+        {/* Badge IA/001 ● */}
+        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full"
+          style={{
+            background: 'rgba(142,68,255,0.10)',
+            border: '1px solid rgba(212,91,255,0.28)',
+          }}>
+          <span className="text-[9.5px] uppercase font-semibold font-mono"
+            style={{ letterSpacing: '0.18em', color: 'rgba(212,91,255,0.95)' }}>
+            {badge}
+          </span>
+          <span className="relative flex h-1.5 w-1.5">
+            <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity }} />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
+              style={{ boxShadow: '0 0 6px rgba(52,211,153,0.95)' }} />
+          </span>
+        </div>
+      </div>
+
+      {/* Title + desc */}
+      <div className="relative">
+        <h3 className="text-[26px] sm:text-[28px] lg:text-[32px] font-medium text-white leading-[1.08] mb-3"
+          style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}>
+          {title}
+        </h3>
+        <p className="text-[14.5px] lg:text-[15.5px] text-white/60 leading-relaxed mb-7 max-w-md"
+          style={{ letterSpacing: '-0.005em' }}>
+          {desc}
+        </p>
+      </div>
+
+      {/* Demo */}
+      <div className="relative">
+        {children}
+      </div>
+    </motion.div>
+  )
+}
+
+/* ─── ChatDemo — simulación WhatsApp NÜRO ─── */
+function ChatDemo() {
+  return (
+    <div
+      className="relative rounded-2xl p-4 sm:p-5 backdrop-blur-xl overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, rgba(5,8,22,0.7), rgba(11,16,38,0.55))',
+        border: '1px solid rgba(142,68,255,0.18)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 12px 30px -16px rgba(142,68,255,0.4)',
+      }}
+    >
+      {/* Top bar */}
+      <div className="flex items-center gap-2.5 pb-3 mb-3 border-b"
+        style={{ borderColor: 'rgba(212,91,255,0.10)' }}>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, rgba(142,68,255,0.55), rgba(11,16,38,0.7))',
+            border: '1px solid rgba(212,91,255,0.45)',
+            boxShadow: '0 0 12px -2px rgba(142,68,255,0.6)',
+          }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={AVATAR} alt="" className="absolute w-[160%] h-[160%] object-contain" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12px] font-semibold text-white leading-none mb-1">Agente NÜRO</div>
+          <div className="flex items-center gap-1.5 text-[10px] text-emerald-300/95 font-medium">
+            <span className="relative flex h-1 w-1">
+              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity }} />
+              <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400" />
+            </span>
+            En línea
+          </div>
+        </div>
+        <div className="text-[9.5px] uppercase font-semibold font-mono"
+          style={{ letterSpacing: '0.16em', color: 'rgba(212,91,255,0.7)' }}>
+          WhatsApp
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="space-y-2.5">
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-[80%] rounded-2xl rounded-tl-md px-3.5 py-2.5 text-[12.5px] text-white/90 leading-snug"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.06)',
+          }}
+        >
+          Hola, ¿tienen el producto disponible?
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.45, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md px-3.5 py-2.5 text-[12.5px] text-white leading-snug"
+          style={{
+            background: 'linear-gradient(135deg, rgba(142,68,255,0.42), rgba(107,92,255,0.28))',
+            border: '1px solid rgba(212,91,255,0.45)',
+            boxShadow: '0 8px 22px -10px rgba(142,68,255,0.6)',
+          }}
+        >
+          ¡Hola! Sí, tenemos stock.<br />¿Deseas recibirlo hoy mismo?
+        </motion.div>
+
+        {/* Typing indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.4, delay: 0.9 }}
+          className="flex items-center gap-2 mt-3 pl-1"
+        >
+          <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-full"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.06)',
+            }}>
+            {[0, 0.18, 0.36].map((d, i) => (
+              <motion.span key={i}
+                className="w-1.5 h-1.5 rounded-full bg-white/55"
+                animate={{ opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: d }}
+              />
+            ))}
+          </div>
+          <span className="text-[10.5px] text-white/45 font-medium">Cliente escribiendo…</span>
+        </motion.div>
+      </div>
+    </div>
+  )
+}
+
+/* ─── OrderDemo — pedido confirmado ─── */
+function OrderDemo() {
+  return (
+    <motion.div
+      className="relative rounded-2xl p-4 sm:p-5 backdrop-blur-xl overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, rgba(5,8,22,0.7), rgba(11,16,38,0.55))',
+        border: '1px solid rgba(142,68,255,0.18)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 12px 30px -16px rgba(142,68,255,0.4)',
+      }}
+      whileHover={{ scale: 1.005 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Status pill + order number */}
+      <div className="flex items-center justify-between mb-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+          style={{
+            background: 'rgba(16,185,129,0.14)',
+            border: '1px solid rgba(16,185,129,0.45)',
+            boxShadow: '0 0 14px -4px rgba(16,185,129,0.5)',
+          }}>
+          <Check className="w-2.5 h-2.5 text-emerald-300" strokeWidth={4} />
+          <span className="text-[9.5px] uppercase font-semibold text-emerald-200"
+            style={{ letterSpacing: '0.16em' }}>
+            Pedido confirmado
+          </span>
+        </motion.div>
+        <span className="text-[10px] text-white/40 font-mono">#A-1287</span>
+      </div>
+
+      {/* Product row */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.45, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+        className="flex items-center gap-3 pb-4 mb-4 border-b"
+        style={{ borderColor: 'rgba(212,91,255,0.10)' }}
+      >
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+          style={{
+            background: 'linear-gradient(135deg, rgba(212,91,255,0.30), rgba(142,68,255,0.12))',
+            border: '1px solid rgba(212,91,255,0.40)',
+            boxShadow: '0 0 16px -4px rgba(142,68,255,0.5)',
+          }}>
+          <ShoppingBag className="w-5 h-5" strokeWidth={1.7} style={{ color: '#D45BFF' }} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[13px] font-semibold text-white truncate"
+            style={{ letterSpacing: '-0.01em' }}>
+            Auriculares NÜRO Pro
+          </div>
+          <div className="text-[11px] text-white/45 mt-0.5">Cantidad: 1</div>
+        </div>
+        <div className="text-[14px] font-semibold text-white tabular-nums">$129</div>
+      </motion.div>
+
+      {/* Summary */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.45, delay: 0.3 }}
+        className="space-y-1.5"
+      >
+        <div className="flex items-center justify-between text-[11.5px]">
+          <span className="text-white/50">Envío</span>
+          <span className="text-white/85 tabular-nums">$8</span>
+        </div>
+        <div className="flex items-center justify-between text-[13.5px] pt-2">
+          <span className="font-semibold text-white">Total</span>
+          <motion.span
+            className="font-bold tabular-nums"
+            style={{
+              color: '#F8FAFF',
+              background: GRAD_MAIN,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 8px rgba(142,68,255,0.6))',
+              fontSize: 16,
+            }}
+            animate={{ opacity: [0.88, 1, 0.88] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            $137
+          </motion.span>
+        </div>
+      </motion.div>
+    </motion.div>
   )
 }
 
