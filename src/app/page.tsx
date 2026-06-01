@@ -39,7 +39,7 @@ export default function LandingPage() {
             height: 'min(95vh, 130vw)',
             width: 'auto',
             maxWidth: '110vw',
-            marginTop: '12vh',
+            marginTop: '28vh',
             opacity: 0.62,
             filter: 'drop-shadow(0 0 260px rgba(59,130,246,1)) drop-shadow(0 0 440px rgba(96,165,250,0.65)) brightness(1.08) saturate(1.2)',
           }}
