@@ -93,6 +93,36 @@ function BackgroundLayers() {
           style={{ background: 'radial-gradient(ellipse at top, transparent 30%, rgba(2,8,23,0.6) 100%)' }} />
       </div>
 
+      {/* ── GIANT NÜRO watermark — covers the whole landing as ambient background ── */}
+      <motion.div
+        className="pointer-events-none fixed inset-0 -z-10 flex items-start justify-center overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2, ease: 'easeOut' }}
+      >
+        <motion.img
+          src={AVATAR}
+          alt=""
+          aria-hidden
+          className="w-[140vw] h-[140vw] sm:w-[110vw] sm:h-[110vw] lg:w-[95vw] lg:h-[95vw] object-contain"
+          style={{
+            marginTop: '-10vh',
+            opacity: 0.18,
+            filter: 'drop-shadow(0 0 180px rgba(59,130,246,0.55)) drop-shadow(0 0 320px rgba(96,165,250,0.3))',
+          }}
+          animate={{
+            y: [0, -38, 0],
+            rotate: [0, 2.2, -1.5, 0],
+            scale: [1, 1.04, 1],
+          }}
+          transition={{
+            y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
+            rotate: { duration: 28, repeat: Infinity, ease: 'easeInOut' },
+            scale: { duration: 18, repeat: Infinity, ease: 'easeInOut' },
+          }}
+        />
+      </motion.div>
+
       {/* Floating particles */}
       {[...Array(22)].map((_, i) => (
         <motion.span
@@ -268,29 +298,7 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
   return (
     <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 overflow-hidden">
       {/* ── Giant ghost NÜRO floating in the background (right side) ── */}
-      <motion.div
-        className="pointer-events-none absolute -right-[18%] sm:-right-[10%] top-[2%] w-[720px] h-[720px] sm:w-[900px] sm:h-[900px] opacity-[0.22] sm:opacity-[0.28] z-0"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{
-          opacity: [0, 0.28],
-          y: [0, -30, 0],
-          rotate: [0, 3, -2, 0],
-        }}
-        transition={{
-          opacity: { duration: 1.6, ease: 'easeOut' },
-          y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
-          rotate: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={AVATAR}
-          alt=""
-          aria-hidden
-          className="w-full h-full object-contain"
-          style={{ filter: 'drop-shadow(0 0 100px rgba(59,130,246,0.6)) drop-shadow(0 0 200px rgba(96,165,250,0.3))' }}
-        />
-      </motion.div>
+      {/* (NÜRO ghost moved to global BackgroundLayers — now covers the whole landing) */}
 
       {/* ── Decorative grid lines on the left ── */}
       <div className="pointer-events-none absolute -left-12 top-1/4 hidden lg:block opacity-30">
