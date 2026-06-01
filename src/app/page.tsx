@@ -22,9 +22,9 @@ export default function LandingPage() {
     <div className="relative min-h-screen overflow-x-hidden" style={{ background: '#020817' }}>
       <BackgroundLayers />
 
-      {/* ── GIANT NÜRO watermark — sized by VIEWPORT HEIGHT so the head never gets cropped ── */}
+      {/* ── NÜRO watermark — sized to never crop, shifted to the right so the text column stays clean ── */}
       <motion.div
-        className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden"
+        className="pointer-events-none fixed inset-0 flex items-center justify-center lg:justify-end overflow-hidden lg:pr-[6vw]"
         style={{ zIndex: 1 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -36,17 +36,17 @@ export default function LandingPage() {
           alt=""
           className="object-contain"
           style={{
-            height: 'min(95vh, 130vw)',
+            height: 'min(62vh, 78vw)',
             width: 'auto',
-            maxWidth: '110vw',
-            marginTop: '28vh',
-            opacity: 0.62,
-            filter: 'drop-shadow(0 0 260px rgba(59,130,246,1)) drop-shadow(0 0 440px rgba(96,165,250,0.65)) brightness(1.08) saturate(1.2)',
+            maxWidth: 'min(48vw, 600px)',
+            marginTop: '14vh',
+            opacity: 0.55,
+            filter: 'drop-shadow(0 0 220px rgba(59,130,246,1)) drop-shadow(0 0 400px rgba(96,165,250,0.6)) brightness(1.08) saturate(1.2)',
           }}
           animate={{
-            y: [0, -20, 8, 0],
-            rotate: [0, 1.6, -1.1, 0],
-            scale: [1, 1.025, 0.99, 1],
+            y: [0, -14, 6, 0],
+            rotate: [0, 1.2, -0.8, 0],
+            scale: [1, 1.018, 0.99, 1],
           }}
           transition={{
             y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
@@ -754,69 +754,85 @@ function HeroVisual() {
       transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
       className="relative h-[420px] sm:h-[480px] flex items-center justify-center"
     >
-      {/* Background blob */}
+      {/* Background ambient blob */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[360px] h-[360px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.18), transparent 65%)', filter: 'blur(40px)' }} />
+        <div className="w-[420px] h-[420px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.18), transparent 65%)', filter: 'blur(50px)' }} />
       </div>
 
-      {/* Central core */}
-      <div className="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] flex items-center justify-center">
+      {/* Elegant orbital decoration (no avatar — the global watermark fills the center) */}
+      <div className="relative w-[300px] h-[300px] sm:w-[360px] sm:h-[360px] flex items-center justify-center">
+        {/* Outer rotating ring */}
         <motion.div
           className="absolute inset-0 rounded-full"
+          style={{ border: '1px solid rgba(96,165,250,0.22)' }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+        >
+          <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-300"
+            style={{ boxShadow: '0 0 10px rgba(96,165,250,1), 0 0 22px rgba(59,130,246,0.6)' }} />
+        </motion.div>
+
+        {/* Mid dashed ring counter-rotating */}
+        <motion.div
+          className="absolute inset-[12%] rounded-full"
+          style={{ border: '1px dashed rgba(96,165,250,0.26)' }}
+          animate={{ rotate: -360 }}
+          transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
+        >
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300"
+            style={{ boxShadow: '0 0 8px rgba(103,232,249,0.95)' }} />
+        </motion.div>
+
+        {/* Inner ring with energy pulse */}
+        <motion.div
+          className="absolute inset-[28%] rounded-full"
           style={{
-            background: 'conic-gradient(from 0deg, rgba(96,165,250,0.7), transparent 35%, rgba(96,165,250,0.45) 55%, transparent 90%, rgba(96,165,250,0.7))',
-            maskImage: 'radial-gradient(circle, transparent 60%, black 62%, black 68%, transparent 71%)',
-            WebkitMaskImage: 'radial-gradient(circle, transparent 60%, black 62%, black 68%, transparent 71%)',
+            background: 'conic-gradient(from 0deg, rgba(96,165,250,0.45), transparent 30%, rgba(96,165,250,0.3) 60%, transparent 95%, rgba(96,165,250,0.45))',
+            maskImage: 'radial-gradient(circle, transparent 70%, black 72%, black 76%, transparent 78%)',
+            WebkitMaskImage: 'radial-gradient(circle, transparent 70%, black 72%, black 76%, transparent 78%)',
           }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
         />
+
+        {/* HUD bracket markers around the orbit (4 positions) */}
+        {[0, 90, 180, 270].map((deg) => (
+          <span key={deg}
+            className="absolute left-1/2 top-1/2 origin-center pointer-events-none"
+            style={{
+              transform: `translate(-50%, -50%) rotate(${deg}deg) translateY(-148px)`,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14">
+              <path d="M 2 7 L 2 2 L 7 2" fill="none" stroke="rgba(96,165,250,0.75)" strokeWidth="1.2" strokeLinecap="round"
+                style={{ filter: 'drop-shadow(0 0 3px rgba(96,165,250,0.9))' }} />
+            </svg>
+          </span>
+        ))}
+
+        {/* Breathing core halo (no avatar, just glow) */}
         <motion.div
-          className="absolute inset-3 rounded-full"
-          style={{
-            background: 'conic-gradient(from 180deg, transparent, rgba(59,130,246,0.5), transparent 50%, rgba(59,130,246,0.3) 70%, transparent)',
-            maskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 78%)',
-            WebkitMaskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 78%)',
-          }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
-        />
-        <motion.div
-          className="absolute -inset-6 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.4), transparent 60%)', filter: 'blur(18px)' }}
-          animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.08, 1] }}
+          className="absolute w-[120px] h-[120px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.45), transparent 65%)', filter: 'blur(20px)' }}
+          animate={{ opacity: [0.5, 0.95, 0.5], scale: [1, 1.08, 1] }}
           transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <div
-          className="relative w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] rounded-full overflow-hidden flex items-center justify-center"
-          style={{
-            background: 'radial-gradient(circle at 30% 25%, rgba(96,165,250,0.5), rgba(8,15,32,0.95) 72%)',
-            border: '1px solid rgba(96,165,250,0.55)',
-            boxShadow: '0 0 50px rgba(59,130,246,0.6), inset 0 0 24px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.16)',
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={AVATAR} alt="NÜRO" className="absolute w-[140%] h-[140%] object-contain"
-            style={{ filter: 'drop-shadow(0 0 10px rgba(96,165,250,0.7))' }} />
-          <span className="absolute inset-x-3 top-2 h-1/3 rounded-full pointer-events-none"
-            style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.22), transparent)' }} />
-        </div>
       </div>
 
-      {/* Floating cards */}
+      {/* Floating holographic indicators — positioned around the orbit, not over the robot's face/torso */}
       <FloatingChip
-        className="absolute top-[5%] left-[-2%] sm:left-[2%]"
+        className="absolute top-[2%] left-[-6%] sm:left-[-2%]"
         icon={MessageCircle} label="Mensaje recibido" value="124 chats" acc="52,211,153"
         delay={0.4}
       />
       <FloatingChip
-        className="absolute top-[42%] right-[-4%] sm:right-[0%]"
+        className="absolute top-[88%] left-[-4%] sm:left-[0%]"
         icon={Package} label="Pedido confirmado" value="$345 USD" acc="167,139,250"
         delay={0.7}
       />
       <FloatingChip
-        className="absolute bottom-[6%] left-[8%]"
+        className="absolute top-[58%] right-[-6%] sm:right-[-2%]"
         icon={TrendingUp} label="Venta cerrada" value="+$1,420" acc="34,211,238"
         delay={1.0}
       />
