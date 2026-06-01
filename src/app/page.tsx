@@ -83,8 +83,8 @@ export default function LandingPage() {
 
       <main className="relative" style={{ zIndex: 2 }}>
         <Hero onNav={navTo} />
-        <ActivityTicker />
         <TrustBar />
+        <ActivityTicker />
         <VideoDemo />
         <Services />
         <UseCases />
@@ -611,7 +611,7 @@ function NuroProtagonist() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TRUST BAR
+   TRUST BAR — stats + logos premium scrolling
    ═══════════════════════════════════════════════════════════════ */
 function TrustBar() {
   const stats = [
@@ -620,12 +620,12 @@ function TrustBar() {
     { v: '98%',   l: 'Tasa de respuesta' },
     { v: '24/7',  l: 'Operación' },
   ]
-  const partners = ['OpenAI', 'Anthropic', 'WhatsApp Cloud', 'Meta', 'Stripe']
 
   return (
-    <section className="relative py-20 lg:py-28">
+    <section className="relative pt-10 pb-12 lg:pt-12 lg:pb-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-6 pb-12"
+        {/* Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-8 gap-x-6 pb-10"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           {stats.map((s, i) => (
             <motion.div
@@ -637,7 +637,7 @@ function TrustBar() {
               className="flex flex-col gap-1.5"
             >
               <span
-                className="text-[36px] lg:text-[44px] font-medium tabular-nums leading-none"
+                className="text-[34px] lg:text-[42px] font-medium tabular-nums leading-none"
                 style={{
                   fontFamily: 'var(--font-display)',
                   letterSpacing: '-0.04em',
@@ -657,21 +657,131 @@ function TrustBar() {
           ))}
         </div>
 
-        <div className="pt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-          <span className="text-[10.5px] uppercase font-medium text-white/35"
-            style={{ letterSpacing: '0.2em' }}>
-            Construido sobre
-          </span>
-          {partners.map((p, i) => (
-            <span key={i}
-              className="text-[12.5px] uppercase font-medium text-white/55 hover:text-white/85 transition-colors"
-              style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-display)' }}>
-              {p}
-            </span>
-          ))}
-        </div>
+        {/* Logos marquee premium */}
+        <PartnerLogos />
       </div>
     </section>
+  )
+}
+
+function PartnerLogos() {
+  const logos = [
+    { name: 'OpenAI',    Mark: LogoOpenAI },
+    { name: 'Anthropic', Mark: LogoAnthropic },
+    { name: 'Meta',      Mark: LogoMeta },
+    { name: 'WhatsApp',  Mark: LogoWhatsApp },
+    { name: 'Stripe',    Mark: LogoStripe },
+    { name: 'GPT-5',     Mark: LogoGPT5 },
+  ]
+  const looped = [...logos, ...logos]
+
+  return (
+    <div className="relative mt-8 pt-8 overflow-hidden">
+      <span className="block text-[10px] uppercase font-medium text-white/35 text-center mb-5"
+        style={{ letterSpacing: '0.22em' }}>
+        Construido sobre tecnología de clase mundial
+      </span>
+
+      <motion.div
+        className="flex items-center gap-12 lg:gap-16 whitespace-nowrap"
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+      >
+        {looped.map((l, i) => {
+          const Mark = l.Mark
+          return (
+            <div key={i}
+              className="group shrink-0 flex items-center justify-center h-9 px-2 transition-all duration-300"
+            >
+              <Mark />
+            </div>
+          )
+        })}
+      </motion.div>
+
+      {/* Fade edges */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-24"
+        style={{ background: 'linear-gradient(90deg, #050816, transparent)' }} />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-24"
+        style={{ background: 'linear-gradient(90deg, transparent, #050816)' }} />
+    </div>
+  )
+}
+
+/* ─── premium logo marks (text-wordmarks · grayscale, hover violeta) ─── */
+const logoBase: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontWeight: 600,
+  letterSpacing: '-0.02em',
+  color: 'rgba(248,250,255,0.42)',
+  transition: 'color 300ms ease, filter 300ms ease, transform 300ms ease',
+}
+
+const logoHover = 'group-hover:!text-[#D45BFF] group-hover:[filter:drop-shadow(0_0_12px_rgba(212,91,255,0.55))] group-hover:scale-[1.04]'
+
+function LogoOpenAI() {
+  return (
+    <div className={`flex items-center gap-2 ${logoHover}`} style={logoBase}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M22.28 10.07a5.78 5.78 0 0 0-.5-4.74 5.84 5.84 0 0 0-6.3-2.8A5.78 5.78 0 0 0 11.01.66a5.84 5.84 0 0 0-5.57 4.05 5.78 5.78 0 0 0-3.86 2.8 5.84 5.84 0 0 0 .72 6.84 5.78 5.78 0 0 0 .5 4.74 5.84 5.84 0 0 0 6.3 2.8 5.78 5.78 0 0 0 4.36 1.95 5.84 5.84 0 0 0 5.57-4.04 5.78 5.78 0 0 0 3.85-2.8 5.84 5.84 0 0 0-.71-6.85zM13.03 22.07a4.33 4.33 0 0 1-2.78-1.01l.14-.08 4.62-2.67c.24-.13.38-.38.38-.65v-6.51l1.95 1.13a.07.07 0 0 1 .04.05v5.4a4.34 4.34 0 0 1-4.35 4.34zM3.68 18.08a4.33 4.33 0 0 1-.52-2.91l.14.09 4.62 2.66c.23.14.52.14.75 0l5.64-3.26v2.25c.01.03 0 .06-.03.07L9.62 19.69a4.34 4.34 0 0 1-5.94-1.61zm-1.22-10.1a4.33 4.33 0 0 1 2.26-1.9V11.59c0 .27.14.52.38.65l5.64 3.25-1.95 1.13a.07.07 0 0 1-.07 0l-4.67-2.7a4.34 4.34 0 0 1-1.59-5.93zm16.04 3.73-5.64-3.27 1.95-1.12a.07.07 0 0 1 .07 0l4.67 2.69a4.34 4.34 0 0 1-.65 7.83v-5.48a.76.76 0 0 0-.4-.65zm1.94-2.93-.14-.08-4.61-2.69a.75.75 0 0 0-.76 0L9.29 9.27V7.02a.07.07 0 0 1 .04-.07l4.67-2.69a4.34 4.34 0 0 1 6.44 4.49zM8.23 12.5l-1.95-1.13a.07.07 0 0 1-.04-.06v-5.4a4.34 4.34 0 0 1 7.11-3.33l-.14.08L8.6 5.32c-.23.14-.38.38-.38.65zm1.06-2.29 2.51-1.45 2.51 1.45v2.9l-2.51 1.45-2.51-1.45z" />
+      </svg>
+      <span style={{ fontSize: 15, color: 'inherit' }}>OpenAI</span>
+    </div>
+  )
+}
+
+function LogoAnthropic() {
+  return (
+    <div className={`flex items-center gap-2 ${logoHover}`} style={logoBase}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M7.3 5h3.4l5.1 14h-3.4l-1-3H6.6l-1 3H2.3L7.3 5zm.6 8.1h3.2L9.5 8 7.9 13.1zM17.4 5h3.3v14h-3.3V5z" />
+      </svg>
+      <span style={{ fontSize: 15, color: 'inherit' }}>Anthropic</span>
+    </div>
+  )
+}
+
+function LogoMeta() {
+  return (
+    <div className={`flex items-center gap-2 ${logoHover}`} style={logoBase}>
+      <svg width="22" height="20" viewBox="0 0 32 24" fill="none" aria-hidden>
+        <path d="M3 18c0-7 4-12 9-12 3 0 5 2 7 6 2-4 4-6 7-6 5 0 9 5 9 12 0 3-2 5-5 5-2 0-3-1-5-4l-3-5c-1 2-2 4-3 5-2 3-3 4-5 4-3 0-5-2-5-5h-1c0 3-2 5-5 5-3 0-5-2-5-5z"
+          stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <span style={{ fontSize: 15, color: 'inherit' }}>Meta</span>
+    </div>
+  )
+}
+
+function LogoWhatsApp() {
+  return (
+    <div className={`flex items-center gap-2 ${logoHover}`} style={logoBase}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2 0 1.3.9 2.6 1 2.7.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.2 1.7.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.5-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.6 1.4 5.1L2 22l5.1-1.3c1.5.8 3.2 1.3 5 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z" />
+      </svg>
+      <span style={{ fontSize: 15, color: 'inherit' }}>WhatsApp</span>
+    </div>
+  )
+}
+
+function LogoStripe() {
+  return (
+    <div className={`flex items-center ${logoHover}`} style={logoBase}>
+      <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.04em', color: 'inherit' }}>
+        stripe
+      </span>
+    </div>
+  )
+}
+
+function LogoGPT5() {
+  return (
+    <div className={`flex items-center gap-2 ${logoHover}`} style={logoBase}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M12 2 14 7l5 1-4 4 1 5-5-3-5 3 1-5-4-4 5-1z" opacity="0.9" />
+      </svg>
+      <span style={{ fontSize: 15, color: 'inherit' }}>GPT-5</span>
+    </div>
   )
 }
 
@@ -692,7 +802,7 @@ function VideoDemo() {
   }
 
   return (
-    <section id="video" className="relative py-24 lg:py-32">
+    <section id="video" className="relative pt-14 pb-20 lg:pt-16 lg:pb-24">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <SectionHeader
           eyebrow="Demo"
@@ -705,7 +815,7 @@ function VideoDemo() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mt-14 rounded-[28px] overflow-hidden"
+          className="relative mt-10 rounded-[28px] overflow-hidden"
           style={{
             background:
               'linear-gradient(180deg, rgba(29,46,109,0.32), rgba(11,16,38,0.7))',
