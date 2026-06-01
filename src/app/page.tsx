@@ -36,16 +36,16 @@ export default function LandingPage() {
           alt=""
           className="object-contain"
           style={{
-            height: 'min(72vh, 90vw)',
+            height: 'min(95vh, 130vw)',
             width: 'auto',
-            maxWidth: '92vw',
+            maxWidth: '110vw',
             opacity: 0.5,
-            filter: 'drop-shadow(0 0 200px rgba(59,130,246,1)) drop-shadow(0 0 360px rgba(96,165,250,0.6)) brightness(1.08) saturate(1.18)',
+            filter: 'drop-shadow(0 0 240px rgba(59,130,246,1)) drop-shadow(0 0 420px rgba(96,165,250,0.6)) brightness(1.08) saturate(1.18)',
           }}
           animate={{
-            y: [0, -22, 10, 0],
-            rotate: [0, 1.8, -1.3, 0],
-            scale: [1, 1.035, 0.99, 1],
+            y: [0, -20, 8, 0],
+            rotate: [0, 1.6, -1.1, 0],
+            scale: [1, 1.025, 0.99, 1],
           }}
           transition={{
             y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
