@@ -173,9 +173,8 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
       sub: 'Conexión vía API empresarial',
       icon: Cloud,
       benefits: ['API empresarial', 'Alta disponibilidad', 'Multi-número'] as readonly string[],
-      // Cyan tecnológico
-      accent: '6,182,212',   // #06B6D4
-      accentLight: '34,211,238', // #22D3EE
+      accent: '6,182,212',
+      accentLight: '34,211,238',
     },
     {
       key: 'BAILEYS',
@@ -183,9 +182,8 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
       sub: 'Conexión mediante código QR',
       icon: Smartphone,
       benefits: ['Conexión QR', 'Tiempo real', 'Multimedia'] as readonly string[],
-      // Verde premium
-      accent: '16,185,129',   // #10B981
-      accentLight: '52,211,153', // #34D399
+      accent: '16,185,129',
+      accentLight: '52,211,153',
     },
     {
       key: 'META',
@@ -193,9 +191,8 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
       sub: 'Facebook · Instagram Direct',
       icon: MessageCircle,
       benefits: ['Messenger + IG', 'Verificación oficial', 'Audiencia masiva'] as readonly string[],
-      // Violeta moderno
-      accent: '139,92,246',   // #8B5CF6
-      accentLight: '167,139,250', // #A78BFA
+      accent: '139,92,246',
+      accentLight: '167,139,250',
     },
     {
       key: 'WHATSAPP_CLOUD',
@@ -203,378 +200,147 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
       sub: 'API oficial gestionada por Meta',
       icon: CloudCog,
       benefits: ['API oficial Meta', 'Plantillas HSM', 'Escalable global'] as readonly string[],
-      // Azul Meta
-      accent: '59,130,246',   // #3B82F6
-      accentLight: '96,165,250', // #60A5FA
+      accent: '59,130,246',
+      accentLight: '96,165,250',
     },
   ] as const
 
-  // Position helpers for the 3x3 constellation grid
-  const gridAt = (idx: number) =>
-    idx === 0 ? 'col-start-1 row-start-1'
-    : idx === 1 ? 'col-start-3 row-start-1'
-    : idx === 2 ? 'col-start-1 row-start-3'
-    : 'col-start-3 row-start-3'
-
-  const lineCoords = (idx: number) =>
-    idx === 0 ? { x1: 22, y1: 22 }
-    : idx === 1 ? { x1: 78, y1: 22 }
-    : idx === 2 ? { x1: 22, y1: 78 }
-    : { x1: 78, y1: 78 }
-
-  const selectedType = TYPES.find(t => t.key === type) ?? TYPES[0]
-  const trimmedName = name.trim()
-
   return (
-    <form
+    <motion.form
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       onSubmit={handleSubmit}
-      className="relative grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 sm:gap-5"
+      className="relative overflow-hidden rounded-3xl backdrop-blur-2xl p-6 sm:p-8"
+      style={{
+        background: 'linear-gradient(180deg, rgba(11,21,42,0.78) 0%, rgba(8,15,32,0.62) 100%)',
+        border: '1px solid rgba(59,130,246,0.2)',
+        boxShadow: '0 20px 60px -20px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.05)',
+      }}
     >
-      {/* ============================================================
-           LEFT — Constellation workspace
-         ============================================================ */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="relative overflow-hidden rounded-3xl backdrop-blur-2xl p-5 sm:p-7"
-        style={{
-          background: 'linear-gradient(180deg, rgba(11,21,42,0.78) 0%, rgba(8,15,32,0.62) 100%)',
-          border: '1px solid rgba(59,130,246,0.2)',
-          boxShadow: '0 20px 60px -20px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.05)',
-        }}
-      >
-        {/* — Background: animated tech grid (slow pan) — */}
-        <motion.div
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
-            backgroundSize: '52px 52px',
-            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
-          }}
-          animate={{ backgroundPosition: ['0px 0px', '52px 52px'] }}
-          transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
-        />
+      {/* Subtle ambient halos */}
+      <div className="pointer-events-none absolute -top-24 left-1/3 w-[420px] h-[280px] rounded-full bg-blue-500/[0.12] blur-[110px]" />
+      <div className="pointer-events-none absolute -bottom-24 -right-16 w-[320px] h-[260px] rounded-full bg-cyan-500/[0.08] blur-[110px]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
 
-        {/* — Ambient halos — */}
-        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[460px] h-[320px] rounded-full bg-blue-500/[0.18] blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 left-0 w-[280px] h-[280px] rounded-full bg-cyan-500/[0.10] blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 w-[280px] h-[280px] rounded-full bg-violet-500/[0.10] blur-[120px]" />
-
-        {/* — Slow drifting particles — */}
-        {[...Array(10)].map((_, i) => (
-          <motion.span
-            key={i}
-            className="pointer-events-none absolute w-px h-px rounded-full bg-blue-200"
-            style={{
-              left: `${8 + (i * 11) % 84}%`,
-              top: `${12 + (i * 19) % 76}%`,
-              boxShadow: '0 0 10px rgba(96,165,250,0.85)',
-            }}
-            animate={{ y: [0, -32, 12, 0], opacity: [0.15, 0.85, 0.4, 0.15] }}
-            transition={{ duration: 18 + i * 1.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
-          />
-        ))}
-
-        {/* — Top sheen — */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
-
-        {/* — Module header — */}
-        <div className="relative flex items-start gap-4 mb-6">
-          <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.28), rgba(59,130,246,0.05))',
-              border: '1px solid rgba(59,130,246,0.3)',
-              boxShadow: '0 0 30px -6px rgba(59,130,246,0.6), inset 0 1px 0 rgba(255,255,255,0.1)',
-            }}
-          >
-            <Sparkles className="w-5 h-5 text-blue-300" strokeWidth={1.6} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="text-xl sm:text-2xl font-semibold text-white tracking-tight leading-tight">
-              Crear nuevo agente
-            </h3>
-            <p className="text-[13.5px] text-slate-400 mt-1.5 leading-relaxed">
-              Conecta un canal de comunicación y despliega un nuevo agente inteligente.
-            </p>
-          </div>
-        </div>
-
-        {/* — Metric strip (sistema operativo) — */}
-        <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-6">
-          {[
-            { icon: Wifi,     label: 'Canales',    value: '4',       sub: 'disponibles', acc: '6,182,212' },
-            { icon: Sparkles, label: 'IA',         value: 'Activa',  sub: 'GPT-5 ready', acc: '139,92,246' },
-            { icon: Zap,      label: 'Despliegue', value: '< 30s',   sub: 'tiempo medio', acc: '52,211,153' },
-            { icon: Key,      label: 'Cifrado',    value: 'AES-256', sub: 'end-to-end',   acc: '59,130,246' },
-          ].map((m, i) => {
-            const Icn = m.icon
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.12 + i * 0.06 }}
-                className="relative overflow-hidden rounded-2xl px-3 py-2.5 flex items-center gap-2.5"
-                style={{
-                  background: `linear-gradient(135deg, rgba(${m.acc},0.10), rgba(10,20,42,0.6))`,
-                  border: `1px solid rgba(${m.acc},0.22)`,
-                  boxShadow: `inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 18px -10px rgba(${m.acc},0.4)`,
-                }}
-              >
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                  style={{ background: `linear-gradient(90deg, transparent, rgba(${m.acc},0.55), transparent)` }} />
-                <div
-                  className="relative w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                  style={{
-                    background: `linear-gradient(135deg, rgba(${m.acc},0.3), rgba(${m.acc},0.08))`,
-                    border: `1px solid rgba(${m.acc},0.4)`,
-                    boxShadow: `0 0 12px rgba(${m.acc},0.4), inset 0 1px 0 rgba(255,255,255,0.1)`,
-                  }}
-                >
-                  <Icn className="w-4 h-4" style={{ color: `rgba(${m.acc},1)`, filter: `drop-shadow(0 0 4px rgba(${m.acc},0.6))` }} strokeWidth={1.8} />
-                </div>
-                <div className="relative min-w-0">
-                  <div className="flex items-baseline gap-1.5 flex-wrap">
-                    <span className="text-[14.5px] font-bold text-white tracking-tight leading-none tabular-nums">{m.value}</span>
-                    <span className="text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color: `rgba(${m.acc},0.85)` }}>{m.label}</span>
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5 truncate">{m.sub}</div>
-                </div>
-              </motion.div>
-            )
-          })}
-        </div>
-
-        {/* — Constellation (desktop md+) — */}
-        <div className="hidden md:block relative mt-4">
-          {/* SVG connection lines from each channel to the core */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden
-          >
-            <defs>
-              {TYPES.map((t, idx) => {
-                const lc = lineCoords(idx)
-                return (
-                  <linearGradient
-                    key={t.key}
-                    id={`line-${t.key}`}
-                    gradientUnits="userSpaceOnUse"
-                    x1={lc.x1}
-                    y1={lc.y1}
-                    x2={50}
-                    y2={50}
-                  >
-                    <stop offset="0%" stopColor={`rgb(${t.accentLight})`} stopOpacity="0.08" />
-                    <stop offset="60%" stopColor={`rgb(${t.accentLight})`} stopOpacity={t.key === type ? 0.7 : 0.25} />
-                    <stop offset="100%" stopColor={`rgb(${t.accentLight})`} stopOpacity={t.key === type ? 0.95 : 0.4} />
-                  </linearGradient>
-                )
-              })}
-            </defs>
-            {TYPES.map((t, idx) => {
-              const sel = t.key === type
-              const lc = lineCoords(idx)
-              return (
-                <g key={t.key}>
-                  <line
-                    x1={lc.x1} y1={lc.y1} x2={50} y2={50}
-                    stroke={`url(#line-${t.key})`}
-                    strokeWidth={sel ? 0.8 : 0.4}
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                    style={{
-                      filter: sel ? `drop-shadow(0 0 4px rgb(${t.accentLight}))` : 'none',
-                      transition: 'all 0.3s ease',
-                    }}
-                  />
-                  {sel && (
-                    <motion.circle
-                      r={0.9}
-                      fill={`rgb(${t.accentLight})`}
-                      style={{ filter: `drop-shadow(0 0 5px rgb(${t.accentLight}))` }}
-                      animate={{ cx: [lc.x1, 50], cy: [lc.y1, 50] }}
-                      transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  )}
-                </g>
-              )
-            })}
-          </svg>
-
-          {/* 3×3 grid: corners hold channels, center holds the NÜRO core */}
-          <div className="relative grid grid-cols-3 grid-rows-3 gap-4 min-h-[440px]">
-            <div className="col-start-2 row-start-2 self-center justify-self-center">
-              <NuroCore selectedAccent={selectedType.accent} selectedAccentLight={selectedType.accentLight} />
-            </div>
-            {TYPES.map((t, idx) => (
-              <ChannelNode
-                key={t.key}
-                t={t}
-                idx={idx}
-                selected={t.key === type}
-                onSelect={() => setType(t.key)}
-                className={gridAt(idx)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* — Mobile fallback (no constellation lines) — */}
-        <div className="md:hidden mt-4">
-          <div className="flex justify-center mb-6">
-            <NuroCore selectedAccent={selectedType.accent} selectedAccentLight={selectedType.accentLight} />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {TYPES.map((t, idx) => (
-              <ChannelNode
-                key={t.key}
-                t={t}
-                idx={idx}
-                selected={t.key === type}
-                onSelect={() => setType(t.key)}
-              />
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ============================================================
-           RIGHT — Preview panel
-         ============================================================ */}
-      <PreviewPanel
-        t={selectedType}
-        name={name}
-        setName={setName}
-        loading={loading}
-        error={error}
-      />
-    </form>
-  )
-}
-
-// ── NuroCore — central animated AI orb ────────────────────────────────────
-function NuroCore({ selectedAccent, selectedAccentLight }: { selectedAccent: string; selectedAccentLight: string }) {
-  return (
-    <div className="relative w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] flex items-center justify-center">
-      {/* Outer rotating energy ring */}
-      <motion.div
-        className="absolute inset-0 rounded-full"
-        style={{
-          background: `conic-gradient(from 0deg, rgba(${selectedAccentLight},0.75), transparent 32%, rgba(${selectedAccentLight},0.45) 52%, transparent 88%, rgba(${selectedAccentLight},0.75))`,
-          maskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 66%, transparent 69%)',
-          WebkitMaskImage: 'radial-gradient(circle, transparent 58%, black 60%, black 66%, transparent 69%)',
-        }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-      />
-      {/* Middle counter-rotating ring */}
-      <motion.div
-        className="absolute inset-3 rounded-full"
-        style={{
-          background: `conic-gradient(from 180deg, transparent, rgba(${selectedAccent},0.6), transparent 45%, rgba(${selectedAccent},0.32) 70%, transparent)`,
-          maskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 77%)',
-          WebkitMaskImage: 'radial-gradient(circle, transparent 68%, black 70%, black 75%, transparent 77%)',
-        }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
-      />
-      {/* Inner dashed orbit (decorative HUD) */}
-      <motion.div
-        className="absolute inset-6 rounded-full pointer-events-none"
-        style={{
-          border: `1px dashed rgba(${selectedAccentLight},0.35)`,
-        }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-      />
-      {/* Tick marks around the orbit */}
-      {[0, 60, 120, 180, 240, 300].map((deg) => (
-        <span
-          key={deg}
-          className="absolute left-1/2 top-1/2 origin-bottom pointer-events-none"
-          style={{
-            transform: `translate(-50%, -100%) rotate(${deg}deg) translateY(-105px)`,
-            width: '2px',
-            height: '8px',
-            background: `linear-gradient(180deg, rgba(${selectedAccentLight},0.9), transparent)`,
-            boxShadow: `0 0 6px rgba(${selectedAccentLight},0.8)`,
-          }}
-        />
-      ))}
-      {/* Breathing outer halo */}
-      <motion.div
-        className="absolute -inset-8 rounded-full pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, rgba(${selectedAccentLight},0.42), transparent 60%)`,
-          filter: 'blur(18px)',
-        }}
-        animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.08, 1] }}
-        transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      {/* Inner orb with avatar */}
-      <div
-        className="relative w-[125px] h-[125px] sm:w-[145px] sm:h-[145px] rounded-full flex items-center justify-center overflow-hidden"
-        style={{
-          background: `radial-gradient(circle at 30% 25%, rgba(${selectedAccentLight},0.45), rgba(8,15,32,0.95) 72%)`,
-          border: `1px solid rgba(${selectedAccentLight},0.55)`,
-          boxShadow: `0 0 50px rgba(${selectedAccent},0.6), inset 0 0 24px rgba(${selectedAccent},0.25), inset 0 1px 0 rgba(255,255,255,0.16)`,
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={AI_AVATAR_URL}
-          alt="NÜRO core"
-          className="absolute w-[140%] h-[140%] object-contain"
-          style={{ filter: `drop-shadow(0 0 10px rgba(${selectedAccentLight},0.65))` }}
-        />
-        <span
-          className="absolute inset-x-3 top-2 h-1/3 rounded-full pointer-events-none"
-          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.22), transparent)' }}
-        />
-      </div>
-
-      {/* Top-center HUD: system status */}
-      <motion.div
-        className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md whitespace-nowrap"
-        style={{
-          background: 'rgba(16,185,129,0.18)',
-          border: '1px solid rgba(52,211,153,0.4)',
-          boxShadow: '0 0 14px rgba(16,185,129,0.4)',
-        }}
-        initial={{ opacity: 0, y: -4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <span className="relative flex h-1.5 w-1.5">
-          <motion.span
-            className="absolute inline-flex h-full w-full rounded-full bg-emerald-300"
-            animate={{ scale: [1, 2.4, 1], opacity: [0.7, 0, 0.7] }}
-            transition={{ duration: 1.8, repeat: Infinity }}
-          />
-          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
+      {/* === Header === */}
+      <div className="relative mb-7">
+        <span className="block text-[10.5px] uppercase font-semibold text-blue-300/80 mb-2.5"
+          style={{ letterSpacing: '0.22em' }}>
+          NÜRO Agent Studio
         </span>
-        <span className="text-[9.5px] font-bold tracking-[0.16em] uppercase text-emerald-200">Sistema activo</span>
-      </motion.div>
+        <h3
+          className="font-bold leading-[1.05] text-[28px] sm:text-[34px]"
+          style={{
+            letterSpacing: '-0.035em',
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #D6E4FF 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Crear nuevo agente
+        </h3>
+        <p
+          className="mt-3 text-[15px] sm:text-[16px] text-white/70 leading-relaxed max-w-xl"
+          style={{ letterSpacing: '-0.005em' }}
+        >
+          Selecciona un canal, asigna un nombre y despliega tu agente inteligente.
+        </p>
+      </div>
 
-      {/* Bottom-center label */}
-      <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
-        <div className="text-[11px] uppercase tracking-[0.32em] font-bold text-blue-200/90">NÜRO · CORE</div>
-        <div className="text-[9.5px] tracking-[0.12em] mt-0.5"
-          style={{ color: `rgba(${selectedAccentLight},0.95)` }}>
-          4 canales conectados
+      {/* === Channel selection === */}
+      <div className="relative mb-7">
+        <div className="text-[10.5px] uppercase font-bold text-white/50 mb-4 flex items-center gap-2"
+          style={{ letterSpacing: '0.22em' }}>
+          <span className="h-px w-4 bg-white/10" />
+          Canal de conexión
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {TYPES.map((t, idx) => (
+            <ChannelNode
+              key={t.key}
+              t={t}
+              idx={idx}
+              selected={type === t.key}
+              onSelect={() => setType(t.key)}
+            />
+          ))}
         </div>
       </div>
-    </div>
+
+      {/* === Name input === */}
+      <div className="relative mb-5">
+        <label
+          className="block text-[10.5px] uppercase font-bold text-white/50 mb-3"
+          style={{ letterSpacing: '0.22em' }}
+        >
+          Nombre del agente
+        </label>
+        <input
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Ventas Bolivia · Soporte NÜRO · Asistente Comercial"
+          className="w-full rounded-2xl px-5 h-14 text-[15px] font-medium text-white focus:outline-none transition-all duration-200 nuro-input"
+          style={{
+            background: 'rgba(10,20,42,0.55)',
+            border: '1px solid rgba(59,130,246,0.22)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+            letterSpacing: '-0.005em',
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(96,165,250,0.7)'
+            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.16), inset 0 1px 0 rgba(255,255,255,0.05)'
+            e.currentTarget.style.background = 'rgba(10,20,42,0.75)'
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(59,130,246,0.22)'
+            e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.04)'
+            e.currentTarget.style.background = 'rgba(10,20,42,0.55)'
+          }}
+          required
+        />
+      </div>
+
+      {error && <div className="mb-4"><Alert type="error" msg={error} /></div>}
+
+      {/* === CTA === */}
+      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+        <p className="text-[12px] text-white/45 leading-relaxed" style={{ letterSpacing: '-0.005em' }}>
+          El despliegue tarda menos de 30 segundos. Puedes editar cualquier parámetro después.
+        </p>
+        <motion.button
+          type="submit"
+          disabled={loading || !name.trim()}
+          whileHover={loading || !name.trim() ? undefined : { scale: 1.02 }}
+          whileTap={loading || !name.trim() ? undefined : { scale: 0.98 }}
+          className="relative group/cta w-full sm:w-auto h-14 px-8 rounded-2xl text-white font-bold overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shrink-0"
+          style={{
+            background: 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)',
+            boxShadow: '0 14px 40px -8px rgba(59,130,246,0.8), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.28)',
+            fontSize: '15px',
+            letterSpacing: '-0.018em',
+          }}
+          onMouseEnter={(e) => {
+            if (e.currentTarget.disabled) return
+            e.currentTarget.style.background = 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%)'
+            e.currentTarget.style.boxShadow = '0 18px 44px -6px rgba(59,130,246,0.95), 0 0 0 1px rgba(96,165,250,0.5), inset 0 1px 0 rgba(255,255,255,0.32)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'linear-gradient(180deg, #3B82F6 0%, #2563EB 100%)'
+            e.currentTarget.style.boxShadow = '0 14px 40px -8px rgba(59,130,246,0.8), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.28)'
+          }}
+        >
+          <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
+          {loading ? <Spinner color="text-white" /> : <Sparkles className="w-[18px] h-[18px] relative" strokeWidth={2.2} />}
+          <span className="relative">Crear agente</span>
+        </motion.button>
+      </div>
+    </motion.form>
   )
 }
 
-// ── ChannelNode — compact tech module ─────────────────────────────────────
+// ── Type for channel modules ──────────────────────────────────────────────
 type ChannelType = {
   key: string
   label: string
@@ -585,7 +351,6 @@ type ChannelType = {
   accentLight: string
 }
 
-// ── ChannelArt — premium vector illustrations per channel ────────────────
 function ChannelArt({ k, acc, accL, selected }: { k: string; acc: string; accL: string; selected: boolean }) {
   const baseOpacity = selected ? 0.85 : 0.55
   const stroke = `rgba(${accL},${selected ? 0.85 : 0.6})`
@@ -920,266 +685,42 @@ function ChannelNode({ t, idx, selected, onSelect, className }: {
             />
           </div>
         </div>
-        <div className="text-[13px] sm:text-[14px] font-semibold tracking-tight text-white leading-tight">
+        <div
+          className="text-[17px] sm:text-[18px] font-bold text-white leading-[1.1]"
+          style={{ letterSpacing: '-0.025em' }}
+        >
           {t.label}
         </div>
-        <div className="text-[10.5px] text-slate-400 mt-1 leading-snug">
+        <div
+          className="text-[12.5px] font-medium text-white/65 mt-1.5 leading-snug"
+          style={{ letterSpacing: '-0.005em' }}
+        >
           {t.sub}
+        </div>
+
+        {/* Availability badge */}
+        <div className="mt-3 inline-flex items-center gap-1.5 px-2 py-1 rounded-full"
+          style={{
+            background: 'rgba(16,185,129,0.12)',
+            border: '1px solid rgba(52,211,153,0.28)',
+          }}
+        >
+          <span className="relative flex h-1.5 w-1.5">
+            <motion.span
+              className="absolute inline-flex h-full w-full rounded-full bg-emerald-300"
+              animate={{ scale: [1, 2.2, 1], opacity: [0.7, 0, 0.7] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+            />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300"
+              style={{ boxShadow: '0 0 6px rgba(52,211,153,0.8)' }} />
+          </span>
+          <span className="text-[11px] font-semibold text-emerald-200"
+            style={{ letterSpacing: '0.02em' }}>
+            Disponible
+          </span>
         </div>
       </div>
     </motion.button>
-  )
-}
-
-// ── PreviewPanel — agent preview + CTA ────────────────────────────────────
-function PreviewPanel({ t, name, setName, loading, error }: {
-  t: ChannelType
-  name: string
-  setName: (v: string) => void
-  loading: boolean
-  error: string
-}) {
-  const Icon = t.icon
-  const acc = t.accent
-  const accL = t.accentLight
-  const trimmedName = name.trim()
-  const ready = !!trimmedName
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 16 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-3xl backdrop-blur-2xl p-5 sm:p-6 flex flex-col"
-      style={{
-        background: `linear-gradient(180deg, rgba(${acc},0.12) 0%, rgba(10,20,42,0.78) 60%, rgba(8,15,32,0.85) 100%)`,
-        border: `1px solid rgba(${accL},0.28)`,
-        boxShadow: `0 24px 60px -20px rgba(${acc},0.55), inset 0 1px 0 rgba(255,255,255,0.05)`,
-      }}
-    >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: `linear-gradient(90deg, transparent, rgba(${accL},0.6), transparent)` }} />
-      <div className="pointer-events-none absolute -top-24 -right-20 w-60 h-60 rounded-full"
-        style={{ background: `radial-gradient(circle, rgba(${acc},0.32), transparent 65%)`, filter: 'blur(50px)' }} />
-
-      {/* Header label */}
-      <div className="relative flex items-center gap-2 mb-4">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-slate-400 font-semibold">Vista previa</span>
-        <span className="flex-1 h-px"
-          style={{ background: `linear-gradient(90deg, rgba(${accL},0.35), transparent)` }} />
-      </div>
-
-      {/* Agent identity preview */}
-      <div className="relative flex items-center gap-3.5 mb-5">
-        <motion.div
-          key={t.key}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.35 }}
-          className="relative w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-          style={{
-            background: `linear-gradient(135deg, rgba(${accL},0.32), rgba(${acc},0.1))`,
-            border: `1px solid rgba(${accL},0.55)`,
-            boxShadow: `0 0 24px rgba(${acc},0.5), inset 0 1px 0 rgba(255,255,255,0.16)`,
-          }}
-        >
-          <Icon className="w-7 h-7"
-            style={{ color: `rgb(${accL})`, filter: `drop-shadow(0 0 6px rgba(${acc},0.7))` }}
-            strokeWidth={1.6} />
-        </motion.div>
-        <div className="min-w-0 flex-1">
-          <motion.div
-            key={trimmedName || 'empty'}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25 }}
-            className="text-[15px] font-semibold text-white tracking-tight truncate"
-          >
-            {trimmedName || 'Tu nuevo agente'}
-          </motion.div>
-          <motion.div
-            key={t.key + '-label'}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-[11.5px] mt-0.5 font-medium"
-            style={{ color: `rgba(${accL},0.95)` }}
-          >
-            {t.label}
-          </motion.div>
-        </div>
-      </div>
-
-      {/* === Capacidades del agente (universales) === */}
-      <div className="relative mb-4">
-        <div className="flex items-center gap-2 mb-2.5">
-          <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500 font-semibold">Capacidades</span>
-          <span className="flex-1 h-px"
-            style={{ background: `linear-gradient(90deg, rgba(${accL},0.25), transparent)` }} />
-        </div>
-        <ul className="space-y-1.5">
-          {[
-            'Respuestas naturales 24/7',
-            'Memoria contextual de 30 días',
-            'Multimedia (audio · imagen · video)',
-            'Follow-ups inteligentes',
-            'Cierre de ventas autónomo',
-          ].map((cap, i) => (
-            <motion.li
-              key={cap}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: i * 0.05 }}
-              className="flex items-center gap-2 text-[12px] text-slate-200/90"
-            >
-              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
-                style={{
-                  background: 'rgba(52,211,153,0.18)',
-                  border: '1px solid rgba(52,211,153,0.4)',
-                  boxShadow: '0 0 5px rgba(16,185,129,0.4)',
-                }}
-              >
-                <Check className="w-2 h-2 text-emerald-300" strokeWidth={4} />
-              </span>
-              <span className="leading-tight">{cap}</span>
-            </motion.li>
-          ))}
-        </ul>
-      </div>
-
-      {/* === Especificaciones técnicas === */}
-      <div className="relative mb-4">
-        <div className="flex items-center gap-2 mb-2.5">
-          <span className="text-[10px] uppercase tracking-[0.16em] text-slate-500 font-semibold">Especificaciones</span>
-          <span className="flex-1 h-px"
-            style={{ background: `linear-gradient(90deg, rgba(${accL},0.25), transparent)` }} />
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          {[
-            { label: 'Modelo',    value: 'GPT-5' },
-            { label: 'Respuesta', value: '< 2s' },
-            { label: 'Idiomas',   value: '30+' },
-            { label: 'Memoria',   value: '30 días' },
-          ].map((s) => (
-            <div key={s.label} className="rounded-xl px-3 py-2"
-              style={{
-                background: 'rgba(10,20,42,0.55)',
-                border: `1px solid rgba(${accL},0.18)`,
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
-              }}
-            >
-              <div className="text-[9.5px] uppercase tracking-[0.12em] text-slate-500 font-medium">{s.label}</div>
-              <div className="text-[12.5px] font-bold text-white tracking-tight mt-0.5 tabular-nums">{s.value}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* === Beneficios del canal (auto re-staggers on change) === */}
-      <div className="relative mb-4">
-        <div className="flex items-center gap-2 mb-2.5">
-          <span className="text-[10px] uppercase tracking-[0.16em] font-semibold"
-            style={{ color: `rgba(${accL},0.95)` }}>Canal · {t.label}</span>
-          <span className="flex-1 h-px"
-            style={{ background: `linear-gradient(90deg, rgba(${accL},0.3), transparent)` }} />
-        </div>
-        <ul className="space-y-1.5">
-          {t.benefits.map((b, i) => (
-            <motion.li
-              key={`${t.key}-${i}`}
-              initial={{ opacity: 0, x: -6 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: i * 0.06 }}
-              className="flex items-center gap-2 text-[12px] text-slate-300/90"
-            >
-              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full shrink-0"
-                style={{
-                  background: `rgba(${acc},0.22)`,
-                  border: `1px solid rgba(${accL},0.5)`,
-                  boxShadow: `0 0 6px rgba(${acc},0.45)`,
-                }}
-              >
-                <Check className="w-2 h-2" style={{ color: `rgb(${accL})` }} strokeWidth={4} />
-              </span>
-              {b}
-            </motion.li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Name input */}
-      <div className="relative mb-3">
-        <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500 font-semibold mb-2">
-          Nombre del agente
-        </div>
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Ej: Ventas NÜRO"
-          className="w-full rounded-2xl px-4 h-12 text-[14px] text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
-          style={{
-            background: 'rgba(10,20,42,0.55)',
-            border: `1px solid rgba(${accL},0.25)`,
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = `rgba(${accL},0.7)`
-            e.currentTarget.style.boxShadow = `0 0 0 3px rgba(${acc},0.16), inset 0 1px 0 rgba(255,255,255,0.04)`
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = `rgba(${accL},0.25)`
-            e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.03)'
-          }}
-          required
-        />
-      </div>
-
-      {error && <div className="mb-3"><Alert type="error" msg={error} /></div>}
-
-      {/* Ready indicator */}
-      <div className="relative flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl"
-        style={{
-          background: `rgba(${acc},0.08)`,
-          border: `1px solid rgba(${accL},0.22)`,
-        }}
-      >
-        <span className="relative flex h-2 w-2">
-          <motion.span
-            className="absolute inline-flex h-full w-full rounded-full"
-            style={{ background: `rgb(${accL})` }}
-            animate={{ scale: [1, 1.9, 1], opacity: [0.6, 0, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-          <span className="relative inline-flex h-2 w-2 rounded-full"
-            style={{ background: `rgb(${accL})`, boxShadow: `0 0 8px rgba(${acc},0.8)` }} />
-        </span>
-        <span className="text-[11.5px] font-semibold"
-          style={{ color: `rgba(${accL},0.95)` }}>
-          {ready ? 'Listo para desplegar' : 'Asigna un nombre al agente'}
-        </span>
-      </div>
-
-      {/* CTA — focal point */}
-      <motion.button
-        type="submit"
-        disabled={loading || !ready}
-        whileHover={ready && !loading ? { scale: 1.02 } : undefined}
-        whileTap={ready && !loading ? { scale: 0.98 } : undefined}
-        className="relative group/cta w-full h-14 rounded-2xl font-bold text-[14.5px] tracking-tight overflow-hidden text-white disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-auto"
-        style={{
-          background: `linear-gradient(180deg, rgb(${accL}) 0%, rgb(${acc}) 100%)`,
-          boxShadow: `0 14px 40px -8px rgba(${acc},0.85), 0 0 0 1px rgba(${accL},0.4), inset 0 1px 0 rgba(255,255,255,0.3)`,
-        }}
-      >
-        <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-        {loading ? <Spinner color="text-white" /> : <Sparkles className="w-4 h-4 relative" strokeWidth={2.2} />}
-        <span className="relative">Desplegar agente</span>
-      </motion.button>
-
-      <p className="text-[10.5px] text-slate-500 text-center mt-3">
-        El despliegue tarda menos de 30 segundos.
-      </p>
-    </motion.div>
   )
 }
 
