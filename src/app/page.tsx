@@ -8,7 +8,7 @@ import {
   Bot, ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
   Check, Menu, X, Zap, Brain, Globe, ChevronDown,
   UtensilsCrossed, Briefcase, Home, GraduationCap,
-  Mail, Send, Phone,
+  Mail, Send, Phone, Package, TrendingUp,
 } from 'lucide-react'
 
 const display = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-display' })
@@ -83,6 +83,7 @@ export default function LandingPage() {
 
       <main className="relative" style={{ zIndex: 2 }}>
         <Hero onNav={navTo} />
+        <ActivityTicker />
         <TrustBar />
         <VideoDemo />
         <Services />
@@ -338,12 +339,19 @@ function Navbar({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HERO — editorial premium + NÜRO protagonista
+   HERO — editorial premium · NÜRO command center
    ═══════════════════════════════════════════════════════════════ */
 function Hero({ onNav }: { onNav: (id: string) => void }) {
+  const heroStats: AnimatedStat[] = [
+    { target: 527,  format: (n) => `+${Math.round(n).toLocaleString('en-US')}`, label: 'Negocios activos' },
+    { target: 2.3,  format: (n) => `+${n.toFixed(1)}M`,                          label: 'Mensajes procesados' },
+    { target: 98,   format: (n) => `${Math.round(n)}%`,                          label: 'Tasa de respuesta' },
+    { target: 24,   format: (n) => `${Math.round(n)}/7`,                         label: 'Operación continua' },
+  ]
+
   return (
-    <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-32">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1fr_1.15fr] gap-12 lg:gap-8 items-center">
+    <section className="relative pt-32 pb-16 lg:pt-44 lg:pb-24">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1fr_1.15fr] gap-12 lg:gap-10 items-center">
         {/* ── LEFT: copy ── */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
@@ -375,93 +383,107 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
 
           {/* Headline */}
           <h1
-            className="font-medium text-[44px] sm:text-[58px] lg:text-[72px] leading-[1.00]"
+            className="font-medium text-[44px] sm:text-[58px] lg:text-[74px] leading-[0.98]"
             style={{
               fontFamily: 'var(--font-display)',
               letterSpacing: '-0.05em',
               color: '#F8FAFF',
             }}
           >
-            Vender con IA,<br />
+            Tu próximo<br />
+            vendedor{' '}
             <span style={{
               background: GRAD_MAIN,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 30px rgba(142,68,255,0.35))',
+              filter: 'drop-shadow(0 0 32px rgba(142,68,255,0.4))',
             }}>
-              sin pausa.
+              no duerme.
             </span>
           </h1>
 
           {/* Sub */}
           <p
-            className="mt-7 text-[17px] lg:text-[18px] text-white/60 leading-relaxed max-w-md"
+            className="mt-7 text-[16.5px] lg:text-[17.5px] text-white/65 leading-relaxed max-w-lg"
             style={{ letterSpacing: '-0.005em', fontWeight: 400 }}
           >
-            La plataforma más avanzada para vender con inteligencia artificial
-            en Latinoamérica. WhatsApp, Messenger y tu tienda virtual,
-            operando en piloto automático.
+            NÜRO automatiza respuestas, seguimiento, recuperación de clientes
+            y ventas mediante inteligencia artificial conectada a WhatsApp,
+            Messenger, Instagram y Tiendas Virtuales.
           </p>
 
           {/* CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <Link
-              href="/login"
-              className="relative group/cta inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl text-white font-medium text-[14px] overflow-hidden w-full sm:w-auto"
+              href="/register"
+              className="relative group/cta inline-flex items-center justify-center gap-2 h-13 px-7 rounded-xl text-white font-semibold text-[13.5px] overflow-hidden w-full sm:w-auto"
               style={{
+                height: 52,
                 background: GRAD_BTN,
                 boxShadow:
-                  '0 18px 44px -10px rgba(142,68,255,0.75), 0 0 0 1px rgba(212,91,255,0.35), inset 0 1px 0 rgba(255,255,255,0.24)',
-                letterSpacing: '-0.005em',
+                  '0 22px 50px -10px rgba(142,68,255,0.78), 0 0 0 1px rgba(212,91,255,0.4), inset 0 1px 0 rgba(255,255,255,0.26)',
+                letterSpacing: '0.16em',
               }}
             >
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/22 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-900" />
-              <span className="relative">Iniciar sesión</span>
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/24 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-900" />
+              <Sparkles className="w-4 h-4 relative" />
+              <span className="relative">CREAR MI AGENTE IA</span>
               <ArrowRight className="w-4 h-4 relative" />
             </Link>
 
             <button
               onClick={() => onNav('video')}
-              className="inline-flex items-center justify-center gap-2.5 h-12 px-5 rounded-xl text-white/80 hover:text-white font-medium text-[14px] transition-colors w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2.5 px-6 rounded-xl text-white/85 hover:text-white font-semibold text-[13px] transition-colors w-full sm:w-auto backdrop-blur-xl"
               style={{
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.10)',
-                letterSpacing: '-0.005em',
+                height: 52,
+                background: 'rgba(142,68,255,0.06)',
+                border: '1px solid rgba(212,91,255,0.22)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                letterSpacing: '0.16em',
               }}
             >
               <span className="relative w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ background: 'rgba(142,68,255,0.14)' }}>
+                style={{ background: 'rgba(142,68,255,0.20)', border: '1px solid rgba(212,91,255,0.45)' }}>
                 <Play className="w-2.5 h-2.5 ml-0.5" fill="currentColor"
                   style={{ color: '#D45BFF' }} />
               </span>
-              Ver demo
+              VER DEMOSTRACIÓN
             </button>
           </div>
 
-          {/* Quiet stats row */}
-          <div className="mt-14 pt-8 flex items-center gap-8 sm:gap-10 flex-wrap"
+          {/* Animated premium stats — quiet & elegant */}
+          <div className="mt-14 pt-8 grid grid-cols-2 sm:grid-cols-4 gap-y-6 gap-x-4 lg:gap-x-8"
             style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            {[
-              { v: '24/7',   l: 'Atención continua' },
-              { v: '< 30s',  l: 'Setup' },
-              { v: '4',      l: 'Canales' },
-            ].map((s, i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <span className="text-[22px] font-medium text-white tabular-nums leading-none"
-                  style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}>
-                  {s.v}
+            {heroStats.map((s, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col gap-1.5">
+                <span
+                  className="text-[26px] lg:text-[30px] font-medium tabular-nums leading-none"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    letterSpacing: '-0.035em',
+                    background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    filter: 'drop-shadow(0 0 12px rgba(142,68,255,0.35))',
+                  }}>
+                  <AnimatedNumber target={s.target} format={s.format} />
                 </span>
-                <span className="text-[11px] uppercase text-white/45 font-medium"
-                  style={{ letterSpacing: '0.14em' }}>
-                  {s.l}
+                <span className="text-[10px] uppercase text-white/45 font-medium"
+                  style={{ letterSpacing: '0.16em' }}>
+                  {s.label}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* ── RIGHT: NÜRO protagonist ── */}
+        {/* ── RIGHT: NÜRO protagonist + floating chips ── */}
         <NuroProtagonist />
       </div>
     </section>
@@ -473,7 +495,7 @@ function NuroProtagonist() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], [0, -40])
-  const opacity = useTransform(scrollY, [0, 600], [1, 0.5])
+  const opacity = useTransform(scrollY, [0, 600], [1, 0.55])
 
   return (
     <motion.div
@@ -482,10 +504,9 @@ function NuroProtagonist() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
       style={{ y, opacity }}
-      className="relative h-[520px] sm:h-[620px] lg:h-[760px] flex items-center justify-center"
-      aria-hidden
+      className="relative h-[560px] sm:h-[660px] lg:h-[780px] flex items-center justify-center"
     >
-      {/* Soft cinematic violet glow behind — pulse muy lento */}
+      {/* Soft cinematic violet glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
           className="rounded-full"
@@ -493,15 +514,15 @@ function NuroProtagonist() {
             width: 'min(620px, 85%)',
             height: 'min(620px, 85%)',
             background:
-              'radial-gradient(circle, rgba(142,68,255,0.45) 0%, rgba(212,91,255,0.18) 35%, transparent 70%)',
-            filter: 'blur(50px)',
+              'radial-gradient(circle, rgba(142,68,255,0.50) 0%, rgba(212,91,255,0.20) 35%, transparent 70%)',
+            filter: 'blur(55px)',
           }}
           animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.04, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
 
-      {/* Hairline orbital ring única, ultra delgada */}
+      {/* Hairline orbital ring */}
       <motion.div
         className="absolute rounded-full pointer-events-none"
         style={{
@@ -511,16 +532,17 @@ function NuroProtagonist() {
         }}
         animate={{ rotate: 360 }}
         transition={{ duration: 110, repeat: Infinity, ease: 'linear' }}
+        aria-hidden
       >
         <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
           style={{ background: '#D45BFF', boxShadow: '0 0 12px rgba(212,91,255,1)' }} />
       </motion.div>
 
-      {/* NÜRO image — protagonista con reflejos morados cinematográficos */}
+      {/* NÜRO image — protagonista cinematográfico */}
       <motion.img
         src={AVATAR}
         alt="NÜRO"
-        className="relative object-contain"
+        className="relative object-contain pointer-events-none"
         style={{
           height: '112%',
           width: 'auto',
@@ -530,6 +552,7 @@ function NuroProtagonist() {
         }}
         animate={{ y: [0, -12, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        aria-hidden
       />
 
       {/* Bottom reflection halo */}
@@ -538,6 +561,50 @@ function NuroProtagonist() {
           background: 'radial-gradient(ellipse, rgba(212,91,255,0.4), transparent 70%)',
           filter: 'blur(20px)',
         }}
+        aria-hidden
+      />
+
+      {/* ── Floating premium chips orbiting NÜRO ── */}
+      <FloatingChip
+        className="left-[-2%] top-[10%] lg:left-[-6%] lg:top-[8%]"
+        icon={MessageCircle}
+        label="WhatsApp conectado"
+        value="Cliente: ¿tienen disponibilidad?"
+        delay={0.55}
+        accent="#10B981"
+      />
+      <FloatingChip
+        className="right-[-2%] top-[14%] lg:right-[-4%] lg:top-[12%]"
+        icon={Package}
+        label="Pedido recibido"
+        value="3 productos · Listo para envío"
+        delay={0.75}
+        accent="#D45BFF"
+      />
+      <FloatingChip
+        className="right-[-4%] top-[48%] lg:right-[-8%]"
+        icon={TrendingUp}
+        label="Venta confirmada"
+        value="+$1,250"
+        delay={0.95}
+        accent="#8E44FF"
+        highlight
+      />
+      <FloatingChip
+        className="left-[-4%] top-[58%] lg:left-[-8%]"
+        icon={Send}
+        label="Seguimiento enviado"
+        value="Cliente recuperado"
+        delay={1.15}
+        accent="#6B5CFF"
+      />
+      <FloatingChip
+        className="left-[10%] bottom-[6%] lg:left-[8%] lg:bottom-[4%]"
+        icon={Sparkles}
+        label="Nueva conversación"
+        value="WhatsApp activo"
+        delay={1.35}
+        accent="#D45BFF"
       />
     </motion.div>
   )
@@ -1444,6 +1511,194 @@ function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATED COUNTER — easeOutCubic, IntersectionObserver-triggered
+   ═══════════════════════════════════════════════════════════════ */
+type AnimatedStat = {
+  target: number
+  format: (n: number) => string
+  label: string
+}
+
+function AnimatedNumber({
+  target, format, duration = 2.4,
+}: { target: number; format: (n: number) => string; duration?: number }) {
+  const [display, setDisplay] = useState(() => format(0))
+  const ref = useRef<HTMLSpanElement>(null)
+  const started = useRef(false)
+
+  useEffect(() => {
+    if (!ref.current) return
+    const node = ref.current
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true
+          const startTime = performance.now()
+          const tick = (now: number) => {
+            const elapsed = (now - startTime) / 1000
+            const progress = Math.min(elapsed / duration, 1)
+            const eased = 1 - Math.pow(1 - progress, 3) // easeOutCubic
+            setDisplay(format(target * eased))
+            if (progress < 1) requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+        }
+      },
+      { threshold: 0.3 }
+    )
+    obs.observe(node)
+    return () => obs.disconnect()
+  }, [target, format, duration])
+
+  return <span ref={ref}>{display}</span>
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLOATING CHIP — glass premium card orbiting NÜRO
+   ═══════════════════════════════════════════════════════════════ */
+function FloatingChip({
+  className, icon: Icon, label, value, delay, accent = '#D45BFF', highlight = false,
+}: {
+  className?: string
+  icon: typeof MessageCircle
+  label: string
+  value: string
+  delay: number
+  accent?: string
+  highlight?: boolean
+}) {
+  // accent → rgb tuple for inline rgba math
+  const accRGB = hexToRgb(accent)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85, y: 14 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={`absolute flex items-center gap-3 px-3.5 py-3 rounded-2xl backdrop-blur-2xl max-w-[220px] ${className ?? ''}`}
+      style={{
+        background: highlight
+          ? `linear-gradient(135deg, rgba(${accRGB},0.22), rgba(11,16,38,0.82))`
+          : `linear-gradient(135deg, rgba(${accRGB},0.14), rgba(11,16,38,0.78))`,
+        border: `1px solid rgba(${accRGB},${highlight ? 0.45 : 0.30})`,
+        boxShadow: `0 14px 38px -10px rgba(${accRGB},${highlight ? 0.65 : 0.5}), inset 0 1px 0 rgba(255,255,255,0.06)`,
+        zIndex: 5,
+      }}
+    >
+      <motion.div
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 4 + delay, repeat: Infinity, ease: 'easeInOut' }}
+        className="contents"
+      >
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+          style={{
+            background: `rgba(${accRGB},0.22)`,
+            border: `1px solid rgba(${accRGB},0.5)`,
+            boxShadow: `0 0 12px rgba(${accRGB},0.45)`,
+          }}>
+          <Icon className="w-4 h-4" style={{ color: accent }} strokeWidth={2} />
+        </div>
+        <div className="min-w-0">
+          <div className="text-[9px] uppercase font-semibold text-white/55 mb-0.5 truncate"
+            style={{ letterSpacing: '0.16em' }}>
+            {label}
+          </div>
+          <div className="text-[12.5px] font-medium text-white leading-tight tabular-nums truncate"
+            style={{ letterSpacing: '-0.01em' }}>
+            {value}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+function hexToRgb(hex: string): string {
+  const m = hex.replace('#', '').match(/.{2}/g)
+  if (!m) return '212,91,255'
+  const [r, g, b] = m.map((h) => parseInt(h, 16))
+  return `${r},${g},${b}`
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVITY TICKER — live ribbon, premium marquee
+   ═══════════════════════════════════════════════════════════════ */
+function ActivityTicker() {
+  const events: { dot: string; text: string }[] = [
+    { dot: '#10B981', text: 'Venta confirmada hace 12 segundos' },
+    { dot: '#D45BFF', text: 'Nuevo cliente conectado' },
+    { dot: '#8E44FF', text: 'Pedido recibido' },
+    { dot: '#10B981', text: 'Seguimiento enviado' },
+    { dot: '#D45BFF', text: 'WhatsApp conectado' },
+    { dot: '#8E44FF', text: 'Conversación iniciada' },
+    { dot: '#10B981', text: 'Cliente recuperado' },
+    { dot: '#D45BFF', text: 'Tienda sincronizada' },
+  ]
+  // Duplicate for seamless infinite scroll
+  const looped = [...events, ...events]
+
+  return (
+    <section className="relative" aria-label="Actividad en tiempo real">
+      <div className="relative w-full overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, rgba(11,16,38,0.65), rgba(11,16,38,0.4))',
+          borderTop: '1px solid rgba(142,68,255,0.14)',
+          borderBottom: '1px solid rgba(142,68,255,0.14)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.03)',
+        }}>
+        <div className="py-3.5 flex items-center gap-3">
+          {/* Live label */}
+          <div className="shrink-0 pl-6 lg:pl-8 pr-4 flex items-center gap-2"
+            style={{ borderRight: '1px solid rgba(142,68,255,0.18)', paddingRight: 16 }}>
+            <span className="relative flex h-1.5 w-1.5">
+              <motion.span className="absolute inline-flex h-full w-full rounded-full"
+                style={{ background: '#D45BFF' }}
+                animate={{ opacity: [1, 0.3, 1], scale: [1, 1.6, 1] }}
+                transition={{ duration: 1.8, repeat: Infinity }} />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
+            </span>
+            <span className="text-[10.5px] uppercase font-semibold"
+              style={{ letterSpacing: '0.22em', color: 'rgba(212,91,255,0.9)' }}>
+              LIVE
+            </span>
+          </div>
+
+          {/* Marquee */}
+          <div className="relative flex-1 overflow-hidden">
+            <motion.div
+              className="flex gap-10 whitespace-nowrap"
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
+            >
+              {looped.map((e, i) => (
+                <div key={i} className="flex items-center gap-2.5 shrink-0">
+                  <motion.span className="w-1.5 h-1.5 rounded-full"
+                    style={{ background: e.dot, boxShadow: `0 0 6px ${e.dot}` }}
+                    animate={{ opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: (i % 4) * 0.3, ease: 'easeInOut' }}
+                  />
+                  <span className="text-[12.5px] text-white/65 font-medium"
+                    style={{ letterSpacing: '-0.005em' }}>
+                    {e.text}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Fade edges */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-24"
+              style={{ background: 'linear-gradient(90deg, rgba(11,16,38,1), transparent)' }} />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-24"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(11,16,38,1))' }} />
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
 
