@@ -2,16 +2,23 @@
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
+import { Space_Grotesk, Inter } from 'next/font/google'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bot, ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
-  Check, Menu, X, Package, TrendingUp, Zap, Wifi, Brain, Shield,
-  ChevronDown, UtensilsCrossed, Briefcase, Home, GraduationCap,
-  Mail, Globe, Send, Phone,
+  Check, Menu, X, Zap, Brain, Globe, ChevronDown,
+  UtensilsCrossed, Briefcase, Home, GraduationCap,
+  Mail, Send, Phone,
 } from 'lucide-react'
+
+const display = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-display' })
+const body = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-body' })
 
 const AVATAR = '/nuro-3d.png'
 
+/* ═══════════════════════════════════════════════════════════════
+   ROOT
+   ═══════════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -21,127 +28,18 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden" style={{ background: '#020817' }}>
+    <div
+      className={`${display.variable} ${body.variable} relative min-h-screen overflow-x-hidden`}
+      style={{
+        background: '#020817',
+        fontFamily: 'var(--font-body), Inter, ui-sans-serif, system-ui',
+        color: '#FFFFFF',
+      }}
+    >
       <BackgroundLayers />
 
-      {/* ── Energy sphere BEHIND the NÜRO — radial glow + neural mesh + breathing halo ── */}
-      <div
-        className="pointer-events-none fixed inset-0 flex items-center justify-center lg:justify-end overflow-hidden lg:pr-[3vw]"
-        style={{ zIndex: 0 }}
-        aria-hidden
-      >
-        <div
-          className="relative flex items-center justify-center"
-          style={{ width: 'min(92vh, 100vw)', height: 'min(92vh, 100vw)', maxWidth: '780px', maxHeight: '780px', marginTop: '6vh' }}
-        >
-          {/* Big radial halo */}
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.42), transparent 60%)', filter: 'blur(60px)' }}
-            animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.05, 1] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          {/* Second halo, slightly offset for depth */}
-          <motion.div
-            className="absolute inset-[8%] rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.32), transparent 65%)', filter: 'blur(40px)' }}
-            animate={{ opacity: [0.5, 0.9, 0.5], scale: [1, 1.06, 1] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-          />
-          {/* Slow energy ring (conic gradient) */}
-          <motion.div
-            className="absolute inset-[14%] rounded-full"
-            style={{
-              background: 'conic-gradient(from 0deg, rgba(96,165,250,0.55), transparent 30%, rgba(96,165,250,0.35) 55%, transparent 88%, rgba(96,165,250,0.55))',
-              maskImage: 'radial-gradient(circle, transparent 64%, black 66%, black 72%, transparent 74%)',
-              WebkitMaskImage: 'radial-gradient(circle, transparent 64%, black 66%, black 72%, transparent 74%)',
-            }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
-          />
-          {/* Counter ring */}
-          <motion.div
-            className="absolute inset-[26%] rounded-full"
-            style={{
-              background: 'conic-gradient(from 180deg, transparent, rgba(34,211,238,0.5), transparent 45%, rgba(34,211,238,0.28) 70%, transparent)',
-              maskImage: 'radial-gradient(circle, transparent 72%, black 74%, black 78%, transparent 80%)',
-              WebkitMaskImage: 'radial-gradient(circle, transparent 72%, black 74%, black 78%, transparent 80%)',
-            }}
-            animate={{ rotate: -360 }}
-            transition={{ duration: 44, repeat: Infinity, ease: 'linear' }}
-          />
-          {/* Dashed outer orbit */}
-          <motion.div
-            className="absolute -inset-[6%] rounded-full"
-            style={{ border: '1px dashed rgba(96,165,250,0.28)' }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 70, repeat: Infinity, ease: 'linear' }}
-          >
-            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-200"
-              style={{ boxShadow: '0 0 12px rgba(96,165,250,1)' }} />
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300"
-              style={{ boxShadow: '0 0 10px rgba(103,232,249,1)' }} />
-          </motion.div>
-          {/* Orbital energy nodes scattered around */}
-          {[20, 75, 140, 200, 260, 320].map((angle, i) => {
-            const rad = (angle * Math.PI) / 180
-            const r = 47 + (i % 2) * 3
-            return (
-              <motion.span
-                key={i}
-                className="absolute rounded-full"
-                style={{
-                  left: `${50 + Math.cos(rad) * r}%`,
-                  top: `${50 + Math.sin(rad) * r}%`,
-                  width: i % 2 === 0 ? '6px' : '4px',
-                  height: i % 2 === 0 ? '6px' : '4px',
-                  background: 'rgba(96,165,250,1)',
-                  boxShadow: '0 0 14px rgba(96,165,250,1), 0 0 28px rgba(59,130,246,0.55)',
-                  transform: 'translate(-50%, -50%)',
-                }}
-                animate={{ opacity: [0.45, 1, 0.45], scale: [1, 1.3, 1] }}
-                transition={{ duration: 3 + (i % 3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.35 }}
-              />
-            )
-          })}
-        </div>
-      </div>
-
-      {/* ── NÜRO watermark — sized to never crop, shifted to the right so the text column stays clean ── */}
-      <motion.div
-        className="pointer-events-none fixed inset-0 flex items-center justify-center lg:justify-end overflow-hidden lg:pr-[6vw]"
-        style={{ zIndex: 1 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2, ease: 'easeOut' }}
-        aria-hidden
-      >
-        <motion.img
-          src={AVATAR}
-          alt=""
-          className="object-contain"
-          style={{
-            height: 'min(86vh, 110vw)',
-            width: 'auto',
-            maxWidth: 'min(62vw, 820px)',
-            marginTop: '8vh',
-            opacity: 0.7,
-            filter: 'drop-shadow(0 0 280px rgba(59,130,246,1)) drop-shadow(0 0 520px rgba(96,165,250,0.7)) brightness(1.1) saturate(1.22)',
-          }}
-          animate={{
-            y: [0, -16, 7, 0],
-            rotate: [0, 1.3, -0.9, 0],
-            scale: [1, 1.02, 0.99, 1],
-          }}
-          transition={{
-            y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
-            rotate: { duration: 26, repeat: Infinity, ease: 'easeInOut' },
-            scale: { duration: 18, repeat: Infinity, ease: 'easeInOut' },
-          }}
-        />
-      </motion.div>
-
       <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+
       <main className="relative" style={{ zIndex: 2 }}>
         <Hero onNav={navTo} />
         <TrustBar />
@@ -159,817 +57,470 @@ export default function LandingPage() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   BACKGROUND
+   BACKGROUND — minimal: blueprint grid + 2 soft gradients + vignette
    ═══════════════════════════════════════════════════════════════ */
 function BackgroundLayers() {
   return (
-    <>
-      {/* Fixed wrapper */}
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {/* — Blueprint grid (primary, large cells) — */}
-        <div
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
-            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
-          }}
-        />
-        {/* — Blueprint sub-grid (finer cells, even more subtle) — */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(96,165,250,1) 0.5px, transparent 0.5px), linear-gradient(90deg, rgba(96,165,250,1) 0.5px, transparent 0.5px)',
-            backgroundSize: '20px 20px',
-            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 65%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 65%)',
-          }}
-        />
-        {/* — HUD corner brackets (4 corners of viewport) — */}
-        {[
-          { pos: 'top-4 left-4',     rot: 0,   text: 'NUR · 00.01' },
-          { pos: 'top-4 right-4',    rot: 90,  text: 'SYS · 100%'  },
-          { pos: 'bottom-4 right-4', rot: 180, text: 'AI · ONLINE' },
-          { pos: 'bottom-4 left-4',  rot: 270, text: 'LIVE · 24/7' },
-        ].map((c, i) => (
-          <div key={i} className={`absolute ${c.pos} hidden lg:block`}>
-            <svg width="56" height="56" viewBox="0 0 56 56" style={{ transform: `rotate(${c.rot}deg)` }}>
-              <path d="M 2 28 L 2 2 L 28 2" fill="none" stroke="rgba(96,165,250,0.45)" strokeWidth="1" strokeLinecap="round"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(96,165,250,0.6))' }} />
-              <circle cx="2" cy="2" r="1.5" fill="rgba(96,165,250,0.8)" />
-            </svg>
-            <div className="text-[8.5px] font-mono uppercase font-bold mt-1"
-              style={{
-                color: 'rgba(96,165,250,0.55)',
-                letterSpacing: '0.18em',
-                transform: c.rot === 90 || c.rot === 180 ? 'translateX(-22px)' : '',
-              }}>
-              {c.text}
-            </div>
-          </div>
-        ))}
-
-        {/* Animated mesh gradient blobs — they drift slowly */}
-        <motion.div
-          className="absolute -top-40 -left-20 w-[640px] h-[520px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.30), transparent 60%)', filter: 'blur(80px)' }}
-          animate={{ x: [0, 140, -60, 0], y: [0, 80, -40, 0] }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute top-[20%] right-[-10%] w-[520px] h-[480px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.18), transparent 60%)', filter: 'blur(80px)' }}
-          animate={{ x: [0, -160, 80, 0], y: [0, -90, 60, 0] }}
-          transition={{ duration: 38, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-0 left-[10%] w-[600px] h-[460px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.16), transparent 60%)', filter: 'blur(90px)' }}
-          animate={{ x: [0, 120, -90, 0], y: [0, -60, 80, 0] }}
-          transition={{ duration: 34, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute top-[60%] left-[40%] w-[400px] h-[380px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.18), transparent 60%)', filter: 'blur(70px)' }}
-          animate={{ x: [0, -100, 60, 0], y: [0, 60, -80, 0] }}
-          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        {/* Scan line (subtle, slow vertical) */}
-        <motion.div
-          className="absolute inset-x-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.4), transparent)' }}
-          animate={{ y: ['-5%', '105%'] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Subtle vignette */}
-        <div className="absolute inset-0"
-          style={{ background: 'radial-gradient(ellipse at top, transparent 30%, rgba(2,8,23,0.6) 100%)' }} />
-      </div>
-
-      {/* Global constellation network — fixed SVG with connected nodes drifting */}
-      <svg
-        className="pointer-events-none fixed inset-0 w-full h-full"
-        style={{ zIndex: -1, opacity: 0.55 }}
-        aria-hidden
-      >
-        <defs>
-          <linearGradient id="conLine" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
-            <stop offset="0%"   stopColor="rgba(96,165,250,0)" />
-            <stop offset="50%"  stopColor="rgba(96,165,250,0.65)" />
-            <stop offset="100%" stopColor="rgba(96,165,250,0)" />
-          </linearGradient>
-        </defs>
-        {[
-          [10, 22, 28, 38], [28, 38, 44, 25], [44, 25, 62, 40], [62, 40, 78, 28], [78, 28, 92, 45],
-          [12, 68, 30, 78], [30, 78, 50, 70], [50, 70, 68, 82], [68, 82, 88, 72],
-          [22, 45, 38, 55], [55, 50, 70, 60], [42, 38, 50, 70],
-        ].map(([x1, y1, x2, y2], i) => (
-          <motion.line
-            key={i}
-            x1={`${x1}%`} y1={`${y1}%`} x2={`${x2}%`} y2={`${y2}%`}
-            stroke="url(#conLine)"
-            strokeWidth="0.5"
-            initial={{ opacity: 0.15 }}
-            animate={{ opacity: [0.1, 0.5, 0.1] }}
-            transition={{ duration: 5 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: (i % 5) * 0.6 }}
-          />
-        ))}
-        {[
-          [10, 22], [28, 38], [44, 25], [62, 40], [78, 28], [92, 45],
-          [12, 68], [30, 78], [50, 70], [68, 82], [88, 72],
-          [22, 45], [55, 50], [42, 38], [70, 60],
-        ].map(([x, y], i) => (
-          <motion.circle
-            key={i}
-            cx={`${x}%`} cy={`${y}%`} r="2"
-            fill="rgba(96,165,250,0.9)"
-            style={{ filter: 'drop-shadow(0 0 5px rgba(96,165,250,1))' }}
-            animate={{ opacity: [0.35, 1, 0.35], r: [1.5, 2.5, 1.5] }}
-            transition={{ duration: 3.5 + (i % 5), repeat: Infinity, ease: 'easeInOut', delay: (i % 6) * 0.5 }}
-          />
-        ))}
-      </svg>
-
-      {/* Horizontal scan line (slow) */}
-      <motion.div
-        className="pointer-events-none fixed inset-y-0 w-px"
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      {/* Base — deep premium gradient */}
+      <div
+        className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, transparent, rgba(96,165,250,0.5), transparent)',
-          zIndex: -1,
-          boxShadow: '0 0 8px rgba(96,165,250,0.4)',
+          background:
+            'radial-gradient(ellipse 80% 60% at 70% 0%, #071426 0%, #020817 60%, #020817 100%)',
         }}
-        animate={{ x: ['-5%', '105vw'] }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
       />
 
-      {/* Floating particles (38 instead of 22) */}
-      {[...Array(38)].map((_, i) => (
-        <motion.span
-          key={i}
-          className="pointer-events-none fixed rounded-full bg-blue-200/80"
-          style={{
-            left: `${(i * 7) % 96}%`,
-            top: `${10 + (i * 13) % 78}%`,
-            width: i % 5 === 0 ? '2.5px' : i % 3 === 0 ? '1.5px' : '1px',
-            height: i % 5 === 0 ? '2.5px' : i % 3 === 0 ? '1.5px' : '1px',
-            boxShadow: '0 0 10px rgba(96,165,250,0.9)',
-            zIndex: -1,
-          }}
-          animate={{ y: [0, -45, 15, 0], opacity: [0.1, 0.95, 0.4, 0.1] }}
-          transition={{ duration: 18 + i * 0.9, repeat: Infinity, ease: 'easeInOut', delay: i * 0.32 }}
-        />
-      ))}
-    </>
+      {/* Blueprint grid — ultra fine, masked to center */}
+      <div
+        className="absolute inset-0"
+        style={{
+          opacity: 0.05,
+          backgroundImage:
+            'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+          maskImage: 'radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 75%)',
+        }}
+      />
+
+      {/* Soft volumetric glow — top right (NÜRO area) */}
+      <div
+        className="absolute"
+        style={{
+          top: '5%',
+          right: '-10%',
+          width: '720px',
+          height: '720px',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 60%)',
+          filter: 'blur(80px)',
+        }}
+      />
+
+      {/* Subtle deep accent — bottom left */}
+      <div
+        className="absolute"
+        style={{
+          bottom: '-15%',
+          left: '-10%',
+          width: '640px',
+          height: '640px',
+          background: 'radial-gradient(circle, rgba(10,31,61,0.6) 0%, transparent 60%)',
+          filter: 'blur(80px)',
+        }}
+      />
+
+      {/* Vignette */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, transparent 40%, rgba(2,8,23,0.7) 100%)',
+        }}
+      />
+    </div>
   )
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   NAVBAR
+   NAVBAR — minimal premium
    ═══════════════════════════════════════════════════════════════ */
 function Navbar({
   onNav, menuOpen, setMenuOpen,
 }: { onNav: (id: string) => void; menuOpen: boolean; setMenuOpen: (v: boolean) => void }) {
   const items = [
-    { id: 'agentes',  label: 'Agentes IA' },
-    { id: 'tiendas',  label: 'Tiendas Virtuales' },
-    { id: 'video',    label: 'Video' },
+    { id: 'producto', label: 'Producto' },
+    { id: 'planes',   label: 'Planes' },
+    { id: 'video',    label: 'Demo' },
     { id: 'contacto', label: 'Contacto' },
   ]
 
   return (
-    <>
-      <nav
-        className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl"
-        style={{
-          background: 'rgba(2,8,23,0.72)',
-          borderBottom: '1px solid rgba(59,130,246,0.12)',
-        }}
-      >
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div
-              className="relative w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center"
-              style={{
-                background: 'linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))',
-                border: '1px solid rgba(96,165,250,0.4)',
-                boxShadow: '0 0 18px -4px rgba(59,130,246,0.6), inset 0 1px 0 rgba(255,255,255,0.12)',
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={AVATAR} alt="NÜRO" className="absolute w-[150%] h-[150%] object-contain"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(96,165,250,0.7))' }} />
-            </div>
-            <span className="text-[15px] font-bold tracking-tight text-white" style={{ letterSpacing: '-0.01em' }}>
-              AGENTE <span className="text-blue-300">NÜRO</span>
-            </span>
-          </Link>
-
-          {/* Desktop menu */}
-          <div className="hidden lg:flex items-center gap-7">
-            {items.map((it) => (
-              <button
-                key={it.id}
-                onClick={() => onNav(it.id)}
-                className="text-[13.5px] font-medium text-white/70 hover:text-white transition-colors"
-                style={{ letterSpacing: '-0.005em' }}
-              >
-                {it.label}
-              </button>
-            ))}
-          </div>
-
-          {/* CTAs — desktop */}
-          <div className="hidden sm:flex items-center gap-2.5">
-            <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                href="/register"
-                className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl text-white/85 font-bold text-[12px] tracking-[0.14em] uppercase transition-colors hover:text-white hover:bg-blue-500/20"
-                style={{
-                  background: 'rgba(59,130,246,0.08)',
-                  border: '1px solid rgba(96,165,250,0.28)',
-                }}
-              >
-                Registrarse
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05, y: -1 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                href="/login"
-                className="relative group/nl inline-flex items-center gap-2 h-10 px-5 rounded-xl text-white font-bold text-[12px] tracking-[0.15em] uppercase overflow-hidden"
-                style={{
-                  background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                  boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
-                }}
-              >
-                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/nl:translate-x-full transition-transform duration-700" />
-                <span className="relative">Iniciar sesión</span>
-                <ArrowRight className="w-3.5 h-3.5 relative" />
-              </Link>
-            </motion.div>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-xl text-white"
+    <nav
+      className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl"
+      style={{
+        background: 'rgba(2,8,23,0.6)',
+        borderBottom: '1px solid rgba(96,165,250,0.08)',
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 h-[68px] flex items-center justify-between gap-4">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+          <div
+            className="relative w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center"
             style={{
-              background: 'rgba(59,130,246,0.12)',
-              border: '1px solid rgba(59,130,246,0.25)',
+              background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(7,20,38,0.6))',
+              border: '1px solid rgba(96,165,250,0.25)',
             }}
-            aria-label="Menú"
           >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={AVATAR} alt="NÜRO" className="absolute w-[150%] h-[150%] object-contain" />
+          </div>
+          <span
+            className="text-[15px] font-semibold tracking-tight text-white"
+            style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}
+          >
+            NÜRO
+          </span>
+        </Link>
+
+        {/* Desktop menu */}
+        <div className="hidden lg:flex items-center gap-9">
+          {items.map((it) => (
+            <button
+              key={it.id}
+              onClick={() => onNav(it.id)}
+              className="text-[13.5px] font-medium text-white/65 hover:text-white transition-colors"
+            >
+              {it.label}
+            </button>
+          ))}
         </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="lg:hidden overflow-hidden"
-              style={{ borderTop: '1px solid rgba(59,130,246,0.12)' }}
-            >
-              <div className="px-5 py-4 flex flex-col gap-2">
-                {items.map((it) => (
-                  <button
-                    key={it.id}
-                    onClick={() => onNav(it.id)}
-                    className="text-left py-3 px-4 rounded-xl text-[14px] font-medium text-white/80 hover:text-white transition-colors"
-                    style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.12)' }}
-                  >
-                    {it.label}
-                  </button>
-                ))}
-                <motion.div whileTap={{ scale: 0.97 }}>
-                  <Link
-                    href="/register"
-                    className="mt-2 flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
-                    style={{
-                      background: 'rgba(59,130,246,0.10)',
-                      border: '1px solid rgba(96,165,250,0.32)',
-                    }}
-                  >
-                    Registrarse
-                  </Link>
-                </motion.div>
-                <motion.div whileTap={{ scale: 0.97 }}>
-                  <Link
-                    href="/login"
-                    className="flex items-center justify-center gap-2 h-12 rounded-xl text-white font-bold tracking-[0.15em] uppercase"
-                    style={{
-                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                      boxShadow: '0 10px 26px -8px rgba(59,130,246,0.75), inset 0 1px 0 rgba(255,255,255,0.25)',
-                    }}
-                  >
-                    Iniciar sesión
-                    <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>
-                      <ArrowRight className="w-4 h-4" />
-                    </motion.span>
-                  </Link>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
-    </>
+        {/* CTAs — desktop */}
+        <div className="hidden sm:flex items-center gap-2">
+          <Link
+            href="/register"
+            className="inline-flex items-center justify-center h-10 px-4 rounded-lg text-white/75 font-medium text-[13px] hover:text-white transition-colors"
+          >
+            Crear cuenta
+          </Link>
+          <Link
+            href="/login"
+            className="relative group/nl inline-flex items-center gap-2 h-10 px-5 rounded-lg text-white font-medium text-[13px] overflow-hidden"
+            style={{
+              background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+              boxShadow: '0 8px 22px -6px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+            }}
+          >
+            <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/nl:translate-x-full transition-transform duration-700" />
+            <span className="relative">Iniciar sesión</span>
+            <ArrowRight className="w-3.5 h-3.5 relative" />
+          </Link>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-white"
+          style={{
+            background: 'rgba(96,165,250,0.08)',
+            border: '1px solid rgba(96,165,250,0.18)',
+          }}
+          aria-label="Menú"
+        >
+          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="lg:hidden overflow-hidden"
+            style={{ borderTop: '1px solid rgba(96,165,250,0.08)' }}
+          >
+            <div className="px-6 py-5 flex flex-col gap-1.5">
+              {items.map((it) => (
+                <button
+                  key={it.id}
+                  onClick={() => onNav(it.id)}
+                  className="text-left py-3 px-3 rounded-lg text-[14px] font-medium text-white/75 hover:text-white hover:bg-white/5 transition-colors"
+                >
+                  {it.label}
+                </button>
+              ))}
+              <Link
+                href="/register"
+                className="mt-3 flex items-center justify-center h-12 rounded-lg text-white/85 font-medium text-[13.5px]"
+                style={{
+                  background: 'rgba(96,165,250,0.08)',
+                  border: '1px solid rgba(96,165,250,0.2)',
+                }}
+              >
+                Crear cuenta
+              </Link>
+              <Link
+                href="/login"
+                className="flex items-center justify-center gap-2 h-12 rounded-lg text-white font-medium text-[13.5px]"
+                style={{
+                  background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                  boxShadow: '0 8px 22px -6px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                }}
+              >
+                Iniciar sesión
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
   )
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HERO
+   HERO — NÜRO is the absolute protagonist
    ═══════════════════════════════════════════════════════════════ */
-function NeuralBackdrop() {
-  // Static node positions on a 100x100 viewBox
-  const nodes = [
-    { x: 8,  y: 18 }, { x: 22, y: 35 }, { x: 38, y: 12 }, { x: 52, y: 28 },
-    { x: 68, y: 14 }, { x: 80, y: 32 }, { x: 92, y: 20 },
-    { x: 14, y: 55 }, { x: 30, y: 68 }, { x: 46, y: 52 }, { x: 62, y: 64 },
-    { x: 78, y: 56 }, { x: 90, y: 70 },
-    { x: 18, y: 86 }, { x: 36, y: 90 }, { x: 56, y: 84 }, { x: 74, y: 90 },
-  ]
-  // Connections (pairs of node indices)
-  const links: [number, number][] = [
-    [0,1],[1,2],[1,3],[2,3],[3,4],[4,5],[5,6],[3,5],
-    [1,7],[7,8],[8,9],[3,9],[9,10],[10,11],[11,12],[5,11],
-    [7,13],[8,14],[9,14],[10,15],[11,16],[12,16],[13,14],[14,15],[15,16],
-  ]
-  return (
-    <svg
-      className="pointer-events-none absolute inset-0 w-full h-full"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      aria-hidden
-      style={{
-        maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 75%)',
-        WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 75%)',
-        opacity: 0.5,
-      }}
-    >
-      {/* Lines */}
-      {links.map(([a, b], i) => {
-        const A = nodes[a], B = nodes[b]
-        return (
-          <motion.line
-            key={i}
-            x1={A.x} y1={A.y} x2={B.x} y2={B.y}
-            stroke="rgba(96,165,250,0.45)"
-            strokeWidth="0.18"
-            vectorEffect="non-scaling-stroke"
-            initial={{ opacity: 0.15 }}
-            animate={{ opacity: [0.15, 0.65, 0.15] }}
-            transition={{ duration: 4 + (i % 5), repeat: Infinity, ease: 'easeInOut', delay: (i % 7) * 0.4 }}
-          />
-        )
-      })}
-      {/* Nodes */}
-      {nodes.map((n, i) => (
-        <motion.circle
-          key={i}
-          cx={n.x} cy={n.y} r="0.55"
-          fill="rgba(96,165,250,0.95)"
-          style={{ filter: 'drop-shadow(0 0 1.5px rgba(96,165,250,1))' }}
-          animate={{ opacity: [0.3, 1, 0.3], r: [0.55, 0.85, 0.55] }}
-          transition={{ duration: 3 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: (i % 6) * 0.3 }}
-        />
-      ))}
-      {/* Traveling data pulses on a few links */}
-      {[[1, 3], [3, 9], [9, 14]].map((pair, i) => {
-        const A = nodes[pair[0]], B = nodes[pair[1]]
-        return (
-          <motion.circle
-            key={`p${i}`}
-            r="0.7"
-            fill="rgba(96,165,250,1)"
-            style={{ filter: 'drop-shadow(0 0 3px rgba(96,165,250,1))' }}
-            animate={{ cx: [A.x, B.x], cy: [A.y, B.y], opacity: [0, 1, 0] }}
-            transition={{ duration: 2.4 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
-          />
-        )
-      })}
-    </svg>
-  )
-}
-
 function Hero({ onNav }: { onNav: (id: string) => void }) {
   return (
-    <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-20 overflow-hidden">
-      {/* ── Neural network backdrop (subtle, layered above the global NÜRO watermark) ── */}
-      <NeuralBackdrop />
-
-      {/* ── Data flow rays emanating from the central area ── */}
-      <div className="pointer-events-none absolute right-[18%] top-[40%] hidden lg:block w-[600px] h-[600px] -translate-y-1/2">
-        <svg viewBox="0 0 200 200" className="w-full h-full">
-          {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => {
-            const rad = (angle * Math.PI) / 180
-            const x2 = 100 + Math.cos(rad) * 95
-            const y2 = 100 + Math.sin(rad) * 95
-            return (
-              <motion.line
-                key={i}
-                x1="100" y1="100" x2={x2} y2={y2}
-                stroke="rgba(96,165,250,0.45)"
-                strokeWidth="0.4"
-                strokeDasharray="2 3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.7, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.25 }}
-              />
-            )
-          })}
-        </svg>
-      </div>
-
-      {/* ── HUD crosshair around NÜRO ── */}
-      <div className="pointer-events-none absolute right-[22%] top-[42%] hidden lg:block -translate-y-1/2">
+    <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1fr_1.15fr] gap-12 lg:gap-8 items-center">
+        {/* ── LEFT: copy ── */}
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-          style={{ width: 280, height: 280 }}
-        >
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            {/* Outer brackets at 0°, 90°, 180°, 270° */}
-            {[0, 90, 180, 270].map((angle) => (
-              <g key={angle} transform={`rotate(${angle} 50 50)`}>
-                <line x1="50" y1="2"  x2="50" y2="8"  stroke="rgba(96,165,250,0.6)" strokeWidth="0.6" />
-                <line x1="46" y1="3"  x2="54" y2="3"  stroke="rgba(96,165,250,0.4)" strokeWidth="0.4" />
-              </g>
-            ))}
-            {/* Numbered markers */}
-            {[45, 135, 225, 315].map((angle) => (
-              <g key={angle} transform={`rotate(${angle} 50 50)`}>
-                <circle cx="50" cy="6" r="0.8" fill="rgba(34,211,238,0.9)"
-                  style={{ filter: 'drop-shadow(0 0 2px rgba(34,211,238,1))' }} />
-              </g>
-            ))}
-          </svg>
-        </motion.div>
-      </div>
-
-      {/* ── Orbital rings anchored to the right column ── */}
-      <div className="pointer-events-none absolute right-[-10%] top-[10%] hidden lg:block w-[560px] h-[560px]">
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{ border: '1px solid rgba(96,165,250,0.16)' }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-        >
-          <span className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-blue-300"
-            style={{ boxShadow: '0 0 12px rgba(96,165,250,1), 0 0 24px rgba(59,130,246,0.6)' }} />
-        </motion.div>
-        <motion.div
-          className="absolute inset-[12%] rounded-full"
-          style={{ border: '1px dashed rgba(96,165,250,0.22)' }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
-        >
-          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300"
-            style={{ boxShadow: '0 0 10px rgba(103,232,249,0.9)' }} />
-        </motion.div>
-        <motion.div
-          className="absolute inset-[24%] rounded-full"
-          style={{ border: '1px solid rgba(96,165,250,0.12)' }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
-        />
-      </div>
-      {/* ── Giant ghost NÜRO floating in the background (right side) ── */}
-      {/* (NÜRO ghost moved to global BackgroundLayers — now covers the whole landing) */}
-
-      {/* ── Decorative grid lines on the left ── */}
-      <div className="pointer-events-none absolute -left-12 top-1/4 hidden lg:block opacity-30">
-        <svg width="100" height="280" viewBox="0 0 100 280">
-          {[0, 20, 40, 60, 80].map(x => (
-            <line key={x} x1={x} y1="0" x2={x} y2="280" stroke="rgba(96,165,250,0.3)" strokeWidth="0.5" strokeDasharray="3 4" />
-          ))}
-        </svg>
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-6 grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-12 items-center">
-        {/* Left — copy */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10"
         >
-          <span
-            className="inline-flex items-center gap-2 text-[10.5px] uppercase font-bold text-blue-300 mb-5 px-3 py-1.5 rounded-full"
+          {/* Eyebrow */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-7"
             style={{
-              letterSpacing: '0.22em',
-              background: 'rgba(59,130,246,0.10)',
-              border: '1px solid rgba(59,130,246,0.28)',
+              background: 'rgba(96,165,250,0.06)',
+              border: '1px solid rgba(96,165,250,0.18)',
             }}
           >
-            <Sparkles className="w-3 h-3" />
-            NÜRO Agent Studio
-          </span>
+            <span className="relative flex h-1.5 w-1.5">
+              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-blue-400"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }} />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-400" />
+            </span>
+            <span className="text-[11px] uppercase font-medium text-blue-200"
+              style={{ letterSpacing: '0.18em' }}>
+              NÜRO · AI Sales Platform
+            </span>
+          </div>
 
+          {/* Headline */}
           <h1
-            className="font-bold leading-[1.02] text-[40px] sm:text-[52px] lg:text-[60px]"
+            className="font-medium text-[44px] sm:text-[56px] lg:text-[68px] leading-[1.02]"
             style={{
-              letterSpacing: '-0.038em',
-              background: 'linear-gradient(180deg, #FFFFFF 0%, #C8DBFF 100%)',
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.045em',
+              color: '#FFFFFF',
+            }}
+          >
+            Vender con IA,<br />
+            <span style={{
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #60A5FA 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-            }}
-          >
-            Agentes IA y Tiendas Virtuales que venden por ti
+            }}>
+              sin pausa.
+            </span>
           </h1>
 
-          {/* 24/7 — protagonist badge */}
-          <div className="relative mt-3 flex items-center gap-3 flex-wrap">
-            <motion.span
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="relative inline-flex items-baseline px-4 sm:px-5 py-1 rounded-2xl"
-              style={{
-                background: 'linear-gradient(180deg, rgba(96,165,250,0.18), rgba(59,130,246,0.08))',
-                border: '1px solid rgba(96,165,250,0.45)',
-                boxShadow: '0 14px 50px -10px rgba(59,130,246,0.7), 0 0 0 1px rgba(96,165,250,0.2), inset 0 1px 0 rgba(255,255,255,0.12)',
-              }}
-            >
-              <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300/80 to-transparent" />
-              <motion.span
-                className="font-black tabular-nums text-[60px] sm:text-[80px] lg:text-[96px] leading-none"
-                style={{
-                  letterSpacing: '-0.06em',
-                  background: 'linear-gradient(180deg, #93C5FD 0%, #3B82F6 60%, #1D4ED8 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 0 24px rgba(59,130,246,0.6))',
-                }}
-                animate={{ filter: ['drop-shadow(0 0 24px rgba(59,130,246,0.6))', 'drop-shadow(0 0 36px rgba(96,165,250,0.85))', 'drop-shadow(0 0 24px rgba(59,130,246,0.6))'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                24/7
-              </motion.span>
-            </motion.span>
-            <div className="flex flex-col">
-              <span className="text-[11px] uppercase font-bold text-blue-300/85" style={{ letterSpacing: '0.22em' }}>
-                Sin pausas
-              </span>
-              <span className="text-[11px] uppercase font-bold text-white/40" style={{ letterSpacing: '0.22em' }}>
-                Sin fines de semana
-              </span>
-            </div>
-          </div>
-
+          {/* Sub */}
           <p
-            className="mt-5 text-[16px] sm:text-[17.5px] text-white/70 leading-relaxed max-w-xl"
-            style={{ letterSpacing: '-0.005em' }}
+            className="mt-7 text-[17px] lg:text-[18px] text-white/60 leading-relaxed max-w-md"
+            style={{ letterSpacing: '-0.005em', fontWeight: 400 }}
           >
-            Automatiza respuestas, seguimiento y ventas con AGENTE NÜRO. Inteligencia
-            artificial conectada a WhatsApp, Messenger y tu tienda virtual.
+            La plataforma más avanzada para vender con inteligencia artificial
+            en Latinoamérica. WhatsApp, Messenger y tu tienda virtual,
+            operando en piloto automático.
           </p>
 
-          {/* CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row gap-3 flex-wrap">
-            <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                href="/login"
-                className="relative group/cta inline-flex items-center justify-center gap-2.5 h-14 px-8 rounded-2xl text-white font-bold overflow-hidden w-full sm:w-auto"
-                style={{
-                  background: 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
-                  boxShadow: '0 14px 40px -8px rgba(59,130,246,0.85), 0 0 0 1px rgba(96,165,250,0.4), 0 0 0 6px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.32)',
-                  fontSize: '13.5px',
-                  letterSpacing: '0.16em',
-                }}
-              >
-                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-                <motion.span
-                  className="relative inline-flex items-center gap-2.5"
-                  animate={{ x: [0, 1, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  INICIAR SESIÓN
-                  <ArrowRight className="w-4 h-4" />
-                </motion.span>
-              </Link>
-            </motion.div>
-
-            <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}>
-              <Link
-                href="/register"
-                className="relative group/reg inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white font-bold overflow-hidden w-full sm:w-auto transition-colors hover:bg-blue-500/15"
-                style={{
-                  background: 'rgba(59,130,246,0.10)',
-                  border: '1px solid rgba(96,165,250,0.45)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 20px -8px rgba(59,130,246,0.4)',
-                  fontSize: '13.5px',
-                  letterSpacing: '0.16em',
-                }}
-              >
-                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-blue-300/20 to-transparent -translate-x-full group-hover/reg:translate-x-full transition-transform duration-700" />
-                <motion.span
-                  animate={{ rotate: [0, 12, 0, -12, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative inline-flex"
-                >
-                  <Sparkles className="w-4 h-4" />
-                </motion.span>
-                <span className="relative">CREAR CUENTA</span>
-              </Link>
-            </motion.div>
-
-            <motion.button
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => onNav('video')}
-              className="relative group/v inline-flex items-center justify-center gap-2.5 h-14 px-7 rounded-2xl text-white/85 font-bold hover:text-white transition-colors w-full sm:w-auto"
+          {/* CTAs — minimal */}
+          <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <Link
+              href="/login"
+              className="relative group/cta inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl text-white font-medium text-[14px] overflow-hidden w-full sm:w-auto"
               style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                fontSize: '13.5px',
-                letterSpacing: '0.16em',
+                background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                boxShadow:
+                  '0 16px 40px -10px rgba(59,130,246,0.7), 0 0 0 1px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.22)',
+                letterSpacing: '-0.005em',
               }}
             >
-              <span className="relative w-7 h-7 rounded-full flex items-center justify-center"
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/22 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-900" />
+              <span className="relative">Iniciar sesión</span>
+              <ArrowRight className="w-4 h-4 relative" />
+            </Link>
+
+            <button
+              onClick={() => onNav('video')}
+              className="inline-flex items-center justify-center gap-2.5 h-12 px-5 rounded-xl text-white/80 hover:text-white font-medium text-[14px] transition-colors w-full sm:w-auto"
+              style={{
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.10)',
+                letterSpacing: '-0.005em',
+              }}
+            >
+              <span className="relative w-6 h-6 rounded-full flex items-center justify-center"
                 style={{
-                  background: 'rgba(96,165,250,0.18)',
-                  border: '1px solid rgba(96,165,250,0.45)',
+                  background: 'rgba(96,165,250,0.12)',
                 }}>
-                <Play className="w-3 h-3 text-blue-200 ml-0.5" fill="currentColor" />
-                <motion.span
-                  className="absolute inset-0 rounded-full pointer-events-none"
-                  style={{ border: '1px solid rgba(96,165,250,0.7)' }}
-                  animate={{ scale: [1, 1.6], opacity: [0.7, 0] }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-                />
+                <Play className="w-2.5 h-2.5 text-blue-200 ml-0.5" fill="currentColor" />
               </span>
-              VER VIDEO
-            </motion.button>
+              Ver demo
+            </button>
           </div>
 
-          {/* Quick stats */}
-          <div className="mt-10 flex items-center gap-6 sm:gap-8 flex-wrap">
+          {/* Quiet stats row */}
+          <div className="mt-14 pt-8 flex items-center gap-8 sm:gap-10 flex-wrap"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             {[
-              { v: '24/7',   l: 'Atención' },
-              { v: '<30s',   l: 'Despliegue' },
+              { v: '24/7',   l: 'Atención continua' },
+              { v: '< 30s',  l: 'Setup' },
               { v: '4',      l: 'Canales' },
-              { v: 'GPT-5',  l: 'Motor IA' },
             ].map((s, i) => (
-              <div key={i} className="flex items-baseline gap-2">
-                <span className="text-[20px] sm:text-[22px] font-bold text-white tabular-nums" style={{ letterSpacing: '-0.025em' }}>{s.v}</span>
-                <span className="text-[11px] uppercase font-semibold text-white/45" style={{ letterSpacing: '0.14em' }}>{s.l}</span>
+              <div key={i} className="flex flex-col gap-1">
+                <span className="text-[22px] font-medium text-white tabular-nums leading-none"
+                  style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}>
+                  {s.v}
+                </span>
+                <span className="text-[11px] uppercase text-white/45 font-medium"
+                  style={{ letterSpacing: '0.14em' }}>
+                  {s.l}
+                </span>
               </div>
             ))}
           </div>
         </motion.div>
 
-        {/* Right — holographic visual */}
-        <HeroVisual />
+        {/* ── RIGHT: NÜRO protagonist ── */}
+        <NuroProtagonist />
       </div>
     </section>
   )
 }
 
-function HeroVisual() {
+function NuroProtagonist() {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92 }}
+      initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      className="relative h-[420px] sm:h-[480px] flex items-center justify-center"
+      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+      className="relative h-[520px] sm:h-[620px] lg:h-[720px] flex items-center justify-center"
+      aria-hidden
     >
-      {/* Background ambient blob */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[420px] h-[420px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.18), transparent 65%)', filter: 'blur(50px)' }} />
-      </div>
-
-      {/* Elegant orbital decoration (no avatar — the global watermark fills the center) */}
-      <div className="relative w-[300px] h-[300px] sm:w-[360px] sm:h-[360px] flex items-center justify-center">
-        {/* Outer rotating ring */}
-        <motion.div
-          className="absolute inset-0 rounded-full"
-          style={{ border: '1px solid rgba(96,165,250,0.22)' }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
-        >
-          <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-300"
-            style={{ boxShadow: '0 0 10px rgba(96,165,250,1), 0 0 22px rgba(59,130,246,0.6)' }} />
-        </motion.div>
-
-        {/* Mid dashed ring counter-rotating */}
-        <motion.div
-          className="absolute inset-[12%] rounded-full"
-          style={{ border: '1px dashed rgba(96,165,250,0.26)' }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
-        >
-          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300"
-            style={{ boxShadow: '0 0 8px rgba(103,232,249,0.95)' }} />
-        </motion.div>
-
-        {/* Inner ring with energy pulse */}
-        <motion.div
-          className="absolute inset-[28%] rounded-full"
-          style={{
-            background: 'conic-gradient(from 0deg, rgba(96,165,250,0.45), transparent 30%, rgba(96,165,250,0.3) 60%, transparent 95%, rgba(96,165,250,0.45))',
-            maskImage: 'radial-gradient(circle, transparent 70%, black 72%, black 76%, transparent 78%)',
-            WebkitMaskImage: 'radial-gradient(circle, transparent 70%, black 72%, black 76%, transparent 78%)',
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* HUD bracket markers around the orbit (4 positions) */}
-        {[0, 90, 180, 270].map((deg) => (
-          <span key={deg}
-            className="absolute left-1/2 top-1/2 origin-center pointer-events-none"
-            style={{
-              transform: `translate(-50%, -50%) rotate(${deg}deg) translateY(-148px)`,
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14">
-              <path d="M 2 7 L 2 2 L 7 2" fill="none" stroke="rgba(96,165,250,0.75)" strokeWidth="1.2" strokeLinecap="round"
-                style={{ filter: 'drop-shadow(0 0 3px rgba(96,165,250,0.9))' }} />
-            </svg>
-          </span>
-        ))}
-
-        {/* Breathing core halo (no avatar, just glow) */}
-        <motion.div
-          className="absolute w-[120px] h-[120px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.45), transparent 65%)', filter: 'blur(20px)' }}
-          animate={{ opacity: [0.5, 0.95, 0.5], scale: [1, 1.08, 1] }}
-          transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      {/* Floating holographic indicators — close to NÜRO (orbital feel), still away from face/hands/torso */}
-      <FloatingChip
-        className="absolute top-[6%] left-[2%] sm:left-[5%]"
-        icon={MessageCircle} label="Mensaje recibido" value="124 chats" acc="52,211,153"
-        delay={0.4}
-      />
-      <FloatingChip
-        className="absolute bottom-[8%] left-[8%] sm:left-[10%]"
-        icon={Package} label="Pedido confirmado" value="$345 USD" acc="167,139,250"
-        delay={0.7}
-      />
-      <FloatingChip
-        className="absolute top-[50%] right-[2%] sm:right-[4%] -translate-y-1/2"
-        icon={TrendingUp} label="Venta cerrada" value="+$1,420" acc="34,211,238"
-        delay={1.0}
-      />
-    </motion.div>
-  )
-}
-
-function FloatingChip({
-  className, icon: Icon, label, value, acc, delay,
-}: { className?: string; icon: typeof MessageCircle; label: string; value: string; acc: string; delay: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16, scale: 0.85 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={`flex items-center gap-2.5 px-3 py-2 rounded-2xl backdrop-blur-xl ${className ?? ''}`}
-      style={{
-        background: `linear-gradient(135deg, rgba(${acc},0.18), rgba(10,20,42,0.78))`,
-        border: `1px solid rgba(${acc},0.4)`,
-        boxShadow: `0 10px 30px -10px rgba(${acc},0.55), inset 0 1px 0 rgba(255,255,255,0.08)`,
-      }}
-    >
-      <motion.div
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 4 + delay, repeat: Infinity, ease: 'easeInOut' }}
-        className="contents"
+      {/* Soft cinematic glow behind */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
-        <div
-          className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+        <motion.div
+          className="rounded-full"
           style={{
-            background: `rgba(${acc},0.22)`,
-            border: `1px solid rgba(${acc},0.5)`,
-            boxShadow: `0 0 10px rgba(${acc},0.5)`,
+            width: 'min(560px, 80%)',
+            height: 'min(560px, 80%)',
+            background:
+              'radial-gradient(circle, rgba(59,130,246,0.35) 0%, rgba(59,130,246,0.10) 35%, transparent 70%)',
+            filter: 'blur(40px)',
           }}
-        >
-          <Icon className="w-4 h-4" style={{ color: `rgb(${acc})` }} strokeWidth={2} />
-        </div>
-        <div className="min-w-0">
-          <div className="text-[9.5px] uppercase font-bold text-white/60" style={{ letterSpacing: '0.14em' }}>{label}</div>
-          <div className="text-[12.5px] font-bold text-white leading-tight tabular-nums" style={{ letterSpacing: '-0.012em' }}>{value}</div>
-        </div>
+          animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.04, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+
+      {/* Single ultra-thin orbital ring (very subtle) */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 'min(620px, 90%)',
+          height: 'min(620px, 90%)',
+          border: '1px solid rgba(96,165,250,0.10)',
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
+      >
+        <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-300"
+          style={{ boxShadow: '0 0 10px rgba(96,165,250,0.9)' }} />
       </motion.div>
+
+      {/* NÜRO image — the absolute protagonist */}
+      <motion.img
+        src={AVATAR}
+        alt="NÜRO"
+        className="relative object-contain"
+        style={{
+          height: '110%',
+          width: 'auto',
+          maxWidth: '100%',
+          filter:
+            'drop-shadow(0 0 80px rgba(59,130,246,0.45)) drop-shadow(0 0 160px rgba(96,165,250,0.25))',
+        }}
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
     </motion.div>
   )
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   VIDEO DEMO — real playback
+   TRUST BAR — quiet, premium strip
+   ═══════════════════════════════════════════════════════════════ */
+function TrustBar() {
+  const stats = [
+    { v: '+500',  l: 'Negocios activos' },
+    { v: '+2M',   l: 'Mensajes procesados' },
+    { v: '98%',   l: 'Tasa de respuesta' },
+    { v: '24/7',  l: 'Operación' },
+  ]
+  const partners = ['OpenAI', 'Anthropic', 'WhatsApp Cloud', 'Meta', 'Stripe']
+
+  return (
+    <section className="relative py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Stats — quiet row with hairlines */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-6 pb-12"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          {stats.map((s, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.5, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col gap-1.5"
+            >
+              <span
+                className="text-[36px] lg:text-[44px] font-medium tabular-nums leading-none"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  letterSpacing: '-0.04em',
+                  background: 'linear-gradient(180deg, #FFFFFF 0%, #60A5FA 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                {s.v}
+              </span>
+              <span className="text-[11px] uppercase text-white/45 font-medium"
+                style={{ letterSpacing: '0.16em' }}>
+                {s.l}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Partners */}
+        <div className="pt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+          <span className="text-[10.5px] uppercase font-medium text-white/35"
+            style={{ letterSpacing: '0.2em' }}>
+            Construido sobre
+          </span>
+          {partners.map((p, i) => (
+            <span key={i}
+              className="text-[12.5px] uppercase font-medium text-white/55 hover:text-white/85 transition-colors"
+              style={{ letterSpacing: '0.14em', fontFamily: 'var(--font-display)' }}>
+              {p}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIDEO DEMO — minimal frame
    ═══════════════════════════════════════════════════════════════ */
 const VIDEO_URL = '/nuro-demo.mp4'
 
@@ -980,112 +531,45 @@ function VideoDemo() {
   const handlePlay = () => {
     const v = videoRef.current
     if (!v) return
-    v.play().catch(() => { /* ignore */ })
+    v.play().catch(() => {})
     setPlaying(true)
   }
 
   return (
-    <section id="video" className="relative py-20 sm:py-24">
-      <div className="max-w-5xl mx-auto px-5 sm:px-6">
+    <section id="video" className="relative py-24 lg:py-32">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
         <SectionHeader
-          eyebrow="VIDEO DEMO"
-          title="Mira cómo AGENTE NÜRO trabaja por tu negocio"
+          eyebrow="Demo"
+          title="Mira NÜRO operando un negocio real"
+          sub="Conversaciones, seguimientos y cierres — todo en automático."
         />
 
-        {/* Floating live indicators above the screen */}
-        <div className="relative mt-10 flex justify-center gap-2 sm:gap-3 mb-4 flex-wrap z-20">
-          {[
-            { label: 'IA respondiendo',    color: '52,211,153',  delay: 0 },
-            { label: 'Seguimiento activo', color: '96,165,250',  delay: 0.15 },
-            { label: 'Venta detectada',    color: '167,139,250', delay: 0.3 },
-          ].map(({ label, color, delay }) => (
-            <motion.div
-              key={label}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md"
-              style={{
-                background: `rgba(${color},0.10)`,
-                border: `1px solid rgba(${color},0.35)`,
-                boxShadow: `0 6px 20px -8px rgba(${color},0.55)`,
-              }}
-            >
-              <span className="relative flex h-1.5 w-1.5">
-                <motion.span
-                  className="absolute inline-flex h-full w-full rounded-full"
-                  style={{ background: `rgb(${color})` }}
-                  animate={{ scale: [1, 2.5, 1], opacity: [0.7, 0, 0.7] }}
-                  transition={{ duration: 1.8, repeat: Infinity, delay }}
-                />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                  style={{ background: `rgb(${color})`, boxShadow: `0 0 6px rgba(${color},0.9)` }} />
-              </span>
-              <span className="text-[10.5px] uppercase font-bold" style={{ color: `rgba(${color},0.95)`, letterSpacing: '0.14em' }}>
-                {label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-3xl overflow-hidden backdrop-blur-2xl"
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mt-14 rounded-[28px] overflow-hidden"
           style={{
-            background: 'linear-gradient(180deg, rgba(11,21,42,0.7) 0%, rgba(8,15,32,0.85) 100%)',
-            border: '1px solid rgba(59,130,246,0.3)',
-            boxShadow: '0 30px 80px -20px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.05)',
+            background: 'linear-gradient(180deg, rgba(10,31,61,0.5), rgba(2,8,23,0.7))',
+            border: '1px solid rgba(96,165,250,0.16)',
+            boxShadow:
+              '0 30px 80px -24px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent z-20" />
-
-          {/* Futuristic corner brackets */}
-          {[
-            { pos: 'top-2 left-2',     rot: 0 },
-            { pos: 'top-2 right-2',    rot: 90 },
-            { pos: 'bottom-2 right-2', rot: 180 },
-            { pos: 'bottom-2 left-2',  rot: 270 },
-          ].map((c, i) => (
-            <div key={i} className={`pointer-events-none absolute ${c.pos} z-20`}
-              style={{ transform: `rotate(${c.rot}deg)` }}>
-              <svg width="28" height="28" viewBox="0 0 28 28">
-                <path d="M 2 14 L 2 2 L 14 2" fill="none" stroke="rgba(96,165,250,0.9)" strokeWidth="1.5" strokeLinecap="round"
-                  style={{ filter: 'drop-shadow(0 0 4px rgba(96,165,250,0.85))' }} />
-              </svg>
-            </div>
-          ))}
-
-          {/* Animated border accent (light bar that glides along top) */}
-          <motion.div
-            className="pointer-events-none absolute top-0 h-[2px] z-20"
-            style={{
-              width: '30%',
-              background: 'linear-gradient(90deg, transparent, rgba(96,165,250,1), transparent)',
-              boxShadow: '0 0 10px rgba(96,165,250,0.8)',
-            }}
-            animate={{ x: ['-30%', '430%'] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-          />
-
-          {/* Aspect 16:9 wrapper */}
-          <div className="relative aspect-video bg-black">
+          <div className="relative aspect-video bg-[#020817]">
             <video
               ref={videoRef}
               src={VIDEO_URL}
               controls={playing}
               playsInline
               preload="metadata"
-              className="absolute inset-0 w-full h-full object-contain bg-black"
+              className="absolute inset-0 w-full h-full object-contain"
               onPlay={() => setPlaying(true)}
               onPause={() => setPlaying(false)}
               onEnded={() => setPlaying(false)}
             />
 
-            {/* Click-to-play overlay */}
             <AnimatePresence>
               {!playing && (
                 <motion.button
@@ -1093,320 +577,157 @@ function VideoDemo() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={handlePlay}
-                  className="absolute inset-0 flex items-center justify-center group/play"
-                  style={{ background: 'radial-gradient(circle at center, rgba(59,130,246,0.32), rgba(2,8,23,0.55) 60%)' }}
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    background:
+                      'radial-gradient(circle at center, rgba(59,130,246,0.18), rgba(2,8,23,0.55) 65%)',
+                  }}
                   aria-label="Reproducir demo"
                 >
                   <motion.span
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.94 }}
-                    animate={{ scale: [1, 1.04, 1] }}
-                    transition={{ scale: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' } }}
-                    className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center"
+                    whileHover={{ scale: 1.06 }}
+                    whileTap={{ scale: 0.96 }}
+                    animate={{ scale: [1, 1.03, 1] }}
+                    transition={{ scale: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } }}
+                    className="relative w-20 h-20 rounded-full flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
-                      boxShadow: '0 22px 60px -10px rgba(59,130,246,1), 0 0 0 10px rgba(59,130,246,0.18), 0 0 0 1px rgba(96,165,250,0.5), inset 0 2px 0 rgba(255,255,255,0.4)',
+                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                      boxShadow:
+                        '0 22px 60px -8px rgba(59,130,246,0.85), inset 0 2px 0 rgba(255,255,255,0.32)',
                     }}
                   >
-                    <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white relative" style={{ marginLeft: 4, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} strokeWidth={2.2} fill="white" />
-                    {/* Outer ripples (3 staggered) */}
-                    {[0, 0.6, 1.2].map((delay, i) => (
-                      <motion.span
-                        key={i}
-                        className="absolute inset-0 rounded-full pointer-events-none"
-                        style={{ border: '2px solid rgba(96,165,250,0.7)' }}
-                        animate={{ scale: [1, 1.9], opacity: [0.85, 0] }}
-                        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut', delay }}
-                      />
-                    ))}
+                    <Play className="w-7 h-7 text-white ml-0.5" fill="currentColor" />
+                    <motion.span
+                      className="absolute inset-0 rounded-full pointer-events-none"
+                      style={{ border: '1.5px solid rgba(96,165,250,0.6)' }}
+                      animate={{ scale: [1, 1.7], opacity: [0.7, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+                    />
                   </motion.span>
                 </motion.button>
               )}
             </AnimatePresence>
           </div>
         </motion.div>
-
-        <p className="text-center text-[14px] sm:text-[15px] text-white/65 mt-7 leading-relaxed max-w-2xl mx-auto"
-          style={{ letterSpacing: '-0.005em' }}>
-          Agentes IA respondiendo clientes + Tiendas Virtuales vendiendo automáticamente.
-        </p>
       </div>
     </section>
   )
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SERVICES
+   SERVICES — 2 premium glass cards
    ═══════════════════════════════════════════════════════════════ */
-/* — Mini mockups inside service cards — */
-function ChatMockup({ acc, accL }: { acc: string; accL: string }) {
-  return (
-    <div
-      className="relative rounded-2xl overflow-hidden p-4"
-      style={{
-        background: 'linear-gradient(180deg, rgba(2,8,23,0.85), rgba(8,15,32,0.7))',
-        border: `1px solid rgba(${acc},0.22)`,
-        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 20px -10px rgba(${acc},0.4)`,
-      }}
-    >
-      {/* Top bar */}
-      <div className="flex items-center gap-2 pb-3 mb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-        <div className="w-6 h-6 rounded-full flex items-center justify-center"
-          style={{ background: `linear-gradient(135deg, rgba(${accL},0.5), rgba(${acc},0.2))`, border: `1px solid rgba(${accL},0.5)` }}>
-          <span className="text-[8px] font-bold text-white">N</span>
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[10px] font-bold text-white">Agente NÜRO</div>
-          <div className="flex items-center gap-1 text-[8.5px] text-emerald-300">
-            <span className="relative flex h-1 w-1">
-              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
-                animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.6, repeat: Infinity }} />
-              <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400" />
-            </span>
-            En línea
-          </div>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div className="space-y-2">
-        <motion.div
-          initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="max-w-[75%] rounded-xl rounded-tl-sm px-3 py-2 text-[11px] text-white/90"
-          style={{ background: 'rgba(255,255,255,0.06)' }}
-        >
-          Hola, ¿tienen el producto disponible?
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="ml-auto max-w-[80%] rounded-xl rounded-tr-sm px-3 py-2 text-[11px] text-white"
-          style={{ background: `linear-gradient(135deg, rgba(${accL},0.35), rgba(${acc},0.2))`, border: `1px solid rgba(${accL},0.4)` }}
-        >
-          ¡Hola! Sí, tenemos stock. ¿Lo quieres con envío hoy mismo?
-        </motion.div>
-        <div className="flex items-center gap-1.5 mt-1">
-          <motion.span className="w-1.5 h-1.5 rounded-full bg-white/40"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0 }} />
-          <motion.span className="w-1.5 h-1.5 rounded-full bg-white/40"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }} />
-          <motion.span className="w-1.5 h-1.5 rounded-full bg-white/40"
-            animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }} />
-          <span className="text-[9px] text-white/40 ml-1">cliente escribiendo</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function OrderMockup({ acc, accL }: { acc: string; accL: string }) {
-  return (
-    <div
-      className="relative rounded-2xl overflow-hidden p-4"
-      style={{
-        background: 'linear-gradient(180deg, rgba(2,8,23,0.85), rgba(8,15,32,0.7))',
-        border: `1px solid rgba(${acc},0.22)`,
-        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 20px -10px rgba(${acc},0.4)`,
-      }}
-    >
-      {/* Header pill */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full"
-          style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)' }}>
-          <Check className="w-2.5 h-2.5 text-emerald-300" strokeWidth={3.5} />
-          <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-emerald-200">Pedido confirmado</span>
-        </div>
-        <span className="text-[9.5px] text-white/40 font-mono">#A-1287</span>
-      </div>
-
-      {/* Product row */}
-      <div className="flex items-center gap-3 mb-3 pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-        <div className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0"
-          style={{
-            background: `linear-gradient(135deg, rgba(${accL},0.4), rgba(${acc},0.15))`,
-            border: `1px solid rgba(${accL},0.45)`,
-          }}>
-          <ShoppingBag className="w-5 h-5" style={{ color: `rgb(${accL})` }} strokeWidth={1.7} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-[11.5px] font-semibold text-white truncate">Auriculares NÜRO Pro</div>
-          <div className="text-[10px] text-white/50 mt-0.5">Cantidad · 1 unidad</div>
-        </div>
-        <div className="text-[13px] font-bold text-white tabular-nums">$129</div>
-      </div>
-
-      {/* Summary */}
-      <div className="space-y-1">
-        <div className="flex items-center justify-between text-[10px]">
-          <span className="text-white/50">Envío</span>
-          <span className="text-white/80 tabular-nums">$8</span>
-        </div>
-        <div className="flex items-center justify-between text-[11.5px] pt-1">
-          <span className="font-bold text-white/90">Total</span>
-          <motion.span
-            className="font-bold tabular-nums"
-            style={{ color: `rgb(${accL})`, filter: `drop-shadow(0 0 6px rgba(${acc},0.55))` }}
-            animate={{ opacity: [0.85, 1, 0.85] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            $137
-          </motion.span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 function Services() {
   const services = [
     {
       id: 'agentes',
       icon: Bot,
-      label: 'Agentes IA de Venta',
-      desc: 'Atienden clientes, responden preguntas, hacen seguimiento y ayudan a cerrar ventas automáticamente.',
-      benefits: ['Atención 24/7', 'Seguimiento automático', 'Respuestas inteligentes', 'Más oportunidades recuperadas'],
-      acc: '59,130,246', accL: '96,165,250',
+      label: 'Agentes IA',
+      desc: 'Atienden clientes en tiempo real, hacen seguimiento y cierran ventas — sin guiones, sin pausas.',
+      benefits: ['Atención 24/7', 'Seguimiento automático', 'Multi-canal', 'Análisis avanzado'],
     },
     {
       id: 'tiendas',
       icon: ShoppingBag,
       label: 'Tiendas Virtuales',
-      desc: 'Muestra productos, recibe pedidos y conecta tus ventas con atención automática.',
-      benefits: ['Catálogo digital', 'Pedidos online', 'Disponible 24/7', 'Fácil administración'],
-      acc: '34,211,238', accL: '103,232,249',
+      desc: 'Catálogo, pedidos y pagos integrados con tu agente. Una experiencia, todo conectado.',
+      benefits: ['Catálogo ilimitado', 'Pedidos en línea', 'Pagos integrados', 'Admin simple'],
     },
   ]
 
   return (
-    <section id="agentes" className="relative py-20 sm:py-24 scroll-mt-20">
-      <div id="tiendas" className="absolute -top-20" />
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+    <section id="producto" className="relative py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeader
-          eyebrow="DOS SOLUCIONES · UN ECOSISTEMA"
-          title="Todo lo que necesitas para vender en piloto automático"
+          eyebrow="Producto"
+          title="Dos productos, un ecosistema"
+          sub="Diseñados para trabajar juntos desde el primer mensaje."
         />
 
-        <div className="grid lg:grid-cols-2 gap-5 sm:gap-6 mt-12">
+        <div className="grid lg:grid-cols-2 gap-5 lg:gap-6 mt-14 lg:mt-20">
           {services.map((s, idx) => {
             const Icon = s.icon
             return (
               <motion.div
                 key={s.id}
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.55, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -6 }}
-                className="relative overflow-hidden rounded-3xl backdrop-blur-2xl p-7 sm:p-9"
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -3 }}
+                className="group relative rounded-[28px] p-9 lg:p-12 backdrop-blur-xl overflow-hidden transition-all duration-500"
                 style={{
-                  background: `linear-gradient(180deg, rgba(${s.acc},0.12) 0%, rgba(10,20,42,0.78) 60%, rgba(8,15,32,0.85) 100%)`,
-                  border: `1px solid rgba(${s.accL},0.28)`,
-                  boxShadow: `0 24px 60px -20px rgba(${s.acc},0.55), inset 0 1px 0 rgba(255,255,255,0.05)`,
+                  background:
+                    'linear-gradient(180deg, rgba(10,31,61,0.55) 0%, rgba(7,20,38,0.7) 100%)',
+                  border: '1px solid rgba(96,165,250,0.14)',
+                  boxShadow:
+                    '0 24px 60px -20px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
                 }}
               >
+                {/* Hover border glow */}
+                <div className="pointer-events-none absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    boxShadow:
+                      '0 0 0 1px rgba(96,165,250,0.35), 0 30px 80px -20px rgba(59,130,246,0.4)',
+                  }}
+                />
+
+                {/* Top hairline */}
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                  style={{ background: `linear-gradient(90deg, transparent, rgba(${s.accL},0.65), transparent)` }} />
-                <div className="pointer-events-none absolute -top-24 -right-20 w-72 h-72 rounded-full"
-                  style={{ background: `radial-gradient(circle, rgba(${s.acc},0.3), transparent 65%)`, filter: 'blur(60px)' }} />
+                  style={{
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(96,165,250,0.4), transparent)',
+                  }} />
 
-                {/* HUD corner brackets — top-left + bottom-right */}
-                <svg width="22" height="22" viewBox="0 0 22 22" className="pointer-events-none absolute top-3 left-3">
-                  <path d="M 2 11 L 2 2 L 11 2" fill="none" stroke={`rgba(${s.accL},0.7)`} strokeWidth="1" strokeLinecap="round" />
-                </svg>
-                <svg width="22" height="22" viewBox="0 0 22 22" className="pointer-events-none absolute bottom-3 right-3"
-                  style={{ transform: 'rotate(180deg)' }}>
-                  <path d="M 2 11 L 2 2 L 11 2" fill="none" stroke={`rgba(${s.accL},0.7)`} strokeWidth="1" strokeLinecap="round" />
-                </svg>
+                {/* Ambient glow corner */}
+                <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-60"
+                  style={{
+                    background:
+                      'radial-gradient(circle, rgba(59,130,246,0.22), transparent 65%)',
+                    filter: 'blur(50px)',
+                  }} />
 
-                {/* Vertical accent stripe (left side) */}
-                <div className="pointer-events-none absolute top-10 bottom-10 left-3 w-px"
-                  style={{ background: `linear-gradient(180deg, transparent, rgba(${s.accL},0.4), transparent)` }} />
-                {/* 3 mini node ticks along the stripe */}
-                {[20, 50, 80].map((p, ti) => (
-                  <motion.span
-                    key={ti}
-                    className="pointer-events-none absolute left-[10px] w-1.5 h-1.5 rounded-full"
-                    style={{ top: `${p}%`, background: `rgb(${s.accL})`, boxShadow: `0 0 6px rgba(${s.acc},1)` }}
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: ti * 0.6 }}
-                  />
-                ))}
-
-                {/* Mini system label (top-right) */}
-                <div className="pointer-events-none absolute top-3 right-5 hidden sm:flex items-center gap-1.5">
-                  <span className="text-[8.5px] font-mono uppercase font-bold"
-                    style={{ color: `rgba(${s.accL},0.65)`, letterSpacing: '0.16em' }}>
-                    {s.id === 'agentes' ? 'AI/001' : 'STORE/02'}
-                  </span>
-                  <motion.span
-                    className="w-1 h-1 rounded-full"
-                    style={{ background: 'rgb(52,211,153)', boxShadow: '0 0 6px rgb(52,211,153)' }}
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 1.4, repeat: Infinity }}
-                  />
-                </div>
-
-                {/* Icon tile */}
-                <div className="relative mb-5 inline-block">
-                  <motion.span
-                    className="absolute -inset-3 rounded-full pointer-events-none"
-                    style={{ background: `radial-gradient(circle, rgba(${s.accL},0.5), transparent 60%)`, filter: 'blur(12px)' }}
-                    animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.1, 1] }}
-                    transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut' }}
-                  />
+                <div className="relative">
+                  {/* Icon */}
                   <div
-                    className="relative w-16 h-16 rounded-2xl flex items-center justify-center"
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7"
                     style={{
-                      background: `linear-gradient(135deg, rgba(${s.accL},0.3), rgba(${s.acc},0.1))`,
-                      border: `1px solid rgba(${s.accL},0.55)`,
-                      boxShadow: `0 0 28px rgba(${s.acc},0.55), inset 0 1px 0 rgba(255,255,255,0.18)`,
+                      background:
+                        'linear-gradient(135deg, rgba(96,165,250,0.18), rgba(7,20,38,0.6))',
+                      border: '1px solid rgba(96,165,250,0.3)',
+                      boxShadow:
+                        '0 0 24px -6px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.12)',
                     }}
                   >
-                    <span className="absolute inset-x-1 top-0.5 h-1/2 rounded-t-xl pointer-events-none"
-                      style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)' }} />
-                    <Icon className="w-8 h-8 relative" style={{ color: `rgb(${s.accL})`, filter: `drop-shadow(0 0 8px rgba(${s.acc},0.7))` }} strokeWidth={1.5} />
+                    <Icon className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
                   </div>
+
+                  <h3
+                    className="text-[28px] lg:text-[32px] font-medium text-white leading-[1.1] mb-3"
+                    style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}
+                  >
+                    {s.label}
+                  </h3>
+                  <p className="text-[15px] lg:text-[16px] text-white/60 leading-relaxed mb-8 max-w-md"
+                    style={{ letterSpacing: '-0.005em' }}>
+                    {s.desc}
+                  </p>
+
+                  <ul className="space-y-3">
+                    {s.benefits.map((b, i) => (
+                      <li key={i} className="flex items-center gap-3 text-[14px] text-white/80">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full shrink-0"
+                          style={{
+                            background: 'rgba(96,165,250,0.14)',
+                            border: '1px solid rgba(96,165,250,0.32)',
+                          }}>
+                          <Check className="w-3 h-3 text-blue-200" strokeWidth={3} />
+                        </span>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-
-                <h3 className="relative text-[24px] sm:text-[28px] font-bold text-white leading-[1.1] mb-3"
-                  style={{ letterSpacing: '-0.028em' }}>
-                  {s.label}
-                </h3>
-                <p className="relative text-[15px] text-white/70 leading-relaxed mb-6 max-w-md"
-                  style={{ letterSpacing: '-0.005em' }}>
-                  {s.desc}
-                </p>
-
-                {/* Benefits */}
-                <ul className="relative grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {s.benefits.map((b, i) => (
-                    <li key={i} className="flex items-center gap-2.5 text-[13.5px] font-medium text-white/85">
-                      <span className="flex h-4 w-4 items-center justify-center rounded-full shrink-0"
-                        style={{
-                          background: `rgba(${s.acc},0.22)`,
-                          border: `1px solid rgba(${s.accL},0.55)`,
-                          boxShadow: `0 0 6px rgba(${s.acc},0.5)`,
-                        }}>
-                        <Check className="w-2.5 h-2.5" style={{ color: `rgb(${s.accL})` }} strokeWidth={4} />
-                      </span>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Mini mockup at the bottom of each card */}
-                <div className="relative mt-7">
-                  {s.id === 'agentes' ? <ChatMockup acc={s.acc} accL={s.accL} /> : <OrderMockup acc={s.acc} accL={s.accL} />}
-                </div>
-
-                {/* Animated bottom accent line */}
-                <motion.div
-                  className="pointer-events-none absolute inset-x-7 bottom-0 h-px"
-                  style={{ background: `linear-gradient(90deg, transparent, rgba(${s.accL},0.7), transparent)` }}
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.5 }}
-                />
               </motion.div>
             )
           })}
@@ -1417,442 +738,67 @@ function Services() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HOW IT WORKS
-   ═══════════════════════════════════════════════════════════════ */
-function HowItWorks() {
-  const steps = [
-    { n: '01', icon: Brain,  title: 'Configura tu negocio',          desc: 'Carga tu catálogo, datos y forma de atender clientes.' },
-    { n: '02', icon: Zap,    title: 'Activa tu Agente IA',           desc: 'Conecta WhatsApp, Messenger o Instagram en menos de 30 segundos.' },
-    { n: '03', icon: Wifi,   title: 'Empieza a vender automáticamente', desc: 'El agente responde, hace seguimiento y cierra ventas por ti, 24/7.' },
-  ]
-
-  return (
-    <section className="relative py-14 sm:py-18">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
-        <SectionHeader
-          eyebrow="CÓMO FUNCIONA"
-          title="Activa tu Agente IA en 3 pasos"
-        />
-
-        <div className="relative mt-10">
-          {/* Energy connection line (desktop only) — pulse traveling left to right */}
-          <div className="hidden lg:block absolute top-[42px] left-[16%] right-[16%] h-[2px] overflow-hidden rounded-full"
-            style={{ background: 'linear-gradient(90deg, rgba(59,130,246,0.08), rgba(96,165,250,0.32), rgba(59,130,246,0.08))' }}>
-            <motion.span
-              className="absolute top-0 left-0 h-full w-[35%] rounded-full"
-              style={{
-                background: 'linear-gradient(90deg, transparent, rgba(96,165,250,1), rgba(34,211,238,1), transparent)',
-                boxShadow: '0 0 14px rgba(96,165,250,0.95), 0 0 22px rgba(96,165,250,0.55)',
-              }}
-              animate={{ x: ['-35%', '300%'] }}
-              transition={{ duration: 3.6, repeat: Infinity, ease: 'linear' }}
-            />
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-5 lg:gap-8 relative">
-            {steps.map((s, idx) => {
-              const Icon = s.icon
-              return (
-                <motion.div
-                  key={s.n}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative text-center px-2"
-                >
-                  {/* Icon + number badge with orbital ring */}
-                  <div className="relative inline-block mb-5">
-                    {/* Outer rotating ring */}
-                    <motion.div
-                      className="absolute -inset-2 rounded-full pointer-events-none"
-                      style={{ border: '1px dashed rgba(96,165,250,0.3)' }}
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 24 + idx * 4, repeat: Infinity, ease: 'linear' }}
-                    >
-                      <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-300"
-                        style={{ boxShadow: '0 0 8px rgba(96,165,250,1)' }} />
-                    </motion.div>
-                    {/* Breathing halo */}
-                    <motion.span
-                      className="absolute -inset-4 rounded-full pointer-events-none"
-                      style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.45), transparent 60%)', filter: 'blur(12px)' }}
-                      animate={{ opacity: [0.55, 0.95, 0.55], scale: [1, 1.1, 1] }}
-                      transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: idx * 0.4 }}
-                    />
-                    <div
-                      className="relative w-[72px] h-[72px] rounded-2xl flex items-center justify-center mx-auto"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(96,165,250,0.32), rgba(59,130,246,0.08))',
-                        border: '1px solid rgba(96,165,250,0.5)',
-                        boxShadow: '0 0 32px -4px rgba(59,130,246,0.65), inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -1px 0 rgba(59,130,246,0.3)',
-                      }}
-                    >
-                      <span className="absolute inset-x-1 top-0.5 h-1/2 rounded-t-xl pointer-events-none"
-                        style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.2), transparent)' }} />
-                      <Icon className="relative w-8 h-8 text-blue-100" strokeWidth={1.6}
-                        style={{ filter: 'drop-shadow(0 0 8px rgba(96,165,250,0.85))' }} />
-                    </div>
-                    <span className="absolute -top-1 -right-1 text-[10px] font-bold tracking-[0.14em] px-2 py-0.5 rounded-full text-blue-100 z-10"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(96,165,250,0.4), rgba(59,130,246,0.2))',
-                        border: '1px solid rgba(96,165,250,0.6)',
-                        boxShadow: '0 0 10px rgba(59,130,246,0.55)',
-                      }}>
-                      {s.n}
-                    </span>
-                  </div>
-
-                  <h3 className="text-[18px] sm:text-[20px] font-bold text-white leading-[1.15] mb-2"
-                    style={{ letterSpacing: '-0.025em' }}>
-                    {s.title}
-                  </h3>
-                  <p className="text-[13.5px] text-white/65 leading-relaxed max-w-xs mx-auto"
-                    style={{ letterSpacing: '-0.005em' }}>
-                    {s.desc}
-                  </p>
-                </motion.div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FINAL CTA
-   ═══════════════════════════════════════════════════════════════ */
-function FinalCTA() {
-  return (
-    <section className="relative py-16 sm:py-22">
-      <div className="max-w-4xl mx-auto px-5 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[28px] backdrop-blur-2xl text-center p-10 sm:p-14"
-          style={{
-            background: 'linear-gradient(180deg, rgba(59,130,246,0.18) 0%, rgba(10,20,42,0.85) 60%, rgba(8,15,32,0.9) 100%)',
-            border: '1px solid rgba(59,130,246,0.4)',
-            boxShadow: '0 32px 90px -20px rgba(59,130,246,0.7), inset 0 1px 0 rgba(255,255,255,0.06)',
-          }}
-        >
-          {/* Cinematic ambient layers */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
-          <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-[420px] h-[220px] bg-blue-500/[0.32] blur-[100px]" />
-          <div className="pointer-events-none absolute -bottom-24 left-1/2 -translate-x-1/2 w-[520px] h-[260px] bg-cyan-500/[0.2] blur-[120px]" />
-
-          {/* Inner neural network */}
-          <div className="pointer-events-none absolute inset-0 opacity-60">
-            <NeuralBackdrop />
-          </div>
-
-          {/* Tron-style perspective floor grid */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] overflow-hidden"
-            style={{
-              perspective: '420px',
-              perspectiveOrigin: '50% 0%',
-              maskImage: 'linear-gradient(180deg, transparent 0%, black 40%, black 80%, transparent 100%)',
-              WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, black 40%, black 80%, transparent 100%)',
-            }}
-          >
-            <motion.div
-              className="absolute left-1/2 -translate-x-1/2 bottom-0 origin-bottom"
-              style={{
-                width: '260%',
-                height: '180%',
-                transform: 'rotateX(62deg)',
-                backgroundImage:
-                  'linear-gradient(rgba(96,165,250,0.55) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,0.55) 1px, transparent 1px)',
-                backgroundSize: '38px 38px',
-              }}
-              animate={{ backgroundPosition: ['0px 0px', '0px 38px'] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: 'linear' }}
-            />
-          </div>
-
-          {/* Horizon glow over the floor */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-[50%] h-[8px]"
-            style={{ background: 'linear-gradient(180deg, transparent, rgba(96,165,250,0.95), transparent)', filter: 'blur(3px)' }} />
-
-          {/* Skyline of glowing dots at horizon */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-[48%] h-6">
-            {[5, 12, 19, 26, 34, 42, 49, 57, 65, 72, 79, 86, 93].map((leftPct, i) => (
-              <motion.span
-                key={i}
-                className="absolute rounded-full"
-                style={{
-                  left: `${leftPct}%`,
-                  bottom: i % 2 === 0 ? 0 : 4,
-                  width: i % 3 === 0 ? '3px' : '2px',
-                  height: i % 3 === 0 ? '3px' : '2px',
-                  background: 'rgba(96,165,250,1)',
-                  boxShadow: '0 0 8px rgba(96,165,250,1), 0 0 16px rgba(96,165,250,0.6)',
-                }}
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 2 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
-              />
-            ))}
-          </div>
-
-          {/* Drifting energy particles inside the CTA */}
-          {[...Array(10)].map((_, i) => (
-            <motion.span
-              key={i}
-              className="pointer-events-none absolute rounded-full"
-              style={{
-                left: `${10 + (i * 9) % 80}%`,
-                top: `${15 + (i * 13) % 70}%`,
-                width: i % 3 === 0 ? '3px' : '2px',
-                height: i % 3 === 0 ? '3px' : '2px',
-                background: 'rgba(96,165,250,1)',
-                boxShadow: '0 0 8px rgba(96,165,250,1)',
-              }}
-              animate={{ y: [0, -28, 8, 0], opacity: [0.2, 0.95, 0.4, 0.2] }}
-              transition={{ duration: 6 + i * 0.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-            />
-          ))}
-
-          <span
-            className="inline-flex items-center gap-2 text-[10.5px] uppercase font-bold text-blue-200 mb-5 px-3 py-1.5 rounded-full relative"
-            style={{
-              letterSpacing: '0.22em',
-              background: 'rgba(59,130,246,0.16)',
-              border: '1px solid rgba(96,165,250,0.45)',
-              boxShadow: '0 0 14px rgba(59,130,246,0.4)',
-            }}
-          >
-            <Shield className="w-3 h-3" />
-            Activación gratis
-          </span>
-
-          <h2
-            className="relative font-bold leading-[1.04] text-[32px] sm:text-[42px] lg:text-[50px] mb-5"
-            style={{
-              letterSpacing: '-0.035em',
-              background: 'linear-gradient(180deg, #FFFFFF 0%, #C8DBFF 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            Tu negocio puede vender incluso mientras{' '}
-            <span style={{
-              background: 'linear-gradient(180deg, #60A5FA, #2563EB)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>duermes</span>
-          </h2>
-
-          <p className="relative text-[15px] sm:text-[17px] text-white/70 leading-relaxed max-w-xl mx-auto mb-8"
-            style={{ letterSpacing: '-0.005em' }}>
-            Activa AGENTE NÜRO y convierte conversaciones en ventas.
-          </p>
-
-          <div className="relative flex items-center justify-center">
-            <motion.div
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.96 }}
-              animate={{ y: [0, -3, 0] }}
-              transition={{ y: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' } }}
-            >
-              <Link
-                href="/login"
-                className="relative group/cta inline-flex items-center justify-center gap-3 h-16 px-12 rounded-2xl text-white font-bold overflow-hidden"
-                style={{
-                  background: 'linear-gradient(180deg, #60A5FA 0%, #3B82F6 50%, #2563EB 100%)',
-                  boxShadow: '0 26px 60px -8px rgba(59,130,246,1), 0 0 0 1px rgba(96,165,250,0.55), 0 0 0 10px rgba(59,130,246,0.18), inset 0 2px 0 rgba(255,255,255,0.35)',
-                  fontSize: '14px',
-                  letterSpacing: '0.2em',
-                }}
-              >
-                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-1000" />
-                <motion.span
-                  animate={{ rotate: [0, 12, -12, 0], scale: [1, 1.15, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative"
-                >
-                  <Sparkles className="w-5 h-5" strokeWidth={2.2} />
-                </motion.span>
-                <span className="relative">INICIAR SESIÓN</span>
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative inline-flex"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </motion.span>
-              </Link>
-            </motion.div>
-          </div>
-
-          <p className="relative text-[11px] text-white/45 mt-5"
-            style={{ letterSpacing: '0.1em' }}>
-            ¿Sin cuenta?{' '}
-            <Link href="/register" className="text-blue-300 font-semibold hover:text-blue-200 transition-colors">
-              Regístrate gratis
-            </Link>
-            {' '}en 30 segundos.
-          </p>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   TRUST BAR — prueba social (stats + partners)
-   ═══════════════════════════════════════════════════════════════ */
-function TrustBar() {
-  const stats = [
-    { v: '+500',  l: 'Negocios activos' },
-    { v: '+2M',   l: 'Mensajes procesados' },
-    { v: '98%',   l: 'Tasa de respuesta' },
-    { v: '24/7',  l: 'Operación continua' },
-  ]
-  const partners = ['OpenAI · GPT-5', 'Anthropic Claude', 'WhatsApp Cloud', 'Meta Messenger']
-
-  return (
-    <section className="relative py-12 sm:py-16">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-3xl backdrop-blur-2xl overflow-hidden p-7 sm:p-10"
-          style={{
-            background: 'linear-gradient(180deg, rgba(11,21,42,0.7) 0%, rgba(8,15,32,0.85) 100%)',
-            border: '1px solid rgba(59,130,246,0.24)',
-            boxShadow: '0 24px 60px -22px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
-          }}
-        >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
-          <div className="pointer-events-none absolute -top-24 -left-12 w-72 h-72 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.22), transparent 65%)', filter: 'blur(70px)' }} />
-          <div className="pointer-events-none absolute -bottom-24 -right-12 w-72 h-72 rounded-full"
-            style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.16), transparent 65%)', filter: 'blur(70px)' }} />
-
-          <div className="relative text-center mb-7">
-            <span className="text-[10.5px] uppercase font-bold text-blue-300/85"
-              style={{ letterSpacing: '0.22em' }}>
-              Negocios reales · resultados reales
-            </span>
-          </div>
-
-          <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4">
-            {stats.map((s, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.45, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="text-center"
-              >
-                <div
-                  className="text-[34px] sm:text-[42px] font-bold tabular-nums leading-none mb-1.5"
-                  style={{
-                    background: 'linear-gradient(180deg, #BFDBFE 0%, #3B82F6 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    letterSpacing: '-0.04em',
-                    filter: 'drop-shadow(0 0 14px rgba(59,130,246,0.45))',
-                  }}
-                >
-                  {s.v}
-                </div>
-                <div className="text-[10px] uppercase font-semibold text-white/55"
-                  style={{ letterSpacing: '0.18em' }}>
-                  {s.l}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="relative mt-9 pt-6 border-t flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
-            style={{ borderColor: 'rgba(96,165,250,0.14)' }}>
-            <span className="text-[9.5px] uppercase font-bold text-white/35"
-              style={{ letterSpacing: '0.2em' }}>
-              Construido sobre
-            </span>
-            {partners.map((p, i) => (
-              <span key={i}
-                className="text-[11.5px] uppercase font-semibold text-white/55 hover:text-white/80 transition-colors"
-                style={{ letterSpacing: '0.14em' }}>
-                {p}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   USE CASES — para quién es esto
+   USE CASES — minimal grid
    ═══════════════════════════════════════════════════════════════ */
 function UseCases() {
   const cases = [
-    { icon: ShoppingBag,      label: 'Tiendas de ropa',         desc: 'Catálogo + tallas + pedidos por WhatsApp.' },
-    { icon: UtensilsCrossed,  label: 'Restaurantes',            desc: 'Menú, reservas y pedidos a domicilio.' },
-    { icon: Sparkles,         label: 'Cosmética y belleza',     desc: 'Asesoría 1:1 + venta de productos.' },
-    { icon: Briefcase,        label: 'Servicios profesionales', desc: 'Agenda citas y filtra leads de calidad.' },
-    { icon: Home,             label: 'Inmobiliarias',           desc: 'Califica prospectos y agenda visitas 24/7.' },
-    { icon: GraduationCap,    label: 'Cursos y coaching',       desc: 'Resuelve dudas y cierra inscripciones.' },
+    { icon: ShoppingBag,     label: 'Tiendas de ropa',         desc: 'Catálogo, tallas y pedidos por WhatsApp.' },
+    { icon: UtensilsCrossed, label: 'Restaurantes',            desc: 'Menú, reservas y pedidos a domicilio.' },
+    { icon: Sparkles,        label: 'Cosmética y belleza',     desc: 'Asesoría 1:1 y venta de productos.' },
+    { icon: Briefcase,       label: 'Servicios profesionales', desc: 'Agenda citas y filtra leads.' },
+    { icon: Home,            label: 'Inmobiliarias',           desc: 'Califica prospectos y agenda visitas.' },
+    { icon: GraduationCap,   label: 'Cursos y coaching',       desc: 'Resuelve dudas y cierra inscripciones.' },
   ]
 
   return (
-    <section className="relative py-20 sm:py-24">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+    <section className="relative py-24 lg:py-32">
+      {/* Sutil panel oscuro para diferenciar de Services */}
+      <div className="absolute inset-x-0 inset-y-12 -z-0"
+        style={{
+          background: 'linear-gradient(180deg, transparent, rgba(7,20,38,0.4), transparent)',
+        }} />
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeader
-          eyebrow="CASOS DE USO"
-          title="Hecho para negocios que viven de vender por chat"
+          eyebrow="Casos de uso"
+          title="Hecho para negocios que viven del chat"
+          sub="Si vendes por WhatsApp, NÜRO es para ti."
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mt-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14 lg:mt-20">
           {cases.map((c, i) => {
             const Icon = c.icon
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 22 }}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.45, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -5 }}
-                className="group relative rounded-2xl p-6 backdrop-blur-xl overflow-hidden transition-all duration-300"
+                transition={{ duration: 0.5, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -3 }}
+                className="group relative rounded-2xl p-7 backdrop-blur-xl overflow-hidden transition-all duration-400"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(11,21,42,0.65), rgba(8,15,32,0.82))',
-                  border: '1px solid rgba(96,165,250,0.18)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+                  background: 'linear-gradient(180deg, rgba(10,31,61,0.45), rgba(7,20,38,0.65))',
+                  border: '1px solid rgba(96,165,250,0.10)',
                 }}
               >
-                <div className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-50 group-hover:opacity-80 transition-opacity"
-                  style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.32), transparent 65%)', filter: 'blur(30px)' }} />
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-40 group-hover:opacity-100 transition-opacity"
-                  style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.7), transparent)' }} />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ boxShadow: '0 0 0 1px rgba(96,165,250,0.28)' }} />
 
-                <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                <div className="relative w-11 h-11 rounded-xl flex items-center justify-center mb-5"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(96,165,250,0.25), rgba(59,130,246,0.06))',
-                    border: '1px solid rgba(96,165,250,0.4)',
-                    boxShadow: '0 0 20px -4px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.12)',
-                  }}
-                >
-                  <Icon className="w-5 h-5 text-blue-200" strokeWidth={1.7}
-                    style={{ filter: 'drop-shadow(0 0 5px rgba(96,165,250,0.6))' }} />
+                    background: 'linear-gradient(135deg, rgba(96,165,250,0.16), rgba(7,20,38,0.5))',
+                    border: '1px solid rgba(96,165,250,0.22)',
+                  }}>
+                  <Icon className="w-4.5 h-4.5 text-blue-200" strokeWidth={1.6}
+                    style={{ width: 18, height: 18 }} />
                 </div>
 
-                <h3 className="relative text-[16px] font-bold text-white leading-tight mb-1.5"
-                  style={{ letterSpacing: '-0.015em' }}>
+                <h3 className="text-[17px] font-medium text-white leading-tight mb-1.5"
+                  style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>
                   {c.label}
                 </h3>
-                <p className="relative text-[13px] text-white/60 leading-relaxed"
+                <p className="text-[13.5px] text-white/55 leading-relaxed"
                   style={{ letterSpacing: '-0.005em' }}>
                   {c.desc}
                 </p>
@@ -1866,30 +812,96 @@ function UseCases() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PRICING TEASER — 3 planes
+   HOW IT WORKS — 3 quiet steps
+   ═══════════════════════════════════════════════════════════════ */
+function HowItWorks() {
+  const steps = [
+    { n: '01', icon: Brain, title: 'Configura',  desc: 'Carga tu catálogo, datos y forma de atender clientes.' },
+    { n: '02', icon: Zap,   title: 'Activa',     desc: 'Conecta WhatsApp o Messenger en menos de 30 segundos.' },
+    { n: '03', icon: Globe, title: 'Vende',      desc: 'NÜRO responde, hace seguimiento y cierra ventas, 24/7.' },
+  ]
+
+  return (
+    <section className="relative py-24 lg:py-32">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        <SectionHeader
+          eyebrow="Cómo funciona"
+          title="Tres pasos. Una integración."
+        />
+
+        <div className="grid lg:grid-cols-3 gap-10 lg:gap-12 mt-16 lg:mt-20 relative">
+          {/* Hairline between steps */}
+          <div className="hidden lg:block absolute top-7 left-[16%] right-[16%] h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.25), transparent)' }} />
+
+          {steps.map((s, idx) => {
+            const Icon = s.icon
+            return (
+              <motion.div
+                key={s.n}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.55, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                className="relative text-center"
+              >
+                {/* Number above icon */}
+                <span className="block text-[10.5px] uppercase font-medium text-blue-300/65 mb-4"
+                  style={{ letterSpacing: '0.22em' }}>
+                  {s.n}
+                </span>
+
+                <div className="relative inline-flex w-14 h-14 rounded-2xl items-center justify-center mb-6"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(96,165,250,0.16), rgba(7,20,38,0.6))',
+                    border: '1px solid rgba(96,165,250,0.25)',
+                    boxShadow: '0 0 28px -8px rgba(59,130,246,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  }}>
+                  <Icon className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
+                </div>
+
+                <h3 className="text-[22px] lg:text-[24px] font-medium text-white leading-tight mb-3"
+                  style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em' }}>
+                  {s.title}
+                </h3>
+                <p className="text-[14.5px] text-white/55 leading-relaxed max-w-xs mx-auto"
+                  style={{ letterSpacing: '-0.005em' }}>
+                  {s.desc}
+                </p>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICING TEASER — 3 premium glass plans
    ═══════════════════════════════════════════════════════════════ */
 function PricingTeaser() {
   const plans = [
     {
       name: 'Starter',
       price: '299',
-      desc: 'Para empezar a vender en automático.',
-      features: ['1 Agente IA', 'WhatsApp Web', 'Tienda virtual básica', '500 mensajes/mes'],
-      cta: 'Empezar gratis',
+      desc: 'Para empezar.',
+      features: ['1 Agente IA', 'WhatsApp Web', 'Tienda básica', '500 mensajes/mes'],
+      cta: 'Comenzar',
       popular: false,
     },
     {
       name: 'Pro',
       price: '799',
-      desc: 'El plan favorito del 80% de negocios.',
-      features: ['3 Agentes IA', 'WhatsApp Cloud + Messenger', 'Tienda virtual ilimitada', '5,000 mensajes/mes', 'Reportes avanzados'],
+      desc: 'El favorito.',
+      features: ['3 Agentes IA', 'WhatsApp Cloud + Messenger', 'Tienda ilimitada', '5,000 mensajes/mes', 'Reportes avanzados'],
       cta: 'Probar Pro',
       popular: true,
     },
     {
       name: 'Premium',
       price: '1,599',
-      desc: 'Para escalar sin límites.',
+      desc: 'Para escalar.',
       features: ['Agentes ilimitados', 'Todos los canales', 'Multi-tienda', 'Mensajes ilimitados', 'Soporte prioritario'],
       cta: 'Hablar con ventas',
       popular: false,
@@ -1897,84 +909,84 @@ function PricingTeaser() {
   ]
 
   return (
-    <section className="relative py-20 sm:py-24">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+    <section id="planes" className="relative py-24 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeader
-          eyebrow="PLANES"
-          title="Elige el plan que crece contigo"
+          eyebrow="Planes"
+          title="Precios simples y honestos"
+          sub="MXN/mes. Sin contratos. Cancela cuando quieras."
         />
-        <p className="text-center text-[14px] text-white/55 mt-4 max-w-md mx-auto"
-          style={{ letterSpacing: '-0.005em' }}>
-          Precios en MXN/mes. Sin contratos. Cancela cuando quieras.
-        </p>
 
-        <div className="grid lg:grid-cols-3 gap-5 mt-14 lg:mt-16">
+        <div className="grid lg:grid-cols-3 gap-5 mt-16 lg:mt-20">
           {plans.map((p, i) => (
             <motion.div
               key={p.name}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 22 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -6 }}
-              className="relative rounded-3xl p-7 sm:p-8 backdrop-blur-2xl overflow-hidden"
+              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              className="relative rounded-[28px] p-8 lg:p-10 backdrop-blur-xl overflow-hidden transition-all duration-500"
               style={{
                 background: p.popular
-                  ? 'linear-gradient(180deg, rgba(59,130,246,0.18) 0%, rgba(10,20,42,0.82) 60%, rgba(8,15,32,0.9) 100%)'
-                  : 'linear-gradient(180deg, rgba(11,21,42,0.65), rgba(8,15,32,0.82))',
-                border: p.popular ? '1px solid rgba(96,165,250,0.55)' : '1px solid rgba(96,165,250,0.2)',
+                  ? 'linear-gradient(180deg, rgba(59,130,246,0.14) 0%, rgba(10,31,61,0.7) 100%)'
+                  : 'linear-gradient(180deg, rgba(10,31,61,0.5), rgba(7,20,38,0.65))',
+                border: p.popular
+                  ? '1px solid rgba(96,165,250,0.4)'
+                  : '1px solid rgba(96,165,250,0.12)',
                 boxShadow: p.popular
-                  ? '0 30px 70px -18px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.08)'
+                  ? '0 30px 70px -20px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.08)'
                   : 'inset 0 1px 0 rgba(255,255,255,0.04)',
               }}
             >
               {p.popular && (
                 <>
-                  <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-32"
-                    style={{ background: 'radial-gradient(ellipse, rgba(59,130,246,0.5), transparent 70%)', filter: 'blur(40px)' }} />
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full text-[9.5px] uppercase font-bold text-white whitespace-nowrap"
+                  <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-32"
+                    style={{
+                      background: 'radial-gradient(ellipse, rgba(59,130,246,0.4), transparent 70%)',
+                      filter: 'blur(40px)',
+                    }} />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full text-[9.5px] uppercase font-medium text-white whitespace-nowrap"
                     style={{
                       background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                      boxShadow: '0 10px 26px -4px rgba(59,130,246,0.9), inset 0 1px 0 rgba(255,255,255,0.3)',
                       letterSpacing: '0.2em',
-                      border: '1px solid rgba(96,165,250,0.55)',
+                      boxShadow: '0 10px 26px -4px rgba(59,130,246,0.7), inset 0 1px 0 rgba(255,255,255,0.28)',
                     }}>
-                    ★ Más popular
+                    Más popular
                   </div>
                 </>
               )}
 
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                style={{ background: `linear-gradient(90deg, transparent, rgba(96,165,250,${p.popular ? 0.75 : 0.4}), transparent)` }} />
+                style={{ background: `linear-gradient(90deg, transparent, rgba(96,165,250,${p.popular ? 0.6 : 0.3}), transparent)` }} />
 
               <div className="relative">
-                <div className="text-[11px] uppercase font-bold text-blue-300/85 mb-3"
+                <div className="text-[11px] uppercase font-medium text-blue-300/85 mb-4"
                   style={{ letterSpacing: '0.22em' }}>
                   {p.name}
                 </div>
                 <div className="flex items-baseline gap-1 mb-2">
                   <span className="text-[14px] text-white/55 font-medium">$</span>
-                  <span className="text-[44px] font-bold text-white tabular-nums leading-none"
-                    style={{ letterSpacing: '-0.04em' }}>
+                  <span className="text-[48px] lg:text-[54px] font-medium text-white tabular-nums leading-none"
+                    style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.04em' }}>
                     {p.price}
                   </span>
-                  <span className="text-[12px] text-white/45 ml-1">MXN/mes</span>
+                  <span className="text-[12px] text-white/40 ml-1">/mes</span>
                 </div>
-                <p className="text-[13px] text-white/60 leading-relaxed mb-6"
+                <p className="text-[14px] text-white/55 mb-7 leading-relaxed"
                   style={{ letterSpacing: '-0.005em' }}>
                   {p.desc}
                 </p>
 
-                <ul className="space-y-2.5 mb-7">
+                <ul className="space-y-3 mb-9">
                   {p.features.map((f, k) => (
-                    <li key={k} className="flex items-start gap-2.5 text-[13px] text-white/80">
+                    <li key={k} className="flex items-start gap-3 text-[13.5px] text-white/75">
                       <span className="mt-[3px] flex h-4 w-4 items-center justify-center rounded-full shrink-0"
                         style={{
-                          background: 'rgba(59,130,246,0.2)',
-                          border: '1px solid rgba(96,165,250,0.5)',
-                          boxShadow: '0 0 6px rgba(59,130,246,0.4)',
+                          background: 'rgba(96,165,250,0.16)',
+                          border: '1px solid rgba(96,165,250,0.32)',
                         }}>
-                        <Check className="w-2.5 h-2.5 text-blue-100" strokeWidth={4} />
+                        <Check className="w-2.5 h-2.5 text-blue-100" strokeWidth={3.5} />
                       </span>
                       <span>{f}</span>
                     </li>
@@ -1983,25 +995,26 @@ function PricingTeaser() {
 
                 <Link
                   href="/pricing"
-                  className={`relative group/pcta flex items-center justify-center gap-2 h-12 rounded-xl font-bold text-[12.5px] uppercase overflow-hidden transition-colors ${
-                    p.popular ? 'text-white' : 'text-white/90 hover:text-white hover:bg-blue-500/15'
+                  className={`relative group/pcta flex items-center justify-center gap-2 h-12 rounded-xl font-medium text-[13.5px] overflow-hidden transition-colors ${
+                    p.popular ? 'text-white' : 'text-white/85 hover:text-white hover:bg-blue-500/10'
                   }`}
                   style={
                     p.popular
                       ? {
                           background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                          boxShadow: '0 12px 28px -8px rgba(59,130,246,0.85), inset 0 1px 0 rgba(255,255,255,0.28)',
-                          letterSpacing: '0.18em',
+                          boxShadow:
+                            '0 14px 30px -8px rgba(59,130,246,0.7), inset 0 1px 0 rgba(255,255,255,0.25)',
+                          letterSpacing: '-0.005em',
                         }
                       : {
-                          background: 'rgba(59,130,246,0.08)',
-                          border: '1px solid rgba(96,165,250,0.32)',
-                          letterSpacing: '0.18em',
+                          background: 'transparent',
+                          border: '1px solid rgba(96,165,250,0.22)',
+                          letterSpacing: '-0.005em',
                         }
                   }
                 >
                   {p.popular && (
-                    <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/pcta:translate-x-full transition-transform duration-700" />
+                    <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/22 to-transparent -translate-x-full group-hover/pcta:translate-x-full transition-transform duration-700" />
                   )}
                   <span className="relative">{p.cta}</span>
                   <ArrowRight className="w-3.5 h-3.5 relative" />
@@ -2011,10 +1024,10 @@ function PricingTeaser() {
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-12">
           <Link href="/pricing"
-            className="inline-flex items-center gap-2 text-[13px] font-semibold text-blue-300 hover:text-blue-200 transition-colors">
-            Ver comparativa completa de planes
+            className="inline-flex items-center gap-2 text-[13px] font-medium text-blue-300 hover:text-blue-200 transition-colors">
+            Ver comparativa completa
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -2024,69 +1037,70 @@ function PricingTeaser() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   FAQ — preguntas frecuentes
+   FAQ — clean accordion
    ═══════════════════════════════════════════════════════════════ */
 function FAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0)
   const items = [
     { q: '¿Necesito tarjeta de crédito para empezar?',
-      a: 'No. Puedes registrarte gratis y probar AGENTE NÜRO sin ingresar ningún dato de pago. Solo cobramos cuando decides activar un plan.' },
-    { q: '¿Cuánto tardo en activar mi Agente IA?',
-      a: 'Menos de 30 segundos. Conectas WhatsApp/Messenger, cargas la información básica de tu negocio y el agente empieza a atender clientes.' },
+      a: 'No. Puedes registrarte gratis y probar NÜRO sin ingresar ningún dato de pago. Solo cobramos cuando decides activar un plan.' },
+    { q: '¿Cuánto tardo en activar mi agente?',
+      a: 'Menos de 30 segundos. Conectas WhatsApp o Messenger, cargas la información de tu negocio y el agente empieza a atender.' },
     { q: '¿Funciona con mi número actual de WhatsApp?',
-      a: 'Sí. Soportamos WhatsApp Cloud API (oficial de Meta) y WhatsApp Web. Ambos preservan tu número y tu historial de chats.' },
+      a: 'Sí. Soportamos WhatsApp Cloud API (oficial) y WhatsApp Web. Ambos preservan tu número y tus chats.' },
     { q: '¿Puedo cancelar cuando quiera?',
-      a: 'Sí. No hay contratos ni cláusulas de permanencia. Cancelas desde tu panel en un clic y dejas de pagar en el siguiente ciclo.' },
+      a: 'Sí. No hay contratos ni cláusulas de permanencia. Cancelas desde tu panel en un clic.' },
     { q: '¿En qué idioma habla el agente?',
-      a: 'Español por defecto. También responde inglés y se adapta al tono de tu negocio: formal, casual, técnico o juvenil.' },
+      a: 'Español por defecto. También responde inglés y se adapta al tono de tu negocio.' },
     { q: '¿Mis datos están seguros?',
-      a: 'Sí. Datos cifrados en tránsito y en reposo, infraestructura sobre Supabase + Vercel, cero venta de información y cumplimiento con buenas prácticas de seguridad.' },
+      a: 'Sí. Datos cifrados en tránsito y en reposo, infraestructura sobre Supabase + Vercel, sin venta de información.' },
   ]
 
   return (
-    <section className="relative py-20 sm:py-24">
-      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+    <section className="relative py-24 lg:py-32">
+      <div className="max-w-3xl mx-auto px-6 lg:px-8">
         <SectionHeader
-          eyebrow="PREGUNTAS FRECUENTES"
+          eyebrow="Preguntas"
           title="Lo que más nos preguntan"
         />
 
-        <div className="space-y-3 mt-12">
+        <div className="space-y-2 mt-14 lg:mt-20">
           {items.map((it, i) => {
             const isOpen = openIdx === i
             return (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.4, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                className="relative rounded-2xl overflow-hidden transition-colors"
+                className="relative rounded-2xl overflow-hidden transition-all duration-300"
                 style={{
                   background: isOpen
-                    ? 'linear-gradient(180deg, rgba(59,130,246,0.10), rgba(8,15,32,0.85))'
-                    : 'linear-gradient(180deg, rgba(11,21,42,0.65), rgba(8,15,32,0.82))',
-                  border: isOpen ? '1px solid rgba(96,165,250,0.45)' : '1px solid rgba(96,165,250,0.18)',
-                  boxShadow: isOpen ? '0 14px 36px -14px rgba(59,130,246,0.5)' : 'inset 0 1px 0 rgba(255,255,255,0.04)',
+                    ? 'linear-gradient(180deg, rgba(59,130,246,0.08), rgba(7,20,38,0.6))'
+                    : 'rgba(7,20,38,0.4)',
+                  border: isOpen
+                    ? '1px solid rgba(96,165,250,0.32)'
+                    : '1px solid rgba(96,165,250,0.10)',
                 }}
               >
                 <button
                   onClick={() => setOpenIdx(isOpen ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-blue-500/[0.04] transition-colors"
+                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-white/[0.02] transition-colors"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-[14.5px] font-semibold text-white leading-snug"
-                    style={{ letterSpacing: '-0.01em' }}>
+                  <span className="text-[15px] font-medium text-white leading-snug"
+                    style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.015em' }}>
                     {it.q}
                   </span>
                   <motion.span
                     className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full"
                     style={{
-                      background: 'rgba(59,130,246,0.14)',
-                      border: '1px solid rgba(96,165,250,0.35)',
+                      background: 'rgba(96,165,250,0.10)',
+                      border: '1px solid rgba(96,165,250,0.22)',
                     }}
                     animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
                   >
                     <ChevronDown className="w-3.5 h-3.5 text-blue-200" />
                   </motion.span>
@@ -2098,10 +1112,10 @@ function FAQ() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                       className="overflow-hidden"
                     >
-                      <p className="px-5 pb-4 text-[13.5px] text-white/70 leading-relaxed"
+                      <p className="px-6 pb-5 text-[14px] text-white/65 leading-relaxed"
                         style={{ letterSpacing: '-0.005em' }}>
                         {it.a}
                       </p>
@@ -2113,11 +1127,11 @@ function FAQ() {
           })}
         </div>
 
-        <div className="text-center mt-10">
-          <p className="text-[13px] text-white/55">
+        <div className="text-center mt-12">
+          <p className="text-[13px] text-white/50">
             ¿Tienes otra pregunta?{' '}
             <a href="mailto:hola@agente-nuro.com"
-              className="text-blue-300 font-semibold hover:text-blue-200 transition-colors">
+              className="text-blue-300 font-medium hover:text-blue-200 transition-colors">
               Escríbenos
             </a>
           </p>
@@ -2128,41 +1142,112 @@ function FAQ() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   FOOTER expandido — 4 cols + redes + status
+   FINAL CTA — minimal premium
+   ═══════════════════════════════════════════════════════════════ */
+function FinalCTA() {
+  return (
+    <section className="relative py-24 lg:py-36">
+      <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2
+            className="font-medium text-[36px] sm:text-[52px] lg:text-[64px] leading-[1.04]"
+            style={{
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.045em',
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #60A5FA 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Tu negocio puede vender<br />incluso mientras duermes.
+          </h2>
+
+          <p className="mt-8 text-[16px] lg:text-[18px] text-white/55 leading-relaxed max-w-lg mx-auto"
+            style={{ letterSpacing: '-0.005em' }}>
+            Activa NÜRO en 30 segundos y convierte cada conversación en una venta.
+          </p>
+
+          <div className="mt-12 flex items-center justify-center gap-3 flex-wrap">
+            <Link
+              href="/login"
+              className="relative group/fcta inline-flex items-center justify-center gap-2 h-14 px-9 rounded-xl text-white font-medium text-[15px] overflow-hidden"
+              style={{
+                background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                boxShadow:
+                  '0 22px 60px -10px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.22)',
+                letterSpacing: '-0.005em',
+              }}
+            >
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/22 to-transparent -translate-x-full group-hover/fcta:translate-x-full transition-transform duration-1000" />
+              <span className="relative">Iniciar sesión</span>
+              <ArrowRight className="w-4 h-4 relative" />
+            </Link>
+
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center h-14 px-7 rounded-xl text-white/85 hover:text-white font-medium text-[15px] transition-colors"
+              style={{
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.12)',
+                letterSpacing: '-0.005em',
+              }}
+            >
+              Crear cuenta gratis
+            </Link>
+          </div>
+
+          <p className="mt-8 text-[12px] text-white/40"
+            style={{ letterSpacing: '0.06em' }}>
+            Sin tarjeta. Cancelas cuando quieras.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER — minimal premium
    ═══════════════════════════════════════════════════════════════ */
 function Footer() {
   const cols = [
     {
       title: 'Producto',
       items: [
-        { l: 'Agentes IA', h: '#agentes' },
-        { l: 'Tiendas Virtuales', h: '#tiendas' },
-        { l: 'Precios', h: '/pricing' },
-        { l: 'Video demo', h: '#video' },
+        { l: 'Agentes IA', h: '#producto' },
+        { l: 'Tiendas',    h: '#producto' },
+        { l: 'Precios',    h: '/pricing' },
+        { l: 'Demo',       h: '#video' },
       ],
     },
     {
       title: 'Empresa',
       items: [
-        { l: 'Sobre nosotros', h: '#' },
-        { l: 'Blog', h: '#' },
-        { l: 'Casos de éxito', h: '#' },
+        { l: 'Sobre',   h: '#' },
+        { l: 'Blog',    h: '#' },
+        { l: 'Casos',   h: '#' },
       ],
     },
     {
       title: 'Soporte',
       items: [
-        { l: 'Centro de ayuda', h: '#' },
+        { l: 'Ayuda',    h: '#' },
         { l: 'Contacto', h: 'mailto:hola@agente-nuro.com' },
-        { l: 'Estado del servicio', h: '#' },
+        { l: 'Estado',   h: '#' },
       ],
     },
     {
       title: 'Legal',
       items: [
-        { l: 'Términos de servicio', h: '#' },
+        { l: 'Términos',   h: '#' },
         { l: 'Privacidad', h: '#' },
-        { l: 'Cookies', h: '#' },
+        { l: 'Cookies',    h: '#' },
       ],
     },
   ]
@@ -2176,43 +1261,43 @@ function Footer() {
   ]
 
   return (
-    <footer id="contacto" className="relative pt-16 pb-10 mt-8"
-      style={{ borderTop: '1px solid rgba(59,130,246,0.12)' }}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-6">
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12 mb-12">
-          {/* Brand column — spans 2 on lg */}
+    <footer id="contacto" className="relative pt-20 pb-12"
+      style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-10 lg:gap-12 mb-16">
+          {/* Brand col */}
           <div className="col-span-2 sm:col-span-4 lg:col-span-2 max-w-sm">
-            <div className="flex items-center gap-2.5 mb-4">
+            <div className="flex items-center gap-2.5 mb-5">
               <div
-                className="relative w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center"
+                className="relative w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))',
-                  border: '1px solid rgba(96,165,250,0.4)',
-                  boxShadow: '0 0 18px -4px rgba(59,130,246,0.6)',
+                  background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(7,20,38,0.6))',
+                  border: '1px solid rgba(96,165,250,0.25)',
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={AVATAR} alt="NÜRO" className="absolute w-[150%] h-[150%] object-contain" />
               </div>
-              <span className="text-[15px] font-bold tracking-tight text-white">
-                AGENTE <span className="text-blue-300">NÜRO</span>
+              <span className="text-[15px] font-semibold tracking-tight text-white"
+                style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>
+                NÜRO
               </span>
             </div>
-            <p className="text-[13px] text-white/55 leading-relaxed mb-5"
+            <p className="text-[13.5px] text-white/55 leading-relaxed mb-6 max-w-xs"
               style={{ letterSpacing: '-0.005em' }}>
-              Agentes IA y Tiendas Virtuales para que tu negocio venda 24/7 por WhatsApp, Messenger y más.
+              La plataforma más avanzada para vender con inteligencia artificial en Latinoamérica.
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               {socials.map((s, i) => {
                 const Icon = s.Icon
                 return (
                   <a key={i} href={s.href} aria-label={s.label}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-white/65 hover:text-white hover:bg-blue-500/15 transition-colors"
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-white/55 hover:text-white hover:bg-white/5 transition-colors"
                     style={{
-                      background: 'rgba(59,130,246,0.08)',
-                      border: '1px solid rgba(96,165,250,0.25)',
+                      background: 'transparent',
+                      border: '1px solid rgba(255,255,255,0.08)',
                     }}>
-                    <Icon className="w-4 h-4" strokeWidth={1.8} />
+                    <Icon className="w-4 h-4" strokeWidth={1.6} />
                   </a>
                 )
               })}
@@ -2221,11 +1306,11 @@ function Footer() {
 
           {cols.map((c, ci) => (
             <div key={ci}>
-              <h4 className="text-[10.5px] uppercase font-bold text-blue-300/85 mb-4"
+              <h4 className="text-[10.5px] uppercase font-medium text-white/45 mb-5"
                 style={{ letterSpacing: '0.2em' }}>
                 {c.title}
               </h4>
-              <ul className="space-y-2.5">
+              <ul className="space-y-3">
                 {c.items.map((it, j) => (
                   <li key={j}>
                     <a href={it.h}
@@ -2239,20 +1324,20 @@ function Footer() {
           ))}
         </div>
 
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
-          style={{ borderTop: '1px solid rgba(96,165,250,0.12)' }}>
-          <div className="text-[11.5px] text-white/40 font-medium"
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="text-[12px] text-white/35 font-medium"
             style={{ letterSpacing: '0.04em' }}>
-            © {new Date().getFullYear()} AGENTE NÜRO · Hecho para emprendedores que venden con IA
+            © {new Date().getFullYear()} NÜRO · La plataforma más avanzada para vender con IA en LATAM
           </div>
-          <div className="flex items-center gap-1.5 text-[10.5px] uppercase font-bold text-emerald-300/80"
+          <div className="flex items-center gap-1.5 text-[10.5px] uppercase font-medium text-emerald-300/70"
             style={{ letterSpacing: '0.18em' }}>
             <span className="relative flex h-1.5 w-1.5">
               <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 1.6, repeat: Infinity }} />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
-                style={{ boxShadow: '0 0 6px rgba(52,211,153,0.9)' }} />
+                style={{ boxShadow: '0 0 6px rgba(52,211,153,0.85)' }} />
             </span>
             Sistema operativo
           </div>
@@ -2265,55 +1350,38 @@ function Footer() {
 /* ═══════════════════════════════════════════════════════════════
    SHARED — Section header
    ═══════════════════════════════════════════════════════════════ */
-function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
+function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.5 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="text-center relative"
+      className="text-center"
     >
-      {/* Decorative side lines flanking the eyebrow */}
-      <div className="hidden sm:flex items-center justify-center gap-3 mb-4">
-        <span className="block h-px w-12 lg:w-20"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.45))' }} />
-        <span
-          className="inline-flex items-center text-[10.5px] uppercase font-bold text-blue-200 px-3 py-1.5 rounded-full whitespace-nowrap"
-          style={{
-            letterSpacing: '0.22em',
-            background: 'rgba(59,130,246,0.12)',
-            border: '1px solid rgba(96,165,250,0.4)',
-            boxShadow: '0 0 14px rgba(59,130,246,0.3)',
-          }}
-        >
-          {eyebrow}
-        </span>
-        <span className="block h-px w-12 lg:w-20"
-          style={{ background: 'linear-gradient(90deg, rgba(96,165,250,0.45), transparent)' }} />
-      </div>
-      {/* Mobile fallback for eyebrow */}
-      <span
-        className="sm:hidden inline-flex items-center text-[10px] uppercase font-bold text-blue-200 mb-4 px-3 py-1.5 rounded-full"
-        style={{
-          letterSpacing: '0.2em',
-          background: 'rgba(59,130,246,0.12)',
-          border: '1px solid rgba(96,165,250,0.4)',
-        }}
-      >
+      <span className="inline-block text-[11px] uppercase font-medium text-blue-300/85 mb-5"
+        style={{ letterSpacing: '0.22em' }}>
         {eyebrow}
       </span>
       <h2
-        className="font-bold leading-[1.04] text-[32px] sm:text-[44px] lg:text-[52px] max-w-3xl mx-auto"
+        className="font-medium text-[32px] sm:text-[44px] lg:text-[54px] leading-[1.04] max-w-3xl mx-auto"
         style={{
-          letterSpacing: '-0.038em',
+          fontFamily: 'var(--font-display)',
+          letterSpacing: '-0.04em',
           background: 'linear-gradient(180deg, #FFFFFF 0%, #C8DBFF 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
         }}
       >
         {title}
       </h2>
+      {sub && (
+        <p className="mt-5 text-[15px] lg:text-[16px] text-white/55 leading-relaxed max-w-xl mx-auto"
+          style={{ letterSpacing: '-0.005em' }}>
+          {sub}
+        </p>
+      )}
     </motion.div>
   )
 }
