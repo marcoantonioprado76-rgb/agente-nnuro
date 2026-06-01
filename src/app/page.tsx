@@ -22,7 +22,7 @@ export default function LandingPage() {
     <div className="relative min-h-screen overflow-x-hidden" style={{ background: '#020817' }}>
       <BackgroundLayers />
 
-      {/* ── GIANT NÜRO watermark — fixed, visible across the whole landing ── */}
+      {/* ── GIANT NÜRO watermark — sized by VIEWPORT HEIGHT so the head never gets cropped ── */}
       <motion.div
         className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden"
         style={{ zIndex: 1 }}
@@ -34,20 +34,23 @@ export default function LandingPage() {
         <motion.img
           src={AVATAR}
           alt=""
-          className="w-[150vw] h-[150vw] sm:w-[120vw] sm:h-[120vw] lg:w-[100vw] lg:h-[100vw] object-contain"
+          className="object-contain"
           style={{
-            opacity: 0.45,
-            filter: 'drop-shadow(0 0 220px rgba(59,130,246,0.95)) drop-shadow(0 0 400px rgba(96,165,250,0.6)) brightness(1.05) saturate(1.15)',
+            height: 'min(72vh, 90vw)',
+            width: 'auto',
+            maxWidth: '92vw',
+            opacity: 0.5,
+            filter: 'drop-shadow(0 0 200px rgba(59,130,246,1)) drop-shadow(0 0 360px rgba(96,165,250,0.6)) brightness(1.08) saturate(1.18)',
           }}
           animate={{
-            y: [0, -45, 18, 0],
-            rotate: [0, 2.5, -1.8, 0],
-            scale: [1, 1.05, 0.99, 1],
+            y: [0, -22, 10, 0],
+            rotate: [0, 1.8, -1.3, 0],
+            scale: [1, 1.035, 0.99, 1],
           }}
           transition={{
-            y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
-            rotate: { duration: 28, repeat: Infinity, ease: 'easeInOut' },
-            scale: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
+            y: { duration: 14, repeat: Infinity, ease: 'easeInOut' },
+            rotate: { duration: 26, repeat: Infinity, ease: 'easeInOut' },
+            scale: { duration: 18, repeat: Infinity, ease: 'easeInOut' },
           }}
         />
       </motion.div>
