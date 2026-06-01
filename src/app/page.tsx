@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Bot, ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
   Check, Menu, X, Package, TrendingUp, Zap, Wifi, Brain, Shield,
+  ChevronDown, UtensilsCrossed, Briefcase, Home, GraduationCap,
+  Mail, Globe, Send, Phone,
 } from 'lucide-react'
 
 const AVATAR = '/nuro-3d.png'
@@ -142,9 +144,13 @@ export default function LandingPage() {
       <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <main className="relative" style={{ zIndex: 2 }}>
         <Hero onNav={navTo} />
+        <TrustBar />
         <VideoDemo />
         <Services />
+        <UseCases />
         <HowItWorks />
+        <PricingTeaser />
+        <FAQ />
         <FinalCTA />
         <Footer />
       </main>
@@ -1697,32 +1703,559 @@ function FinalCTA() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   FOOTER
+   TRUST BAR — prueba social (stats + partners)
    ═══════════════════════════════════════════════════════════════ */
-function Footer() {
+function TrustBar() {
+  const stats = [
+    { v: '+500',  l: 'Negocios activos' },
+    { v: '+2M',   l: 'Mensajes procesados' },
+    { v: '98%',   l: 'Tasa de respuesta' },
+    { v: '24/7',  l: 'Operación continua' },
+  ]
+  const partners = ['OpenAI · GPT-5', 'Anthropic Claude', 'WhatsApp Cloud', 'Meta Messenger']
+
   return (
-    <footer id="contacto" className="relative py-10 sm:py-14 mt-8"
-      style={{ borderTop: '1px solid rgba(59,130,246,0.12)' }}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="relative w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))',
-              border: '1px solid rgba(96,165,250,0.4)',
-              boxShadow: '0 0 18px -4px rgba(59,130,246,0.6)',
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={AVATAR} alt="NÜRO" className="absolute w-[150%] h-[150%] object-contain" />
+    <section className="relative py-12 sm:py-16">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="relative rounded-3xl backdrop-blur-2xl overflow-hidden p-7 sm:p-10"
+          style={{
+            background: 'linear-gradient(180deg, rgba(11,21,42,0.7) 0%, rgba(8,15,32,0.85) 100%)',
+            border: '1px solid rgba(59,130,246,0.24)',
+            boxShadow: '0 24px 60px -22px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+          }}
+        >
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
+          <div className="pointer-events-none absolute -top-24 -left-12 w-72 h-72 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.22), transparent 65%)', filter: 'blur(70px)' }} />
+          <div className="pointer-events-none absolute -bottom-24 -right-12 w-72 h-72 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.16), transparent 65%)', filter: 'blur(70px)' }} />
+
+          <div className="relative text-center mb-7">
+            <span className="text-[10.5px] uppercase font-bold text-blue-300/85"
+              style={{ letterSpacing: '0.22em' }}>
+              Negocios reales · resultados reales
+            </span>
           </div>
-          <span className="text-[14px] font-bold tracking-tight text-white">
-            AGENTE <span className="text-blue-300">NÜRO</span>
-          </span>
+
+          <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-4">
+            {stats.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.4 }}
+                transition={{ duration: 0.45, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="text-center"
+              >
+                <div
+                  className="text-[34px] sm:text-[42px] font-bold tabular-nums leading-none mb-1.5"
+                  style={{
+                    background: 'linear-gradient(180deg, #BFDBFE 0%, #3B82F6 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    letterSpacing: '-0.04em',
+                    filter: 'drop-shadow(0 0 14px rgba(59,130,246,0.45))',
+                  }}
+                >
+                  {s.v}
+                </div>
+                <div className="text-[10px] uppercase font-semibold text-white/55"
+                  style={{ letterSpacing: '0.18em' }}>
+                  {s.l}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="relative mt-9 pt-6 border-t flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
+            style={{ borderColor: 'rgba(96,165,250,0.14)' }}>
+            <span className="text-[9.5px] uppercase font-bold text-white/35"
+              style={{ letterSpacing: '0.2em' }}>
+              Construido sobre
+            </span>
+            {partners.map((p, i) => (
+              <span key={i}
+                className="text-[11.5px] uppercase font-semibold text-white/55 hover:text-white/80 transition-colors"
+                style={{ letterSpacing: '0.14em' }}>
+                {p}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   USE CASES — para quién es esto
+   ═══════════════════════════════════════════════════════════════ */
+function UseCases() {
+  const cases = [
+    { icon: ShoppingBag,      label: 'Tiendas de ropa',         desc: 'Catálogo + tallas + pedidos por WhatsApp.' },
+    { icon: UtensilsCrossed,  label: 'Restaurantes',            desc: 'Menú, reservas y pedidos a domicilio.' },
+    { icon: Sparkles,         label: 'Cosmética y belleza',     desc: 'Asesoría 1:1 + venta de productos.' },
+    { icon: Briefcase,        label: 'Servicios profesionales', desc: 'Agenda citas y filtra leads de calidad.' },
+    { icon: Home,             label: 'Inmobiliarias',           desc: 'Califica prospectos y agenda visitas 24/7.' },
+    { icon: GraduationCap,    label: 'Cursos y coaching',       desc: 'Resuelve dudas y cierra inscripciones.' },
+  ]
+
+  return (
+    <section className="relative py-20 sm:py-24">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+        <SectionHeader
+          eyebrow="CASOS DE USO"
+          title="Hecho para negocios que viven de vender por chat"
+        />
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mt-12">
+          {cases.map((c, i) => {
+            const Icon = c.icon
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.45, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -5 }}
+                className="group relative rounded-2xl p-6 backdrop-blur-xl overflow-hidden transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(11,21,42,0.65), rgba(8,15,32,0.82))',
+                  border: '1px solid rgba(96,165,250,0.18)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
+                }}
+              >
+                <div className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-50 group-hover:opacity-80 transition-opacity"
+                  style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.32), transparent 65%)', filter: 'blur(30px)' }} />
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-40 group-hover:opacity-100 transition-opacity"
+                  style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.7), transparent)' }} />
+
+                <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(96,165,250,0.25), rgba(59,130,246,0.06))',
+                    border: '1px solid rgba(96,165,250,0.4)',
+                    boxShadow: '0 0 20px -4px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.12)',
+                  }}
+                >
+                  <Icon className="w-5 h-5 text-blue-200" strokeWidth={1.7}
+                    style={{ filter: 'drop-shadow(0 0 5px rgba(96,165,250,0.6))' }} />
+                </div>
+
+                <h3 className="relative text-[16px] font-bold text-white leading-tight mb-1.5"
+                  style={{ letterSpacing: '-0.015em' }}>
+                  {c.label}
+                </h3>
+                <p className="relative text-[13px] text-white/60 leading-relaxed"
+                  style={{ letterSpacing: '-0.005em' }}>
+                  {c.desc}
+                </p>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICING TEASER — 3 planes
+   ═══════════════════════════════════════════════════════════════ */
+function PricingTeaser() {
+  const plans = [
+    {
+      name: 'Starter',
+      price: '299',
+      desc: 'Para empezar a vender en automático.',
+      features: ['1 Agente IA', 'WhatsApp Web', 'Tienda virtual básica', '500 mensajes/mes'],
+      cta: 'Empezar gratis',
+      popular: false,
+    },
+    {
+      name: 'Pro',
+      price: '799',
+      desc: 'El plan favorito del 80% de negocios.',
+      features: ['3 Agentes IA', 'WhatsApp Cloud + Messenger', 'Tienda virtual ilimitada', '5,000 mensajes/mes', 'Reportes avanzados'],
+      cta: 'Probar Pro',
+      popular: true,
+    },
+    {
+      name: 'Premium',
+      price: '1,599',
+      desc: 'Para escalar sin límites.',
+      features: ['Agentes ilimitados', 'Todos los canales', 'Multi-tienda', 'Mensajes ilimitados', 'Soporte prioritario'],
+      cta: 'Hablar con ventas',
+      popular: false,
+    },
+  ]
+
+  return (
+    <section className="relative py-20 sm:py-24">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+        <SectionHeader
+          eyebrow="PLANES"
+          title="Elige el plan que crece contigo"
+        />
+        <p className="text-center text-[14px] text-white/55 mt-4 max-w-md mx-auto"
+          style={{ letterSpacing: '-0.005em' }}>
+          Precios en MXN/mes. Sin contratos. Cancela cuando quieras.
+        </p>
+
+        <div className="grid lg:grid-cols-3 gap-5 mt-14 lg:mt-16">
+          {plans.map((p, i) => (
+            <motion.div
+              key={p.name}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -6 }}
+              className="relative rounded-3xl p-7 sm:p-8 backdrop-blur-2xl overflow-hidden"
+              style={{
+                background: p.popular
+                  ? 'linear-gradient(180deg, rgba(59,130,246,0.18) 0%, rgba(10,20,42,0.82) 60%, rgba(8,15,32,0.9) 100%)'
+                  : 'linear-gradient(180deg, rgba(11,21,42,0.65), rgba(8,15,32,0.82))',
+                border: p.popular ? '1px solid rgba(96,165,250,0.55)' : '1px solid rgba(96,165,250,0.2)',
+                boxShadow: p.popular
+                  ? '0 30px 70px -18px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.25), inset 0 1px 0 rgba(255,255,255,0.08)'
+                  : 'inset 0 1px 0 rgba(255,255,255,0.04)',
+              }}
+            >
+              {p.popular && (
+                <>
+                  <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-32"
+                    style={{ background: 'radial-gradient(ellipse, rgba(59,130,246,0.5), transparent 70%)', filter: 'blur(40px)' }} />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full text-[9.5px] uppercase font-bold text-white whitespace-nowrap"
+                    style={{
+                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                      boxShadow: '0 10px 26px -4px rgba(59,130,246,0.9), inset 0 1px 0 rgba(255,255,255,0.3)',
+                      letterSpacing: '0.2em',
+                      border: '1px solid rgba(96,165,250,0.55)',
+                    }}>
+                    ★ Más popular
+                  </div>
+                </>
+              )}
+
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                style={{ background: `linear-gradient(90deg, transparent, rgba(96,165,250,${p.popular ? 0.75 : 0.4}), transparent)` }} />
+
+              <div className="relative">
+                <div className="text-[11px] uppercase font-bold text-blue-300/85 mb-3"
+                  style={{ letterSpacing: '0.22em' }}>
+                  {p.name}
+                </div>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-[14px] text-white/55 font-medium">$</span>
+                  <span className="text-[44px] font-bold text-white tabular-nums leading-none"
+                    style={{ letterSpacing: '-0.04em' }}>
+                    {p.price}
+                  </span>
+                  <span className="text-[12px] text-white/45 ml-1">MXN/mes</span>
+                </div>
+                <p className="text-[13px] text-white/60 leading-relaxed mb-6"
+                  style={{ letterSpacing: '-0.005em' }}>
+                  {p.desc}
+                </p>
+
+                <ul className="space-y-2.5 mb-7">
+                  {p.features.map((f, k) => (
+                    <li key={k} className="flex items-start gap-2.5 text-[13px] text-white/80">
+                      <span className="mt-[3px] flex h-4 w-4 items-center justify-center rounded-full shrink-0"
+                        style={{
+                          background: 'rgba(59,130,246,0.2)',
+                          border: '1px solid rgba(96,165,250,0.5)',
+                          boxShadow: '0 0 6px rgba(59,130,246,0.4)',
+                        }}>
+                        <Check className="w-2.5 h-2.5 text-blue-100" strokeWidth={4} />
+                      </span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/pricing"
+                  className={`relative group/pcta flex items-center justify-center gap-2 h-12 rounded-xl font-bold text-[12.5px] uppercase overflow-hidden transition-colors ${
+                    p.popular ? 'text-white' : 'text-white/90 hover:text-white hover:bg-blue-500/15'
+                  }`}
+                  style={
+                    p.popular
+                      ? {
+                          background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                          boxShadow: '0 12px 28px -8px rgba(59,130,246,0.85), inset 0 1px 0 rgba(255,255,255,0.28)',
+                          letterSpacing: '0.18em',
+                        }
+                      : {
+                          background: 'rgba(59,130,246,0.08)',
+                          border: '1px solid rgba(96,165,250,0.32)',
+                          letterSpacing: '0.18em',
+                        }
+                  }
+                >
+                  {p.popular && (
+                    <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/pcta:translate-x-full transition-transform duration-700" />
+                  )}
+                  <span className="relative">{p.cta}</span>
+                  <ArrowRight className="w-3.5 h-3.5 relative" />
+                </Link>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="text-[12px] text-white/45 font-medium" style={{ letterSpacing: '0.04em' }}>
-          © {new Date().getFullYear()} Agente NÜRO · Hecho para emprendedores que venden con IA
+        <div className="text-center mt-10">
+          <Link href="/pricing"
+            className="inline-flex items-center gap-2 text-[13px] font-semibold text-blue-300 hover:text-blue-200 transition-colors">
+            Ver comparativa completa de planes
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FAQ — preguntas frecuentes
+   ═══════════════════════════════════════════════════════════════ */
+function FAQ() {
+  const [openIdx, setOpenIdx] = useState<number | null>(0)
+  const items = [
+    { q: '¿Necesito tarjeta de crédito para empezar?',
+      a: 'No. Puedes registrarte gratis y probar AGENTE NÜRO sin ingresar ningún dato de pago. Solo cobramos cuando decides activar un plan.' },
+    { q: '¿Cuánto tardo en activar mi Agente IA?',
+      a: 'Menos de 30 segundos. Conectas WhatsApp/Messenger, cargas la información básica de tu negocio y el agente empieza a atender clientes.' },
+    { q: '¿Funciona con mi número actual de WhatsApp?',
+      a: 'Sí. Soportamos WhatsApp Cloud API (oficial de Meta) y WhatsApp Web. Ambos preservan tu número y tu historial de chats.' },
+    { q: '¿Puedo cancelar cuando quiera?',
+      a: 'Sí. No hay contratos ni cláusulas de permanencia. Cancelas desde tu panel en un clic y dejas de pagar en el siguiente ciclo.' },
+    { q: '¿En qué idioma habla el agente?',
+      a: 'Español por defecto. También responde inglés y se adapta al tono de tu negocio: formal, casual, técnico o juvenil.' },
+    { q: '¿Mis datos están seguros?',
+      a: 'Sí. Datos cifrados en tránsito y en reposo, infraestructura sobre Supabase + Vercel, cero venta de información y cumplimiento con buenas prácticas de seguridad.' },
+  ]
+
+  return (
+    <section className="relative py-20 sm:py-24">
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <SectionHeader
+          eyebrow="PREGUNTAS FRECUENTES"
+          title="Lo que más nos preguntan"
+        />
+
+        <div className="space-y-3 mt-12">
+          {items.map((it, i) => {
+            const isOpen = openIdx === i
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.4, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                className="relative rounded-2xl overflow-hidden transition-colors"
+                style={{
+                  background: isOpen
+                    ? 'linear-gradient(180deg, rgba(59,130,246,0.10), rgba(8,15,32,0.85))'
+                    : 'linear-gradient(180deg, rgba(11,21,42,0.65), rgba(8,15,32,0.82))',
+                  border: isOpen ? '1px solid rgba(96,165,250,0.45)' : '1px solid rgba(96,165,250,0.18)',
+                  boxShadow: isOpen ? '0 14px 36px -14px rgba(59,130,246,0.5)' : 'inset 0 1px 0 rgba(255,255,255,0.04)',
+                }}
+              >
+                <button
+                  onClick={() => setOpenIdx(isOpen ? null : i)}
+                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-blue-500/[0.04] transition-colors"
+                  aria-expanded={isOpen}
+                >
+                  <span className="text-[14.5px] font-semibold text-white leading-snug"
+                    style={{ letterSpacing: '-0.01em' }}>
+                    {it.q}
+                  </span>
+                  <motion.span
+                    className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full"
+                    style={{
+                      background: 'rgba(59,130,246,0.14)',
+                      border: '1px solid rgba(96,165,250,0.35)',
+                    }}
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                  >
+                    <ChevronDown className="w-3.5 h-3.5 text-blue-200" />
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-5 pb-4 text-[13.5px] text-white/70 leading-relaxed"
+                        style={{ letterSpacing: '-0.005em' }}>
+                        {it.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )
+          })}
+        </div>
+
+        <div className="text-center mt-10">
+          <p className="text-[13px] text-white/55">
+            ¿Tienes otra pregunta?{' '}
+            <a href="mailto:hola@agente-nuro.com"
+              className="text-blue-300 font-semibold hover:text-blue-200 transition-colors">
+              Escríbenos
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER expandido — 4 cols + redes + status
+   ═══════════════════════════════════════════════════════════════ */
+function Footer() {
+  const cols = [
+    {
+      title: 'Producto',
+      items: [
+        { l: 'Agentes IA', h: '#agentes' },
+        { l: 'Tiendas Virtuales', h: '#tiendas' },
+        { l: 'Precios', h: '/pricing' },
+        { l: 'Video demo', h: '#video' },
+      ],
+    },
+    {
+      title: 'Empresa',
+      items: [
+        { l: 'Sobre nosotros', h: '#' },
+        { l: 'Blog', h: '#' },
+        { l: 'Casos de éxito', h: '#' },
+      ],
+    },
+    {
+      title: 'Soporte',
+      items: [
+        { l: 'Centro de ayuda', h: '#' },
+        { l: 'Contacto', h: 'mailto:hola@agente-nuro.com' },
+        { l: 'Estado del servicio', h: '#' },
+      ],
+    },
+    {
+      title: 'Legal',
+      items: [
+        { l: 'Términos de servicio', h: '#' },
+        { l: 'Privacidad', h: '#' },
+        { l: 'Cookies', h: '#' },
+      ],
+    },
+  ]
+
+  const socials: { Icon: typeof MessageCircle; label: string; href: string }[] = [
+    { Icon: MessageCircle, label: 'WhatsApp',  href: '#' },
+    { Icon: Send,          label: 'Telegram',  href: '#' },
+    { Icon: Mail,          label: 'Email',     href: 'mailto:hola@agente-nuro.com' },
+    { Icon: Phone,         label: 'Llamadas',  href: '#' },
+    { Icon: Globe,         label: 'Sitio web', href: '#' },
+  ]
+
+  return (
+    <footer id="contacto" className="relative pt-16 pb-10 mt-8"
+      style={{ borderTop: '1px solid rgba(59,130,246,0.12)' }}>
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8 lg:gap-12 mb-12">
+          {/* Brand column — spans 2 on lg */}
+          <div className="col-span-2 sm:col-span-4 lg:col-span-2 max-w-sm">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div
+                className="relative w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(59,130,246,0.3), rgba(59,130,246,0.05))',
+                  border: '1px solid rgba(96,165,250,0.4)',
+                  boxShadow: '0 0 18px -4px rgba(59,130,246,0.6)',
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={AVATAR} alt="NÜRO" className="absolute w-[150%] h-[150%] object-contain" />
+              </div>
+              <span className="text-[15px] font-bold tracking-tight text-white">
+                AGENTE <span className="text-blue-300">NÜRO</span>
+              </span>
+            </div>
+            <p className="text-[13px] text-white/55 leading-relaxed mb-5"
+              style={{ letterSpacing: '-0.005em' }}>
+              Agentes IA y Tiendas Virtuales para que tu negocio venda 24/7 por WhatsApp, Messenger y más.
+            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              {socials.map((s, i) => {
+                const Icon = s.Icon
+                return (
+                  <a key={i} href={s.href} aria-label={s.label}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-white/65 hover:text-white hover:bg-blue-500/15 transition-colors"
+                    style={{
+                      background: 'rgba(59,130,246,0.08)',
+                      border: '1px solid rgba(96,165,250,0.25)',
+                    }}>
+                    <Icon className="w-4 h-4" strokeWidth={1.8} />
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+
+          {cols.map((c, ci) => (
+            <div key={ci}>
+              <h4 className="text-[10.5px] uppercase font-bold text-blue-300/85 mb-4"
+                style={{ letterSpacing: '0.2em' }}>
+                {c.title}
+              </h4>
+              <ul className="space-y-2.5">
+                {c.items.map((it, j) => (
+                  <li key={j}>
+                    <a href={it.h}
+                      className="text-[13px] text-white/60 hover:text-white transition-colors">
+                      {it.l}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
+          style={{ borderTop: '1px solid rgba(96,165,250,0.12)' }}>
+          <div className="text-[11.5px] text-white/40 font-medium"
+            style={{ letterSpacing: '0.04em' }}>
+            © {new Date().getFullYear()} AGENTE NÜRO · Hecho para emprendedores que venden con IA
+          </div>
+          <div className="flex items-center gap-1.5 text-[10.5px] uppercase font-bold text-emerald-300/80"
+            style={{ letterSpacing: '0.18em' }}>
+            <span className="relative flex h-1.5 w-1.5">
+              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity }} />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
+                style={{ boxShadow: '0 0 6px rgba(52,211,153,0.9)' }} />
+            </span>
+            Sistema operativo
+          </div>
         </div>
       </div>
     </footer>
