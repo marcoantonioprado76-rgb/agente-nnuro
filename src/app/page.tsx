@@ -21,8 +21,39 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen overflow-x-hidden" style={{ background: '#020817' }}>
       <BackgroundLayers />
+
+      {/* ── GIANT NÜRO watermark — fixed, visible across the whole landing ── */}
+      <motion.div
+        className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden"
+        style={{ zIndex: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2, ease: 'easeOut' }}
+        aria-hidden
+      >
+        <motion.img
+          src={AVATAR}
+          alt=""
+          className="w-[150vw] h-[150vw] sm:w-[120vw] sm:h-[120vw] lg:w-[100vw] lg:h-[100vw] object-contain"
+          style={{
+            opacity: 0.45,
+            filter: 'drop-shadow(0 0 220px rgba(59,130,246,0.95)) drop-shadow(0 0 400px rgba(96,165,250,0.6)) brightness(1.05) saturate(1.15)',
+          }}
+          animate={{
+            y: [0, -45, 18, 0],
+            rotate: [0, 2.5, -1.8, 0],
+            scale: [1, 1.05, 0.99, 1],
+          }}
+          transition={{
+            y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
+            rotate: { duration: 28, repeat: Infinity, ease: 'easeInOut' },
+            scale: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
+          }}
+        />
+      </motion.div>
+
       <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <main className="relative">
+      <main className="relative" style={{ zIndex: 2 }}>
         <Hero onNav={navTo} />
         <VideoDemo />
         <Services />
@@ -92,35 +123,6 @@ function BackgroundLayers() {
         <div className="absolute inset-0"
           style={{ background: 'radial-gradient(ellipse at top, transparent 30%, rgba(2,8,23,0.6) 100%)' }} />
       </div>
-
-      {/* ── GIANT NÜRO watermark — covers the whole landing as ambient background ── */}
-      <motion.div
-        className="pointer-events-none fixed inset-0 -z-10 flex items-center justify-center overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2, ease: 'easeOut' }}
-      >
-        <motion.img
-          src={AVATAR}
-          alt=""
-          aria-hidden
-          className="w-[150vw] h-[150vw] sm:w-[120vw] sm:h-[120vw] lg:w-[100vw] lg:h-[100vw] object-contain"
-          style={{
-            opacity: 0.45,
-            filter: 'drop-shadow(0 0 220px rgba(59,130,246,0.95)) drop-shadow(0 0 400px rgba(96,165,250,0.6)) brightness(1.05) saturate(1.15)',
-          }}
-          animate={{
-            y: [0, -45, 18, 0],
-            rotate: [0, 2.5, -1.8, 0],
-            scale: [1, 1.05, 0.99, 1],
-          }}
-          transition={{
-            y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
-            rotate: { duration: 28, repeat: Infinity, ease: 'easeInOut' },
-            scale: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
-          }}
-        />
-      </motion.div>
 
       {/* Floating particles */}
       {[...Array(22)].map((_, i) => (
