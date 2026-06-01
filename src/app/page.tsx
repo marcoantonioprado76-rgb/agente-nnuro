@@ -95,7 +95,7 @@ function BackgroundLayers() {
 
       {/* ── GIANT NÜRO watermark — covers the whole landing as ambient background ── */}
       <motion.div
-        className="pointer-events-none fixed inset-0 -z-10 flex items-start justify-center overflow-hidden"
+        className="pointer-events-none fixed inset-0 -z-10 flex items-center justify-center overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2, ease: 'easeOut' }}
@@ -104,21 +104,20 @@ function BackgroundLayers() {
           src={AVATAR}
           alt=""
           aria-hidden
-          className="w-[140vw] h-[140vw] sm:w-[110vw] sm:h-[110vw] lg:w-[95vw] lg:h-[95vw] object-contain"
+          className="w-[150vw] h-[150vw] sm:w-[120vw] sm:h-[120vw] lg:w-[100vw] lg:h-[100vw] object-contain"
           style={{
-            marginTop: '-10vh',
-            opacity: 0.18,
-            filter: 'drop-shadow(0 0 180px rgba(59,130,246,0.55)) drop-shadow(0 0 320px rgba(96,165,250,0.3))',
+            opacity: 0.45,
+            filter: 'drop-shadow(0 0 220px rgba(59,130,246,0.95)) drop-shadow(0 0 400px rgba(96,165,250,0.6)) brightness(1.05) saturate(1.15)',
           }}
           animate={{
-            y: [0, -38, 0],
-            rotate: [0, 2.2, -1.5, 0],
-            scale: [1, 1.04, 1],
+            y: [0, -45, 18, 0],
+            rotate: [0, 2.5, -1.8, 0],
+            scale: [1, 1.05, 0.99, 1],
           }}
           transition={{
             y: { duration: 16, repeat: Infinity, ease: 'easeInOut' },
             rotate: { duration: 28, repeat: Infinity, ease: 'easeInOut' },
-            scale: { duration: 18, repeat: Infinity, ease: 'easeInOut' },
+            scale: { duration: 20, repeat: Infinity, ease: 'easeInOut' },
           }}
         />
       </motion.div>
