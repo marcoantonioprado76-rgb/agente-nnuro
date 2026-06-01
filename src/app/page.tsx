@@ -546,7 +546,7 @@ function FloatingChip({
 /* ═══════════════════════════════════════════════════════════════
    VIDEO DEMO — real playback
    ═══════════════════════════════════════════════════════════════ */
-const VIDEO_URL = 'https://files.catbox.moe/kmqx7r.mp4'
+const VIDEO_URL = '/nuro-demo.mp4'
 
 function VideoDemo() {
   const [playing, setPlaying] = useState(false)
