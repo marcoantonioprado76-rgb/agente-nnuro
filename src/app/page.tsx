@@ -77,17 +77,51 @@ function BackgroundLayers() {
     <>
       {/* Fixed wrapper */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {/* Tech grid */}
+        {/* — Blueprint grid (primary, large cells) — */}
         <div
-          className="absolute inset-0 opacity-[0.05]"
+          className="absolute inset-0 opacity-[0.08]"
           style={{
             backgroundImage:
               'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 75%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 75%)',
+            backgroundSize: '80px 80px',
+            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 78%)',
           }}
         />
+        {/* — Blueprint sub-grid (finer cells, even more subtle) — */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(96,165,250,1) 0.5px, transparent 0.5px), linear-gradient(90deg, rgba(96,165,250,1) 0.5px, transparent 0.5px)',
+            backgroundSize: '20px 20px',
+            maskImage: 'radial-gradient(ellipse at center, black 0%, transparent 65%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, transparent 65%)',
+          }}
+        />
+        {/* — HUD corner brackets (4 corners of viewport) — */}
+        {[
+          { pos: 'top-4 left-4',     rot: 0,   text: 'NUR · 00.01' },
+          { pos: 'top-4 right-4',    rot: 90,  text: 'SYS · 100%'  },
+          { pos: 'bottom-4 right-4', rot: 180, text: 'AI · ONLINE' },
+          { pos: 'bottom-4 left-4',  rot: 270, text: 'LIVE · 24/7' },
+        ].map((c, i) => (
+          <div key={i} className={`absolute ${c.pos} hidden lg:block`}>
+            <svg width="56" height="56" viewBox="0 0 56 56" style={{ transform: `rotate(${c.rot}deg)` }}>
+              <path d="M 2 28 L 2 2 L 28 2" fill="none" stroke="rgba(96,165,250,0.45)" strokeWidth="1" strokeLinecap="round"
+                style={{ filter: 'drop-shadow(0 0 4px rgba(96,165,250,0.6))' }} />
+              <circle cx="2" cy="2" r="1.5" fill="rgba(96,165,250,0.8)" />
+            </svg>
+            <div className="text-[8.5px] font-mono uppercase font-bold mt-1"
+              style={{
+                color: 'rgba(96,165,250,0.55)',
+                letterSpacing: '0.18em',
+                transform: c.rot === 90 || c.rot === 180 ? 'translateX(-22px)' : '',
+              }}>
+              {c.text}
+            </div>
+          </div>
+        ))}
 
         {/* Animated mesh gradient blobs — they drift slowly */}
         <motion.div
@@ -128,21 +162,77 @@ function BackgroundLayers() {
           style={{ background: 'radial-gradient(ellipse at top, transparent 30%, rgba(2,8,23,0.6) 100%)' }} />
       </div>
 
-      {/* Floating particles */}
-      {[...Array(22)].map((_, i) => (
+      {/* Global constellation network — fixed SVG with connected nodes drifting */}
+      <svg
+        className="pointer-events-none fixed inset-0 w-full h-full"
+        style={{ zIndex: -1, opacity: 0.55 }}
+        aria-hidden
+      >
+        <defs>
+          <linearGradient id="conLine" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stopColor="rgba(96,165,250,0)" />
+            <stop offset="50%"  stopColor="rgba(96,165,250,0.65)" />
+            <stop offset="100%" stopColor="rgba(96,165,250,0)" />
+          </linearGradient>
+        </defs>
+        {[
+          [10, 22, 28, 38], [28, 38, 44, 25], [44, 25, 62, 40], [62, 40, 78, 28], [78, 28, 92, 45],
+          [12, 68, 30, 78], [30, 78, 50, 70], [50, 70, 68, 82], [68, 82, 88, 72],
+          [22, 45, 38, 55], [55, 50, 70, 60], [42, 38, 50, 70],
+        ].map(([x1, y1, x2, y2], i) => (
+          <motion.line
+            key={i}
+            x1={`${x1}%`} y1={`${y1}%`} x2={`${x2}%`} y2={`${y2}%`}
+            stroke="url(#conLine)"
+            strokeWidth="0.5"
+            initial={{ opacity: 0.15 }}
+            animate={{ opacity: [0.1, 0.5, 0.1] }}
+            transition={{ duration: 5 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: (i % 5) * 0.6 }}
+          />
+        ))}
+        {[
+          [10, 22], [28, 38], [44, 25], [62, 40], [78, 28], [92, 45],
+          [12, 68], [30, 78], [50, 70], [68, 82], [88, 72],
+          [22, 45], [55, 50], [42, 38], [70, 60],
+        ].map(([x, y], i) => (
+          <motion.circle
+            key={i}
+            cx={`${x}%`} cy={`${y}%`} r="2"
+            fill="rgba(96,165,250,0.9)"
+            style={{ filter: 'drop-shadow(0 0 5px rgba(96,165,250,1))' }}
+            animate={{ opacity: [0.35, 1, 0.35], r: [1.5, 2.5, 1.5] }}
+            transition={{ duration: 3.5 + (i % 5), repeat: Infinity, ease: 'easeInOut', delay: (i % 6) * 0.5 }}
+          />
+        ))}
+      </svg>
+
+      {/* Horizontal scan line (slow) */}
+      <motion.div
+        className="pointer-events-none fixed inset-y-0 w-px"
+        style={{
+          background: 'linear-gradient(180deg, transparent, rgba(96,165,250,0.5), transparent)',
+          zIndex: -1,
+          boxShadow: '0 0 8px rgba(96,165,250,0.4)',
+        }}
+        animate={{ x: ['-5%', '105vw'] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+      />
+
+      {/* Floating particles (38 instead of 22) */}
+      {[...Array(38)].map((_, i) => (
         <motion.span
           key={i}
           className="pointer-events-none fixed rounded-full bg-blue-200/80"
           style={{
             left: `${(i * 7) % 96}%`,
             top: `${10 + (i * 13) % 78}%`,
-            width: i % 4 === 0 ? '2px' : '1px',
-            height: i % 4 === 0 ? '2px' : '1px',
+            width: i % 5 === 0 ? '2.5px' : i % 3 === 0 ? '1.5px' : '1px',
+            height: i % 5 === 0 ? '2.5px' : i % 3 === 0 ? '1.5px' : '1px',
             boxShadow: '0 0 10px rgba(96,165,250,0.9)',
             zIndex: -1,
           }}
           animate={{ y: [0, -45, 15, 0], opacity: [0.1, 0.95, 0.4, 0.1] }}
-          transition={{ duration: 18 + i * 1.1, repeat: Infinity, ease: 'easeInOut', delay: i * 0.45 }}
+          transition={{ duration: 18 + i * 0.9, repeat: Infinity, ease: 'easeInOut', delay: i * 0.32 }}
         />
       ))}
     </>
@@ -387,6 +477,55 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
     <section className="relative pt-24 pb-12 sm:pt-32 sm:pb-20 overflow-hidden">
       {/* ── Neural network backdrop (subtle, layered above the global NÜRO watermark) ── */}
       <NeuralBackdrop />
+
+      {/* ── Data flow rays emanating from the central area ── */}
+      <div className="pointer-events-none absolute right-[18%] top-[40%] hidden lg:block w-[600px] h-[600px] -translate-y-1/2">
+        <svg viewBox="0 0 200 200" className="w-full h-full">
+          {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => {
+            const rad = (angle * Math.PI) / 180
+            const x2 = 100 + Math.cos(rad) * 95
+            const y2 = 100 + Math.sin(rad) * 95
+            return (
+              <motion.line
+                key={i}
+                x1="100" y1="100" x2={x2} y2={y2}
+                stroke="rgba(96,165,250,0.45)"
+                strokeWidth="0.4"
+                strokeDasharray="2 3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.7, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 0.25 }}
+              />
+            )
+          })}
+        </svg>
+      </div>
+
+      {/* ── HUD crosshair around NÜRO ── */}
+      <div className="pointer-events-none absolute right-[22%] top-[42%] hidden lg:block -translate-y-1/2">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+          style={{ width: 280, height: 280 }}
+        >
+          <svg viewBox="0 0 100 100" className="w-full h-full">
+            {/* Outer brackets at 0°, 90°, 180°, 270° */}
+            {[0, 90, 180, 270].map((angle) => (
+              <g key={angle} transform={`rotate(${angle} 50 50)`}>
+                <line x1="50" y1="2"  x2="50" y2="8"  stroke="rgba(96,165,250,0.6)" strokeWidth="0.6" />
+                <line x1="46" y1="3"  x2="54" y2="3"  stroke="rgba(96,165,250,0.4)" strokeWidth="0.4" />
+              </g>
+            ))}
+            {/* Numbered markers */}
+            {[45, 135, 225, 315].map((angle) => (
+              <g key={angle} transform={`rotate(${angle} 50 50)`}>
+                <circle cx="50" cy="6" r="0.8" fill="rgba(34,211,238,0.9)"
+                  style={{ filter: 'drop-shadow(0 0 2px rgba(34,211,238,1))' }} />
+              </g>
+            ))}
+          </svg>
+        </motion.div>
+      </div>
 
       {/* ── Orbital rings anchored to the right column ── */}
       <div className="pointer-events-none absolute right-[-10%] top-[10%] hidden lg:block w-[560px] h-[560px]">
@@ -1066,6 +1205,43 @@ function Services() {
                 <div className="pointer-events-none absolute -top-24 -right-20 w-72 h-72 rounded-full"
                   style={{ background: `radial-gradient(circle, rgba(${s.acc},0.3), transparent 65%)`, filter: 'blur(60px)' }} />
 
+                {/* HUD corner brackets — top-left + bottom-right */}
+                <svg width="22" height="22" viewBox="0 0 22 22" className="pointer-events-none absolute top-3 left-3">
+                  <path d="M 2 11 L 2 2 L 11 2" fill="none" stroke={`rgba(${s.accL},0.7)`} strokeWidth="1" strokeLinecap="round" />
+                </svg>
+                <svg width="22" height="22" viewBox="0 0 22 22" className="pointer-events-none absolute bottom-3 right-3"
+                  style={{ transform: 'rotate(180deg)' }}>
+                  <path d="M 2 11 L 2 2 L 11 2" fill="none" stroke={`rgba(${s.accL},0.7)`} strokeWidth="1" strokeLinecap="round" />
+                </svg>
+
+                {/* Vertical accent stripe (left side) */}
+                <div className="pointer-events-none absolute top-10 bottom-10 left-3 w-px"
+                  style={{ background: `linear-gradient(180deg, transparent, rgba(${s.accL},0.4), transparent)` }} />
+                {/* 3 mini node ticks along the stripe */}
+                {[20, 50, 80].map((p, ti) => (
+                  <motion.span
+                    key={ti}
+                    className="pointer-events-none absolute left-[10px] w-1.5 h-1.5 rounded-full"
+                    style={{ top: `${p}%`, background: `rgb(${s.accL})`, boxShadow: `0 0 6px rgba(${s.acc},1)` }}
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: ti * 0.6 }}
+                  />
+                ))}
+
+                {/* Mini system label (top-right) */}
+                <div className="pointer-events-none absolute top-3 right-5 hidden sm:flex items-center gap-1.5">
+                  <span className="text-[8.5px] font-mono uppercase font-bold"
+                    style={{ color: `rgba(${s.accL},0.65)`, letterSpacing: '0.16em' }}>
+                    {s.id === 'agentes' ? 'AI/001' : 'STORE/02'}
+                  </span>
+                  <motion.span
+                    className="w-1 h-1 rounded-full"
+                    style={{ background: 'rgb(52,211,153)', boxShadow: '0 0 6px rgb(52,211,153)' }}
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 1.4, repeat: Infinity }}
+                  />
+                </div>
+
                 {/* Icon tile */}
                 <div className="relative mb-5 inline-block">
                   <motion.span
@@ -1269,6 +1445,54 @@ function FinalCTA() {
             <NeuralBackdrop />
           </div>
 
+          {/* Tron-style perspective floor grid */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] overflow-hidden"
+            style={{
+              perspective: '420px',
+              perspectiveOrigin: '50% 0%',
+              maskImage: 'linear-gradient(180deg, transparent 0%, black 40%, black 80%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, black 40%, black 80%, transparent 100%)',
+            }}
+          >
+            <motion.div
+              className="absolute left-1/2 -translate-x-1/2 bottom-0 origin-bottom"
+              style={{
+                width: '260%',
+                height: '180%',
+                transform: 'rotateX(62deg)',
+                backgroundImage:
+                  'linear-gradient(rgba(96,165,250,0.55) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,0.55) 1px, transparent 1px)',
+                backgroundSize: '38px 38px',
+              }}
+              animate={{ backgroundPosition: ['0px 0px', '0px 38px'] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'linear' }}
+            />
+          </div>
+
+          {/* Horizon glow over the floor */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-[50%] h-[8px]"
+            style={{ background: 'linear-gradient(180deg, transparent, rgba(96,165,250,0.95), transparent)', filter: 'blur(3px)' }} />
+
+          {/* Skyline of glowing dots at horizon */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-[48%] h-6">
+            {[5, 12, 19, 26, 34, 42, 49, 57, 65, 72, 79, 86, 93].map((leftPct, i) => (
+              <motion.span
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  left: `${leftPct}%`,
+                  bottom: i % 2 === 0 ? 0 : 4,
+                  width: i % 3 === 0 ? '3px' : '2px',
+                  height: i % 3 === 0 ? '3px' : '2px',
+                  background: 'rgba(96,165,250,1)',
+                  boxShadow: '0 0 8px rgba(96,165,250,1), 0 0 16px rgba(96,165,250,0.6)',
+                }}
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ duration: 2 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
+              />
+            ))}
+          </div>
+
           {/* Drifting energy particles inside the CTA */}
           {[...Array(10)].map((_, i) => (
             <motion.span
@@ -1415,23 +1639,42 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
       initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="text-center"
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      className="text-center relative"
     >
+      {/* Decorative side lines flanking the eyebrow */}
+      <div className="hidden sm:flex items-center justify-center gap-3 mb-4">
+        <span className="block h-px w-12 lg:w-20"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.45))' }} />
+        <span
+          className="inline-flex items-center text-[10.5px] uppercase font-bold text-blue-200 px-3 py-1.5 rounded-full whitespace-nowrap"
+          style={{
+            letterSpacing: '0.22em',
+            background: 'rgba(59,130,246,0.12)',
+            border: '1px solid rgba(96,165,250,0.4)',
+            boxShadow: '0 0 14px rgba(59,130,246,0.3)',
+          }}
+        >
+          {eyebrow}
+        </span>
+        <span className="block h-px w-12 lg:w-20"
+          style={{ background: 'linear-gradient(90deg, rgba(96,165,250,0.45), transparent)' }} />
+      </div>
+      {/* Mobile fallback for eyebrow */}
       <span
-        className="inline-flex items-center text-[10.5px] uppercase font-bold text-blue-300 mb-4 px-3 py-1.5 rounded-full"
+        className="sm:hidden inline-flex items-center text-[10px] uppercase font-bold text-blue-200 mb-4 px-3 py-1.5 rounded-full"
         style={{
-          letterSpacing: '0.22em',
-          background: 'rgba(59,130,246,0.10)',
-          border: '1px solid rgba(59,130,246,0.28)',
+          letterSpacing: '0.2em',
+          background: 'rgba(59,130,246,0.12)',
+          border: '1px solid rgba(96,165,250,0.4)',
         }}
       >
         {eyebrow}
       </span>
       <h2
-        className="font-bold leading-[1.08] text-[30px] sm:text-[40px] max-w-3xl mx-auto"
+        className="font-bold leading-[1.04] text-[32px] sm:text-[44px] lg:text-[52px] max-w-3xl mx-auto"
         style={{
-          letterSpacing: '-0.034em',
+          letterSpacing: '-0.038em',
           background: 'linear-gradient(180deg, #FFFFFF 0%, #C8DBFF 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
