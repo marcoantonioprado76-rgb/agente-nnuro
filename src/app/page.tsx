@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Space_Grotesk, Inter } from 'next/font/google'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import {
   Bot, ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
   Check, Menu, X, Zap, Brain, Globe, ChevronDown,
@@ -17,10 +17,36 @@ const body = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], v
 const AVATAR = '/nuro-3d.png'
 
 /* ═══════════════════════════════════════════════════════════════
+   PALETA OFICIAL
+   #050816  base
+   #0B1026  surface
+   #1D2E6D  deep accent
+   #6B5CFF  violet (gradient start)
+   #8E44FF  purple (gradient mid)
+   #D45BFF  magenta (gradient end)
+   #F8FAFF  white
+   ═══════════════════════════════════════════════════════════════ */
+
+const GRAD_MAIN = 'linear-gradient(135deg, #6B5CFF 0%, #8E44FF 50%, #D45BFF 100%)'
+const GRAD_BTN  = 'linear-gradient(135deg, #6B5CFF 0%, #8E44FF 55%, #D45BFF 100%)'
+
+/* ═══════════════════════════════════════════════════════════════
    ROOT
    ═══════════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const mouseLightRef = useRef<HTMLDivElement>(null)
+
+  // Mouse-reactive premium light (window-wide, ref-driven, no re-renders)
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (mouseLightRef.current) {
+        mouseLightRef.current.style.transform = `translate3d(${e.clientX - 320}px, ${e.clientY - 320}px, 0)`
+      }
+    }
+    window.addEventListener('mousemove', handler)
+    return () => window.removeEventListener('mousemove', handler)
+  }, [])
 
   const navTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -31,12 +57,27 @@ export default function LandingPage() {
     <div
       className={`${display.variable} ${body.variable} relative min-h-screen overflow-x-hidden`}
       style={{
-        background: '#020817',
+        background: '#050816',
         fontFamily: 'var(--font-body), Inter, ui-sans-serif, system-ui',
-        color: '#FFFFFF',
+        color: '#F8FAFF',
       }}
     >
       <BackgroundLayers />
+
+      {/* Mouse-reactive volumetric light */}
+      <div
+        ref={mouseLightRef}
+        className="pointer-events-none fixed top-0 left-0 w-[640px] h-[640px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(142,68,255,0.22) 0%, rgba(212,91,255,0.10) 30%, transparent 65%)',
+          filter: 'blur(50px)',
+          zIndex: 1,
+          willChange: 'transform',
+          transform: 'translate3d(-1000px, -1000px, 0)',
+        }}
+        aria-hidden
+      />
 
       <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
@@ -57,65 +98,96 @@ export default function LandingPage() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   BACKGROUND — minimal: blueprint grid + 2 soft gradients + vignette
+   BACKGROUND — neblina violeta + grid + glows
    ═══════════════════════════════════════════════════════════════ */
 function BackgroundLayers() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* Base — deep premium gradient */}
+      {/* Base — radial premium */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 80% 60% at 70% 0%, #071426 0%, #020817 60%, #020817 100%)',
+            'radial-gradient(ellipse 85% 65% at 70% 0%, #0B1026 0%, #050816 60%, #050816 100%)',
         }}
       />
 
-      {/* Blueprint grid — ultra fine, masked to center */}
+      {/* Blueprint grid — ultra fino violeta, mascarado */}
       <div
         className="absolute inset-0"
         style={{
-          opacity: 0.05,
+          opacity: 0.06,
           backgroundImage:
-            'linear-gradient(rgba(96,165,250,1) 1px, transparent 1px), linear-gradient(90deg, rgba(96,165,250,1) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
+            'linear-gradient(rgba(142,68,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(142,68,255,1) 1px, transparent 1px)',
+          backgroundSize: '72px 72px',
           maskImage: 'radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 75%)',
           WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 75%)',
         }}
       />
 
-      {/* Soft volumetric glow — top right (NÜRO area) */}
+      {/* Hairlines tecnológicas mínimas */}
       <div
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          background:
+            'repeating-linear-gradient(0deg, transparent 0px, transparent 240px, rgba(212,91,255,0.5) 240px, rgba(212,91,255,0.5) 241px)',
+          maskImage: 'radial-gradient(ellipse at 50% 50%, black 0%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 50%, black 0%, transparent 70%)',
+        }}
+      />
+
+      {/* Neblina violeta principal — top right (NÜRO area) */}
+      <motion.div
         className="absolute"
         style={{
-          top: '5%',
-          right: '-10%',
+          top: '0%',
+          right: '-15%',
+          width: '820px',
+          height: '820px',
+          background:
+            'radial-gradient(circle, rgba(142,68,255,0.30) 0%, rgba(107,92,255,0.12) 35%, transparent 65%)',
+          filter: 'blur(90px)',
+        }}
+        animate={{ opacity: [0.85, 1, 0.85], scale: [1, 1.04, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Neblina magenta secundaria — bottom left */}
+      <motion.div
+        className="absolute"
+        style={{
+          bottom: '-10%',
+          left: '-10%',
           width: '720px',
           height: '720px',
-          background: 'radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 60%)',
-          filter: 'blur(80px)',
+          background:
+            'radial-gradient(circle, rgba(212,91,255,0.16) 0%, rgba(29,46,109,0.18) 40%, transparent 70%)',
+          filter: 'blur(90px)',
         }}
+        animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.05, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
 
-      {/* Subtle deep accent — bottom left */}
+      {/* Neblina deep accent — center bottom */}
       <div
         className="absolute"
         style={{
-          bottom: '-15%',
-          left: '-10%',
-          width: '640px',
-          height: '640px',
-          background: 'radial-gradient(circle, rgba(10,31,61,0.6) 0%, transparent 60%)',
-          filter: 'blur(80px)',
+          bottom: '20%',
+          left: '40%',
+          width: '480px',
+          height: '480px',
+          background:
+            'radial-gradient(circle, rgba(29,46,109,0.45) 0%, transparent 65%)',
+          filter: 'blur(100px)',
         }}
       />
 
-      {/* Vignette */}
+      {/* Vignette premium */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse at center, transparent 40%, rgba(2,8,23,0.7) 100%)',
+            'radial-gradient(ellipse at center, transparent 35%, rgba(5,8,22,0.75) 100%)',
         }}
       />
     </div>
@@ -123,7 +195,7 @@ function BackgroundLayers() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   NAVBAR — minimal premium
+   NAVBAR
    ═══════════════════════════════════════════════════════════════ */
 function Navbar({
   onNav, menuOpen, setMenuOpen,
@@ -139,8 +211,8 @@ function Navbar({
     <nav
       className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl"
       style={{
-        background: 'rgba(2,8,23,0.6)',
-        borderBottom: '1px solid rgba(96,165,250,0.08)',
+        background: 'rgba(5,8,22,0.6)',
+        borderBottom: '1px solid rgba(142,68,255,0.10)',
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 h-[68px] flex items-center justify-between gap-4">
@@ -149,8 +221,9 @@ function Navbar({
           <div
             className="relative w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(7,20,38,0.6))',
-              border: '1px solid rgba(96,165,250,0.25)',
+              background: 'linear-gradient(135deg, rgba(142,68,255,0.30), rgba(11,16,38,0.6))',
+              border: '1px solid rgba(212,91,255,0.30)',
+              boxShadow: '0 0 18px -6px rgba(142,68,255,0.6)',
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -189,11 +262,12 @@ function Navbar({
             href="/login"
             className="relative group/nl inline-flex items-center gap-2 h-10 px-5 rounded-lg text-white font-medium text-[13px] overflow-hidden"
             style={{
-              background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-              boxShadow: '0 8px 22px -6px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+              background: GRAD_BTN,
+              boxShadow:
+                '0 10px 26px -6px rgba(142,68,255,0.7), 0 0 0 1px rgba(212,91,255,0.32), inset 0 1px 0 rgba(255,255,255,0.22)',
             }}
           >
-            <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/nl:translate-x-full transition-transform duration-700" />
+            <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/22 to-transparent -translate-x-full group-hover/nl:translate-x-full transition-transform duration-700" />
             <span className="relative">Iniciar sesión</span>
             <ArrowRight className="w-3.5 h-3.5 relative" />
           </Link>
@@ -204,8 +278,8 @@ function Navbar({
           onClick={() => setMenuOpen(!menuOpen)}
           className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-white"
           style={{
-            background: 'rgba(96,165,250,0.08)',
-            border: '1px solid rgba(96,165,250,0.18)',
+            background: 'rgba(142,68,255,0.10)',
+            border: '1px solid rgba(142,68,255,0.22)',
           }}
           aria-label="Menú"
         >
@@ -222,7 +296,7 @@ function Navbar({
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
             className="lg:hidden overflow-hidden"
-            style={{ borderTop: '1px solid rgba(96,165,250,0.08)' }}
+            style={{ borderTop: '1px solid rgba(142,68,255,0.10)' }}
           >
             <div className="px-6 py-5 flex flex-col gap-1.5">
               {items.map((it) => (
@@ -238,8 +312,8 @@ function Navbar({
                 href="/register"
                 className="mt-3 flex items-center justify-center h-12 rounded-lg text-white/85 font-medium text-[13.5px]"
                 style={{
-                  background: 'rgba(96,165,250,0.08)',
-                  border: '1px solid rgba(96,165,250,0.2)',
+                  background: 'rgba(142,68,255,0.10)',
+                  border: '1px solid rgba(142,68,255,0.25)',
                 }}
               >
                 Crear cuenta
@@ -248,8 +322,8 @@ function Navbar({
                 href="/login"
                 className="flex items-center justify-center gap-2 h-12 rounded-lg text-white font-medium text-[13.5px]"
                 style={{
-                  background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
-                  boxShadow: '0 8px 22px -6px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.18)',
+                  background: GRAD_BTN,
+                  boxShadow: '0 10px 26px -6px rgba(142,68,255,0.7), inset 0 1px 0 rgba(255,255,255,0.22)',
                 }}
               >
                 Iniciar sesión
@@ -264,7 +338,7 @@ function Navbar({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HERO — NÜRO is the absolute protagonist
+   HERO — editorial premium + NÜRO protagonista
    ═══════════════════════════════════════════════════════════════ */
 function Hero({ onNav }: { onNav: (id: string) => void }) {
   return (
@@ -274,43 +348,47 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10"
         >
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-7"
             style={{
-              background: 'rgba(96,165,250,0.06)',
-              border: '1px solid rgba(96,165,250,0.18)',
+              background: 'rgba(142,68,255,0.08)',
+              border: '1px solid rgba(212,91,255,0.22)',
+              boxShadow: '0 0 14px -4px rgba(142,68,255,0.4)',
             }}
           >
             <span className="relative flex h-1.5 w-1.5">
-              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-blue-400"
+              <motion.span className="absolute inline-flex h-full w-full rounded-full"
+                style={{ background: '#D45BFF' }}
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 2, repeat: Infinity }} />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-400" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
             </span>
-            <span className="text-[11px] uppercase font-medium text-blue-200"
-              style={{ letterSpacing: '0.18em' }}>
+            <span className="text-[11px] uppercase font-medium"
+              style={{ letterSpacing: '0.18em', color: 'rgba(212,91,255,0.95)' }}>
               NÜRO · AI Sales Platform
             </span>
           </div>
 
           {/* Headline */}
           <h1
-            className="font-medium text-[44px] sm:text-[56px] lg:text-[68px] leading-[1.02]"
+            className="font-medium text-[44px] sm:text-[58px] lg:text-[72px] leading-[1.00]"
             style={{
               fontFamily: 'var(--font-display)',
-              letterSpacing: '-0.045em',
-              color: '#FFFFFF',
+              letterSpacing: '-0.05em',
+              color: '#F8FAFF',
             }}
           >
             Vender con IA,<br />
             <span style={{
-              background: 'linear-gradient(180deg, #FFFFFF 0%, #60A5FA 100%)',
+              background: GRAD_MAIN,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 30px rgba(142,68,255,0.35))',
             }}>
               sin pausa.
             </span>
@@ -326,15 +404,15 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
             operando en piloto automático.
           </p>
 
-          {/* CTAs — minimal */}
+          {/* CTAs */}
           <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <Link
               href="/login"
               className="relative group/cta inline-flex items-center justify-center gap-2 h-12 px-7 rounded-xl text-white font-medium text-[14px] overflow-hidden w-full sm:w-auto"
               style={{
-                background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                background: GRAD_BTN,
                 boxShadow:
-                  '0 16px 40px -10px rgba(59,130,246,0.7), 0 0 0 1px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.22)',
+                  '0 18px 44px -10px rgba(142,68,255,0.75), 0 0 0 1px rgba(212,91,255,0.35), inset 0 1px 0 rgba(255,255,255,0.24)',
                 letterSpacing: '-0.005em',
               }}
             >
@@ -353,10 +431,9 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
               }}
             >
               <span className="relative w-6 h-6 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'rgba(96,165,250,0.12)',
-                }}>
-                <Play className="w-2.5 h-2.5 text-blue-200 ml-0.5" fill="currentColor" />
+                style={{ background: 'rgba(142,68,255,0.14)' }}>
+                <Play className="w-2.5 h-2.5 ml-0.5" fill="currentColor"
+                  style={{ color: '#D45BFF' }} />
               </span>
               Ver demo
             </button>
@@ -392,68 +469,82 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
 }
 
 function NuroProtagonist() {
+  // Parallax sutil basado en scroll
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollY } = useScroll()
+  const y = useTransform(scrollY, [0, 600], [0, -40])
+  const opacity = useTransform(scrollY, [0, 600], [1, 0.5])
+
   return (
     <motion.div
+      ref={containerRef}
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      className="relative h-[520px] sm:h-[620px] lg:h-[720px] flex items-center justify-center"
+      transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+      style={{ y, opacity }}
+      className="relative h-[520px] sm:h-[620px] lg:h-[760px] flex items-center justify-center"
       aria-hidden
     >
-      {/* Soft cinematic glow behind */}
-      <div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-      >
+      {/* Soft cinematic violet glow behind — pulse muy lento */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
           className="rounded-full"
           style={{
-            width: 'min(560px, 80%)',
-            height: 'min(560px, 80%)',
+            width: 'min(620px, 85%)',
+            height: 'min(620px, 85%)',
             background:
-              'radial-gradient(circle, rgba(59,130,246,0.35) 0%, rgba(59,130,246,0.10) 35%, transparent 70%)',
-            filter: 'blur(40px)',
+              'radial-gradient(circle, rgba(142,68,255,0.45) 0%, rgba(212,91,255,0.18) 35%, transparent 70%)',
+            filter: 'blur(50px)',
           }}
-          animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.04, 1] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.04, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
 
-      {/* Single ultra-thin orbital ring (very subtle) */}
+      {/* Hairline orbital ring única, ultra delgada */}
       <motion.div
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: 'min(620px, 90%)',
-          height: 'min(620px, 90%)',
-          border: '1px solid rgba(96,165,250,0.10)',
+          width: 'min(680px, 95%)',
+          height: 'min(680px, 95%)',
+          border: '1px solid rgba(212,91,255,0.12)',
         }}
         animate={{ rotate: 360 }}
-        transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 110, repeat: Infinity, ease: 'linear' }}
       >
-        <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-300"
-          style={{ boxShadow: '0 0 10px rgba(96,165,250,0.9)' }} />
+        <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+          style={{ background: '#D45BFF', boxShadow: '0 0 12px rgba(212,91,255,1)' }} />
       </motion.div>
 
-      {/* NÜRO image — the absolute protagonist */}
+      {/* NÜRO image — protagonista con reflejos morados cinematográficos */}
       <motion.img
         src={AVATAR}
         alt="NÜRO"
         className="relative object-contain"
         style={{
-          height: '110%',
+          height: '112%',
           width: 'auto',
           maxWidth: '100%',
           filter:
-            'drop-shadow(0 0 80px rgba(59,130,246,0.45)) drop-shadow(0 0 160px rgba(96,165,250,0.25))',
+            'drop-shadow(0 0 90px rgba(142,68,255,0.55)) drop-shadow(0 0 200px rgba(212,91,255,0.35)) drop-shadow(0 30px 80px rgba(5,8,22,0.7))',
         }}
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ y: [0, -12, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Bottom reflection halo */}
+      <div className="pointer-events-none absolute bottom-[12%] left-1/2 -translate-x-1/2 w-[60%] h-[40px]"
+        style={{
+          background: 'radial-gradient(ellipse, rgba(212,91,255,0.4), transparent 70%)',
+          filter: 'blur(20px)',
+        }}
       />
     </motion.div>
   )
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TRUST BAR — quiet, premium strip
+   TRUST BAR
    ═══════════════════════════════════════════════════════════════ */
 function TrustBar() {
   const stats = [
@@ -467,7 +558,6 @@ function TrustBar() {
   return (
     <section className="relative py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Stats — quiet row with hairlines */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-10 gap-x-6 pb-12"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           {stats.map((s, i) => (
@@ -484,7 +574,7 @@ function TrustBar() {
                 style={{
                   fontFamily: 'var(--font-display)',
                   letterSpacing: '-0.04em',
-                  background: 'linear-gradient(180deg, #FFFFFF 0%, #60A5FA 100%)',
+                  background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
@@ -500,7 +590,6 @@ function TrustBar() {
           ))}
         </div>
 
-        {/* Partners */}
         <div className="pt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
           <span className="text-[10.5px] uppercase font-medium text-white/35"
             style={{ letterSpacing: '0.2em' }}>
@@ -520,7 +609,7 @@ function TrustBar() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   VIDEO DEMO — minimal frame
+   VIDEO DEMO
    ═══════════════════════════════════════════════════════════════ */
 const VIDEO_URL = '/nuro-demo.mp4'
 
@@ -551,13 +640,15 @@ function VideoDemo() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative mt-14 rounded-[28px] overflow-hidden"
           style={{
-            background: 'linear-gradient(180deg, rgba(10,31,61,0.5), rgba(2,8,23,0.7))',
-            border: '1px solid rgba(96,165,250,0.16)',
+            background:
+              'linear-gradient(180deg, rgba(29,46,109,0.32), rgba(11,16,38,0.7))',
+            border: '1px solid rgba(142,68,255,0.20)',
             boxShadow:
-              '0 30px 80px -24px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
+              '0 30px 80px -24px rgba(142,68,255,0.45), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
         >
-          <div className="relative aspect-video bg-[#020817]">
+          <div className="relative aspect-video"
+            style={{ background: '#050816' }}>
             <video
               ref={videoRef}
               src={VIDEO_URL}
@@ -580,7 +671,7 @@ function VideoDemo() {
                   className="absolute inset-0 flex items-center justify-center"
                   style={{
                     background:
-                      'radial-gradient(circle at center, rgba(59,130,246,0.18), rgba(2,8,23,0.55) 65%)',
+                      'radial-gradient(circle at center, rgba(142,68,255,0.22), rgba(5,8,22,0.55) 65%)',
                   }}
                   aria-label="Reproducir demo"
                 >
@@ -588,20 +679,20 @@ function VideoDemo() {
                     whileHover={{ scale: 1.06 }}
                     whileTap={{ scale: 0.96 }}
                     animate={{ scale: [1, 1.03, 1] }}
-                    transition={{ scale: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } }}
+                    transition={{ scale: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } }}
                     className="relative w-20 h-20 rounded-full flex items-center justify-center"
                     style={{
-                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                      background: GRAD_BTN,
                       boxShadow:
-                        '0 22px 60px -8px rgba(59,130,246,0.85), inset 0 2px 0 rgba(255,255,255,0.32)',
+                        '0 22px 60px -8px rgba(142,68,255,0.9), inset 0 2px 0 rgba(255,255,255,0.32)',
                     }}
                   >
                     <Play className="w-7 h-7 text-white ml-0.5" fill="currentColor" />
                     <motion.span
                       className="absolute inset-0 rounded-full pointer-events-none"
-                      style={{ border: '1.5px solid rgba(96,165,250,0.6)' }}
-                      animate={{ scale: [1, 1.7], opacity: [0.7, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+                      style={{ border: '1.5px solid rgba(212,91,255,0.6)' }}
+                      animate={{ scale: [1, 1.8], opacity: [0.7, 0] }}
+                      transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
                     />
                   </motion.span>
                 </motion.button>
@@ -615,7 +706,7 @@ function VideoDemo() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SERVICES — 2 premium glass cards
+   SERVICES — 2 glass cards premium
    ═══════════════════════════════════════════════════════════════ */
 function Services() {
   const services = [
@@ -654,21 +745,21 @@ function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -3 }}
+                whileHover={{ y: -4 }}
                 className="group relative rounded-[28px] p-9 lg:p-12 backdrop-blur-xl overflow-hidden transition-all duration-500"
                 style={{
                   background:
-                    'linear-gradient(180deg, rgba(10,31,61,0.55) 0%, rgba(7,20,38,0.7) 100%)',
-                  border: '1px solid rgba(96,165,250,0.14)',
+                    'linear-gradient(180deg, rgba(29,46,109,0.45) 0%, rgba(11,16,38,0.75) 100%)',
+                  border: '1px solid rgba(142,68,255,0.18)',
                   boxShadow:
-                    '0 24px 60px -20px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.04)',
+                    '0 24px 60px -20px rgba(142,68,255,0.30), inset 0 1px 0 rgba(255,255,255,0.04)',
                 }}
               >
                 {/* Hover border glow */}
                 <div className="pointer-events-none absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     boxShadow:
-                      '0 0 0 1px rgba(96,165,250,0.35), 0 30px 80px -20px rgba(59,130,246,0.4)',
+                      '0 0 0 1px rgba(212,91,255,0.40), 0 30px 80px -20px rgba(142,68,255,0.55)',
                   }}
                 />
 
@@ -676,14 +767,14 @@ function Services() {
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
                   style={{
                     background:
-                      'linear-gradient(90deg, transparent, rgba(96,165,250,0.4), transparent)',
+                      'linear-gradient(90deg, transparent, rgba(212,91,255,0.55), transparent)',
                   }} />
 
                 {/* Ambient glow corner */}
-                <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-60"
+                <div className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-70"
                   style={{
                     background:
-                      'radial-gradient(circle, rgba(59,130,246,0.22), transparent 65%)',
+                      'radial-gradient(circle, rgba(142,68,255,0.30), transparent 65%)',
                     filter: 'blur(50px)',
                   }} />
 
@@ -693,13 +784,14 @@ function Services() {
                     className="w-14 h-14 rounded-2xl flex items-center justify-center mb-7"
                     style={{
                       background:
-                        'linear-gradient(135deg, rgba(96,165,250,0.18), rgba(7,20,38,0.6))',
-                      border: '1px solid rgba(96,165,250,0.3)',
+                        'linear-gradient(135deg, rgba(142,68,255,0.25), rgba(11,16,38,0.6))',
+                      border: '1px solid rgba(212,91,255,0.32)',
                       boxShadow:
-                        '0 0 24px -6px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.12)',
+                        '0 0 28px -6px rgba(142,68,255,0.6), inset 0 1px 0 rgba(255,255,255,0.14)',
                     }}
                   >
-                    <Icon className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
+                    <Icon className="w-6 h-6" strokeWidth={1.5}
+                      style={{ color: '#D45BFF' }} />
                   </div>
 
                   <h3
@@ -718,10 +810,11 @@ function Services() {
                       <li key={i} className="flex items-center gap-3 text-[14px] text-white/80">
                         <span className="flex h-5 w-5 items-center justify-center rounded-full shrink-0"
                           style={{
-                            background: 'rgba(96,165,250,0.14)',
-                            border: '1px solid rgba(96,165,250,0.32)',
+                            background: 'rgba(142,68,255,0.18)',
+                            border: '1px solid rgba(212,91,255,0.35)',
                           }}>
-                          <Check className="w-3 h-3 text-blue-200" strokeWidth={3} />
+                          <Check className="w-3 h-3" strokeWidth={3}
+                            style={{ color: '#D45BFF' }} />
                         </span>
                         {b}
                       </li>
@@ -738,7 +831,7 @@ function Services() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   USE CASES — minimal grid
+   USE CASES
    ═══════════════════════════════════════════════════════════════ */
 function UseCases() {
   const cases = [
@@ -752,10 +845,10 @@ function UseCases() {
 
   return (
     <section className="relative py-24 lg:py-32">
-      {/* Sutil panel oscuro para diferenciar de Services */}
+      {/* Panel oscuro sutil para diferenciar */}
       <div className="absolute inset-x-0 inset-y-12 -z-0"
         style={{
-          background: 'linear-gradient(180deg, transparent, rgba(7,20,38,0.4), transparent)',
+          background: 'linear-gradient(180deg, transparent, rgba(11,16,38,0.5), transparent)',
         }} />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -778,20 +871,20 @@ function UseCases() {
                 whileHover={{ y: -3 }}
                 className="group relative rounded-2xl p-7 backdrop-blur-xl overflow-hidden transition-all duration-400"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(10,31,61,0.45), rgba(7,20,38,0.65))',
-                  border: '1px solid rgba(96,165,250,0.10)',
+                  background: 'linear-gradient(180deg, rgba(29,46,109,0.32), rgba(11,16,38,0.65))',
+                  border: '1px solid rgba(142,68,255,0.12)',
                 }}
               >
                 <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ boxShadow: '0 0 0 1px rgba(96,165,250,0.28)' }} />
+                  style={{ boxShadow: '0 0 0 1px rgba(212,91,255,0.32)' }} />
 
                 <div className="relative w-11 h-11 rounded-xl flex items-center justify-center mb-5"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(96,165,250,0.16), rgba(7,20,38,0.5))',
-                    border: '1px solid rgba(96,165,250,0.22)',
+                    background: 'linear-gradient(135deg, rgba(142,68,255,0.22), rgba(11,16,38,0.5))',
+                    border: '1px solid rgba(212,91,255,0.25)',
                   }}>
-                  <Icon className="w-4.5 h-4.5 text-blue-200" strokeWidth={1.6}
-                    style={{ width: 18, height: 18 }} />
+                  <Icon strokeWidth={1.6}
+                    style={{ width: 18, height: 18, color: '#D45BFF' }} />
                 </div>
 
                 <h3 className="text-[17px] font-medium text-white leading-tight mb-1.5"
@@ -812,7 +905,7 @@ function UseCases() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HOW IT WORKS — 3 quiet steps
+   HOW IT WORKS
    ═══════════════════════════════════════════════════════════════ */
 function HowItWorks() {
   const steps = [
@@ -830,9 +923,8 @@ function HowItWorks() {
         />
 
         <div className="grid lg:grid-cols-3 gap-10 lg:gap-12 mt-16 lg:mt-20 relative">
-          {/* Hairline between steps */}
           <div className="hidden lg:block absolute top-7 left-[16%] right-[16%] h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(96,165,250,0.25), transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.30), transparent)' }} />
 
           {steps.map((s, idx) => {
             const Icon = s.icon
@@ -845,19 +937,19 @@ function HowItWorks() {
                 transition={{ duration: 0.55, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 className="relative text-center"
               >
-                {/* Number above icon */}
-                <span className="block text-[10.5px] uppercase font-medium text-blue-300/65 mb-4"
-                  style={{ letterSpacing: '0.22em' }}>
+                <span className="block text-[10.5px] uppercase font-medium mb-4"
+                  style={{ letterSpacing: '0.22em', color: 'rgba(212,91,255,0.7)' }}>
                   {s.n}
                 </span>
 
                 <div className="relative inline-flex w-14 h-14 rounded-2xl items-center justify-center mb-6"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(96,165,250,0.16), rgba(7,20,38,0.6))',
-                    border: '1px solid rgba(96,165,250,0.25)',
-                    boxShadow: '0 0 28px -8px rgba(59,130,246,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
+                    background: 'linear-gradient(135deg, rgba(142,68,255,0.22), rgba(11,16,38,0.6))',
+                    border: '1px solid rgba(212,91,255,0.28)',
+                    boxShadow: '0 0 28px -8px rgba(142,68,255,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
                   }}>
-                  <Icon className="w-6 h-6 text-blue-200" strokeWidth={1.5} />
+                  <Icon className="w-6 h-6" strokeWidth={1.5}
+                    style={{ color: '#D45BFF' }} />
                 </div>
 
                 <h3 className="text-[22px] lg:text-[24px] font-medium text-white leading-tight mb-3"
@@ -878,7 +970,7 @@ function HowItWorks() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PRICING TEASER — 3 premium glass plans
+   PRICING
    ═══════════════════════════════════════════════════════════════ */
 function PricingTeaser() {
   const plans = [
@@ -929,13 +1021,13 @@ function PricingTeaser() {
               className="relative rounded-[28px] p-8 lg:p-10 backdrop-blur-xl overflow-hidden transition-all duration-500"
               style={{
                 background: p.popular
-                  ? 'linear-gradient(180deg, rgba(59,130,246,0.14) 0%, rgba(10,31,61,0.7) 100%)'
-                  : 'linear-gradient(180deg, rgba(10,31,61,0.5), rgba(7,20,38,0.65))',
+                  ? 'linear-gradient(180deg, rgba(142,68,255,0.18) 0%, rgba(29,46,109,0.55) 50%, rgba(11,16,38,0.75) 100%)'
+                  : 'linear-gradient(180deg, rgba(29,46,109,0.40), rgba(11,16,38,0.65))',
                 border: p.popular
-                  ? '1px solid rgba(96,165,250,0.4)'
-                  : '1px solid rgba(96,165,250,0.12)',
+                  ? '1px solid rgba(212,91,255,0.50)'
+                  : '1px solid rgba(142,68,255,0.14)',
                 boxShadow: p.popular
-                  ? '0 30px 70px -20px rgba(59,130,246,0.5), inset 0 1px 0 rgba(255,255,255,0.08)'
+                  ? '0 32px 75px -20px rgba(142,68,255,0.65), inset 0 1px 0 rgba(255,255,255,0.10)'
                   : 'inset 0 1px 0 rgba(255,255,255,0.04)',
               }}
             >
@@ -943,14 +1035,14 @@ function PricingTeaser() {
                 <>
                   <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-32"
                     style={{
-                      background: 'radial-gradient(ellipse, rgba(59,130,246,0.4), transparent 70%)',
+                      background: 'radial-gradient(ellipse, rgba(142,68,255,0.55), transparent 70%)',
                       filter: 'blur(40px)',
                     }} />
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full text-[9.5px] uppercase font-medium text-white whitespace-nowrap"
                     style={{
-                      background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                      background: GRAD_BTN,
                       letterSpacing: '0.2em',
-                      boxShadow: '0 10px 26px -4px rgba(59,130,246,0.7), inset 0 1px 0 rgba(255,255,255,0.28)',
+                      boxShadow: '0 10px 26px -4px rgba(142,68,255,0.85), inset 0 1px 0 rgba(255,255,255,0.28)',
                     }}>
                     Más popular
                   </div>
@@ -958,11 +1050,11 @@ function PricingTeaser() {
               )}
 
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-                style={{ background: `linear-gradient(90deg, transparent, rgba(96,165,250,${p.popular ? 0.6 : 0.3}), transparent)` }} />
+                style={{ background: `linear-gradient(90deg, transparent, rgba(212,91,255,${p.popular ? 0.7 : 0.35}), transparent)` }} />
 
               <div className="relative">
-                <div className="text-[11px] uppercase font-medium text-blue-300/85 mb-4"
-                  style={{ letterSpacing: '0.22em' }}>
+                <div className="text-[11px] uppercase font-medium mb-4"
+                  style={{ letterSpacing: '0.22em', color: 'rgba(212,91,255,0.85)' }}>
                   {p.name}
                 </div>
                 <div className="flex items-baseline gap-1 mb-2">
@@ -983,10 +1075,11 @@ function PricingTeaser() {
                     <li key={k} className="flex items-start gap-3 text-[13.5px] text-white/75">
                       <span className="mt-[3px] flex h-4 w-4 items-center justify-center rounded-full shrink-0"
                         style={{
-                          background: 'rgba(96,165,250,0.16)',
-                          border: '1px solid rgba(96,165,250,0.32)',
+                          background: 'rgba(142,68,255,0.18)',
+                          border: '1px solid rgba(212,91,255,0.35)',
                         }}>
-                        <Check className="w-2.5 h-2.5 text-blue-100" strokeWidth={3.5} />
+                        <Check className="w-2.5 h-2.5" strokeWidth={3.5}
+                          style={{ color: '#D45BFF' }} />
                       </span>
                       <span>{f}</span>
                     </li>
@@ -996,19 +1089,19 @@ function PricingTeaser() {
                 <Link
                   href="/pricing"
                   className={`relative group/pcta flex items-center justify-center gap-2 h-12 rounded-xl font-medium text-[13.5px] overflow-hidden transition-colors ${
-                    p.popular ? 'text-white' : 'text-white/85 hover:text-white hover:bg-blue-500/10'
+                    p.popular ? 'text-white' : 'text-white/85 hover:text-white'
                   }`}
                   style={
                     p.popular
                       ? {
-                          background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                          background: GRAD_BTN,
                           boxShadow:
-                            '0 14px 30px -8px rgba(59,130,246,0.7), inset 0 1px 0 rgba(255,255,255,0.25)',
+                            '0 14px 30px -8px rgba(142,68,255,0.75), inset 0 1px 0 rgba(255,255,255,0.25)',
                           letterSpacing: '-0.005em',
                         }
                       : {
                           background: 'transparent',
-                          border: '1px solid rgba(96,165,250,0.22)',
+                          border: '1px solid rgba(212,91,255,0.28)',
                           letterSpacing: '-0.005em',
                         }
                   }
@@ -1026,7 +1119,8 @@ function PricingTeaser() {
 
         <div className="text-center mt-12">
           <Link href="/pricing"
-            className="inline-flex items-center gap-2 text-[13px] font-medium text-blue-300 hover:text-blue-200 transition-colors">
+            className="inline-flex items-center gap-2 text-[13px] font-medium transition-colors"
+            style={{ color: '#D45BFF' }}>
             Ver comparativa completa
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -1037,7 +1131,7 @@ function PricingTeaser() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   FAQ — clean accordion
+   FAQ
    ═══════════════════════════════════════════════════════════════ */
 function FAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0)
@@ -1077,11 +1171,14 @@ function FAQ() {
                 className="relative rounded-2xl overflow-hidden transition-all duration-300"
                 style={{
                   background: isOpen
-                    ? 'linear-gradient(180deg, rgba(59,130,246,0.08), rgba(7,20,38,0.6))'
-                    : 'rgba(7,20,38,0.4)',
+                    ? 'linear-gradient(180deg, rgba(142,68,255,0.10), rgba(11,16,38,0.65))'
+                    : 'rgba(11,16,38,0.5)',
                   border: isOpen
-                    ? '1px solid rgba(96,165,250,0.32)'
-                    : '1px solid rgba(96,165,250,0.10)',
+                    ? '1px solid rgba(212,91,255,0.40)'
+                    : '1px solid rgba(142,68,255,0.12)',
+                  boxShadow: isOpen
+                    ? '0 14px 36px -14px rgba(142,68,255,0.55)'
+                    : 'inset 0 1px 0 rgba(255,255,255,0.03)',
                 }}
               >
                 <button
@@ -1096,13 +1193,13 @@ function FAQ() {
                   <motion.span
                     className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full"
                     style={{
-                      background: 'rgba(96,165,250,0.10)',
-                      border: '1px solid rgba(96,165,250,0.22)',
+                      background: 'rgba(142,68,255,0.14)',
+                      border: '1px solid rgba(212,91,255,0.30)',
                     }}
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: 'easeOut' }}
                   >
-                    <ChevronDown className="w-3.5 h-3.5 text-blue-200" />
+                    <ChevronDown className="w-3.5 h-3.5" style={{ color: '#D45BFF' }} />
                   </motion.span>
                 </button>
 
@@ -1131,7 +1228,8 @@ function FAQ() {
           <p className="text-[13px] text-white/50">
             ¿Tienes otra pregunta?{' '}
             <a href="mailto:hola@agente-nuro.com"
-              className="text-blue-300 font-medium hover:text-blue-200 transition-colors">
+              className="font-medium hover:opacity-80 transition-opacity"
+              style={{ color: '#D45BFF' }}>
               Escríbenos
             </a>
           </p>
@@ -1142,7 +1240,7 @@ function FAQ() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   FINAL CTA — minimal premium
+   FINAL CTA
    ═══════════════════════════════════════════════════════════════ */
 function FinalCTA() {
   return (
@@ -1159,7 +1257,7 @@ function FinalCTA() {
             style={{
               fontFamily: 'var(--font-display)',
               letterSpacing: '-0.045em',
-              background: 'linear-gradient(180deg, #FFFFFF 0%, #60A5FA 100%)',
+              background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -1178,9 +1276,9 @@ function FinalCTA() {
               href="/login"
               className="relative group/fcta inline-flex items-center justify-center gap-2 h-14 px-9 rounded-xl text-white font-medium text-[15px] overflow-hidden"
               style={{
-                background: 'linear-gradient(180deg, #3B82F6, #2563EB)',
+                background: GRAD_BTN,
                 boxShadow:
-                  '0 22px 60px -10px rgba(59,130,246,0.75), 0 0 0 1px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.22)',
+                  '0 24px 60px -10px rgba(142,68,255,0.8), 0 0 0 1px rgba(212,91,255,0.32), inset 0 1px 0 rgba(255,255,255,0.22)',
                 letterSpacing: '-0.005em',
               }}
             >
@@ -1213,7 +1311,7 @@ function FinalCTA() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   FOOTER — minimal premium
+   FOOTER
    ═══════════════════════════════════════════════════════════════ */
 function Footer() {
   const cols = [
@@ -1271,8 +1369,9 @@ function Footer() {
               <div
                 className="relative w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(7,20,38,0.6))',
-                  border: '1px solid rgba(96,165,250,0.25)',
+                  background: 'linear-gradient(135deg, rgba(142,68,255,0.30), rgba(11,16,38,0.6))',
+                  border: '1px solid rgba(212,91,255,0.30)',
+                  boxShadow: '0 0 18px -6px rgba(142,68,255,0.55)',
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1292,10 +1391,10 @@ function Footer() {
                 const Icon = s.Icon
                 return (
                   <a key={i} href={s.href} aria-label={s.label}
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-white/55 hover:text-white hover:bg-white/5 transition-colors"
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-white/55 hover:text-white transition-colors"
                     style={{
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.08)',
+                      background: 'rgba(142,68,255,0.06)',
+                      border: '1px solid rgba(142,68,255,0.14)',
                     }}>
                     <Icon className="w-4 h-4" strokeWidth={1.6} />
                   </a>
@@ -1330,14 +1429,15 @@ function Footer() {
             style={{ letterSpacing: '0.04em' }}>
             © {new Date().getFullYear()} NÜRO · La plataforma más avanzada para vender con IA en LATAM
           </div>
-          <div className="flex items-center gap-1.5 text-[10.5px] uppercase font-medium text-emerald-300/70"
-            style={{ letterSpacing: '0.18em' }}>
+          <div className="flex items-center gap-1.5 text-[10.5px] uppercase font-medium"
+            style={{ letterSpacing: '0.18em', color: 'rgba(212,91,255,0.75)' }}>
             <span className="relative flex h-1.5 w-1.5">
-              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
+              <motion.span className="absolute inline-flex h-full w-full rounded-full"
+                style={{ background: '#D45BFF' }}
                 animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity }} />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
-                style={{ boxShadow: '0 0 6px rgba(52,211,153,0.85)' }} />
+                transition={{ duration: 1.8, repeat: Infinity }} />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.85)' }} />
             </span>
             Sistema operativo
           </div>
@@ -1359,8 +1459,8 @@ function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: string
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="text-center"
     >
-      <span className="inline-block text-[11px] uppercase font-medium text-blue-300/85 mb-5"
-        style={{ letterSpacing: '0.22em' }}>
+      <span className="inline-block text-[11px] uppercase font-medium mb-5"
+        style={{ letterSpacing: '0.22em', color: 'rgba(212,91,255,0.85)' }}>
         {eyebrow}
       </span>
       <h2
@@ -1368,7 +1468,7 @@ function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: string
         style={{
           fontFamily: 'var(--font-display)',
           letterSpacing: '-0.04em',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #C8DBFF 100%)',
+          background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
