@@ -57,7 +57,7 @@ export default function LandingPage() {
     <div
       className={`${display.variable} ${body.variable} relative min-h-screen overflow-x-hidden`}
       style={{
-        background: '#050816',
+        background: 'transparent',
         fontFamily: 'var(--font-body), Inter, ui-sans-serif, system-ui',
         color: '#F8FAFF',
       }}
@@ -128,8 +128,9 @@ function BackgroundLayers() {
   return (
     <div
       ref={rootRef}
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none fixed inset-0 overflow-hidden"
       style={{
+        zIndex: 0,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ['--mx' as any]: '0px',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
