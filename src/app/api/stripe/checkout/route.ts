@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
+import Stripe from 'stripe'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { getServerSession } from '@/lib/auth'
-import { stripe } from '@/lib/stripe'
+import { stripe, StripeNotConfiguredError } from '@/lib/stripe'
 import { getPaymentMethodsSettings } from '@/lib/settings'
 
 export const dynamic = 'force-dynamic'
@@ -41,6 +42,24 @@ export async function POST(request: NextRequest) {
 
     if (!plan) {
       return NextResponse.json({ error: 'Plan no encontrado o inactivo' }, { status: 404 })
+    }
+
+    // 2.1 Validate plan fields critical for Stripe — evita TypeErrors silenciosos
+    const planPrice = typeof plan.price === 'number' ? plan.price : Number(plan.price)
+    const planCurrency = (plan.currency || '').toString().trim()
+    if (!Number.isFinite(planPrice) || planPrice <= 0) {
+      console.error('[Stripe Checkout] Plan con precio inválido:', { plan_id, price: plan.price })
+      return NextResponse.json({ error: 'El plan tiene un precio inválido' }, { status: 400 })
+    }
+    if (!planCurrency || planCurrency.length !== 3) {
+      console.error('[Stripe Checkout] Plan con moneda inválida:', { plan_id, currency: plan.currency })
+      return NextResponse.json({ error: 'El plan tiene una moneda inválida' }, { status: 400 })
+    }
+    // Stripe requiere unit_amount >= 50 centavos en USD (equivalente en otras monedas)
+    const unitAmount = Math.round(planPrice * 100)
+    if (unitAmount < 50) {
+      console.error('[Stripe Checkout] Monto demasiado bajo para Stripe:', { unitAmount })
+      return NextResponse.json({ error: 'El monto mínimo para procesar es 0.50' }, { status: 400 })
     }
 
     // 3. Check existing subscriptions
@@ -88,50 +107,75 @@ export async function POST(request: NextRequest) {
 
     // 5. Reuse existing Stripe customer or create new one
     let customerId = existingSub?.stripe_customer_id || null
+    let session: Stripe.Checkout.Session
 
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: profile?.email || user.email || '',
-        name: profile?.full_name || '',
-        metadata: {
-          supabase_user_id: user.id,
-          tenant_id: profile?.tenant_id || '',
-        },
-      })
-      customerId = customer.id
-    }
-
-    // 6. Create Stripe Checkout session
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: plan.currency.toLowerCase(),
-            product_data: {
-              name: `Plan ${plan.name} - Agente de Ventas`,
-              description: `Suscripción mensual al plan ${plan.name}`,
-            },
-            unit_amount: Math.round(plan.price * 100),
+    try {
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: profile?.email || user.email || '',
+          name: profile?.full_name || '',
+          metadata: {
+            supabase_user_id: user.id,
+            tenant_id: profile?.tenant_id || '',
           },
-          quantity: 1,
+        })
+        customerId = customer.id
+      }
+
+      // 6. Create Stripe Checkout session
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+
+      session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        mode: 'payment',
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: planCurrency.toLowerCase(),
+              product_data: {
+                name: `Plan ${plan.name} - Agente de Ventas`,
+                description: `Suscripción mensual al plan ${plan.name}`,
+              },
+              unit_amount: unitAmount,
+            },
+            quantity: 1,
+          },
+        ],
+        metadata: {
+          user_id: user.id,
+          plan_id: plan.id,
+          plan_name: plan.name,
+          tenant_id: profile?.tenant_id || '',
+          stripe_customer_id: customerId,
         },
-      ],
-      metadata: {
-        user_id: user.id,
-        plan_id: plan.id,
-        plan_name: plan.name,
-        tenant_id: profile?.tenant_id || '',
-        stripe_customer_id: customerId,
-      },
-      success_url: `${appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/pricing`,
-      expires_at: Math.floor(Date.now() / 1000) + 1800,
-    })
+        success_url: `${appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${appUrl}/pricing`,
+        expires_at: Math.floor(Date.now() / 1000) + 1800,
+      })
+    } catch (stripeErr) {
+      // Casos específicos: env faltante, API key inválida, moneda no soportada, etc.
+      if (stripeErr instanceof StripeNotConfiguredError) {
+        console.error('[Stripe Checkout] STRIPE_SECRET_KEY no configurada en el servidor')
+        return NextResponse.json(
+          { error: 'El pago con Stripe no está configurado en el servidor' },
+          { status: 503 }
+        )
+      }
+      if (stripeErr instanceof Stripe.errors.StripeError) {
+        console.error('[Stripe Checkout] Error de Stripe:', {
+          type: stripeErr.type,
+          code: stripeErr.code,
+          message: stripeErr.message,
+          param: stripeErr.param,
+        })
+        return NextResponse.json(
+          { error: `Stripe: ${stripeErr.message}` },
+          { status: 502 }
+        )
+      }
+      throw stripeErr
+    }
 
     // 7. Create pending subscription record
     const { data: subscription, error: subError } = await service

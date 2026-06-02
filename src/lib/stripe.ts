@@ -4,21 +4,38 @@ if (!process.env.STRIPE_SECRET_KEY) {
   console.warn('[Stripe] STRIPE_SECRET_KEY no configurada')
 }
 
-// Use a lazy getter so Stripe only initializes when actually called (not at build time)
+// Custom error que el caller puede identificar para devolver 503 explícito
+export class StripeNotConfiguredError extends Error {
+  constructor() {
+    super('STRIPE_SECRET_KEY no configurada en el servidor')
+    this.name = 'StripeNotConfiguredError'
+  }
+}
+
+// Lazy getter: solo inicializa cuando hace falta y lanza error claro si no hay key
 let _stripe: Stripe | null = null
 export function getStripe(): Stripe {
   if (!_stripe) {
-    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-      typescript: true,
-    })
+    const key = process.env.STRIPE_SECRET_KEY
+    if (!key) throw new StripeNotConfiguredError()
+    _stripe = new Stripe(key, { typescript: true })
   }
   return _stripe
 }
 
-// Keep backward compat — but guard against build-time initialization
-export const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, { typescript: true })
-  : (null as unknown as Stripe)
+/**
+ * `stripe` es un Proxy que delega a getStripe() en cada acceso. Esto preserva
+ * la API anterior (`import { stripe } from '@/lib/stripe'`) sin riesgo de
+ * obtener `null` cuando la env var no está cargada (lo que causaba TypeError
+ * silenciosos del tipo "Cannot read property 'customers' of null").
+ */
+export const stripe: Stripe = new Proxy({} as Stripe, {
+  get(_target, prop) {
+    const client = getStripe() as unknown as Record<string | symbol, unknown>
+    const value = client[prop]
+    return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(client) : value
+  },
+})
 
 /**
  * Verifica la firma de un webhook de Stripe.

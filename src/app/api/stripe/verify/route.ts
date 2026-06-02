@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { getServerSession } from '@/lib/auth'
-import { stripe, calculateEndDate } from '@/lib/stripe'
+import { stripe, calculateEndDate, StripeNotConfiguredError } from '@/lib/stripe'
 import { logAudit } from '@/lib/audit'
 
 export const dynamic = 'force-dynamic'
@@ -39,11 +40,32 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Verify with Stripe
-    let session
+    let session: Stripe.Checkout.Session
     try {
       session = await stripe.checkout.sessions.retrieve(session_id)
-    } catch {
-      return NextResponse.json({ error: 'Sesion de Stripe no encontrada' }, { status: 404 })
+    } catch (stripeErr) {
+      if (stripeErr instanceof StripeNotConfiguredError) {
+        console.error('[Stripe Verify] STRIPE_SECRET_KEY no configurada en el servidor')
+        return NextResponse.json(
+          { error: 'El pago con Stripe no está configurado en el servidor' },
+          { status: 503 }
+        )
+      }
+      if (stripeErr instanceof Stripe.errors.StripeError) {
+        console.error('[Stripe Verify] Error de Stripe:', {
+          type: stripeErr.type,
+          code: stripeErr.code,
+          message: stripeErr.message,
+        })
+        // Si la sesión no existe en Stripe, 404 explícito; cualquier otro error → 502
+        const status = stripeErr.code === 'resource_missing' ? 404 : 502
+        return NextResponse.json(
+          { error: status === 404 ? 'Sesión de Stripe no encontrada' : `Stripe: ${stripeErr.message}` },
+          { status }
+        )
+      }
+      console.error('[Stripe Verify] Error inesperado al retrieve session:', stripeErr)
+      return NextResponse.json({ error: 'Error al verificar sesión' }, { status: 500 })
     }
 
     if (session.metadata?.user_id !== user.id) {

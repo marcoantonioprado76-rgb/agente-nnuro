@@ -21,17 +21,21 @@ function BillingSuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [status, setStatus] = useState<'checking' | 'active' | 'pending' | 'error'>('checking')
+  const [errorDetail, setErrorDetail] = useState<string | null>(null)
+  const [retryNonce, setRetryNonce] = useState(0)
 
   useEffect(() => {
     if (!sessionId) {
       setStatus('error')
+      setErrorDetail('Falta el parámetro session_id en la URL.')
       return
     }
 
+    let cancelled = false
     let attempts = 0
     const maxAttempts = 15
 
-    const verify = async () => {
+    const verify = async (): Promise<boolean> => {
       try {
         // First try direct verification with Stripe
         const verifyRes = await fetch('/api/stripe/verify', {
@@ -43,9 +47,25 @@ function BillingSuccessContent() {
         if (verifyRes.ok) {
           const data = await verifyRes.json()
           if (data.status === 'activated' || data.status === 'already_active') {
-            setStatus('active')
+            if (!cancelled) setStatus('active')
             return true
           }
+          if (data.status === 'not_paid') {
+            // Stripe dice que no se pagó — no insistir, mostrar pending con detalle
+            if (!cancelled) {
+              setStatus('pending')
+              setErrorDetail(`Stripe reporta el pago como "${data.payment_status || 'unpaid'}".`)
+            }
+            return true
+          }
+        } else {
+          // Capturar detalle del backend para mostrar al user
+          try {
+            const errData = await verifyRes.json()
+            if (errData?.error && !cancelled) {
+              setErrorDetail(errData.error)
+            }
+          } catch { /* response no-json */ }
         }
 
         // Fallback: check subscription status directly
@@ -53,29 +73,43 @@ function BillingSuccessContent() {
         if (subRes.ok) {
           const sub = await subRes.json()
           if (sub?.status === 'active' && sub?.approval_status === 'approved') {
-            setStatus('active')
+            if (!cancelled) setStatus('active')
             return true
           }
         }
-      } catch { /* retry */ }
+      } catch (e) {
+        if (!cancelled) {
+          setErrorDetail(e instanceof Error ? e.message : 'Error de red')
+        }
+      }
 
       attempts++
       if (attempts >= maxAttempts) {
-        setStatus('pending')
+        if (!cancelled) setStatus('pending')
         return true
       }
       return false
     }
 
+    setStatus('checking')
+    setErrorDetail(null)
+
     verify().then((done) => {
-      if (done) return
+      if (done || cancelled) return
       const interval = setInterval(async () => {
-        const done = await verify()
-        if (done) clearInterval(interval)
+        const finished = await verify()
+        if (finished || cancelled) clearInterval(interval)
       }, 2000)
-      return () => clearInterval(interval)
     })
-  }, [sessionId])
+
+    return () => {
+      cancelled = true
+    }
+  }, [sessionId, retryNonce])
+
+  const handleRetry = () => {
+    setRetryNonce((n) => n + 1)
+  }
 
   const handleGoToDashboard = () => {
     window.location.href = '/dashboard'
@@ -132,6 +166,12 @@ function BillingSuccessContent() {
                 <p className="text-muted-foreground text-sm">
                   No se pudo verificar la sesion de pago. Intenta de nuevo o contacta al administrador.
                 </p>
+                {errorDetail && (
+                  <p className="text-red-300/80 text-xs mt-3 font-mono break-all">{errorDetail}</p>
+                )}
+                {sessionId && (
+                  <p className="text-white/40 text-[11px] mt-2 font-mono break-all">ID: {sessionId}</p>
+                )}
               </div>
               <Button
                 onClick={handleGoToDashboard}
@@ -152,14 +192,30 @@ function BillingSuccessContent() {
                   Tu pago ha sido recibido pero la activacion esta tomando mas tiempo del esperado.
                   Tu suscripcion se activara automaticamente en breve.
                 </p>
+                {errorDetail && (
+                  <p className="text-yellow-300/80 text-xs mt-3 font-mono break-all">{errorDetail}</p>
+                )}
+                {sessionId && (
+                  <p className="text-white/40 text-[11px] mt-2 font-mono break-all">ID: {sessionId}</p>
+                )}
               </div>
-              <Button
-                onClick={handleGoToDashboard}
-                className="w-full h-12 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-bold rounded-xl"
-              >
-                Ir a mi Panel
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={handleRetry}
+                  variant="outline"
+                  className="w-full h-11 border-white/15 bg-transparent hover:bg-white/5 text-white rounded-xl"
+                >
+                  <Loader2 className="h-4 w-4 mr-2" />
+                  Reintentar verificación
+                </Button>
+                <Button
+                  onClick={handleGoToDashboard}
+                  className="w-full h-12 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-bold rounded-xl"
+                >
+                  Ir a mi Panel
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </div>
             </>
           )}
         </div>
