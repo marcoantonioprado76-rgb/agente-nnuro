@@ -1001,9 +1001,9 @@ type IconComp = React.ComponentType<{
 type ChannelDef = {
   Icon: IconComp
   label: string
-  sub: string
   angle: number
   color: string
+  metrics: { label: string; value: string }[]
 }
 
 const InstagramMark: IconComp = ({ className, strokeWidth = 1.8, style }) => (
@@ -1030,47 +1030,48 @@ const gradNumberStyle: React.CSSProperties = {
 }
 
 function TrustBar() {
-  const channels: ChannelDef[] = [
-    { Icon: MessageCircle,  label: 'WhatsApp',       sub: '247 chats',     angle: 0,   color: '#10B981' },
-    { Icon: Send,           label: 'Messenger',      sub: '89 chats',      angle: 60,  color: '#6B5CFF' },
-    { Icon: InstagramMark,  label: 'Instagram',      sub: '156 DMs',       angle: 120, color: '#D45BFF' },
-    { Icon: ShoppingBag,    label: 'Tienda Virtual', sub: '12 pedidos',    angle: 180, color: '#D45BFF' },
-    { Icon: Briefcase,      label: 'CRM',            sub: '34 leads',      angle: 240, color: '#8E44FF' },
-    { Icon: Bot,            label: 'Agente IA',      sub: '98% precisión', angle: 300, color: '#D45BFF' },
+  const systems: ChannelDef[] = [
+    {
+      Icon: MessageCircle, label: 'WhatsApp', angle: 0, color: '#10B981',
+      metrics: [
+        { label: 'Conversaciones', value: '247' },
+        { label: 'Oportunidades',  value: '18'  },
+        { label: 'Ventas hoy',     value: '3'   },
+      ],
+    },
+    {
+      Icon: InstagramMark, label: 'Instagram', angle: 72, color: '#D45BFF',
+      metrics: [
+        { label: 'Mensajes',       value: '156' },
+        { label: 'Leads',          value: '32'  },
+        { label: 'Seguimientos',   value: '12'  },
+      ],
+    },
+    {
+      Icon: ShoppingBag, label: 'Tienda', angle: 144, color: '#8E44FF',
+      metrics: [
+        { label: 'Pedidos',        value: '37'      },
+        { label: 'Vendido',        value: '$2,480'  },
+      ],
+    },
+    {
+      Icon: Briefcase, label: 'CRM', angle: 216, color: '#6B5CFF',
+      metrics: [
+        { label: 'Prospectos',     value: '84' },
+        { label: 'Clientes calientes', value: '21' },
+      ],
+    },
+    {
+      Icon: Send, label: 'Messenger', angle: 288, color: '#D45BFF',
+      metrics: [
+        { label: 'Conversaciones', value: '89' },
+        { label: 'Oportunidades',  value: '7'  },
+      ],
+    },
   ]
 
   return (
     <section className="relative pt-14 pb-16 lg:pt-20 lg:pb-24 overflow-hidden">
-      {/* Violet wash centrado al núcleo */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="w-[1000px] h-[800px] rounded-full"
-          style={{
-            background:
-              'radial-gradient(ellipse, rgba(142,68,255,0.24) 0%, rgba(212,91,255,0.08) 35%, transparent 65%)',
-            filter: 'blur(80px)',
-          }} />
-      </div>
-
-      {/* Floating ambient particles */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {[...Array(10)].map((_, i) => (
-          <motion.span
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              left: `${(i * 11) % 95}%`,
-              top: `${10 + (i * 19) % 78}%`,
-              width: i % 3 === 0 ? 3 : 2,
-              height: i % 3 === 0 ? 3 : 2,
-              background: i % 2 === 0 ? '#D45BFF' : '#8E44FF',
-              boxShadow: `0 0 8px ${i % 2 === 0 ? 'rgba(212,91,255,0.9)' : 'rgba(142,68,255,0.9)'}`,
-            }}
-            animate={{ y: [0, -36, 0], opacity: [0.25, 0.85, 0.25] }}
-            transition={{ duration: 10 + i * 0.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
-          />
-        ))}
-      </div>
-
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeader
           eyebrow="Centro de Operaciones"
@@ -1086,17 +1087,20 @@ function TrustBar() {
           <Clock24Metric delay={0.24} />
         </div>
 
-        {/* Núcleo + 6 canales orbitando */}
-        <div className="relative aspect-square w-full max-w-[680px] mx-auto mt-14 lg:mt-16">
-          <ConnectionLines channels={channels} />
-          {channels.map((c, i) => (
-            <ChannelNode key={c.label} {...c} delay={0.25 + i * 0.08} />
-          ))}
-          <Nucleus />
+        {/* Centro de operaciones · NÜRO + sistemas conectados */}
+        <div className="relative w-full max-w-[920px] mx-auto mt-16 lg:mt-20">
+          <div className="relative aspect-[5/4]">
+            <ConnectionLines channels={systems} />
+            {systems.map((s, i) => (
+              <SystemPanel key={s.label} {...s} delay={0.3 + i * 0.08} />
+            ))}
+            <Nucleus />
+          </div>
+          <SystemStatus />
         </div>
 
         {/* Live feed con avatares */}
-        <div className="mt-10 lg:mt-12 max-w-3xl mx-auto">
+        <div className="mt-12 lg:mt-14 max-w-3xl mx-auto">
           <LiveFeed />
         </div>
 
@@ -1107,153 +1111,292 @@ function TrustBar() {
   )
 }
 
-/* ─── Nucleus · NÜRO core agrandado ─── */
+/* ─── Nucleus · NÜRO completo, sin recortar ─── */
 function Nucleus() {
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-      {/* Outer breathing halo */}
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* Halo energético violeta (capa profunda) */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="absolute rounded-full"
         style={{
-          width: 380, height: 380,
-          background: 'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.20) 35%, transparent 70%)',
-          filter: 'blur(50px)',
+          width: '60%',
+          height: '60%',
+          background:
+            'radial-gradient(circle, rgba(142,68,255,0.45) 0%, rgba(212,91,255,0.16) 38%, transparent 72%)',
+          filter: 'blur(60px)',
         }}
-        animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.06, 1] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.05, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Outer dashed orbital ring */}
+      {/* Anillo orbital exterior — rotación lenta */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{ width: 290, height: 290, border: '1px dashed rgba(212,91,255,0.20)' }}
+        className="absolute rounded-full"
+        style={{
+          width: '76%',
+          height: '76%',
+          border: '1px solid rgba(212,91,255,0.10)',
+        }}
         animate={{ rotate: 360 }}
-        transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
+      >
+        <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full"
+          style={{ background: '#D45BFF', boxShadow: '0 0 8px rgba(212,91,255,1)' }} />
+      </motion.div>
+
+      {/* Anillo orbital interior — contra-rotación */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: '58%',
+          height: '58%',
+          border: '1px dashed rgba(212,91,255,0.14)',
+        }}
+        animate={{ rotate: -360 }}
+        transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
       />
 
-      {/* 3 Pulse rings staggered */}
-      {[0, 1.3, 2.6].map((d, i) => (
+      {/* 2 ondas suaves (radar) muy sutiles */}
+      {[0, 1.8].map((d, i) => (
         <motion.span
           key={i}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ width: 230, height: 230, border: '1px solid rgba(212,91,255,0.4)' }}
-          animate={{ scale: [1, 1.7], opacity: [0.55, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: d }}
+          className="absolute rounded-full"
+          style={{
+            width: '52%',
+            height: '52%',
+            border: '1px solid rgba(212,91,255,0.18)',
+          }}
+          animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+          transition={{ duration: 3.6, repeat: Infinity, ease: 'easeOut', delay: d }}
         />
       ))}
 
-      {/* Core glass orb */}
-      <motion.div
-        className="relative rounded-full flex items-center justify-center backdrop-blur-xl overflow-hidden"
+      {/* NÜRO completo, libre — protagonista absoluto */}
+      <motion.img
+        src={AVATAR}
+        alt="NÜRO"
+        className="relative object-contain pointer-events-none"
         style={{
-          width: 220, height: 220,
-          background: 'radial-gradient(circle at 35% 30%, rgba(248,250,255,0.20) 0%, rgba(142,68,255,0.38) 40%, rgba(11,16,38,0.85) 100%)',
-          border: '1px solid rgba(212,91,255,0.55)',
-          boxShadow:
-            '0 0 80px -4px rgba(142,68,255,0.95), 0 0 0 1px rgba(212,91,255,0.32), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -10px 36px rgba(142,68,255,0.45)',
+          height: '92%',
+          width: 'auto',
+          maxWidth: '88%',
+          filter:
+            'drop-shadow(0 0 80px rgba(142,68,255,0.55)) drop-shadow(0 0 160px rgba(212,91,255,0.30)) drop-shadow(0 24px 60px rgba(5,8,22,0.7))',
         }}
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={AVATAR} alt="NÜRO" className="w-[150%] h-[150%] object-contain"
-          style={{ filter: 'drop-shadow(0 0 22px rgba(212,91,255,0.7))' }} />
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-        <span className="pointer-events-none absolute inset-x-4 top-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)' }} />
-      </motion.div>
+      {/* Reflejo de piso suave */}
+      <div className="pointer-events-none absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[44%] h-[26px]"
+        style={{
+          background: 'radial-gradient(ellipse, rgba(212,91,255,0.35), transparent 70%)',
+          filter: 'blur(18px)',
+        }}
+      />
     </div>
   )
 }
 
-/* ─── ChannelNode · pill con sub-actividad ─── */
-function ChannelNode({ Icon, label, sub, angle, color, delay }: ChannelDef & { delay: number }) {
+/* ─── SystemPanel · mini panel premium con métricas ─── */
+function SystemPanel({
+  Icon, label, angle, color, metrics, delay,
+}: ChannelDef & { delay: number }) {
   const rad = (angle - 90) * Math.PI / 180
-  const r = 42
-  const x = 50 + r * Math.cos(rad)
-  const y = 50 + r * Math.sin(rad)
+  const rX = 47
+  const rY = 42
+  const x = 50 + rX * Math.cos(rad)
+  const y = 50 + rY * Math.sin(rad)
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.85 }}
-      whileInView={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 16, scale: 0.92 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1.06 }}
-      className="absolute z-10 flex items-center gap-2.5 px-3 py-2 rounded-2xl backdrop-blur-xl"
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -3, scale: 1.02 }}
+      className="absolute z-10 backdrop-blur-2xl"
       style={{
         top: `${y}%`,
         left: `${x}%`,
         transform: 'translate(-50%, -50%)',
-        background: `linear-gradient(135deg, rgba(${hexToRgb(color)},0.16), rgba(11,16,38,0.78))`,
-        border: `1px solid rgba(${hexToRgb(color)},0.40)`,
-        boxShadow: `0 12px 28px -8px rgba(${hexToRgb(color)},0.55), inset 0 1px 0 rgba(255,255,255,0.06)`,
+        background: 'linear-gradient(180deg, rgba(11,16,38,0.86), rgba(11,16,38,0.62))',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 16,
+        padding: '12px 14px',
+        minWidth: 184,
+        boxShadow:
+          '0 24px 50px -18px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.05)',
       }}
     >
-      <motion.span
-        className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0 relative"
+      {/* Hairline glow top — color del sistema */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{
-          background: `rgba(${hexToRgb(color)},0.22)`,
-          border: `1px solid rgba(${hexToRgb(color)},0.50)`,
-          boxShadow: `0 0 10px rgba(${hexToRgb(color)},0.45)`,
-        }}
-        animate={{ y: [0, -2, 0] }}
-        transition={{ duration: 4 + delay, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <Icon strokeWidth={1.9} style={{ color, width: 15, height: 15 }} />
-      </motion.span>
-      <div className="min-w-0">
-        <div className="text-[11.5px] font-semibold text-white whitespace-nowrap leading-tight"
-          style={{ letterSpacing: '-0.01em' }}>
-          {label}
+          background: `linear-gradient(90deg, transparent, ${color}b3, transparent)`,
+          opacity: 0.7,
+        }} />
+
+      {/* Header */}
+      <div className="relative flex items-center justify-between mb-3 pb-2.5 border-b"
+        style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center gap-2">
+          <span className="w-7 h-7 rounded-lg flex items-center justify-center"
+            style={{
+              background: `rgba(${hexToRgb(color)},0.14)`,
+              border: `1px solid rgba(${hexToRgb(color)},0.30)`,
+            }}>
+            <Icon strokeWidth={1.8} style={{ color, width: 14, height: 14 }} />
+          </span>
+          <span className="text-[11.5px] font-semibold text-white"
+            style={{ letterSpacing: '-0.005em' }}>
+            {label}
+          </span>
         </div>
-        <div className="text-[9.5px] text-white/55 font-medium whitespace-nowrap leading-tight mt-0.5">
-          {sub}
-        </div>
+        <span className="relative flex h-1.5 w-1.5">
+          <motion.span className="absolute inline-flex h-full w-full rounded-full"
+            style={{ background: color }}
+            animate={{ opacity: [1, 0.35, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, delay: delay * 2 }} />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+            style={{ background: color, boxShadow: `0 0 5px ${color}` }} />
+        </span>
       </div>
-      <span className="relative flex h-1.5 w-1.5 ml-1">
-        <motion.span className="absolute inline-flex h-full w-full rounded-full"
-          style={{ background: color }}
-          animate={{ opacity: [1, 0.3, 1] }}
-          transition={{ duration: 1.8, repeat: Infinity, delay: delay * 2 }} />
-        <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-          style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
-      </span>
+
+      {/* Métricas */}
+      <div className="relative space-y-1.5">
+        {metrics.map((m, i) => (
+          <div key={i} className="flex items-center justify-between gap-3">
+            <span className="text-[10.5px] text-white/50 font-medium whitespace-nowrap">
+              {m.label}
+            </span>
+            <span className="text-[12.5px] font-semibold text-white tabular-nums whitespace-nowrap"
+              style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.015em' }}>
+              {m.value}
+            </span>
+          </div>
+        ))}
+      </div>
     </motion.div>
   )
 }
 
-/* ─── ConnectionLines · líneas energéticas SVG entre nucleus y canales ─── */
+/* ─── ConnectionLines · curvas elegantes + partículas viajando ─── */
 function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden>
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
       <defs>
-        <linearGradient id="opsLine" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="rgba(212,91,255,0.5)" />
-          <stop offset="50%" stopColor="rgba(142,68,255,0.7)" />
-          <stop offset="100%" stopColor="rgba(212,91,255,0.5)" />
+        <linearGradient id="connFlow" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="rgba(212,91,255,0)" />
+          <stop offset="50%" stopColor="rgba(212,91,255,0.55)" />
+          <stop offset="100%" stopColor="rgba(142,68,255,0)" />
         </linearGradient>
       </defs>
+
       {channels.map((c, i) => {
         const rad = (c.angle - 90) * Math.PI / 180
-        const r = 40
-        const x2 = 50 + r * Math.cos(rad)
-        const y2 = 50 + r * Math.sin(rad)
+        const rX = 47, rY = 42
+        const x2 = 50 + rX * Math.cos(rad)
+        const y2 = 50 + rY * Math.sin(rad)
+
+        // Control point para curvatura (perpendicular al vector centro→endpoint)
+        const dx = x2 - 50, dy = y2 - 50
+        const len = Math.sqrt(dx * dx + dy * dy) || 1
+        const perpX = -dy / len, perpY = dx / len
+        const mid = 0.5
+        const curvature = 8 * (i % 2 === 0 ? 1 : -1)
+        const cx = 50 + dx * mid + perpX * curvature
+        const cy = 50 + dy * mid + perpY * curvature
+        const path = `M 50 50 Q ${cx} ${cy} ${x2} ${y2}`
+
         return (
-          <motion.line
-            key={c.label}
-            x1="50%" y1="50%"
-            x2={`${x2}%`} y2={`${y2}%`}
-            stroke="url(#opsLine)"
-            strokeWidth="1"
-            strokeDasharray="3 5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.25, 0.7, 0.25] }}
-            transition={{ duration: 3 + (i % 3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
-          />
+          <g key={c.label}>
+            <motion.path
+              d={path}
+              stroke="url(#connFlow)"
+              strokeWidth="0.4"
+              fill="none"
+              vectorEffect="non-scaling-stroke"
+              initial={{ opacity: 0, pathLength: 0 }}
+              whileInView={{ opacity: [0, 0.7, 0.45], pathLength: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                opacity: { duration: 1.4, delay: 0.3 + i * 0.12 },
+                pathLength: { duration: 1.6, delay: 0.3 + i * 0.12, ease: 'easeOut' },
+              }}
+            />
+            {/* Partícula viajando del centro al panel */}
+            <motion.circle
+              r="0.55"
+              fill={c.color}
+              style={{ filter: `drop-shadow(0 0 2px ${c.color})` }}
+              initial={{ cx: 50, cy: 50, opacity: 0 }}
+              animate={{
+                cx: [50, cx, x2],
+                cy: [50, cy, y2],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 3.2,
+                repeat: Infinity,
+                delay: 1.8 + i * 0.4,
+                ease: 'easeInOut',
+              }}
+            />
+          </g>
         )
       })}
     </svg>
+  )
+}
+
+/* ─── SystemStatus · estado debajo del nucleus ─── */
+function SystemStatus() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.5, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="relative -mt-2 lg:-mt-4 text-center"
+    >
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-xl"
+        style={{
+          background: 'rgba(11,16,38,0.6)',
+          border: '1px solid rgba(255,255,255,0.08)',
+        }}>
+        <span className="relative flex h-1.5 w-1.5">
+          <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
+            animate={{ opacity: [1, 0.3, 1], scale: [1, 1.8, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity }} />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
+            style={{ boxShadow: '0 0 6px rgba(52,211,153,0.95)' }} />
+        </span>
+        <span className="text-[10.5px] uppercase font-bold text-white"
+          style={{ letterSpacing: '0.22em' }}>
+          NÜRO ONLINE
+        </span>
+      </div>
+      <p className="mt-3 text-[13px] text-white/55 font-medium"
+        style={{ letterSpacing: '-0.005em' }}>
+        Procesando{' '}
+        <span className="font-semibold tabular-nums"
+          style={{
+            fontFamily: 'var(--font-display)',
+            background: 'linear-gradient(180deg, #F8FAFF, #D45BFF)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>
+          <AnimatedNumber target={2847} format={(n) => Math.round(n).toLocaleString('en-US')} />
+        </span>
+        {' '}conversaciones en tiempo real
+      </p>
+    </motion.div>
   )
 }
 
