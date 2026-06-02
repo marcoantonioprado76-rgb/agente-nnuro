@@ -38,8 +38,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Landing y rutas de auth: si el usuario YA tiene sesión, redirigir al dashboard
-  if (pathname === '/' || pathname === '/login' || pathname === '/register') {
+  // La landing "/" siempre se muestra (sin chequear sesión)
+  if (pathname === '/') {
+    return NextResponse.next();
+  }
+
+  // /login y /register: si ya hay sesión, redirigir al dashboard (UX estándar)
+  if (pathname === '/login' || pathname === '/register') {
     const session = await getSessionFromRequest(request);
     if (session) {
       const dest = session.role === 'admin' ? '/admin/dashboard' : '/dashboard';
