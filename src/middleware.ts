@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSessionFromRequest } from '@/lib/auth';
 
 const PUBLIC_PATHS = [
+  '/',
   '/login',
   '/register',
   '/forgot-password',
+  '/reset-password',
+  '/pending-approval',
   '/pricing',
   '/tienda',
 ];
