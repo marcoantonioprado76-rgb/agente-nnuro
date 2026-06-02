@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
@@ -94,96 +94,179 @@ export default function LandingPage() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   BACKGROUND — neblina violeta + grid + glows
+   BACKGROUND — 5 capas premium + 4 animaciones + parallax mouse
    ═══════════════════════════════════════════════════════════════ */
 function BackgroundLayers() {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  // Parallax mouse: actualiza CSS vars sin re-renders (max 10px desplazamiento)
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (!rootRef.current) return
+      const x = (e.clientX / window.innerWidth - 0.5) * 20   // -10 → 10
+      const y = (e.clientY / window.innerHeight - 0.5) * 20  // -10 → 10
+      rootRef.current.style.setProperty('--mx', `${x.toFixed(1)}px`)
+      rootRef.current.style.setProperty('--my', `${y.toFixed(1)}px`)
+    }
+    window.addEventListener('mousemove', handler, { passive: true })
+    return () => window.removeEventListener('mousemove', handler)
+  }, [])
+
+  // 14 partículas con posiciones pseudo-random pero estables
+  const particles = useMemo(() => {
+    return Array.from({ length: 14 }).map((_, i) => ({
+      left: (i * 13 + 7) % 95,
+      top: 8 + ((i * 23 + 11) % 78),
+      size: i % 3 === 0 ? 2.5 : 1.5,
+      color: i % 2 === 0 ? '#D45BFF' : '#8E44FF',
+      duration: 22 + ((i * 1.7) % 14),
+      delay: i * 0.7,
+      drift: 0.25 + (i % 4) * 0.05,
+    }))
+  }, [])
+
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* Base — radial premium */}
+    <div
+      ref={rootRef}
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      style={{
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ['--mx' as any]: '0px',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ['--my' as any]: '0px',
+      }}
+    >
+      {/* ── CAPA 2 · Gradiente radial profundo (base) ── */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 85% 65% at 70% 0%, #0B1026 0%, #050816 60%, #050816 100%)',
+            'radial-gradient(ellipse 90% 70% at 50% 30%, #0B1026 0%, #071426 45%, #020817 100%)',
         }}
       />
 
-      {/* Blueprint grid — ultra fino violeta, mascarado */}
+      {/* ── CAPA 1 · Grid blueprint con respiración 26s + parallax mouse ── */}
       <div
         className="absolute inset-0"
         style={{
-          opacity: 0.06,
-          backgroundImage:
-            'linear-gradient(rgba(142,68,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(142,68,255,1) 1px, transparent 1px)',
-          backgroundSize: '72px 72px',
-          maskImage: 'radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 75%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 40%, black 0%, transparent 75%)',
+          transform: 'translate3d(var(--mx), var(--my), 0)',
+          transition: 'transform 0.4s ease-out',
         }}
-      />
+      >
+        <motion.div
+          className="absolute inset-0"
+          animate={{ scale: [1, 1.03, 1] }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            opacity: 0.07,
+            backgroundImage:
+              'linear-gradient(rgba(142,68,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(142,68,255,1) 1px, transparent 1px)',
+            backgroundSize: '80px 80px',
+            maskImage:
+              'radial-gradient(ellipse 92% 82% at 50% 40%, black 0%, transparent 78%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 92% 82% at 50% 40%, black 0%, transparent 78%)',
+          }}
+        />
+      </div>
 
-      {/* Hairlines tecnológicas mínimas */}
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          background:
-            'repeating-linear-gradient(0deg, transparent 0px, transparent 240px, rgba(212,91,255,0.5) 240px, rgba(212,91,255,0.5) 241px)',
-          maskImage: 'radial-gradient(ellipse at 50% 50%, black 0%, transparent 70%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at 50% 50%, black 0%, transparent 70%)',
-        }}
-      />
-
-      {/* Neblina violeta principal — top right (NÜRO area) */}
+      {/* ── CAPA 3 · Neblina tecnológica difusa, movimiento lento ── */}
       <motion.div
         className="absolute"
         style={{
-          top: '0%',
-          right: '-15%',
-          width: '820px',
-          height: '820px',
+          top: '15%',
+          left: '50%',
+          width: '120%',
+          height: '60%',
+          marginLeft: '-60%',
           background:
-            'radial-gradient(circle, rgba(142,68,255,0.30) 0%, rgba(107,92,255,0.12) 35%, transparent 65%)',
+            'radial-gradient(ellipse, rgba(107,92,255,0.12) 0%, rgba(142,68,255,0.06) 40%, transparent 75%)',
           filter: 'blur(90px)',
         }}
-        animate={{ opacity: [0.85, 1, 0.85], scale: [1, 1.04, 1] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{
+          x: ['-2%', '2%', '-2%'],
+          y: ['0%', '3%', '0%'],
+          opacity: [0.7, 1, 0.7],
+        }}
+        transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Neblina magenta secundaria — bottom left */}
+      {/* ── CAPA 4 · Glow radial premium dinámico (centro → izq → der → centro, 40s) ── */}
       <motion.div
         className="absolute"
         style={{
-          bottom: '-10%',
+          top: '18%',
+          left: '50%',
+          width: 780,
+          height: 780,
+          marginLeft: -390,
+          marginTop: -120,
+          background:
+            'radial-gradient(circle, rgba(142,68,255,0.34) 0%, rgba(107,92,255,0.14) 35%, transparent 65%)',
+          filter: 'blur(100px)',
+        }}
+        animate={{
+          x: ['0%', '-22%', '22%', '0%'],
+          y: ['0%', '5%', '-5%', '0%'],
+          opacity: [0.85, 1, 0.95, 0.85],
+        }}
+        transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* ── Secondary deep accent — bottom left, estático sutil ── */}
+      <div
+        className="absolute"
+        style={{
+          bottom: '-8%',
           left: '-10%',
-          width: '720px',
-          height: '720px',
+          width: 620,
+          height: 620,
           background:
-            'radial-gradient(circle, rgba(212,91,255,0.16) 0%, rgba(29,46,109,0.18) 40%, transparent 70%)',
-          filter: 'blur(90px)',
-        }}
-        animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.05, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
-
-      {/* Neblina deep accent — center bottom */}
-      <div
-        className="absolute"
-        style={{
-          bottom: '20%',
-          left: '40%',
-          width: '480px',
-          height: '480px',
-          background:
-            'radial-gradient(circle, rgba(29,46,109,0.45) 0%, transparent 65%)',
+            'radial-gradient(circle, rgba(29,46,109,0.40) 0%, transparent 65%)',
           filter: 'blur(100px)',
         }}
       />
 
-      {/* Vignette premium */}
+      {/* ── CAPA 5 · Partículas mínimas con parallax + float lento ── */}
+      <div
+        className="absolute inset-0"
+        style={{
+          transform: 'translate3d(var(--mx), var(--my), 0)',
+          transition: 'transform 0.5s ease-out',
+        }}
+      >
+        {particles.map((p, i) => (
+          <motion.span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${p.left}%`,
+              top: `${p.top}%`,
+              width: p.size,
+              height: p.size,
+              background: p.color,
+              boxShadow: `0 0 10px ${p.color}`,
+            }}
+            animate={{
+              y: [0, -28, 0],
+              opacity: [0.22, 0.85, 0.22],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: p.delay,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Vignette premium — cierra los bordes */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse at center, transparent 35%, rgba(5,8,22,0.75) 100%)',
+            'radial-gradient(ellipse at center, transparent 38%, rgba(2,8,23,0.78) 100%)',
         }}
       />
     </div>
