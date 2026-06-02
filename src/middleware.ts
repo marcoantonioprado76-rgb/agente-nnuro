@@ -38,6 +38,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Landing y rutas de auth: si el usuario YA tiene sesión, redirigir al dashboard
+  if (pathname === '/' || pathname === '/login' || pathname === '/register') {
+    const session = await getSessionFromRequest(request);
+    if (session) {
+      const dest = session.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+      return NextResponse.redirect(new URL(dest, request.url));
+    }
+    return NextResponse.next();
+  }
+
   if (isPublic(pathname)) return NextResponse.next();
 
   const session = await getSessionFromRequest(request);
