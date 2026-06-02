@@ -10,9 +10,43 @@ import { Label } from '@/components/ui/label'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
-import { Zap, Check, Loader2, Crown, CreditCard, Landmark, Upload, ImageIcon, X, Copy, QrCode } from 'lucide-react'
+import { Zap, Check, Loader2, Crown, CreditCard, Landmark, Upload, ImageIcon, X, Copy, QrCode, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
-import type { Plan } from '@/types'
+import type { Plan, BillingPeriod } from '@/types'
+
+const PERIOD_LABEL: Record<BillingPeriod, string> = {
+  monthly:   'Mensual',
+  quarterly: '3 meses',
+  annual:    '1 año',
+}
+
+const PERIOD_SUFFIX: Record<BillingPeriod, string> = {
+  monthly:   '/mes',
+  quarterly: '/3 meses',
+  annual:    '/año',
+}
+
+const PERIOD_MONTHS: Record<BillingPeriod, number> = {
+  monthly: 1, quarterly: 3, annual: 12,
+}
+
+function getPlanPrice(plan: Plan, period: BillingPeriod): number {
+  if (period === 'annual')    return Number(plan.annual_price ?? plan.price ?? 0)
+  if (period === 'quarterly') return Number(plan.quarterly_price ?? plan.price ?? 0)
+  return Number(plan.monthly_price ?? plan.price ?? 0)
+}
+
+function getPlanFullPrice(plan: Plan, period: BillingPeriod): number {
+  if (period === 'annual')    return Number(plan.annual_full_price ?? 0)
+  if (period === 'quarterly') return Number(plan.quarterly_full_price ?? 0)
+  return 0
+}
+
+function getPlanSavings(plan: Plan, period: BillingPeriod): number {
+  if (period === 'annual')    return Number(plan.annual_discount_amount ?? 0)
+  if (period === 'quarterly') return Number(plan.quarterly_discount_amount ?? 0)
+  return 0
+}
 
 interface TransferDetails {
   bank_name: string
@@ -40,6 +74,7 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [subscribing, setSubscribing] = useState<string | null>(null)
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly')
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethods>({ stripe: true, transfer: true, transfer_details: emptyTransferDetails })
 
   // Transfer dialog state
@@ -94,7 +129,7 @@ export default function PricingPage() {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_id: plan.id }),
+        body: JSON.stringify({ plan_id: plan.id, billing_period: billingPeriod }),
       })
       const data = await res.json()
       if (res.ok && data.url) {
@@ -203,8 +238,13 @@ export default function PricingPage() {
     }
   }
 
-  const isPro = (plan: Plan) => plan.slug === 'pro'
+  const isFeatured = (plan: Plan) =>
+    Boolean(plan.is_featured) || plan.slug === 'profesional' || plan.slug === 'pro'
+  const isPro = isFeatured  // back-compat con código abajo
   const hasAnyMethod = paymentMethods.stripe || paymentMethods.transfer
+
+  // Filtrar trial fuera del grid principal (se muestra como CTA aparte si existe)
+  const paidPlans = plans.filter((p) => p.slug !== 'trial' && Number(p.monthly_price ?? p.price ?? 0) > 0)
 
   return (
     <div className="min-h-screen bg-gradient-dark">
@@ -215,9 +255,9 @@ export default function PricingPage() {
         <div className="absolute top-1/2 left-1/2 h-60 w-60 -translate-x-1/2 -translate-y-1/2 rounded-full bg-glow-cyan/5 blur-[80px]" />
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-6 py-16">
+      <div className="relative max-w-6xl mx-auto px-6 py-16">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/20 shadow-lg shadow-primary/10 mb-6">
             <Zap className="h-7 w-7 text-primary" />
           </div>
@@ -230,13 +270,55 @@ export default function PricingPage() {
           </p>
         </div>
 
+        {/* Selector de periodo de facturación */}
+        <div className="flex justify-center mb-10">
+          <div
+            role="tablist"
+            className="inline-flex items-center gap-1 rounded-full p-1 backdrop-blur-xl"
+            style={{
+              background: 'rgba(11,16,38,0.65)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 12px 30px -16px rgba(0,0,0,0.6)',
+            }}
+          >
+            {(['monthly', 'quarterly', 'annual'] as const).map((p) => {
+              const active = billingPeriod === p
+              return (
+                <button
+                  key={p}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setBillingPeriod(p)}
+                  className="relative px-5 py-2 rounded-full text-[12.5px] font-semibold transition-all duration-300 whitespace-nowrap"
+                  style={{
+                    background: active
+                      ? 'linear-gradient(135deg, #6B5CFF, #8E44FF, #D45BFF)'
+                      : 'transparent',
+                    color: active ? '#fff' : 'rgba(248,250,255,0.6)',
+                    letterSpacing: '0.08em',
+                    boxShadow: active ? '0 6px 16px -4px rgba(142,68,255,0.5)' : 'none',
+                  }}
+                >
+                  {PERIOD_LABEL[p]}
+                  {p === 'annual' && (
+                    <span className="ml-1.5 text-[9px] uppercase font-bold opacity-90"
+                      style={{ color: active ? '#F8FAFF' : '#D45BFF', letterSpacing: '0.16em' }}>
+                      · MEJOR AHORRO
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {loading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            {plans.map((plan) => (
+          <div className={`grid gap-6 mx-auto ${paidPlans.length === 3 ? 'md:grid-cols-3 max-w-5xl' : 'md:grid-cols-2 max-w-3xl'}`}>
+            {paidPlans.map((plan) => (
               <div
                 key={plan.id}
                 className={`relative rounded-2xl border p-[1px] transition-all ${
@@ -245,78 +327,124 @@ export default function PricingPage() {
                     : 'bg-gradient-to-b from-emerald-500/40 via-cyan-500/20 to-transparent'
                 }`}
               >
-                {/* Badge */}
-                {isPro(plan) && (
+                {/* Badge "MÁS RECOMENDADO" */}
+                {isFeatured(plan) && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 px-4 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 px-4 py-1 text-[10px] font-bold uppercase tracking-wider shadow-lg">
                       <Crown className="h-3 w-3 mr-1" />
-                      Premium
+                      {plan.promotion_label || 'MÁS RECOMENDADO'}
                     </Badge>
                   </div>
                 )}
 
-                <div className={`rounded-2xl p-8 h-full flex flex-col ${
-                  isPro(plan) ? 'bg-[#050508]' : 'bg-[#000000]'
+                <div className={`rounded-2xl p-7 h-full flex flex-col ${
+                  isFeatured(plan) ? 'bg-[#050508]' : 'bg-[#000000]'
                 }`}>
                   {/* Plan header */}
-                  <div className="mb-6">
+                  <div className="mb-5">
                     <div className="flex items-center gap-3 mb-3">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                        isPro(plan) ? 'bg-purple-500/20' : 'bg-emerald-500/20'
+                        isFeatured(plan) ? 'bg-purple-500/20' : 'bg-emerald-500/20'
                       }`}>
                         <Zap className={`h-5 w-5 ${
-                          isPro(plan) ? 'text-purple-400' : 'text-emerald-400'
+                          isFeatured(plan) ? 'text-purple-400' : 'text-emerald-400'
                         }`} />
                       </div>
                       <h2 className="text-xl font-bold text-white">{plan.name}</h2>
                     </div>
 
-                    <div className="flex items-baseline gap-1 mb-2">
-                      <span className="text-4xl font-bold text-white">${plan.price}</span>
-                      <span className="text-muted-foreground text-sm">/{plan.currency}/mes</span>
+                    {/* Precio dinámico según billingPeriod */}
+                    <div className="flex items-baseline gap-1.5 mb-1">
+                      <span className="text-4xl font-bold text-white tabular-nums">
+                        ${getPlanPrice(plan, billingPeriod).toFixed(0)}
+                      </span>
+                      <span className="text-muted-foreground text-sm">
+                        {PERIOD_SUFFIX[billingPeriod]}
+                      </span>
                     </div>
 
-                    <p className="text-sm text-muted-foreground">
-                      {isPro(plan)
-                        ? 'Acceso completo con todas las funciones premium.'
-                        : 'Tu primer bot de ventas en WhatsApp. Ideal para empezar.'}
-                    </p>
+                    {/* Equivalente mensual + ahorro (solo para 3m y 1y) */}
+                    {billingPeriod !== 'monthly' && (
+                      <div className="flex items-center gap-2 flex-wrap text-[12px] mt-1.5">
+                        <span className="text-muted-foreground tabular-nums">
+                          ≈ ${(getPlanPrice(plan, billingPeriod) / PERIOD_MONTHS[billingPeriod]).toFixed(0)}/mes
+                        </span>
+                        {getPlanFullPrice(plan, billingPeriod) > 0 && (
+                          <span className="text-white/40 line-through tabular-nums">
+                            ${getPlanFullPrice(plan, billingPeriod).toFixed(0)}
+                          </span>
+                        )}
+                        {getPlanSavings(plan, billingPeriod) > 0 && (
+                          <span className="font-semibold tabular-nums"
+                            style={{ color: '#10B981' }}>
+                            Ahorras ${getPlanSavings(plan, billingPeriod).toFixed(0)}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
+                  {/* Línea de créditos AI incluidos */}
+                  {Number(plan.included_monthly_ai_credits ?? 0) > 0 && (
+                    <div
+                      className="flex items-center gap-2 px-3 py-2 mb-5 rounded-lg"
+                      style={{
+                        background: 'rgba(212,91,255,0.10)',
+                        border: '1px solid rgba(212,91,255,0.28)',
+                      }}
+                      title="Los créditos permiten que tu agente responda automáticamente a tus clientes"
+                    >
+                      <Sparkles className="h-3.5 w-3.5 shrink-0" style={{ color: '#D45BFF' }} />
+                      <span className="text-[12px] font-semibold text-white">
+                        Incluye{' '}
+                        <span className="tabular-nums" style={{ color: '#D45BFF' }}>
+                          {Number(plan.included_monthly_ai_credits).toLocaleString()}
+                        </span>{' '}
+                        créditos mensuales de IA
+                      </span>
+                    </div>
+                  )}
+
                   {/* Features */}
-                  <div className="flex-1 space-y-3 mb-8">
+                  <div className="flex-1 space-y-2.5 mb-6">
                     {(plan.features || []).map((feature, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className={`flex h-5 w-5 items-center justify-center rounded-full mt-0.5 shrink-0 ${
-                          isPro(plan) ? 'bg-purple-500/20' : 'bg-emerald-500/20'
+                      <div key={i} className="flex items-start gap-2.5">
+                        <div className={`flex h-4 w-4 items-center justify-center rounded-full mt-0.5 shrink-0 ${
+                          isFeatured(plan) ? 'bg-purple-500/20' : 'bg-emerald-500/20'
                         }`}>
-                          <Check className={`h-3 w-3 ${
-                            isPro(plan) ? 'text-purple-400' : 'text-emerald-400'
+                          <Check className={`h-2.5 w-2.5 ${
+                            isFeatured(plan) ? 'text-purple-400' : 'text-emerald-400'
                           }`} />
                         </div>
-                        <span className="text-sm text-gray-300">{feature}</span>
+                        <span className="text-[12.5px] text-gray-300 leading-snug">{feature}</span>
                       </div>
                     ))}
                   </div>
 
                   {/* Limits summary */}
-                  <div className="grid grid-cols-2 gap-2 mb-6">
+                  <div className="grid grid-cols-2 gap-2 mb-5">
                     <div className="bg-secondary/30 rounded-lg px-3 py-2 text-center">
-                      <p className="text-lg font-bold text-foreground">{plan.max_bots}</p>
-                      <p className="text-[10px] text-muted-foreground uppercase">Bots</p>
+                      <p className="text-base font-bold text-foreground tabular-nums">
+                        {plan.max_ai_agents ?? plan.max_bots}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground uppercase">Agentes IA</p>
                     </div>
                     <div className="bg-secondary/30 rounded-lg px-3 py-2 text-center">
-                      <p className="text-lg font-bold text-foreground">{plan.max_products}</p>
+                      <p className="text-base font-bold text-foreground tabular-nums">
+                        {(plan.max_products ?? 0).toLocaleString()}
+                      </p>
                       <p className="text-[10px] text-muted-foreground uppercase">Productos</p>
                     </div>
                     <div className="bg-secondary/30 rounded-lg px-3 py-2 text-center">
-                      <p className="text-lg font-bold text-foreground">
-                        {plan.max_conversations === -1 ? '∞' : plan.max_conversations.toLocaleString()}
+                      <p className="text-base font-bold text-foreground tabular-nums">
+                        {Number(plan.max_monthly_contacts ?? 0).toLocaleString()}
                       </p>
-                      <p className="text-[10px] text-muted-foreground uppercase">Conversaciones</p>
+                      <p className="text-[10px] text-muted-foreground uppercase">Contactos/mes</p>
                     </div>
                     <div className="bg-secondary/30 rounded-lg px-3 py-2 text-center">
-                      <p className="text-lg font-bold text-foreground">{plan.max_whatsapp_numbers}</p>
+                      <p className="text-base font-bold text-foreground tabular-nums">
+                        {plan.max_whatsapp_numbers}
+                      </p>
                       <p className="text-[10px] text-muted-foreground uppercase">WhatsApp</p>
                     </div>
                   </div>

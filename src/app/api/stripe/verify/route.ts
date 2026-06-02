@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { getServerSession } from '@/lib/auth'
-import { stripe, calculateEndDate, StripeNotConfiguredError } from '@/lib/stripe'
+import { stripe, calculateEndDateByPeriod, type BillingPeriod, StripeNotConfiguredError } from '@/lib/stripe'
 import { logAudit } from '@/lib/audit'
 import { verifyCreditsPurchase } from '@/lib/credits'
 
@@ -85,9 +85,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ status: 'already_active', subscription: existingSub })
     }
 
-    // 3. Payment confirmed — activate with 1 calendar month
+    // 3. Payment confirmed — activate con duración según billing_period
     const now = new Date()
-    const endDate = calculateEndDate(now)
+    const periodFromMeta = (session.metadata?.billing_period as string | undefined)
+    const billingPeriod: BillingPeriod = (periodFromMeta === 'annual' || periodFromMeta === 'quarterly' || periodFromMeta === 'trial')
+      ? periodFromMeta
+      : 'monthly'
+    const endDate = calculateEndDateByPeriod(now, billingPeriod)
 
     const planId = session.metadata?.plan_id
     const planName = session.metadata?.plan_name

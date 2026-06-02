@@ -58,12 +58,45 @@ export function verifyWebhookSignature(
  * Si paga el 31 de enero, vence el 28/29 de febrero (último día del mes).
  */
 export function calculateEndDate(startDate: Date): Date {
-  const year = startDate.getFullYear()
-  const month = startDate.getMonth()
-  const day = startDate.getDate()
-  // Último día del mes siguiente
-  const lastDayOfNextMonth = new Date(year, month + 2, 0).getDate()
-  // Usar el menor entre el día original y el último día del mes siguiente
-  const endDay = Math.min(day, lastDayOfNextMonth)
-  return new Date(year, month + 1, endDay, startDate.getHours(), startDate.getMinutes(), startDate.getSeconds(), startDate.getMilliseconds())
+  return addCalendarMonths(startDate, 1)
+}
+
+/**
+ * Calcula end_date según el periodo de facturación.
+ * - monthly: +1 mes
+ * - quarterly: +3 meses
+ * - annual: +12 meses
+ * - trial: +trialDays días (default 7)
+ */
+export type BillingPeriod = 'monthly' | 'quarterly' | 'annual' | 'trial'
+
+export function calculateEndDateByPeriod(
+  startDate: Date,
+  period: BillingPeriod,
+  trialDays = 7
+): Date {
+  if (period === 'trial') {
+    const ms = trialDays * 24 * 60 * 60 * 1000
+    return new Date(startDate.getTime() + ms)
+  }
+  const months = period === 'annual' ? 12 : period === 'quarterly' ? 3 : 1
+  return addCalendarMonths(startDate, months)
+}
+
+/**
+ * Suma N meses calendario respetando el día (si el mes destino no tiene el día,
+ * usa el último día de ese mes). Internal helper.
+ */
+function addCalendarMonths(date: Date, months: number): Date {
+  const year = date.getFullYear()
+  const month = date.getMonth()
+  const day = date.getDate()
+  const targetMonth = month + months
+  // Último día del mes destino
+  const lastDayOfTargetMonth = new Date(year, targetMonth + 1, 0).getDate()
+  const endDay = Math.min(day, lastDayOfTargetMonth)
+  return new Date(
+    year, targetMonth, endDay,
+    date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()
+  )
 }

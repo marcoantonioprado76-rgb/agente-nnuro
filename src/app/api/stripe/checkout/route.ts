@@ -19,6 +19,10 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const { plan_id } = body
+    const billingPeriod: 'monthly' | 'quarterly' | 'annual' =
+      ['monthly', 'quarterly', 'annual'].includes(body?.billing_period)
+        ? body.billing_period
+        : 'monthly'
 
     if (!plan_id) {
       return NextResponse.json({ error: 'plan_id es requerido' }, { status: 400 })
@@ -45,10 +49,23 @@ export async function POST(request: NextRequest) {
     }
 
     // 2.1 Validate plan fields critical for Stripe — evita TypeErrors silenciosos
-    const planPrice = typeof plan.price === 'number' ? plan.price : Number(plan.price)
+    // Selecciona el precio según billing_period (fallback al precio mensual / price legacy)
+    const periodPriceRaw =
+      billingPeriod === 'annual'    ? (plan.annual_price ?? null) :
+      billingPeriod === 'quarterly' ? (plan.quarterly_price ?? null) :
+                                       (plan.monthly_price ?? plan.price ?? null)
+
+    if (periodPriceRaw == null) {
+      console.error('[Stripe Checkout] Plan sin precio para periodo:', { plan_id, billingPeriod })
+      return NextResponse.json(
+        { error: `El plan no tiene precio configurado para ${billingPeriod}` },
+        { status: 400 }
+      )
+    }
+    const planPrice = typeof periodPriceRaw === 'number' ? periodPriceRaw : Number(periodPriceRaw)
     const planCurrency = (plan.currency || '').toString().trim()
     if (!Number.isFinite(planPrice) || planPrice <= 0) {
-      console.error('[Stripe Checkout] Plan con precio inválido:', { plan_id, price: plan.price })
+      console.error('[Stripe Checkout] Plan con precio inválido:', { plan_id, price: periodPriceRaw, billingPeriod })
       return NextResponse.json({ error: 'El plan tiene un precio inválido' }, { status: 400 })
     }
     if (!planCurrency || planCurrency.length !== 3) {
@@ -134,8 +151,8 @@ export async function POST(request: NextRequest) {
             price_data: {
               currency: planCurrency.toLowerCase(),
               product_data: {
-                name: `Plan ${plan.name} - Agente de Ventas`,
-                description: `Suscripción mensual al plan ${plan.name}`,
+                name: `Plan ${plan.name} - ${billingPeriod === 'annual' ? '1 año' : billingPeriod === 'quarterly' ? '3 meses' : 'mensual'}`,
+                description: `Plan ${plan.name} (${billingPeriod}) — Agente de Ventas NÜRO`,
               },
               unit_amount: unitAmount,
             },
@@ -146,6 +163,7 @@ export async function POST(request: NextRequest) {
           user_id: user.id,
           plan_id: plan.id,
           plan_name: plan.name,
+          billing_period: billingPeriod,
           tenant_id: profile?.tenant_id || '',
           stripe_customer_id: customerId,
         },
@@ -191,6 +209,8 @@ export async function POST(request: NextRequest) {
         payment_id: session.id,
         stripe_customer_id: customerId,
         stripe_checkout_session_id: session.id,
+        billing_period: billingPeriod,
+        price_paid: planPrice,
         created_at: nowIso,
         updated_at: nowIso,
       })

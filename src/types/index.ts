@@ -310,7 +310,30 @@ export interface Plan {
   sort_order: number;
   stripe_price_id?: string;
   created_at: string;
+  // Nuevos campos (migración 022) — billing periods + créditos + límites extra
+  monthly_price?: number | null;
+  quarterly_price?: number | null;
+  annual_price?: number | null;
+  quarterly_full_price?: number | null;
+  annual_full_price?: number | null;
+  quarterly_discount_amount?: number | null;
+  annual_discount_amount?: number | null;
+  included_monthly_ai_credits?: number | null;
+  included_monthly_ai_budget_usd?: number | null;
+  credit_usd_conversion_rate?: number | null;
+  max_ai_agents?: number | null;
+  max_virtual_stores?: number | null;
+  max_monthly_contacts?: number | null;
+  max_monthly_conversations?: number | null;
+  max_team_members?: number | null;
+  promotion_label?: string | null;
+  is_promotion_active?: boolean | null;
+  is_featured?: boolean | null;
+  trial_duration_days?: number | null;
+  show_nuro_branding?: boolean | null;
 }
+
+export type BillingPeriod = 'monthly' | 'quarterly' | 'annual';
 
 export interface Subscription {
   id: string;

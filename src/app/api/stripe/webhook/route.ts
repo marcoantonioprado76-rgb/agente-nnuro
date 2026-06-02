@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyWebhookSignature, calculateEndDate } from '@/lib/stripe'
+import { verifyWebhookSignature, calculateEndDateByPeriod, type BillingPeriod } from '@/lib/stripe'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 import { createUserNotification } from '@/lib/notifications'
@@ -128,9 +128,13 @@ async function handleCheckoutCompleted(
     return
   }
 
-  // Calculate 1 calendar month subscription
+  // Calcular end_date según billing_period (default monthly por compat)
   const now = new Date()
-  const endDate = calculateEndDate(now)
+  const periodFromMeta = (session.metadata?.billing_period as string | undefined)
+  const billingPeriod: BillingPeriod = (periodFromMeta === 'annual' || periodFromMeta === 'quarterly' || periodFromMeta === 'trial')
+    ? periodFromMeta
+    : 'monthly'
+  const endDate = calculateEndDateByPeriod(now, billingPeriod)
 
   // 1. Activate subscription
   const { data: subscription, error: subError } = await service
