@@ -2372,7 +2372,7 @@ function VideoDemo() {
 
   return (
     <section id="video" className="relative pt-8 pb-16 lg:pt-12 lg:pb-20">
-      <div className="max-w-5xl mx-auto px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
         {/* Title + sub */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
