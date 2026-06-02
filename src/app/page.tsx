@@ -11,7 +11,7 @@ import {
   Mail, Send, Phone, Package, TrendingUp,
 } from 'lucide-react'
 
-const display = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-display' })
+const display = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-display' })
 const body = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-body' })
 
 const AVATAR = '/nuro-3d.png'
@@ -341,17 +341,17 @@ function Navbar({
    HERO — editorial premium · NÜRO command center
    ═══════════════════════════════════════════════════════════════ */
 function Hero({ onNav }: { onNav: (id: string) => void }) {
-  const heroStats: AnimatedStat[] = [
-    { target: 527,  format: (n) => `+${Math.round(n).toLocaleString('en-US')}`, label: 'Negocios activos' },
-    { target: 2.3,  format: (n) => `+${n.toFixed(1)}M`,                          label: 'Mensajes procesados' },
-    { target: 98,   format: (n) => `${Math.round(n)}%`,                          label: 'Tasa de respuesta' },
-    { target: 24,   format: (n) => `${Math.round(n)}/7`,                         label: 'Operación continua' },
+  const heroStats: { Icon: IconComp; target: number; format: (n: number) => string; label: string }[] = [
+    { Icon: Globe,         target: 527, format: (n) => `+${Math.round(n).toLocaleString('en-US')}`, label: 'Negocios' },
+    { Icon: MessageCircle, target: 2.3, format: (n) => `+${n.toFixed(1)}M`,                          label: 'Mensajes' },
+    { Icon: Zap,           target: 98,  format: (n) => `${Math.round(n)}%`,                          label: 'Respuesta' },
+    { Icon: Sparkles,      target: 24,  format: (n) => `${Math.round(n)}/7`,                         label: 'Operación' },
   ]
 
   return (
-    <section className="relative pt-32 pb-16 lg:pt-44 lg:pb-24">
+    <section className="relative pt-32 pb-10 lg:pt-44 lg:pb-14">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-[1fr_1.15fr] gap-12 lg:gap-10 items-center">
-        {/* ── LEFT: copy ── */}
+        {/* ── LEFT: copy editorial ── */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -380,25 +380,41 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
             </span>
           </div>
 
-          {/* Headline */}
-          <h1
-            className="font-medium text-[44px] sm:text-[58px] lg:text-[74px] leading-[0.98]"
+          {/* Headline editorial — multi-weight */}
+          <h1 className="leading-[0.95]"
             style={{
               fontFamily: 'var(--font-display)',
-              letterSpacing: '-0.05em',
-              color: '#F8FAFF',
-            }}
-          >
-            Tu próximo<br />
-            vendedor{' '}
-            <span style={{
-              background: GRAD_MAIN,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 32px rgba(142,68,255,0.4))',
+              letterSpacing: '-0.045em',
             }}>
-              no duerme.
+            <span className="block text-[36px] sm:text-[44px] lg:text-[54px] text-white/85"
+              style={{ fontWeight: 300 }}>
+              La inteligencia que
+            </span>
+            <span className="block text-[60px] sm:text-[78px] lg:text-[92px] mt-1.5"
+              style={{
+                fontWeight: 700,
+                letterSpacing: '-0.055em',
+                background: GRAD_MAIN,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 40px rgba(142,68,255,0.45))',
+              }}>
+              CONVIERTE
+            </span>
+            <span className="block text-[36px] sm:text-[44px] lg:text-[54px] text-white/85 mt-1.5"
+              style={{ fontWeight: 300 }}>
+              cada chat en{' '}
+              <span style={{
+                fontWeight: 700,
+                background: GRAD_MAIN,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 26px rgba(212,91,255,0.45))',
+              }}>
+                ventas.
+              </span>
             </span>
           </h1>
 
@@ -407,82 +423,118 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
             className="mt-7 text-[16.5px] lg:text-[17.5px] text-white/65 leading-relaxed max-w-lg"
             style={{ letterSpacing: '-0.005em', fontWeight: 400 }}
           >
-            NÜRO automatiza respuestas, seguimiento, recuperación de clientes
-            y ventas mediante inteligencia artificial conectada a WhatsApp,
-            Messenger, Instagram y Tiendas Virtuales.
+            Automatización, seguimiento y cierre en piloto automático.
+            WhatsApp, Messenger, Instagram y Tienda Virtual — un solo cerebro.
           </p>
 
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <Link
-              href="/register"
-              className="relative group/cta inline-flex items-center justify-center gap-2 h-13 px-7 rounded-xl text-white font-semibold text-[13.5px] overflow-hidden w-full sm:w-auto"
-              style={{
-                height: 52,
-                background: GRAD_BTN,
-                boxShadow:
-                  '0 22px 50px -10px rgba(142,68,255,0.78), 0 0 0 1px rgba(212,91,255,0.4), inset 0 1px 0 rgba(255,255,255,0.26)',
-                letterSpacing: '0.16em',
-              }}
-            >
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/24 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-900" />
-              <Sparkles className="w-4 h-4 relative" />
-              <span className="relative">CREAR MI AGENTE IA</span>
-              <ArrowRight className="w-4 h-4 relative" />
-            </Link>
+          {/* CTAs premium */}
+          <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Primary — pulse halo + shine + inner glow on hover */}
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              className="relative w-full sm:w-auto">
+              {/* Outer pulsing ring */}
+              <motion.span className="pointer-events-none absolute -inset-px rounded-2xl"
+                style={{ background: GRAD_BTN }}
+                animate={{ scale: [1, 1.06, 1], opacity: [0.42, 0, 0.42] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <Link
+                href="/register"
+                className="relative group/cta inline-flex items-center justify-center gap-2.5 px-7 rounded-2xl text-white font-semibold overflow-hidden w-full sm:w-auto"
+                style={{
+                  height: 56,
+                  background: GRAD_BTN,
+                  boxShadow:
+                    '0 24px 60px -10px rgba(142,68,255,0.88), 0 0 0 1px rgba(212,91,255,0.45), 0 0 0 4px rgba(142,68,255,0.18), inset 0 1px 0 rgba(255,255,255,0.30)',
+                  letterSpacing: '0.16em',
+                }}
+              >
+                {/* Shine sweep */}
+                <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/26 to-transparent -translate-x-full group-hover/cta:translate-x-full transition-transform duration-900" />
+                {/* Hover inner radiance */}
+                <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover/cta:opacity-100 transition-opacity duration-500"
+                  style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.22), transparent 60%)' }} />
+                <Sparkles className="w-4 h-4 relative" />
+                <span className="relative text-[13.5px]">CREAR MI AGENTE IA</span>
+                <ArrowRight className="w-4 h-4 relative" />
+              </Link>
+            </motion.div>
 
-            <button
+            {/* Secondary — glass premium */}
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => onNav('video')}
-              className="inline-flex items-center justify-center gap-2.5 px-6 rounded-xl text-white/85 hover:text-white font-semibold text-[13px] transition-colors w-full sm:w-auto backdrop-blur-xl"
+              className="group/v relative inline-flex items-center justify-center gap-2.5 px-6 rounded-2xl text-white/85 hover:text-white font-semibold text-[13px] backdrop-blur-xl overflow-hidden w-full sm:w-auto transition-colors"
               style={{
-                height: 52,
-                background: 'rgba(142,68,255,0.06)',
-                border: '1px solid rgba(212,91,255,0.22)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                height: 56,
+                background: 'linear-gradient(180deg, rgba(212,91,255,0.10), rgba(11,16,38,0.55))',
+                border: '1px solid rgba(212,91,255,0.30)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)',
                 letterSpacing: '0.16em',
               }}
             >
-              <span className="relative w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ background: 'rgba(142,68,255,0.20)', border: '1px solid rgba(212,91,255,0.45)' }}>
-                <Play className="w-2.5 h-2.5 ml-0.5" fill="currentColor"
-                  style={{ color: '#D45BFF' }} />
-              </span>
+              {/* Inner hover glow */}
+              <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover/v:opacity-100 transition-opacity duration-500"
+                style={{ boxShadow: 'inset 0 0 22px rgba(212,91,255,0.25)' }} />
+              <motion.span
+                className="relative w-7 h-7 rounded-full flex items-center justify-center"
+                style={{ background: 'rgba(212,91,255,0.22)', border: '1px solid rgba(212,91,255,0.5)' }}
+                animate={{ scale: [1, 1.06, 1] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Play className="w-2.5 h-2.5 ml-0.5" fill="currentColor" style={{ color: '#D45BFF' }} />
+              </motion.span>
               VER DEMOSTRACIÓN
-            </button>
+            </motion.button>
           </div>
 
-          {/* Animated premium stats — quiet & elegant */}
-          <div className="mt-14 pt-8 grid grid-cols-2 sm:grid-cols-4 gap-y-6 gap-x-4 lg:gap-x-8"
+          {/* Stats con micro iconos */}
+          <div className="mt-12 pt-7 grid grid-cols-2 sm:grid-cols-4 gap-y-5 gap-x-4 lg:gap-x-6"
             style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            {heroStats.map((s, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col gap-1.5">
-                <span
-                  className="text-[26px] lg:text-[30px] font-medium tabular-nums leading-none"
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    letterSpacing: '-0.035em',
-                    background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: 'drop-shadow(0 0 12px rgba(142,68,255,0.35))',
-                  }}>
-                  <AnimatedNumber target={s.target} format={s.format} />
-                </span>
-                <span className="text-[10px] uppercase text-white/45 font-medium"
-                  style={{ letterSpacing: '0.16em' }}>
-                  {s.label}
-                </span>
-              </motion.div>
-            ))}
+            {heroStats.map((s, i) => {
+              const Icon = s.Icon
+              return (
+                <motion.div key={i}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex items-start gap-2.5"
+                >
+                  <div className="w-7 h-7 mt-0.5 rounded-lg flex items-center justify-center shrink-0"
+                    style={{
+                      background: 'rgba(142,68,255,0.14)',
+                      border: '1px solid rgba(212,91,255,0.32)',
+                      boxShadow: '0 0 10px -2px rgba(142,68,255,0.5)',
+                    }}>
+                    <Icon strokeWidth={2} style={{ color: '#D45BFF', width: 12, height: 12 }} />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span
+                      className="text-[22px] lg:text-[26px] font-medium tabular-nums leading-none"
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        letterSpacing: '-0.035em',
+                        background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        filter: 'drop-shadow(0 0 10px rgba(142,68,255,0.35))',
+                      }}>
+                      <AnimatedNumber target={s.target} format={s.format} />
+                    </span>
+                    <span className="text-[10px] uppercase text-white/45 font-medium"
+                      style={{ letterSpacing: '0.16em' }}>
+                      {s.label}
+                    </span>
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
         </motion.div>
 
-        {/* ── RIGHT: NÜRO protagonist + floating chips ── */}
+        {/* ── RIGHT: NÜRO + 5 mini-apps flotantes ── */}
         <NuroProtagonist />
       </div>
     </section>
@@ -490,7 +542,6 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
 }
 
 function NuroProtagonist() {
-  // Parallax sutil basado en scroll
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], [0, -40])
@@ -505,18 +556,18 @@ function NuroProtagonist() {
       style={{ y, opacity }}
       className="relative h-[560px] sm:h-[660px] lg:h-[780px] flex items-center justify-center"
     >
-      {/* Soft cinematic violet glow */}
+      {/* Cinematic violet halo */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
           className="rounded-full"
           style={{
-            width: 'min(620px, 85%)',
-            height: 'min(620px, 85%)',
+            width: 'min(640px, 86%)',
+            height: 'min(640px, 86%)',
             background:
-              'radial-gradient(circle, rgba(142,68,255,0.50) 0%, rgba(212,91,255,0.20) 35%, transparent 70%)',
+              'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.22) 35%, transparent 70%)',
             filter: 'blur(55px)',
           }}
-          animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.04, 1] }}
+          animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.05, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
@@ -525,9 +576,9 @@ function NuroProtagonist() {
       <motion.div
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: 'min(680px, 95%)',
-          height: 'min(680px, 95%)',
-          border: '1px solid rgba(212,91,255,0.12)',
+          width: 'min(700px, 96%)',
+          height: 'min(700px, 96%)',
+          border: '1px solid rgba(212,91,255,0.13)',
         }}
         animate={{ rotate: 360 }}
         transition={{ duration: 110, repeat: Infinity, ease: 'linear' }}
@@ -537,17 +588,17 @@ function NuroProtagonist() {
           style={{ background: '#D45BFF', boxShadow: '0 0 12px rgba(212,91,255,1)' }} />
       </motion.div>
 
-      {/* NÜRO image — protagonista cinematográfico */}
+      {/* NÜRO image */}
       <motion.img
         src={AVATAR}
         alt="NÜRO"
         className="relative object-contain pointer-events-none"
         style={{
-          height: '112%',
+          height: '114%',
           width: 'auto',
           maxWidth: '100%',
           filter:
-            'drop-shadow(0 0 90px rgba(142,68,255,0.55)) drop-shadow(0 0 200px rgba(212,91,255,0.35)) drop-shadow(0 30px 80px rgba(5,8,22,0.7))',
+            'drop-shadow(0 0 100px rgba(142,68,255,0.6)) drop-shadow(0 0 220px rgba(212,91,255,0.38)) drop-shadow(0 30px 80px rgba(5,8,22,0.75))',
         }}
         animate={{ y: [0, -12, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
@@ -557,55 +608,304 @@ function NuroProtagonist() {
       {/* Bottom reflection halo */}
       <div className="pointer-events-none absolute bottom-[12%] left-1/2 -translate-x-1/2 w-[60%] h-[40px]"
         style={{
-          background: 'radial-gradient(ellipse, rgba(212,91,255,0.4), transparent 70%)',
+          background: 'radial-gradient(ellipse, rgba(212,91,255,0.42), transparent 70%)',
           filter: 'blur(20px)',
         }}
         aria-hidden
       />
 
-      {/* ── Floating premium chips orbiting NÜRO ── */}
-      <FloatingChip
-        className="left-[-2%] top-[10%] lg:left-[-6%] lg:top-[8%]"
-        icon={MessageCircle}
-        label="WhatsApp conectado"
-        value="Cliente: ¿tienen disponibilidad?"
+      {/* ── 5 mini-apps premium flotantes ── */}
+      <WhatsAppPreviewCard
+        className="left-[-2%] top-[7%] lg:left-[-8%] lg:top-[6%]"
         delay={0.55}
-        accent="#10B981"
       />
-      <FloatingChip
-        className="right-[-2%] top-[14%] lg:right-[-4%] lg:top-[12%]"
-        icon={Package}
-        label="Pedido recibido"
-        value="3 productos · Listo para envío"
+      <OrderReceivedCard
+        className="right-[-2%] top-[10%] lg:right-[-4%] lg:top-[8%]"
         delay={0.75}
-        accent="#D45BFF"
       />
-      <FloatingChip
-        className="right-[-4%] top-[48%] lg:right-[-8%]"
-        icon={TrendingUp}
-        label="Venta confirmada"
-        value="+$1,250"
+      <SaleConfirmedCard
+        className="right-[-3%] top-[46%] lg:right-[-9%] lg:top-[44%]"
         delay={0.95}
-        accent="#8E44FF"
-        highlight
       />
-      <FloatingChip
-        className="left-[-4%] top-[58%] lg:left-[-8%]"
-        icon={Send}
-        label="Seguimiento enviado"
-        value="Cliente recuperado"
+      <FollowupCard
+        className="left-[-3%] top-[56%] lg:left-[-9%] lg:top-[54%]"
         delay={1.15}
-        accent="#6B5CFF"
       />
-      <FloatingChip
-        className="left-[10%] bottom-[6%] lg:left-[8%] lg:bottom-[4%]"
-        icon={Sparkles}
-        label="Nueva conversación"
-        value="WhatsApp activo"
+      <NewConversationCard
+        className="left-[16%] bottom-[4%] lg:left-[14%] lg:bottom-[3%]"
         delay={1.35}
-        accent="#D45BFF"
       />
     </motion.div>
+  )
+}
+
+/* ─── Mini-apps flotantes premium ─── */
+
+function FloatingCardWrap({
+  className, delay, accent, children,
+}: { className?: string; delay: number; accent: string; children: React.ReactNode }) {
+  const rgb = hexToRgb(accent)
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85, y: 14 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={`absolute rounded-2xl backdrop-blur-2xl overflow-hidden ${className ?? ''}`}
+      style={{
+        background: `linear-gradient(135deg, rgba(${rgb},0.14), rgba(11,16,38,0.82))`,
+        border: `1px solid rgba(${rgb},0.32)`,
+        boxShadow: `0 18px 44px -10px rgba(${rgb},0.55), inset 0 1px 0 rgba(255,255,255,0.07)`,
+        zIndex: 5,
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: `linear-gradient(90deg, transparent, rgba(${rgb},0.55), transparent)` }} />
+      <motion.div
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 4 + delay, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  )
+}
+
+function WhatsAppPreviewCard({ className, delay }: { className?: string; delay: number }) {
+  return (
+    <FloatingCardWrap className={`w-[230px] sm:w-[250px] ${className ?? ''}`} delay={delay} accent="#10B981">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-3 py-2 border-b"
+        style={{ borderColor: 'rgba(16,185,129,0.18)', background: 'rgba(5,8,22,0.45)' }}>
+        <div className="w-6 h-6 rounded-full flex items-center justify-center font-semibold text-[9px] text-white shrink-0"
+          style={{
+            background: 'linear-gradient(135deg, #6B5CFF, #D45BFF)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.22)',
+          }}>
+          C
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[10.5px] font-semibold text-white leading-none">Carolina M.</div>
+          <div className="flex items-center gap-1 text-[8.5px] text-emerald-300 mt-0.5">
+            <span className="relative flex h-1 w-1">
+              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity }} />
+              <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400" />
+            </span>
+            En línea
+          </div>
+        </div>
+        <span className="text-[8px] uppercase font-mono font-semibold px-1.5 py-0.5 rounded"
+          style={{
+            letterSpacing: '0.14em',
+            color: '#10B981',
+            background: 'rgba(16,185,129,0.14)',
+            border: '1px solid rgba(16,185,129,0.32)',
+          }}>WA</span>
+      </div>
+
+      {/* Body */}
+      <div className="px-3 py-2.5 space-y-1.5">
+        <div className="max-w-[85%] rounded-xl rounded-tl-sm px-2.5 py-1.5 text-[11px] text-white/85 leading-tight"
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          ¿Tienen disponibilidad hoy?
+        </div>
+        {/* Typing */}
+        <div className="flex items-center gap-1.5 pt-1">
+          <div className="flex items-center gap-0.5 px-1.5 py-1 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.04)' }}>
+            {[0, 0.18, 0.36].map((d, i) => (
+              <motion.span key={i} className="w-1 h-1 rounded-full bg-white/55"
+                animate={{ opacity: [0.3, 1, 0.3], y: [0, -1.5, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: d }}
+              />
+            ))}
+          </div>
+          <span className="text-[9px] text-white/45 font-medium">NÜRO escribiendo…</span>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between px-3 py-1.5 border-t"
+        style={{ borderColor: 'rgba(16,185,129,0.12)' }}>
+        <span className="text-[9px] uppercase font-semibold text-white/45"
+          style={{ letterSpacing: '0.14em' }}>
+          12:42
+        </span>
+        <span className="flex items-center gap-1 text-[9px] text-emerald-300/85 font-medium">
+          <Check className="w-2.5 h-2.5" strokeWidth={3} /> Entregado
+        </span>
+      </div>
+    </FloatingCardWrap>
+  )
+}
+
+function OrderReceivedCard({ className, delay }: { className?: string; delay: number }) {
+  return (
+    <FloatingCardWrap className={`w-[210px] ${className ?? ''}`} delay={delay} accent="#D45BFF">
+      <div className="flex items-center gap-2.5 px-3 py-2.5">
+        {/* Mini producto */}
+        <div className="relative w-11 h-11 rounded-lg flex items-center justify-center shrink-0 overflow-hidden"
+          style={{
+            background: 'radial-gradient(circle at 40% 30%, rgba(212,91,255,0.40), rgba(11,16,38,0.85))',
+            border: '1px solid rgba(212,91,255,0.40)',
+          }}>
+          <svg viewBox="0 0 24 24" width="22" height="22"
+            style={{ filter: 'drop-shadow(0 2px 6px rgba(142,68,255,0.5))' }}>
+            <defs>
+              <linearGradient id="hpG" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#D45BFF" />
+                <stop offset="100%" stopColor="#6B5CFF" />
+              </linearGradient>
+            </defs>
+            <path d="M5 12 Q12 4 19 12" stroke="url(#hpG)" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+            <ellipse cx="5" cy="14" rx="2.6" ry="3.2" fill="url(#hpG)" />
+            <ellipse cx="19" cy="14" rx="2.6" ry="3.2" fill="url(#hpG)" />
+          </svg>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1 mb-0.5">
+            <span className="text-[8.5px] uppercase font-semibold font-mono px-1 py-0.5 rounded"
+              style={{
+                letterSpacing: '0.12em',
+                color: '#D45BFF',
+                background: 'rgba(212,91,255,0.14)',
+                border: '1px solid rgba(212,91,255,0.35)',
+              }}>
+              PEDIDO
+            </span>
+            <span className="text-[8.5px] text-white/40 font-mono">#A-1287</span>
+          </div>
+          <div className="text-[11.5px] font-semibold text-white truncate leading-tight">
+            Auriculares NÜRO Pro
+          </div>
+          <div className="flex items-center justify-between mt-0.5">
+            <span className="text-[9px] text-white/45">3 productos</span>
+            <span className="text-[10px] font-semibold text-white tabular-nums">$258</span>
+          </div>
+        </div>
+      </div>
+    </FloatingCardWrap>
+  )
+}
+
+function SaleConfirmedCard({ className, delay }: { className?: string; delay: number }) {
+  return (
+    <FloatingCardWrap className={`w-[200px] ${className ?? ''}`} delay={delay} accent="#10B981">
+      <div className="relative px-3 py-3">
+        <div className="flex items-center gap-2 mb-1.5">
+          <motion.div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, #10B981, #6B5CFF)',
+              boxShadow: '0 0 12px rgba(16,185,129,0.6)',
+            }}
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}>
+            <Check className="w-3 h-3 text-white" strokeWidth={3.5} />
+          </motion.div>
+          <span className="text-[9.5px] uppercase font-semibold text-emerald-200"
+            style={{ letterSpacing: '0.14em' }}>
+            Venta confirmada
+          </span>
+        </div>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[10px] text-white/50 font-medium">+</span>
+          <span className="text-[26px] font-medium tabular-nums leading-none"
+            style={{
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.04em',
+              background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 10px rgba(142,68,255,0.4))',
+            }}>
+            $1,250
+          </span>
+        </div>
+        <div className="text-[9.5px] text-white/45 mt-1.5 font-medium">
+          Cliente recurrente · México
+        </div>
+
+        {/* Subtle ambient corner glow */}
+        <div className="pointer-events-none absolute -top-6 -right-6 w-20 h-20 rounded-full opacity-70"
+          style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.30), transparent 65%)', filter: 'blur(20px)' }} />
+      </div>
+    </FloatingCardWrap>
+  )
+}
+
+function FollowupCard({ className, delay }: { className?: string; delay: number }) {
+  return (
+    <FloatingCardWrap className={`w-[200px] ${className ?? ''}`} delay={delay} accent="#6B5CFF">
+      <div className="flex items-center gap-2.5 px-3 py-2.5">
+        <div className="relative w-9 h-9 rounded-full flex items-center justify-center font-semibold text-[10px] text-white shrink-0"
+          style={{
+            background: 'linear-gradient(135deg, #6B5CFF, #8E44FF)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            boxShadow: '0 4px 10px -2px rgba(107,92,255,0.5), inset 0 1px 0 rgba(255,255,255,0.22)',
+          }}>
+          JL
+          <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full flex items-center justify-center"
+            style={{
+              background: '#10B981',
+              border: '1.5px solid #0B1026',
+              boxShadow: '0 0 6px rgba(16,185,129,0.7)',
+            }}>
+            <Check className="w-2 h-2 text-white" strokeWidth={3.5} />
+          </span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <Send className="w-2.5 h-2.5" style={{ color: '#6B5CFF' }} strokeWidth={2.4} />
+            <span className="text-[8.5px] uppercase font-semibold text-white/55"
+              style={{ letterSpacing: '0.14em' }}>
+              Seguimiento
+            </span>
+          </div>
+          <div className="text-[11.5px] font-semibold text-white truncate mt-0.5"
+            style={{ letterSpacing: '-0.01em' }}>
+            Cliente recuperado
+          </div>
+          <div className="text-[9px] text-white/45 mt-0.5">Día 3 · Convertido</div>
+        </div>
+      </div>
+    </FloatingCardWrap>
+  )
+}
+
+function NewConversationCard({ className, delay }: { className?: string; delay: number }) {
+  return (
+    <FloatingCardWrap className={`w-[210px] ${className ?? ''}`} delay={delay} accent="#D45BFF">
+      <div className="flex items-center gap-2.5 px-3 py-2.5">
+        <div className="relative w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{
+            background: 'rgba(212,91,255,0.20)',
+            border: '1px solid rgba(212,91,255,0.45)',
+            boxShadow: '0 0 10px rgba(212,91,255,0.45)',
+          }}>
+          <Sparkles className="w-3.5 h-3.5" style={{ color: '#D45BFF' }} strokeWidth={2.2} />
+          <motion.span className="absolute inset-0 rounded-lg pointer-events-none"
+            style={{ border: '1px solid rgba(212,91,255,0.55)' }}
+            animate={{ scale: [1, 1.45], opacity: [0.7, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[8.5px] uppercase font-semibold text-white/55"
+            style={{ letterSpacing: '0.14em' }}>
+            Nueva conversación
+          </div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-[11.5px] font-semibold text-white whitespace-nowrap"
+              style={{ letterSpacing: '-0.01em' }}>
+              Canal Instagram
+            </span>
+            <span className="text-[9.5px] text-emerald-300 font-medium">● conectado</span>
+          </div>
+        </div>
+      </div>
+    </FloatingCardWrap>
   )
 }
 
@@ -1507,20 +1807,46 @@ function VideoDemo() {
   }
 
   return (
-    <section id="video" className="relative pt-14 pb-20 lg:pt-16 lg:pb-24">
+    <section id="video" className="relative pt-6 pb-16 lg:pt-8 lg:pb-20">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="Demo"
-          title="Mira NÜRO operando un negocio real"
-          sub="Conversaciones, seguimientos y cierres — todo en automático."
-        />
+        {/* Editorial bridge — compact, sin SectionHeader pesado */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center max-w-2xl mx-auto mb-7 lg:mb-9"
+        >
+          <span className="inline-block text-[10.5px] uppercase font-semibold mb-3"
+            style={{ letterSpacing: '0.24em', color: 'rgba(212,91,255,0.85)' }}>
+            DEMO · EN VIVO
+          </span>
+          <h2 className="leading-[1.05]"
+            style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.035em' }}>
+            <span className="block text-[26px] sm:text-[32px] lg:text-[38px] text-white/85"
+              style={{ fontWeight: 300 }}>
+              Observa cómo NÜRO{' '}
+              <span style={{
+                fontWeight: 700,
+                background: GRAD_MAIN,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 18px rgba(212,91,255,0.35))',
+              }}>
+                responde, sigue y vende
+              </span>
+              {' '}automáticamente.
+            </span>
+          </h2>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mt-10 rounded-[28px] overflow-hidden"
+          className="relative rounded-[28px] overflow-hidden"
           style={{
             background:
               'linear-gradient(180deg, rgba(29,46,109,0.32), rgba(11,16,38,0.7))',
@@ -2770,66 +3096,6 @@ function AnimatedNumber({
   }, [target, format, duration])
 
   return <span ref={ref}>{display}</span>
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FLOATING CHIP — glass premium card orbiting NÜRO
-   ═══════════════════════════════════════════════════════════════ */
-function FloatingChip({
-  className, icon: Icon, label, value, delay, accent = '#D45BFF', highlight = false,
-}: {
-  className?: string
-  icon: typeof MessageCircle
-  label: string
-  value: string
-  delay: number
-  accent?: string
-  highlight?: boolean
-}) {
-  // accent → rgb tuple for inline rgba math
-  const accRGB = hexToRgb(accent)
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.85, y: 14 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={`absolute flex items-center gap-3 px-3.5 py-3 rounded-2xl backdrop-blur-2xl max-w-[220px] ${className ?? ''}`}
-      style={{
-        background: highlight
-          ? `linear-gradient(135deg, rgba(${accRGB},0.22), rgba(11,16,38,0.82))`
-          : `linear-gradient(135deg, rgba(${accRGB},0.14), rgba(11,16,38,0.78))`,
-        border: `1px solid rgba(${accRGB},${highlight ? 0.45 : 0.30})`,
-        boxShadow: `0 14px 38px -10px rgba(${accRGB},${highlight ? 0.65 : 0.5}), inset 0 1px 0 rgba(255,255,255,0.06)`,
-        zIndex: 5,
-      }}
-    >
-      <motion.div
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 4 + delay, repeat: Infinity, ease: 'easeInOut' }}
-        className="contents"
-      >
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-          style={{
-            background: `rgba(${accRGB},0.22)`,
-            border: `1px solid rgba(${accRGB},0.5)`,
-            boxShadow: `0 0 12px rgba(${accRGB},0.45)`,
-          }}>
-          <Icon className="w-4 h-4" style={{ color: accent }} strokeWidth={2} />
-        </div>
-        <div className="min-w-0">
-          <div className="text-[9px] uppercase font-semibold text-white/55 mb-0.5 truncate"
-            style={{ letterSpacing: '0.16em' }}>
-            {label}
-          </div>
-          <div className="text-[12.5px] font-medium text-white leading-tight tabular-nums truncate"
-            style={{ letterSpacing: '-0.01em' }}>
-            {value}
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
 }
 
 function hexToRgb(hex: string): string {
