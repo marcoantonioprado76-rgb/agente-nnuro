@@ -2358,20 +2358,17 @@ function LogoGPT5() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   VIDEO DEMO
+   VIDEO DEMO — Vimeo embed on-demand
+   El iframe sólo se carga cuando el usuario clickea play. Antes de
+   eso el peso de red es 0 (sólo el cover oscuro + botón).
    ═══════════════════════════════════════════════════════════════ */
-const VIDEO_URL = '/nuro-demo.mp4'
+const VIMEO_ID = '1197763990'
+const VIMEO_EMBED_URL =
+  `https://player.vimeo.com/video/${VIMEO_ID}?autoplay=1&title=0&byline=0&portrait=0&badge=0&dnt=1&playsinline=1`
 
 function VideoDemo() {
   const [playing, setPlaying] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  const handlePlay = () => {
-    const v = videoRef.current
-    if (!v) return
-    v.play().catch(() => {})
-    setPlaying(true)
-  }
+  const handlePlay = () => setPlaying(true)
 
   return (
     <section id="video" className="relative pt-8 pb-16 lg:pt-12 lg:pb-20">
@@ -2468,20 +2465,19 @@ function VideoDemo() {
             </div>
           </div>
 
-          {/* Video */}
+          {/* Video frame · Vimeo iframe carga sólo on-demand (peso 0 al inicio) */}
           <div className="relative aspect-video"
             style={{ background: '#050816' }}>
-            <video
-              ref={videoRef}
-              src={VIDEO_URL}
-              controls={playing}
-              playsInline
-              preload="metadata"
-              className="absolute inset-0 w-full h-full object-contain"
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
-              onEnded={() => setPlaying(false)}
-            />
+            {playing && (
+              <iframe
+                src={VIMEO_EMBED_URL}
+                title="NÜRO · Demo en vivo"
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0 }}
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                allowFullScreen
+              />
+            )}
 
             <AnimatePresence>
               {!playing && (
