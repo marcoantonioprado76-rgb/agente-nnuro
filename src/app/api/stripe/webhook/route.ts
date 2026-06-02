@@ -4,6 +4,7 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/audit'
 import { createUserNotification } from '@/lib/notifications'
 import { sendPlanPurchaseEmail } from '@/lib/email'
+import { activateCreditPurchase } from '@/lib/credits'
 import type Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
@@ -32,12 +33,23 @@ export async function POST(request: NextRequest) {
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
-        await handleCheckoutCompleted(service, event.data.object as Stripe.Checkout.Session)
+        const session = event.data.object as Stripe.Checkout.Session
+        // Dispatch por metadata.purpose: 'credits' o (default) 'subscription'
+        if (session.metadata?.purpose === 'credits') {
+          await handleCreditsCompleted(service, session)
+        } else {
+          await handleCheckoutCompleted(service, session)
+        }
         break
       }
 
       case 'checkout.session.expired': {
-        await handleCheckoutExpired(service, event.data.object as Stripe.Checkout.Session)
+        const session = event.data.object as Stripe.Checkout.Session
+        if (session.metadata?.purpose === 'credits') {
+          await handleCreditsExpired(service, session)
+        } else {
+          await handleCheckoutExpired(service, session)
+        }
         break
       }
 
@@ -50,6 +62,33 @@ export async function POST(request: NextRequest) {
     console.error(`[Stripe Webhook] Error procesando ${event.type}:`, error)
     return NextResponse.json({ error: 'Webhook processing error' }, { status: 500 })
   }
+}
+
+// ============================================================
+// CREDITS HANDLERS — compra de créditos AI
+// ============================================================
+
+async function handleCreditsCompleted(
+  service: Awaited<ReturnType<typeof createServiceRoleClient>>,
+  session: Stripe.Checkout.Session
+) {
+  const result = await activateCreditPurchase(service, session, 'webhook')
+  if (result.error) {
+    console.error('[Stripe Webhook · credits] error:', result.error, 'session:', session.id)
+  }
+}
+
+async function handleCreditsExpired(
+  service: Awaited<ReturnType<typeof createServiceRoleClient>>,
+  session: Stripe.Checkout.Session
+) {
+  await service
+    .from('credit_purchases')
+    .update({ status: 'expired', updated_at: new Date().toISOString() })
+    .eq('stripe_checkout_session_id', session.id)
+    .eq('status', 'pending')
+
+  console.log('[Stripe Webhook · credits] Sesión expirada:', session.id)
 }
 
 // ============================================================

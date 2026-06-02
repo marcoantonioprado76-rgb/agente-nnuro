@@ -4,6 +4,7 @@ import { createServiceRoleClient } from '@/lib/supabase/server'
 import { getServerSession } from '@/lib/auth'
 import { stripe, calculateEndDate, StripeNotConfiguredError } from '@/lib/stripe'
 import { logAudit } from '@/lib/audit'
+import { verifyCreditsPurchase } from '@/lib/credits'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,18 +27,6 @@ export async function POST(request: NextRequest) {
     }
 
     const service = await createServiceRoleClient()
-
-    // 1. Check if already active
-    const { data: existingSub } = await service
-      .from('subscriptions')
-      .select('id, status, approval_status')
-      .eq('payment_id', session_id)
-      .eq('user_id', user.id)
-      .single()
-
-    if (existingSub?.status === 'active' && existingSub?.approval_status === 'approved') {
-      return NextResponse.json({ status: 'already_active', subscription: existingSub })
-    }
 
     // 2. Verify with Stripe
     let session: Stripe.Checkout.Session
@@ -77,6 +66,23 @@ export async function POST(request: NextRequest) {
         status: 'not_paid',
         payment_status: session.payment_status,
       })
+    }
+
+    // 2.5 Branch por purpose: 'credits' usa flujo de créditos AI
+    if (session.metadata?.purpose === 'credits') {
+      return await verifyCreditsPurchase(service, session, user.id)
+    }
+
+    // 2.6 Para subscriptions: check si ya está activa (idempotencia)
+    const { data: existingSub } = await service
+      .from('subscriptions')
+      .select('id, status, approval_status')
+      .eq('payment_id', session_id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (existingSub?.status === 'active' && existingSub?.approval_status === 'approved') {
+      return NextResponse.json({ status: 'already_active', subscription: existingSub })
     }
 
     // 3. Payment confirmed — activate with 1 calendar month

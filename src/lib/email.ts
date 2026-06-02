@@ -231,3 +231,61 @@ export async function sendPlanExpiredEmail(email: string, fullName: string, plan
 </html>`,
   })
 }
+
+// ──────────────────────────────────────────────
+// 5. COMPRA DE CRÉDITOS AI EXITOSA
+// ──────────────────────────────────────────────
+export async function sendCreditsPurchaseEmail(
+  email: string,
+  fullName: string,
+  amountUsd: number,
+  newBalanceUsd: number
+) {
+  const transporter = createTransporter()
+  return transporter.sendMail({
+    from: FROM,
+    to: email,
+    subject: `+$${amountUsd.toFixed(2)} en créditos AI · NÜRO`,
+    html: `
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#050816;font-family:'Segoe UI',Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#050816;padding:40px 0">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#0B1026;border-radius:16px;border:1px solid rgba(142,68,255,0.18);overflow:hidden">
+        <tr><td style="padding:32px 40px 16px;text-align:center">
+          <p style="margin:0 0 8px;color:rgba(212,91,255,0.85);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600">Recarga exitosa</p>
+          <h1 style="margin:0;color:#F8FAFF;font-size:32px;font-weight:300;letter-spacing:-0.025em">
+            +$${amountUsd.toFixed(2)} <span style="background:linear-gradient(135deg,#6B5CFF,#8E44FF,#D45BFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700">en créditos</span>
+          </h1>
+        </td></tr>
+        <tr><td style="padding:0 40px 24px">
+          <p style="margin:24px 0 8px;color:rgba(248,250,255,0.75);font-size:14px;line-height:1.6">
+            Hola ${fullName.split(' ')[0] || ''}, tu pago fue confirmado y los créditos ya están en tu cuenta.
+          </p>
+        </td></tr>
+        <tr><td style="padding:0 40px 24px">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(142,68,255,0.10);border:1px solid rgba(212,91,255,0.32);border-radius:12px;padding:18px 20px">
+            <tr>
+              <td style="color:rgba(248,250,255,0.55);font-size:11px;letter-spacing:0.16em;text-transform:uppercase">Saldo actual</td>
+              <td align="right" style="color:#F8FAFF;font-size:22px;font-weight:600;letter-spacing:-0.02em">$${newBalanceUsd.toFixed(2)} USD</td>
+            </tr>
+          </table>
+        </td></tr>
+        <tr><td style="padding:0 40px 32px;text-align:center">
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://agentenuro.com'}/wallet"
+            style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#6B5CFF,#8E44FF,#D45BFF);color:#fff;text-decoration:none;border-radius:12px;font-weight:600;font-size:13px;letter-spacing:0.14em;text-transform:uppercase">
+            Ver mi wallet
+          </a>
+        </td></tr>
+        <tr><td style="padding:20px 40px 28px;text-align:center;border-top:1px solid rgba(255,255,255,0.06)">
+          <p style="margin:0;color:rgba(248,250,255,0.35);font-size:11px">© 2026 NÜRO · La plataforma más avanzada para vender con IA en LATAM</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+  })
+}

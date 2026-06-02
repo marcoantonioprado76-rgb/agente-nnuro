@@ -33,6 +33,8 @@ export type AuditAction =
   | 'pago_stripe_verificado'
   | 'suscripcion_vencida'
   | 'suscripcion_renovada'
+  | 'credits_compra_exitosa'
+  | 'credits_compra_fallida'
 
 export type AuditEntityType =
   | 'usuario'
