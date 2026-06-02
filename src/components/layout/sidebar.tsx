@@ -16,10 +16,12 @@ import {
   Shield,
   ChevronUp,
   Bot,
+  Wallet,
+  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { NuroSmile } from '@/components/shared/nuro-logo';
 
@@ -28,6 +30,7 @@ const navItems = [
   { label: 'Agentes de IA',     href: '/bots',         icon: Bot             },
   { label: 'Tiendas Virtuales', href: '/stores',       icon: Store           },
   { label: 'Ventas Confirmadas',href: '/sales',        icon: ShoppingBag     },
+  { label: 'Wallet',            href: '/wallet',       icon: Wallet          },
   { label: 'Suscripción',       href: '/subscription', icon: CreditCard      },
   { label: 'Perfil',            href: '/profile',      icon: UserCircle      },
 ];
@@ -42,6 +45,28 @@ export function Sidebar() {
   const { profile, signOut, isAdmin } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
+
+  const fetchBalance = useCallback(async () => {
+    try {
+      const res = await fetch('/api/credits/purchase');
+      if (res.ok) {
+        const data = await res.json();
+        setBalance(Number(data?.balance_usd ?? 0));
+      }
+    } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => {
+    fetchBalance();
+    const id = setInterval(fetchBalance, 30000);
+    const onFocus = () => fetchBalance();
+    window.addEventListener('focus', onFocus);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [fetchBalance]);
 
   const initials = profile?.full_name
     ? profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
@@ -148,6 +173,57 @@ export function Sidebar() {
         )}
 
       </nav>
+
+      {/* Balance Widget (Wallet) */}
+      {!collapsed ? (
+        <Link
+          href="/wallet"
+          className="mx-3 mb-3 block rounded-xl p-3 group transition-all duration-300"
+          style={{
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.10), rgba(212, 91, 255, 0.06))',
+            border: '1px solid rgba(212, 91, 255, 0.18)',
+            boxShadow: '0 4px 16px -8px rgba(139, 92, 246, 0.35)',
+          }}
+        >
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5">
+              <Zap className="h-3 w-3 text-[#D45BFF]" />
+              <span className="text-[9.5px] uppercase font-semibold text-white/55" style={{ letterSpacing: '0.16em' }}>
+                Saldo IA
+              </span>
+            </div>
+            <span className="text-[9px] text-white/40 group-hover:text-white/65 transition-colors">
+              Recargar →
+            </span>
+          </div>
+          <div
+            className="text-[18px] font-semibold tabular-nums leading-none"
+            style={{
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.025em',
+              background: 'linear-gradient(180deg, #F8FAFF, #D45BFF)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {balance === null ? '—' : `$${balance.toFixed(2)}`}{' '}
+            <span className="text-[10px] text-white/40 font-medium">USD</span>
+          </div>
+        </Link>
+      ) : (
+        <Link
+          href="/wallet"
+          title={balance === null ? 'Saldo IA' : `Saldo IA: $${balance.toFixed(2)} USD`}
+          className="mx-3 mb-3 flex items-center justify-center h-10 w-10 rounded-xl group transition-all duration-300"
+          style={{
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.10), rgba(212, 91, 255, 0.06))',
+            border: '1px solid rgba(212, 91, 255, 0.18)',
+          }}
+        >
+          <Wallet className="h-4 w-4 text-[#D45BFF]" />
+        </Link>
+      )}
 
       {/* Divider */}
       <div className="mx-4 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.1), transparent)' }} />

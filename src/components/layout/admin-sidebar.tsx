@@ -11,6 +11,7 @@ import {
   DollarSign,
   Activity,
   Settings,
+  Wallet,
   LogOut,
   ArrowLeft,
   Bell,
@@ -39,6 +40,7 @@ const adminNavItems = [
   { label: 'Tiendas',             href: '/admin/stores',        icon: Store,           description: 'Tiendas de usuarios',      badgeKey: null as string | null },
   { label: 'Suscripciones',       href: '/admin/subscriptions', icon: CreditCard,      description: 'Planes y aprobaciones',    badgeKey: 'pending_subscriptions' as string | null },
   { label: 'Pagos',               href: '/admin/payments',      icon: DollarSign,      description: 'Pagos y comprobantes',     badgeKey: 'pending_payments' as string | null },
+  { label: 'Créditos AI',         href: '/admin/credit-purchases', icon: Wallet,       description: 'Recargas + OpenAI key',    badgeKey: null as string | null },
   { label: 'Actividad / Auditoría',href: '/admin/audit',        icon: Activity,        description: 'Registro de actividad',    badgeKey: null as string | null },
   { label: 'Configuración',       href: '/admin/settings',      icon: Settings,        description: 'Ajustes del sistema',      badgeKey: null as string | null },
 ]
