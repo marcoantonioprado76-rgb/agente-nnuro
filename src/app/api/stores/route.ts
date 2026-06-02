@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import { getServerSession } from '@/lib/auth'
+import { requireActiveSubscription } from '@/lib/subscription-guard'
 import { db } from '@/lib/db'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 import { createUserNotification } from '@/lib/notifications'
@@ -56,8 +56,9 @@ function extractVisualFields(fontConfig: Record<string, unknown> | null, bgConfi
 
 export async function GET() {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const guard = await requireActiveSubscription()
+    if (!guard.ok) return guard.response
+    const session = guard.session
 
     const service = await createServiceRoleClient()
     const { data: stores, error } = await service
@@ -90,8 +91,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const guard = await requireActiveSubscription()
+    if (!guard.ok) return guard.response
+    const session = guard.session
 
     const { data: profile } = await db
       .from('profiles')

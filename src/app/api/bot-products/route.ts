@@ -1,11 +1,12 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
+import { requireActiveSubscription } from '@/lib/subscription-guard'
 import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession()
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const guard = await requireActiveSubscription()
+  if (!guard.ok) return guard.response
+  const session = guard.session
 
   const body = await request.json().catch(() => ({})) as Record<string, unknown>
   const { botId, product_images, product_testimonials, ...productFields } = body

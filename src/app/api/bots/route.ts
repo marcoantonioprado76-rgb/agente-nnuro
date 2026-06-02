@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
+import { requireActiveSubscription } from '@/lib/subscription-guard'
 import { prisma } from '@/lib/prisma'
 import { generateSecureToken } from '@/lib/crypto'
 
@@ -78,8 +78,9 @@ Responde SIEMPRE con este JSON exacto:
 /** GET /api/bots — listar bots del usuario */
 export async function GET() {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const guard = await requireActiveSubscription()
+    if (!guard.ok) return guard.response
+    const session = guard.session
 
     const bots = await (prisma as any).bot.findMany({
       where: { tenant_id: session.sub },
@@ -132,8 +133,9 @@ export async function GET() {
 /** POST /api/bots — crear bot */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const guard = await requireActiveSubscription()
+    if (!guard.ok) return guard.response
+    const session = guard.session
 
     const body = await request.json().catch(() => ({}))
     const name = (body.name as string)?.trim()

@@ -64,9 +64,31 @@ export function SubscriptionGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkSubscription()
-    const interval = setInterval(() => checkSubscription(), 15000)
-    return () => clearInterval(interval)
-  }, [checkSubscription])
+
+    // Polling adaptativo: si está pending, chequear más rápido (3s) para
+    // detectar la activación apenas el webhook/verify la complete. Si está
+    // activa u otro estado, polling relajado (30s).
+    const isPendingState =
+      subscription?.approval_status === 'pending_review' ||
+      (!!subscription && !subscription.status)
+    const intervalMs = isPendingState ? 3000 : 30000
+
+    const interval = setInterval(() => checkSubscription(), intervalMs)
+
+    // Re-verify cuando el user regresa a la tab (típicamente al volver de Stripe)
+    const onFocus = () => checkSubscription()
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') checkSubscription()
+    }
+    window.addEventListener('focus', onFocus)
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('focus', onFocus)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [checkSubscription, subscription?.approval_status, subscription?.status])
 
   // Admins siempre tienen acceso
   if (isAdmin) return <>{children}</>

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
+import { requireActiveSubscription } from '@/lib/subscription-guard'
 import { db } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const guard = await requireActiveSubscription()
+    if (!guard.ok) return guard.response
+    const session = guard.session
 
     const tenantId = session.tenant_id ?? session.sub
     const limit = Math.min(100, parseInt(request.nextUrl.searchParams.get('limit') || '50'))
