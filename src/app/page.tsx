@@ -8,7 +8,7 @@ import {
   Bot, ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
   Check, Menu, X, Zap, Brain, Globe, ChevronDown,
   UtensilsCrossed, Briefcase, Home, GraduationCap,
-  Mail, Send, Phone, Package, TrendingUp,
+  Mail, Send, Phone, TrendingUp,
 } from 'lucide-react'
 
 const display = Space_Grotesk({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'], variable: '--font-display' })
@@ -83,8 +83,8 @@ export default function LandingPage() {
 
       <main className="relative" style={{ zIndex: 2 }}>
         <Hero onNav={navTo} />
-        <TrustBar />
         <VideoDemo />
+        <TrustBar />
         <Services />
         <UseCases />
         <HowItWorks />
@@ -3058,12 +3058,6 @@ function Footer() {
 /* ═══════════════════════════════════════════════════════════════
    ANIMATED COUNTER — easeOutCubic, IntersectionObserver-triggered
    ═══════════════════════════════════════════════════════════════ */
-type AnimatedStat = {
-  target: number
-  format: (n: number) => string
-  label: string
-}
-
 function AnimatedNumber({
   target, format, duration = 2.4,
 }: { target: number; format: (n: number) => string; duration?: number }) {
