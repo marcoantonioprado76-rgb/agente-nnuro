@@ -178,6 +178,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 7. Create pending subscription record
+    const nowIso = new Date().toISOString()
     const { data: subscription, error: subError } = await service
       .from('subscriptions')
       .insert({
@@ -190,29 +191,52 @@ export async function POST(request: NextRequest) {
         payment_id: session.id,
         stripe_customer_id: customerId,
         stripe_checkout_session_id: session.id,
+        created_at: nowIso,
+        updated_at: nowIso,
       })
       .select()
       .single()
 
     if (subError) {
-      console.error('[Stripe Checkout] Error creating subscription:', subError)
-      return NextResponse.json({ error: 'Error al crear suscripción' }, { status: 500 })
+      console.error('[Stripe Checkout] Error creating subscription:', {
+        message: subError.message,
+        code: subError.code,
+        details: subError.details,
+        hint: subError.hint,
+        user_id: user.id,
+        plan_id: plan.id,
+      })
+      return NextResponse.json(
+        { error: `Error al crear suscripción: ${subError.message || 'sin detalle'}` },
+        { status: 500 }
+      )
     }
 
-    // 8. Create pending payment record
+    // 8. Create pending payment record (payments table no tiene updated_at)
     if (subscription) {
-      await service.from('payments').insert({
+      const { error: payError } = await service.from('payments').insert({
         id: randomUUID(),
         user_id: user.id,
         subscription_id: subscription.id,
-        amount: plan.price,
-        currency: plan.currency,
+        amount: planPrice,
+        currency: planCurrency,
         payment_method: 'stripe',
         payment_status: 'pending',
         transaction_id: session.id,
         stripe_checkout_session_id: session.id,
         stripe_customer_id: customerId,
+        created_at: nowIso,
       })
+      if (payError) {
+        // No bloqueante — la suscripción ya está creada, pero loggeamos para detectar el problema
+        console.error('[Stripe Checkout] Error creating payment record (non-blocking):', {
+          message: payError.message,
+          code: payError.code,
+          details: payError.details,
+          hint: payError.hint,
+          subscription_id: subscription.id,
+        })
+      }
     }
 
     return NextResponse.json({
