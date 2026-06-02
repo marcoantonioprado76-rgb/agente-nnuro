@@ -183,9 +183,38 @@ async function handleCheckoutCompleted(
 
   const { data: plan } = await service
     .from('plans')
-    .select('name, price, currency')
+    .select('name, price, currency, included_monthly_ai_credits')
     .eq('id', planId)
     .single()
+
+  // 3.5 Recarga inicial de créditos mensuales del plan (idempotente)
+  const monthlyCredits = Number(plan?.included_monthly_ai_credits ?? 0)
+  if (monthlyCredits > 0) {
+    try {
+      const { rechargeIncludedCredits } = await import('@/lib/credits-system')
+      const rechargeResult = await rechargeIncludedCredits(service, userId, monthlyCredits, {
+        subscriptionId: subscription.id,
+        source: 'plan_initial_activation',
+        description: `Recarga inicial del plan ${plan?.name || ''}: ${monthlyCredits} créditos`,
+        idempotencyKey: `initial_recharge:${subscription.id}`,
+      })
+      // Programar próxima recarga en 1 mes desde ahora
+      const nextRecharge = new Date(now)
+      nextRecharge.setMonth(nextRecharge.getMonth() + 1)
+      await service
+        .from('subscriptions')
+        .update({ next_credit_recharge_date: nextRecharge.toISOString() })
+        .eq('id', subscription.id)
+      await service
+        .from('profiles')
+        .update({ next_credit_recharge_date: nextRecharge.toISOString() })
+        .eq('id', userId)
+
+      console.log(`[Stripe Webhook] Recarga inicial: ${monthlyCredits} créditos → balance ${rechargeResult.balanceAfter} (user ${userId})`)
+    } catch (e) {
+      console.error('[Stripe Webhook] Error en recarga inicial:', e)
+    }
+  }
 
   try {
     await service.from('admin_notifications').insert({

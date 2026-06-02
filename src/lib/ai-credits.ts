@@ -80,10 +80,15 @@ export async function logAiUsage(opts: {
   model: string
   promptTokens: number
   completionTokens: number
+  /** Opcional: para idempotencia y trazabilidad con la conversación */
+  conversationId?: string
+  agentId?: string
+  /** Opcional: clave para idempotencia (si se reintenta la misma llamada, no se descontará dos veces) */
+  idempotencyKey?: string
 }): Promise<number> {
   const costUsd = calcCostUsd(opts.model, opts.promptTokens, opts.completionTokens)
 
-  await (prisma as any).aiUsageLog.create({
+  const usageLog = await (prisma as any).aiUsageLog.create({
     data: {
       user_id:           opts.userId,
       service:           opts.service,
@@ -94,6 +99,37 @@ export async function logAiUsage(opts: {
     },
   })
 
+  // ── Nuevo sistema: descuento del ledger (incluidos → adicionales) ──
+  // Lazy imports para no romper imports circulares ni tooling estático.
+  try {
+    const { createServiceRoleClient } = await import('@/lib/supabase/server')
+    const { consumeCredits, getUserConversionRate, usdToCredits } = await import('@/lib/credits-system')
+    const service = await createServiceRoleClient()
+    const rate = await getUserConversionRate(service, opts.userId)
+    const creditsToCharge = usdToCredits(costUsd, rate)
+
+    if (creditsToCharge > 0) {
+      const result = await consumeCredits(service, opts.userId, creditsToCharge, {
+        conversationId: opts.conversationId,
+        agentId: opts.agentId,
+        aiUsageLogId: usageLog?.id,
+        idempotencyKey: opts.idempotencyKey ?? (usageLog?.id ? `ai_usage:${usageLog.id}` : undefined),
+        description: `Consumo ${opts.model} (${opts.promptTokens}+${opts.completionTokens} tokens)`,
+        source: 'ai_usage',
+      })
+
+      if (result.consumed > 0) {
+        // Se descontó del nuevo sistema — NO descontamos del legacy
+        return costUsd
+      }
+      // Si consumed=0 puede ser idempotente, exhausted, o el user no tiene saldo en el nuevo modelo
+      // En todos esos casos caemos al legacy abajo (compatibilidad)
+    }
+  } catch (e) {
+    console.warn('[logAiUsage] credits-system fallo, usando legacy:', e instanceof Error ? e.message : e)
+  }
+
+  // ── Legacy: descuento de ai_credits_usd (compatibilidad backward) ──
   const profile = await (prisma as any).profile.findUnique({
     where: { id: opts.userId },
     select: { ai_credits_usd: true },

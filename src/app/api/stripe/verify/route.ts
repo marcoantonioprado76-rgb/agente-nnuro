@@ -144,9 +144,37 @@ export async function POST(request: NextRequest) {
 
     const { data: plan } = await service
       .from('plans')
-      .select('name, price, currency')
+      .select('name, price, currency, included_monthly_ai_credits')
       .eq('id', planId || '')
       .single()
+
+    // 5.5 Recarga inicial de créditos mensuales del plan (idempotente)
+    const monthlyCredits = Number(plan?.included_monthly_ai_credits ?? 0)
+    if (monthlyCredits > 0) {
+      try {
+        const { rechargeIncludedCredits } = await import('@/lib/credits-system')
+        const rechargeResult = await rechargeIncludedCredits(service, user.id, monthlyCredits, {
+          subscriptionId: subscription.id,
+          source: 'plan_initial_activation',
+          description: `Recarga inicial del plan ${plan?.name || ''}: ${monthlyCredits} créditos`,
+          idempotencyKey: `initial_recharge:${subscription.id}`,
+        })
+        const nextRecharge = new Date(now)
+        nextRecharge.setMonth(nextRecharge.getMonth() + 1)
+        await service
+          .from('subscriptions')
+          .update({ next_credit_recharge_date: nextRecharge.toISOString() })
+          .eq('id', subscription.id)
+        await service
+          .from('profiles')
+          .update({ next_credit_recharge_date: nextRecharge.toISOString() })
+          .eq('id', user.id)
+
+        console.log(`[Stripe Verify] Recarga inicial: ${monthlyCredits} créditos → balance ${rechargeResult.balanceAfter} (user ${user.id})`)
+      } catch (e) {
+        console.error('[Stripe Verify] Error en recarga inicial:', e)
+      }
+    }
 
     try {
       await service.from('admin_notifications').insert({

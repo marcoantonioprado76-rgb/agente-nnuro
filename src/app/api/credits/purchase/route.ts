@@ -20,7 +20,7 @@ export async function GET() {
     const [{ data: profile }, { data: purchases }] = await Promise.all([
       service
         .from('profiles')
-        .select('ai_credits_usd')
+        .select('ai_credits_usd, included_credits_balance, additional_credits_balance, credits_used_current_cycle, last_credit_recharge_date, next_credit_recharge_date')
         .eq('id', session.sub)
         .single(),
       service
@@ -31,8 +31,21 @@ export async function GET() {
         .limit(30),
     ])
 
+    const included = Number(profile?.included_credits_balance ?? 0)
+    const additional = Number(profile?.additional_credits_balance ?? 0)
+
     return NextResponse.json({
+      // Legacy USD balance — mantener por compatibilidad con el widget viejo
       balance_usd: Number(profile?.ai_credits_usd ?? 0),
+      // Nuevo modelo de créditos
+      credits: {
+        included,
+        additional,
+        total: included + additional,
+        used_current_cycle: Number(profile?.credits_used_current_cycle ?? 0),
+        last_recharge_date: profile?.last_credit_recharge_date ?? null,
+        next_recharge_date: profile?.next_credit_recharge_date ?? null,
+      },
       purchases: purchases ?? [],
     })
   } catch (error) {
