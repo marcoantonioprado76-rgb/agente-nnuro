@@ -1821,22 +1821,23 @@ function VideoDemo() {
             style={{ letterSpacing: '0.24em', color: 'rgba(212,91,255,0.85)' }}>
             DEMO · EN VIVO
           </span>
-          <h2 className="leading-[1.05]"
-            style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.035em' }}>
-            <span className="block text-[26px] sm:text-[32px] lg:text-[38px] text-white/85"
+          <h2 className="leading-[1.04]"
+            style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.04em' }}>
+            <span className="block text-[28px] sm:text-[36px] lg:text-[44px] text-white/85"
               style={{ fontWeight: 300 }}>
-              Observa cómo NÜRO{' '}
-              <span style={{
+              NÜRO acaba de cerrar una venta.
+            </span>
+            <span className="block text-[32px] sm:text-[42px] lg:text-[52px] mt-1"
+              style={{
                 fontWeight: 700,
+                letterSpacing: '-0.05em',
                 background: GRAD_MAIN,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 18px rgba(212,91,255,0.35))',
+                filter: 'drop-shadow(0 0 24px rgba(212,91,255,0.45))',
               }}>
-                responde, sigue y vende
-              </span>
-              {' '}automáticamente.
+              MIENTRAS DUERMES.
             </span>
           </h2>
         </motion.div>
