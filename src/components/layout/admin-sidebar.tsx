@@ -44,6 +44,7 @@ const adminNavItems = [
   { label: 'Paquetes IA',         href: '/admin/credit-packages', icon: Wallet,        description: 'Recargas adicionales',     badgeKey: null as string | null },
   { label: 'Pagos',               href: '/admin/payments',      icon: DollarSign,      description: 'Pagos y comprobantes',     badgeKey: 'pending_payments' as string | null },
   { label: 'Créditos AI',         href: '/admin/credit-purchases', icon: Wallet,       description: 'Recargas + OpenAI key',    badgeKey: null as string | null },
+  { label: 'Movimientos créditos', href: '/admin/credit-movements', icon: Activity,    description: 'Auditoría del ledger',     badgeKey: null as string | null },
   { label: 'Actividad / Auditoría',href: '/admin/audit',        icon: Activity,        description: 'Registro de actividad',    badgeKey: null as string | null },
   { label: 'Configuración',       href: '/admin/settings',      icon: Settings,        description: 'Ajustes del sistema',      badgeKey: null as string | null },
 ]

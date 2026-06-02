@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2, Wallet as WalletIcon, ArrowRight, CheckCircle2, XCircle, Clock } from 'lucide-react'
+import { Loader2, Wallet as WalletIcon, ArrowRight, CheckCircle2, XCircle, Clock, Zap, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { CreditsCard } from '@/components/credits/credits-card'
@@ -16,6 +16,16 @@ type Purchase = {
   completed_at: string | null
 }
 
+type CreditPackage = {
+  id: string
+  name: string
+  credits_amount: number
+  price_usd: number
+  expiration_days: number | null
+  description: string | null
+  sort_order: number
+}
+
 const MIN_USD = 5
 const MAX_USD = 500
 
@@ -25,9 +35,11 @@ export default function WalletPage() {
 
   const [balance, setBalance] = useState<number | null>(null)
   const [purchases, setPurchases] = useState<Purchase[]>([])
+  const [packages, setPackages] = useState<CreditPackage[]>([])
   const [loading, setLoading] = useState(true)
   const [amountStr, setAmountStr] = useState('25')
   const [processing, setProcessing] = useState(false)
+  const [packageProcessingId, setPackageProcessingId] = useState<string | null>(null)
   const [verifying, setVerifying] = useState(false)
 
   const sessionId = searchParams.get('session_id')
@@ -35,11 +47,18 @@ export default function WalletPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch('/api/credits/purchase')
-      if (res.ok) {
-        const data = await res.json()
+      const [resPurchase, resPackages] = await Promise.all([
+        fetch('/api/credits/purchase'),
+        fetch('/api/credits/packages'),
+      ])
+      if (resPurchase.ok) {
+        const data = await resPurchase.json()
         setBalance(Number(data.balance_usd ?? 0))
         setPurchases(Array.isArray(data.purchases) ? data.purchases : [])
+      }
+      if (resPackages.ok) {
+        const data = await resPackages.json()
+        setPackages(Array.isArray(data) ? data : [])
       }
     } catch { /* silent */ }
     finally { setLoading(false) }
@@ -105,6 +124,32 @@ export default function WalletPage() {
     }
   }, [cancelled, router])
 
+  const handlePackagePurchase = async (pkg: CreditPackage) => {
+    setPackageProcessingId(pkg.id)
+    try {
+      const res = await fetch('/api/credits/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ package_id: pkg.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(data?.error || 'Error al crear sesión de pago')
+        setPackageProcessingId(null)
+        return
+      }
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        toast.error('No se recibió URL de pago')
+        setPackageProcessingId(null)
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Error al iniciar pago')
+      setPackageProcessingId(null)
+    }
+  }
+
   const handlePurchase = async () => {
     const amount = Number(amountStr)
     if (!Number.isFinite(amount) || amount < MIN_USD || amount > MAX_USD) {
@@ -153,6 +198,80 @@ export default function WalletPage() {
         <div className="mb-4 px-4 py-2 rounded-lg flex items-center gap-2 text-sm text-white/65"
           style={{ background: 'rgba(212,91,255,0.08)', border: '1px solid rgba(212,91,255,0.18)' }}>
           <Loader2 className="h-3.5 w-3.5 animate-spin" /> Verificando pago…
+        </div>
+      )}
+
+      {/* Paquetes destacados */}
+      {packages.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Package className="h-4 w-4 text-purple-400" />
+            <h2 className="text-[15px] font-semibold text-white">Paquetes de créditos</h2>
+            <span className="text-[11px] text-white/45">Compra rápida con descuento</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {packages.map((pkg) => {
+              const ratio = pkg.price_usd > 0 ? pkg.credits_amount / pkg.price_usd : 0
+              const isProcessing = packageProcessingId === pkg.id
+              const disabled = processing || verifying || isProcessing
+              return (
+                <button
+                  key={pkg.id}
+                  onClick={() => !disabled && handlePackagePurchase(pkg)}
+                  disabled={disabled}
+                  className="text-left relative rounded-2xl p-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:translate-y-[-2px]"
+                  style={{
+                    background: 'rgba(11,16,38,0.65)',
+                    border: '1px solid rgba(212,91,255,0.20)',
+                    boxShadow: '0 12px 28px -10px rgba(142,68,255,0.35)',
+                  }}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg"
+                      style={{ background: 'rgba(212,91,255,0.16)', border: '1px solid rgba(212,91,255,0.30)' }}>
+                      <Zap className="h-4 w-4 text-purple-400" />
+                    </div>
+                    <p className="text-[12.5px] font-semibold text-white truncate">{pkg.name}</p>
+                  </div>
+
+                  <p className="text-[24px] font-medium text-white tabular-nums leading-none"
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      letterSpacing: '-0.035em',
+                      background: 'linear-gradient(180deg, #F8FAFF, #D45BFF)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                    }}>
+                    {pkg.credits_amount.toLocaleString()}
+                  </p>
+                  <p className="text-[10.5px] text-white/45 mb-3">créditos</p>
+
+                  <div className="flex items-baseline justify-between mb-3">
+                    <span className="text-[16px] font-semibold text-white tabular-nums">
+                      ${Number(pkg.price_usd).toFixed(2)}
+                    </span>
+                    <span className="text-[10.5px] text-emerald-400 tabular-nums">
+                      {ratio.toFixed(0)} créd/USD
+                    </span>
+                  </div>
+
+                  {pkg.description && (
+                    <p className="text-[11px] text-white/55 mb-3 line-clamp-2">{pkg.description}</p>
+                  )}
+
+                  <div className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-white text-[11.5px] font-semibold"
+                    style={{
+                      background: 'linear-gradient(135deg, #6B5CFF, #8E44FF, #D45BFF)',
+                      boxShadow: '0 6px 14px -4px rgba(142,68,255,0.55)',
+                    }}>
+                    {isProcessing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
+                    Comprar
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
 

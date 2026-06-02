@@ -123,6 +123,39 @@ export async function activateCreditPurchase(
 
   console.log(`[Credits] +$${purchase.amount_usd} → balance $${newBalance} (user ${userId}, trigger: ${trigger})`)
 
+  // Recarga al ledger nuevo (additional). No-bloqueante para no romper el flujo legacy.
+  try {
+    const { rechargeAdditionalCredits, usdToCredits, getUserConversionRate } = await import('@/lib/credits-system')
+    let creditsToAdd: number
+    let pkgId: string | null = null
+
+    const metaPackageId = session.metadata?.package_id
+    const metaPackageCredits = Number(session.metadata?.package_credits)
+
+    if (metaPackageId && Number.isFinite(metaPackageCredits) && metaPackageCredits > 0) {
+      // Caso paquete: usar credits_amount exacto del paquete
+      creditsToAdd = Math.floor(metaPackageCredits)
+      pkgId = metaPackageId
+    } else {
+      // Caso monto libre: convertir según rate del plan activo del usuario
+      const rate = await getUserConversionRate(service, userId)
+      creditsToAdd = usdToCredits(Number(purchase.amount_usd), rate)
+    }
+
+    if (creditsToAdd > 0) {
+      await rechargeAdditionalCredits(service, userId, creditsToAdd, {
+        packageId: pkgId ?? undefined,
+        source: pkgId ? 'package_purchase' : 'custom_purchase',
+        description: pkgId
+          ? `Compra de paquete: +${creditsToAdd} créditos adicionales`
+          : `Recarga personalizada: $${Number(purchase.amount_usd).toFixed(2)} → ${creditsToAdd} créditos adicionales`,
+        idempotencyKey: `purchase:${session.id}`,
+      })
+    }
+  } catch (e) {
+    console.error('[Credits] error al recargar ledger nuevo:', e)
+  }
+
   return {
     activated: true,
     alreadyDone: false,

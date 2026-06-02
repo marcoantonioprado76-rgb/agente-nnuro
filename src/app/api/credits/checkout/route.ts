@@ -26,16 +26,40 @@ export async function POST(request: NextRequest) {
     const user = guard.session
 
     const body = await request.json().catch(() => ({}))
-    const amount = Number(body?.amount_usd)
-
-    if (!Number.isFinite(amount) || amount < MIN_USD || amount > MAX_USD) {
-      return NextResponse.json(
-        { error: `El monto debe estar entre $${MIN_USD} y $${MAX_USD} USD` },
-        { status: 400 }
-      )
-    }
-
+    const packageId = typeof body?.package_id === 'string' ? body.package_id : null
     const service = await createServiceRoleClient()
+
+    let amount: number
+    let pkgName: string | null = null
+    let pkgCredits: number | null = null
+
+    if (packageId) {
+      // Modo paquete: tomar precio y créditos del registro en BD
+      const { data: pkg, error: pkgErr } = await service
+        .from('credit_packages')
+        .select('id, name, credits_amount, price_usd, is_active')
+        .eq('id', packageId)
+        .single()
+
+      if (pkgErr || !pkg) {
+        return NextResponse.json({ error: 'Paquete no encontrado' }, { status: 404 })
+      }
+      if (!pkg.is_active) {
+        return NextResponse.json({ error: 'El paquete no está disponible' }, { status: 400 })
+      }
+      amount = Number(pkg.price_usd)
+      pkgName = pkg.name
+      pkgCredits = Number(pkg.credits_amount)
+    } else {
+      // Modo monto libre
+      amount = Number(body?.amount_usd)
+      if (!Number.isFinite(amount) || amount < MIN_USD || amount > MAX_USD) {
+        return NextResponse.json(
+          { error: `El monto debe estar entre $${MIN_USD} y $${MAX_USD} USD` },
+          { status: 400 }
+        )
+      }
+    }
 
     // Anti-spam: cap de 5 compras pending por usuario
     const { count: pendingCount } = await service
@@ -86,6 +110,13 @@ export async function POST(request: NextRequest) {
 
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
+      const productName = pkgName
+        ? `${pkgName} · ${pkgCredits?.toLocaleString()} créditos IA`
+        : `Créditos AI · $${amount.toFixed(2)} USD`
+      const productDescription = pkgName
+        ? `Paquete de créditos adicionales NÜRO (${pkgCredits?.toLocaleString()} créditos)`
+        : 'Saldo para uso de IA en tu cuenta NÜRO'
+
       session = await stripe.checkout.sessions.create({
         customer: customerId,
         mode: 'payment',
@@ -95,8 +126,8 @@ export async function POST(request: NextRequest) {
             price_data: {
               currency: 'usd',
               product_data: {
-                name: `Créditos AI · $${amount.toFixed(2)} USD`,
-                description: 'Saldo para uso de IA en tu cuenta NÜRO',
+                name: productName,
+                description: productDescription,
               },
               unit_amount: Math.round(amount * 100),
             },
@@ -108,6 +139,10 @@ export async function POST(request: NextRequest) {
           user_id: user.sub,
           amount_usd: amount.toString(),
           tenant_id: profile?.tenant_id || '',
+          ...(packageId ? {
+            package_id: packageId,
+            package_credits: String(pkgCredits ?? 0),
+          } : {}),
         },
         success_url: `${appUrl}/wallet?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${appUrl}/wallet?cancelled=1`,
