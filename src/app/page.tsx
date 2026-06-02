@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { Space_Grotesk, Inter } from 'next/font/google'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
   Check, Menu, X, Zap, Brain, Globe, Briefcase,
@@ -29,40 +29,15 @@ const AVATAR = '/nuro-3d.png'
 const GRAD_MAIN = 'linear-gradient(135deg, #6B5CFF 0%, #8E44FF 50%, #D45BFF 100%)'
 const GRAD_BTN  = 'linear-gradient(135deg, #6B5CFF 0%, #8E44FF 55%, #D45BFF 100%)'
 
-/* ─── Performance hook ─────────────────────────────────────────
- * Devuelve `true` en pantallas pequeñas o cuando el usuario tiene
- * "prefers-reduced-motion" activo. Los componentes pesados usan este
- * flag para apagar halos con blur enormes, mix-blend-mode, mouse-
- * reactive lights, partículas y orbitales — fuentes del parpadeo en
- * iOS Safari/Android.
- *
- * SSR-safe: arranca en `false` y se actualiza después del mount.
- */
-function useReducedFx(): boolean {
-  const [reduced, setReduced] = useState(false)
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mql = window.matchMedia('(max-width: 768px), (prefers-reduced-motion: reduce)')
-    const update = () => setReduced(mql.matches)
-    update()
-    mql.addEventListener?.('change', update)
-    return () => mql.removeEventListener?.('change', update)
-  }, [])
-  return reduced
-}
-
 /* ═══════════════════════════════════════════════════════════════
    ROOT
    ═══════════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const mouseLightRef = useRef<HTMLDivElement>(null)
-  const reducedFx = useReducedFx()
 
   // Mouse-reactive premium light (window-wide, ref-driven, no re-renders)
-  // En mobile/reduced-motion no se registra el listener para evitar trabajo extra.
   useEffect(() => {
-    if (reducedFx) return
     const handler = (e: MouseEvent) => {
       if (mouseLightRef.current) {
         mouseLightRef.current.style.transform = `translate3d(${e.clientX - 320}px, ${e.clientY - 320}px, 0)`
@@ -70,7 +45,7 @@ export default function LandingPage() {
     }
     window.addEventListener('mousemove', handler)
     return () => window.removeEventListener('mousemove', handler)
-  }, [reducedFx])
+  }, [])
 
   const navTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -81,29 +56,31 @@ export default function LandingPage() {
     <div
       className={`${display.variable} ${body.variable} relative min-h-screen overflow-x-hidden`}
       style={{
-        background: 'transparent',
+        // Background sólido — iOS Safari recomponía `transparent` cada vez que
+        // la URL bar aparecía/desaparecía durante el scroll. La página
+        // "se apagaba y prendía" porque las capas fixed se repintaban
+        // todas en ese momento.
+        background: '#050816',
         fontFamily: 'var(--font-body), Inter, ui-sans-serif, system-ui',
         color: '#F8FAFF',
       }}
     >
-      <BackgroundLayers reducedFx={reducedFx} />
+      <BackgroundLayers />
 
-      {/* Mouse-reactive volumetric light — desktop only (blur 50px sobre 640px causa flicker en mobile) */}
-      {!reducedFx && (
-        <div
-          ref={mouseLightRef}
-          className="pointer-events-none fixed top-0 left-0 w-[640px] h-[640px]"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(142,68,255,0.22) 0%, rgba(212,91,255,0.10) 30%, transparent 65%)',
-            filter: 'blur(50px)',
-            zIndex: 1,
-            willChange: 'transform',
-            transform: 'translate3d(-1000px, -1000px, 0)',
-          }}
-          aria-hidden
-        />
-      )}
+      {/* Mouse-reactive volumetric light */}
+      <div
+        ref={mouseLightRef}
+        className="pointer-events-none fixed top-0 left-0 w-[640px] h-[640px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(142,68,255,0.22) 0%, rgba(212,91,255,0.10) 30%, transparent 65%)',
+          filter: 'blur(50px)',
+          zIndex: 1,
+          willChange: 'transform',
+          transform: 'translate3d(-1000px, -1000px, 0)',
+        }}
+        aria-hidden
+      />
 
       <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 
@@ -120,13 +97,11 @@ export default function LandingPage() {
 /* ═══════════════════════════════════════════════════════════════
    BACKGROUND — 5 capas premium + 4 animaciones + parallax mouse
    ═══════════════════════════════════════════════════════════════ */
-function BackgroundLayers({ reducedFx = false }: { reducedFx?: boolean }) {
+function BackgroundLayers() {
   const rootRef = useRef<HTMLDivElement>(null)
 
-  // Parallax mouse: actualiza CSS vars sin re-renders (max 10px desplazamiento).
-  // En mobile/reduced-motion no se engancha el listener.
+  // Parallax mouse: actualiza CSS vars sin re-renders (max 10px desplazamiento)
   useEffect(() => {
-    if (reducedFx) return
     const handler = (e: MouseEvent) => {
       if (!rootRef.current) return
       const x = (e.clientX / window.innerWidth - 0.5) * 20   // -10 → 10
@@ -136,15 +111,12 @@ function BackgroundLayers({ reducedFx = false }: { reducedFx?: boolean }) {
     }
     window.addEventListener('mousemove', handler, { passive: true })
     return () => window.removeEventListener('mousemove', handler)
-  }, [reducedFx])
+  }, [])
 
-  // Partículas con posiciones pseudo-random pero estables (mix morado + cyan).
-  // 8 en mobile, 18 en desktop — más de 12 motion-elements simultáneos hace
-  // parpadear iOS Safari por el recompose continuo de capas con box-shadow.
+  // 18 partículas con posiciones pseudo-random pero estables (mix morado + cyan)
   const particles = useMemo(() => {
     const palette = ['#D45BFF', '#8E44FF', '#06B6D4', '#67E8F9']
-    const count = reducedFx ? 8 : 18
-    return Array.from({ length: count }).map((_, i) => ({
+    return Array.from({ length: 18 }).map((_, i) => ({
       left: (i * 13 + 7) % 95,
       top: 8 + ((i * 23 + 11) % 78),
       size: i % 3 === 0 ? 2.5 : 1.5,
@@ -153,7 +125,7 @@ function BackgroundLayers({ reducedFx = false }: { reducedFx?: boolean }) {
       delay: i * 0.55,
       drift: 0.25 + (i % 4) * 0.05,
     }))
-  }, [reducedFx])
+  }, [])
 
   return (
     <div
@@ -267,26 +239,24 @@ function BackgroundLayers({ reducedFx = false }: { reducedFx?: boolean }) {
         transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* ── CAPA 4b · Glow cyan contrapuesto (top right) — desktop only (blur 110px + scale es caro) ── */}
-      {!reducedFx && (
-        <motion.div
-          className="absolute"
-          style={{
-            top: '8%',
-            right: '-12%',
-            width: 680,
-            height: 680,
-            background:
-              'radial-gradient(circle, rgba(6,182,212,0.22) 0%, rgba(56,189,248,0.10) 35%, transparent 65%)',
-            filter: 'blur(110px)',
-          }}
-          animate={{
-            x: ['0%', '-8%', '0%'],
-            opacity: [0.7, 1, 0.7],
-          }}
-          transition={{ duration: 36, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
+      {/* ── CAPA 4b · Glow cyan contrapuesto (top right) ── */}
+      <motion.div
+        className="absolute"
+        style={{
+          top: '8%',
+          right: '-12%',
+          width: 680,
+          height: 680,
+          background:
+            'radial-gradient(circle, rgba(6,182,212,0.22) 0%, rgba(56,189,248,0.10) 35%, transparent 65%)',
+          filter: 'blur(110px)',
+        }}
+        animate={{
+          x: ['0%', '-8%', '0%'],
+          opacity: [0.7, 1, 0.7],
+        }}
+        transition={{ duration: 36, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       {/* ── Secondary deep accent — bottom left, estático sutil ── */}
       <div
@@ -302,35 +272,31 @@ function BackgroundLayers({ reducedFx = false }: { reducedFx?: boolean }) {
         }}
       />
 
-      {/* ── CAPA 4c · Cyan bottom-right (profundidad) — desktop only ── */}
-      {!reducedFx && (
-        <div
-          className="absolute"
-          style={{
-            bottom: '-6%',
-            right: '-6%',
-            width: 520,
-            height: 520,
-            background:
-              'radial-gradient(circle, rgba(6,182,212,0.16) 0%, transparent 70%)',
-            filter: 'blur(120px)',
-          }}
-        />
-      )}
+      {/* ── CAPA 4c · Cyan bottom-right (profundidad) ── */}
+      <div
+        className="absolute"
+        style={{
+          bottom: '-6%',
+          right: '-6%',
+          width: 520,
+          height: 520,
+          background:
+            'radial-gradient(circle, rgba(6,182,212,0.16) 0%, transparent 70%)',
+          filter: 'blur(120px)',
+        }}
+      />
 
-      {/* ── CAPA · Haze depth — mix-blend-mode multiply repaint es brutal en iOS Safari ── */}
-      {!reducedFx && (
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 120% 60% at 50% 100%, rgba(11,16,38,0.55) 0%, transparent 60%)',
-            mixBlendMode: 'multiply',
-          }}
-          animate={{ opacity: [0.7, 0.95, 0.7] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
+      {/* ── CAPA · Haze depth (capa de profundidad sutil) ── */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 120% 60% at 50% 100%, rgba(11,16,38,0.55) 0%, transparent 60%)',
+          mixBlendMode: 'multiply',
+        }}
+        animate={{ opacity: [0.7, 0.95, 0.7] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       {/* ── CAPA 5 · Partículas mínimas con parallax + float lento ── */}
       <div
@@ -727,10 +693,6 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
 
 function NuroProtagonist() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const reducedFx = useReducedFx()
-  const { scrollY } = useScroll()
-  const y = useTransform(scrollY, [0, 600], [0, -40])
-  const opacity = useTransform(scrollY, [0, 600], [1, 0.55])
 
   return (
     <motion.div
@@ -738,124 +700,88 @@ function NuroProtagonist() {
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
-      style={{ y, opacity }}
       className="relative h-[440px] sm:h-[600px] lg:h-[780px] flex items-center justify-center"
     >
-      {/* Cinematic halo — desktop: violet core + cyan outer · mobile: solo core estático */}
+      {/* Cinematic dual halo — violet core + cyan outer */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Cyan outer aura — desktop only (blur 72px + scale repaint causa flicker en iOS) */}
-        {!reducedFx && (
-          <motion.div
-            className="rounded-full absolute"
-            style={{
-              width: 'min(740px, 94%)',
-              height: 'min(740px, 94%)',
-              background:
-                'radial-gradient(circle, rgba(6,182,212,0.28) 0%, rgba(56,189,248,0.10) 40%, transparent 72%)',
-              filter: 'blur(72px)',
-            }}
-            animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.04, 1] }}
-            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        )}
-        {/* Violet core — desktop animated, mobile estático con blur menor */}
-        {reducedFx ? (
-          <div
-            className="rounded-full"
-            style={{
-              width: 'min(560px, 84%)',
-              height: 'min(560px, 84%)',
-              background:
-                'radial-gradient(circle, rgba(142,68,255,0.45) 0%, rgba(212,91,255,0.18) 38%, transparent 72%)',
-              filter: 'blur(32px)',
-            }}
-          />
-        ) : (
-          <motion.div
-            className="rounded-full"
-            style={{
-              width: 'min(640px, 86%)',
-              height: 'min(640px, 86%)',
-              background:
-                'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.22) 35%, transparent 70%)',
-              filter: 'blur(55px)',
-            }}
-            animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.05, 1] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        )}
+        {/* Cyan outer aura */}
+        <motion.div
+          className="rounded-full absolute"
+          style={{
+            width: 'min(740px, 94%)',
+            height: 'min(740px, 94%)',
+            background:
+              'radial-gradient(circle, rgba(6,182,212,0.28) 0%, rgba(56,189,248,0.10) 40%, transparent 72%)',
+            filter: 'blur(72px)',
+          }}
+          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.04, 1] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        {/* Violet core */}
+        <motion.div
+          className="rounded-full"
+          style={{
+            width: 'min(640px, 86%)',
+            height: 'min(640px, 86%)',
+            background:
+              'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.22) 35%, transparent 70%)',
+            filter: 'blur(55px)',
+          }}
+          animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.05, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </div>
 
-      {/* Hairline orbital ring (cyan inner + violet outer dots) — desktop only */}
-      {!reducedFx && (
-        <motion.div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: 'min(700px, 96%)',
-            height: 'min(700px, 96%)',
-            border: '1px solid rgba(212,91,255,0.13)',
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 110, repeat: Infinity, ease: 'linear' }}
-          aria-hidden
-        >
-          <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-            style={{ background: '#D45BFF', boxShadow: '0 0 12px rgba(212,91,255,1)' }} />
-          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full"
-            style={{ background: '#06B6D4', boxShadow: '0 0 12px rgba(6,182,212,1)' }} />
-        </motion.div>
-      )}
+      {/* Hairline orbital ring (cyan inner + violet outer dots) */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 'min(700px, 96%)',
+          height: 'min(700px, 96%)',
+          border: '1px solid rgba(212,91,255,0.13)',
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 110, repeat: Infinity, ease: 'linear' }}
+        aria-hidden
+      >
+        <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+          style={{ background: '#D45BFF', boxShadow: '0 0 12px rgba(212,91,255,1)' }} />
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full"
+          style={{ background: '#06B6D4', boxShadow: '0 0 12px rgba(6,182,212,1)' }} />
+      </motion.div>
 
-      {/* Inner thin orbital — desktop only (dashed border + rotate de full vuelta engancha repaint) */}
-      {!reducedFx && (
-        <motion.div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            width: 'min(560px, 78%)',
-            height: 'min(560px, 78%)',
-            border: '1px dashed rgba(6,182,212,0.18)',
-          }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 160, repeat: Infinity, ease: 'linear' }}
-          aria-hidden
-        >
-          <span className="absolute top-[15%] right-[12%] w-1 h-1 rounded-full"
-            style={{ background: '#67E8F9', boxShadow: '0 0 10px rgba(103,232,249,1)' }} />
-        </motion.div>
-      )}
+      {/* Inner thin orbital — reverse direction, cyan node */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 'min(560px, 78%)',
+          height: 'min(560px, 78%)',
+          border: '1px dashed rgba(6,182,212,0.18)',
+        }}
+        animate={{ rotate: -360 }}
+        transition={{ duration: 160, repeat: Infinity, ease: 'linear' }}
+        aria-hidden
+      >
+        <span className="absolute top-[15%] right-[12%] w-1 h-1 rounded-full"
+          style={{ background: '#67E8F9', boxShadow: '0 0 10px rgba(103,232,249,1)' }} />
+      </motion.div>
 
-      {/* NÜRO image — drop-shadow más livianos en mobile (cada drop-shadow blur=180px+ es muy caro) */}
-      {reducedFx ? (
-        <img
-          src={AVATAR}
-          alt="NÜRO"
-          className="relative object-contain pointer-events-none"
-          style={{
-            height: '114%',
-            width: 'auto',
-            maxWidth: '100%',
-            filter:
-              'drop-shadow(0 0 50px rgba(142,68,255,0.5)) drop-shadow(0 20px 40px rgba(5,8,22,0.7))',
-          }}
-          aria-hidden
-        />
-      ) : (
-        <motion.img
-          src={AVATAR}
-          alt="NÜRO"
-          className="relative object-contain pointer-events-none"
-          style={{
-            height: '114%',
-            width: 'auto',
-            maxWidth: '100%',
-            filter:
-              'drop-shadow(0 0 100px rgba(142,68,255,0.6)) drop-shadow(0 0 220px rgba(212,91,255,0.38)) drop-shadow(0 0 140px rgba(6,182,212,0.28)) drop-shadow(0 30px 80px rgba(5,8,22,0.85))',
-          }}
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          aria-hidden
-        />
-      )}
+      {/* NÜRO image — dual glow (violet + cyan) */}
+      <motion.img
+        src={AVATAR}
+        alt="NÜRO"
+        className="relative object-contain pointer-events-none"
+        style={{
+          height: '114%',
+          width: 'auto',
+          maxWidth: '100%',
+          filter:
+            'drop-shadow(0 0 100px rgba(142,68,255,0.6)) drop-shadow(0 0 220px rgba(212,91,255,0.38)) drop-shadow(0 0 140px rgba(6,182,212,0.28)) drop-shadow(0 30px 80px rgba(5,8,22,0.85))',
+        }}
+        animate={{ y: [0, -12, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        aria-hidden
+      />
 
       {/* Floor shadow — elliptical with soft falloff */}
       <div className="pointer-events-none absolute bottom-[8%] left-1/2 -translate-x-1/2"
@@ -1398,7 +1324,7 @@ function SystemPanel({
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3, scale: 1.02 }}
-      className="absolute z-10 backdrop-blur-md sm:backdrop-blur-2xl"
+      className="absolute z-10 backdrop-blur-2xl"
       style={{
         top: `${y}%`,
         left: `${x}%`,
@@ -1638,7 +1564,7 @@ function MetricCardWrapper({ children, delay = 0 }: { children: React.ReactNode;
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
-      className="group relative rounded-2xl p-5 backdrop-blur-md sm:backdrop-blur-2xl overflow-hidden transition-all duration-500 flex flex-col h-full"
+      className="group relative rounded-2xl p-5 backdrop-blur-2xl overflow-hidden transition-all duration-500 flex flex-col h-full"
       style={{
         background: 'linear-gradient(180deg, rgba(29,46,109,0.42), rgba(11,16,38,0.82))',
         border: '1px solid rgba(142,68,255,0.18)',
@@ -1964,7 +1890,6 @@ function Clock24Metric({ delay }: { delay: number }) {
 
 /* ─── LiveFeed · centro de actividad con negocios reales + stats panel ─── */
 function LiveFeed() {
-  const reducedFx = useReducedFx()
   const businesses = [
     { name: 'Moda Carolina',        type: 'Tienda de ropa',  img: 'https://images.unsplash.com/photo-1485518882345-15568b007407?w=120&q=75&auto=format&fit=crop' },
     { name: 'Restaurante Toscana',  type: 'Restaurante',     img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=120&q=75&auto=format&fit=crop' },
@@ -2064,7 +1989,7 @@ function LiveFeed() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-2xl backdrop-blur-md sm:backdrop-blur-2xl overflow-hidden"
+      className="relative rounded-2xl backdrop-blur-2xl overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, rgba(11,16,38,0.82), rgba(11,16,38,0.65))',
         border: '1px solid rgba(255,255,255,0.10)',
@@ -2072,41 +1997,39 @@ function LiveFeed() {
           '0 32px 70px -22px rgba(0,0,0,0.65), 0 0 60px -28px rgba(142,68,255,0.40), 0 0 0 1px rgba(212,91,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
       }}
     >
-      {/* Grid blueprint + 12 partículas — solo desktop (cargas extra que parpadean en iOS Safari) */}
-      {!reducedFx && (
-        <>
-          <div className="pointer-events-none absolute inset-0"
-            style={{
-              opacity: 0.06,
-              backgroundImage:
-                'linear-gradient(rgba(212,91,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(212,91,255,1) 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
-              maskImage: 'radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 78%)',
-              WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 78%)',
-            }} />
-          {particles.map((p, i) => (
-            <motion.span
-              key={i}
-              className="pointer-events-none absolute rounded-full"
-              style={{
-                left: `${p.left}%`,
-                top: `${p.top}%`,
-                width: p.size,
-                height: p.size,
-                background: p.color,
-                boxShadow: `0 0 6px ${p.color}`,
-              }}
-              animate={{ y: [0, -20, 0], opacity: [0.2, 0.7, 0.2] }}
-              transition={{
-                duration: p.duration,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: p.delay,
-              }}
-            />
-          ))}
-        </>
-      )}
+      {/* Grid blueprint sutil */}
+      <div className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: 0.06,
+          backgroundImage:
+            'linear-gradient(rgba(212,91,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(212,91,255,1) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 78%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 78%)',
+        }} />
+
+      {/* Partículas flotando */}
+      {particles.map((p, i) => (
+        <motion.span
+          key={i}
+          className="pointer-events-none absolute rounded-full"
+          style={{
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            width: p.size,
+            height: p.size,
+            background: p.color,
+            boxShadow: `0 0 6px ${p.color}`,
+          }}
+          animate={{ y: [0, -20, 0], opacity: [0.2, 0.7, 0.2] }}
+          transition={{
+            duration: p.duration,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: p.delay,
+          }}
+        />
+      ))}
 
       {/* Top hairline */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
@@ -2504,8 +2427,8 @@ function VideoDemo() {
               '0 40px 80px -24px rgba(0,0,0,0.7), 0 0 60px -20px rgba(142,68,255,0.45), 0 0 80px -30px rgba(6,182,212,0.3), 0 0 0 1px rgba(212,91,255,0.10), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
         >
-          {/* Outer ambient glow ring — sólo en sm+ (mask-composite tiene bugs de repaint en iOS) */}
-          <span aria-hidden className="pointer-events-none absolute -inset-px rounded-[24px] hidden sm:block"
+          {/* Outer ambient glow ring */}
+          <span aria-hidden className="pointer-events-none absolute -inset-px rounded-[24px]"
             style={{
               background:
                 'linear-gradient(135deg, rgba(142,68,255,0.22), transparent 40%, rgba(6,182,212,0.18))',
@@ -2518,7 +2441,7 @@ function VideoDemo() {
           />
 
           {/* Top bar — minimal single line */}
-          <div className="relative flex items-center justify-between gap-4 px-5 sm:px-6 py-3.5 backdrop-blur-md sm:backdrop-blur-xl"
+          <div className="relative flex items-center justify-between gap-4 px-5 sm:px-6 py-3.5 backdrop-blur-xl"
             style={{
               background: 'rgba(11,16,38,0.65)',
               borderBottom: '1px solid rgba(255,255,255,0.06)',
