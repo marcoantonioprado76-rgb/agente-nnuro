@@ -6,8 +6,7 @@ import { Space_Grotesk, Inter } from 'next/font/google'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import {
   Bot, ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
-  Check, Menu, X, Zap, Brain, Globe,
-  UtensilsCrossed, Briefcase, Home, GraduationCap,
+  Check, Menu, X, Zap, Brain, Globe, Briefcase,
   Send, TrendingUp,
 } from 'lucide-react'
 
@@ -2690,26 +2689,60 @@ function StorePanel() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   USE CASES
+   USE CASES — composición editorial con imágenes reales
    ═══════════════════════════════════════════════════════════════ */
+type UseCaseDef = {
+  label: string
+  desc: string
+  img: string
+  stat: string
+}
+
 function UseCases() {
-  const cases = [
-    { icon: ShoppingBag,     label: 'Tiendas de ropa',         desc: 'Catálogo, tallas y pedidos por WhatsApp.' },
-    { icon: UtensilsCrossed, label: 'Restaurantes',            desc: 'Menú, reservas y pedidos a domicilio.' },
-    { icon: Sparkles,        label: 'Cosmética y belleza',     desc: 'Asesoría 1:1 y venta de productos.' },
-    { icon: Briefcase,       label: 'Servicios profesionales', desc: 'Agenda citas y filtra leads.' },
-    { icon: Home,            label: 'Inmobiliarias',           desc: 'Califica prospectos y agenda visitas.' },
-    { icon: GraduationCap,   label: 'Cursos y coaching',       desc: 'Resuelve dudas y cierra inscripciones.' },
+  const big: UseCaseDef[] = [
+    {
+      label: 'Tiendas de Moda',
+      desc: 'Catálogo digital, tallas y pedidos automatizados por WhatsApp.',
+      img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1000&q=70&auto=format&fit=crop',
+      stat: '+127 pedidos este mes',
+    },
+    {
+      label: 'Restaurantes',
+      desc: 'Menú, reservas y pedidos a domicilio en piloto automático.',
+      img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1000&q=70&auto=format&fit=crop',
+      stat: '58 pedidos hoy',
+    },
+  ]
+
+  const medium: UseCaseDef[] = [
+    {
+      label: 'Cosmética y Belleza',
+      desc: 'Asesoría 1:1 que cierra ventas.',
+      img: 'https://images.unsplash.com/photo-1522335789203-aaa83fe1f48b?w=800&q=70&auto=format&fit=crop',
+      stat: '+89 ventas',
+    },
+    {
+      label: 'Servicios Profesionales',
+      desc: 'Agenda citas y filtra leads.',
+      img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=70&auto=format&fit=crop',
+      stat: '34 citas agendadas',
+    },
+    {
+      label: 'Inmobiliarias',
+      desc: 'Califica prospectos 24/7.',
+      img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=70&auto=format&fit=crop',
+      stat: '12 visitas agendadas',
+    },
+    {
+      label: 'Cursos y Coaching',
+      desc: 'Convierte interés en inscripción.',
+      img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=70&auto=format&fit=crop',
+      stat: '12 ventas confirmadas',
+    },
   ]
 
   return (
     <section className="relative py-24 lg:py-32">
-      {/* Panel oscuro sutil para diferenciar */}
-      <div className="absolute inset-x-0 inset-y-12 -z-0"
-        style={{
-          background: 'linear-gradient(180deg, transparent, rgba(11,16,38,0.5), transparent)',
-        }} />
-
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeader
           eyebrow="Casos de uso"
@@ -2717,49 +2750,115 @@ function UseCases() {
           sub="Si vendes por WhatsApp, NÜRO es para ti."
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-14 lg:mt-20">
-          {cases.map((c, i) => {
-            const Icon = c.icon
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -3 }}
-                className="group relative rounded-2xl p-7 backdrop-blur-xl overflow-hidden transition-all duration-400"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(29,46,109,0.32), rgba(11,16,38,0.65))',
-                  border: '1px solid rgba(142,68,255,0.12)',
-                }}
-              >
-                <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ boxShadow: '0 0 0 1px rgba(212,91,255,0.32)' }} />
+        {/* Row 1 · 2 cards grandes */}
+        <div className="grid lg:grid-cols-2 gap-4 mt-14 lg:mt-18">
+          {big.map((c, i) => (
+            <UseCaseCard key={c.label} {...c} delay={i * 0.12} variant="big" />
+          ))}
+        </div>
 
-                <div className="relative w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(142,68,255,0.22), rgba(11,16,38,0.5))',
-                    border: '1px solid rgba(212,91,255,0.25)',
-                  }}>
-                  <Icon strokeWidth={1.6}
-                    style={{ width: 18, height: 18, color: '#D45BFF' }} />
-                </div>
-
-                <h3 className="text-[17px] font-medium text-white leading-tight mb-1.5"
-                  style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>
-                  {c.label}
-                </h3>
-                <p className="text-[13.5px] text-white/55 leading-relaxed"
-                  style={{ letterSpacing: '-0.005em' }}>
-                  {c.desc}
-                </p>
-              </motion.div>
-            )
-          })}
+        {/* Row 2 · 4 cards medianas */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+          {medium.map((c, i) => (
+            <UseCaseCard key={c.label} {...c} delay={0.24 + i * 0.08} variant="medium" />
+          ))}
         </div>
       </div>
     </section>
+  )
+}
+
+function UseCaseCard({
+  label, desc, img, stat, delay, variant,
+}: UseCaseDef & { delay: number; variant: 'big' | 'medium' }) {
+  const isBig = variant === 'big'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4 }}
+      className="group relative rounded-[20px] overflow-hidden transition-all duration-500 cursor-pointer"
+      style={{
+        border: '1px solid rgba(255,255,255,0.06)',
+        boxShadow:
+          '0 24px 50px -22px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02)',
+      }}
+    >
+      {/* Background image */}
+      <div className={isBig ? 'relative aspect-[16/10]' : 'relative aspect-[4/5]'}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={img}
+          alt={label}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]"
+        />
+
+        {/* Dark gradient overlay — bottom heavy */}
+        <div className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(5,8,22,0.30) 0%, rgba(5,8,22,0.45) 40%, rgba(5,8,22,0.90) 100%)',
+          }} />
+
+        {/* Top hairline magenta accent */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-60"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.65), transparent)' }} />
+
+        {/* Hover border glow */}
+        <div className="pointer-events-none absolute inset-0 rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{ boxShadow: '0 0 0 1px rgba(212,91,255,0.45), 0 30px 60px -20px rgba(142,68,255,0.55)' }} />
+
+        {/* Top: stat pill */}
+        <div className={`absolute ${isBig ? 'top-4 left-4' : 'top-3 left-3'} z-10`}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.4, delay: delay + 0.3 }}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-xl"
+            style={{
+              background: 'rgba(11,16,38,0.65)',
+              border: '1px solid rgba(212,91,255,0.35)',
+              boxShadow: '0 0 14px -4px rgba(212,91,255,0.5)',
+            }}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <motion.span className="absolute inline-flex h-full w-full rounded-full"
+                style={{ background: '#D45BFF' }}
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.8, repeat: Infinity }} />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                style={{ background: '#D45BFF', boxShadow: '0 0 5px rgba(212,91,255,0.95)' }} />
+            </span>
+            <span className={`${isBig ? 'text-[10px]' : 'text-[9px]'} uppercase font-semibold text-white whitespace-nowrap`}
+              style={{ letterSpacing: '0.16em' }}>
+              {stat}
+            </span>
+          </motion.div>
+        </div>
+
+        {/* Bottom: title + description */}
+        <div className={`absolute inset-x-0 bottom-0 z-10 ${isBig ? 'p-6 lg:p-7' : 'p-4 lg:p-5'}`}>
+          <h3
+            className={`${isBig ? 'text-[24px] sm:text-[28px] lg:text-[32px]' : 'text-[16px] lg:text-[18px]'} font-semibold text-white leading-[1.08]`}
+            style={{
+              fontFamily: 'var(--font-display)',
+              letterSpacing: isBig ? '-0.025em' : '-0.015em',
+            }}
+          >
+            {label}
+          </h3>
+          <p className={`${isBig ? 'text-[13.5px] lg:text-[14.5px] mt-2' : 'text-[11.5px] lg:text-[12.5px] mt-1.5'} text-white/70 leading-relaxed`}
+            style={{ letterSpacing: '-0.005em' }}>
+            {desc}
+          </p>
+        </div>
+      </div>
+    </motion.div>
   )
 }
 
