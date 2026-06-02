@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Loader2, Wallet as WalletIcon, ArrowRight, CheckCircle2, XCircle, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { CreditsCard } from '@/components/credits/credits-card'
 
 type Purchase = {
   id: string
@@ -143,42 +144,17 @@ export default function WalletPage() {
         <h1 className="text-2xl font-semibold text-white">Wallet</h1>
       </div>
 
-      {/* Balance */}
-      <div
-        className="rounded-2xl p-8 mb-6 relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, rgba(29,46,109,0.4), rgba(11,16,38,0.78))',
-          border: '1px solid rgba(142,68,255,0.20)',
-          boxShadow: '0 24px 50px -18px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02)',
-        }}
-      >
-        <div className="pointer-events-none absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-60"
-          style={{ background: 'radial-gradient(circle, rgba(142,68,255,0.35), transparent 65%)', filter: 'blur(32px)' }} />
-        <p className="text-[11px] uppercase font-semibold text-white/55 mb-2" style={{ letterSpacing: '0.22em' }}>
-          Saldo actual
-        </p>
-        {loading ? (
-          <Loader2 className="h-7 w-7 text-purple-400 animate-spin" />
-        ) : (
-          <div className="text-5xl lg:text-6xl font-medium tabular-nums leading-none"
-            style={{
-              fontFamily: 'var(--font-display)',
-              letterSpacing: '-0.04em',
-              background: 'linear-gradient(180deg, #F8FAFF, #D45BFF)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 16px rgba(142,68,255,0.35))',
-            }}>
-            ${Number(balance ?? 0).toFixed(2)} <span className="text-base text-white/45 align-baseline">USD</span>
-          </div>
-        )}
-        {verifying && (
-          <p className="text-xs text-white/55 mt-4 flex items-center gap-2">
-            <Loader2 className="h-3 w-3 animate-spin" /> Verificando pago…
-          </p>
-        )}
+      {/* Card de créditos AI (nuevo modelo) */}
+      <div className="mb-6">
+        <CreditsCard />
       </div>
+
+      {verifying && (
+        <div className="mb-4 px-4 py-2 rounded-lg flex items-center gap-2 text-sm text-white/65"
+          style={{ background: 'rgba(212,91,255,0.08)', border: '1px solid rgba(212,91,255,0.18)' }}>
+          <Loader2 className="h-3.5 w-3.5 animate-spin" /> Verificando pago…
+        </div>
+      )}
 
       {/* Comprar */}
       <div

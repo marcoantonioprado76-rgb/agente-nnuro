@@ -2,6 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from '@/lib/auth'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
+const EDITABLE_FIELDS = [
+  'name', 'slug', 'description',
+  'price', 'currency',
+  'monthly_price', 'quarterly_price', 'annual_price',
+  'quarterly_full_price', 'annual_full_price',
+  'quarterly_discount_amount', 'annual_discount_amount',
+  'included_monthly_ai_credits', 'included_monthly_ai_budget_usd', 'credit_usd_conversion_rate',
+  'max_ai_agents', 'max_virtual_stores', 'max_monthly_contacts', 'max_monthly_conversations', 'max_team_members',
+  'max_bots', 'max_products', 'max_conversations', 'max_whatsapp_numbers',
+  'promotion_label', 'promotion_start_date', 'promotion_end_date', 'is_promotion_active',
+  'is_active', 'is_featured', 'sort_order',
+  'show_nuro_branding', 'trial_duration_days',
+  'features',
+  'stripe_price_id', 'stripe_quarterly_price_id', 'stripe_annual_price_id',
+] as const
 
 // PUT - update a plan
 export async function PUT(
@@ -18,12 +33,24 @@ export async function PUT(
     const service = await createServiceRoleClient()
 
     const updateData: Record<string, unknown> = {}
-    const fields = ['name', 'slug', 'price', 'currency', 'max_bots', 'max_products', 'max_conversations', 'max_whatsapp_numbers', 'features', 'is_active', 'sort_order', 'stripe_price_id']
 
-    for (const field of fields) {
+    for (const field of EDITABLE_FIELDS) {
       if (body[field] !== undefined) {
         updateData[field] = body[field]
       }
+    }
+
+    // Mirroring: si actualizan monthly_price y no mandan price, sincronizar para compat
+    if (body.monthly_price !== undefined && body.price === undefined) {
+      updateData.price = body.monthly_price
+    }
+    // y al revés
+    if (body.price !== undefined && body.monthly_price === undefined) {
+      updateData.monthly_price = body.price
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: 'No hay campos para actualizar' }, { status: 400 })
     }
 
     const { data, error } = await service
@@ -37,7 +64,8 @@ export async function PUT(
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
     return NextResponse.json(data)
-  } catch {
+  } catch (e) {
+    console.error('[PUT /api/admin/plans/:id] error:', e)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }
@@ -76,7 +104,8 @@ export async function DELETE(
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
     return NextResponse.json({ success: true })
-  } catch {
+  } catch (e) {
+    console.error('[DELETE /api/admin/plans/:id] error:', e)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
   }
 }

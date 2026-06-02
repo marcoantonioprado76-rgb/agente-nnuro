@@ -5,6 +5,7 @@ import { MobileHeader } from '@/components/layout/mobile-header';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { SubscriptionGuard } from '@/components/subscription-guard';
 import { TechBackground } from '@/components/layout/tech-background';
+import { CreditsAlert } from '@/components/credits/credits-alert';
 
 export default function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function DashboardLayout({
       <MobileHeader variant="user" />
       <main className="flex-1 lg:ml-[260px] transition-all duration-300 pb-20 lg:pb-0 min-w-0">
         <SubscriptionGuard>
+          <CreditsAlert />
           {children}
         </SubscriptionGuard>
       </main>

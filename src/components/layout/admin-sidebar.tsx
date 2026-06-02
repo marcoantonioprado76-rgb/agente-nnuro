@@ -15,6 +15,7 @@ import {
   LogOut,
   ArrowLeft,
   Bell,
+  Package,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/use-auth'
@@ -39,6 +40,8 @@ const adminNavItems = [
   { label: 'Usuarios',             href: '/admin/users',         icon: Users,           description: 'Gestión de usuarios',      badgeKey: null as string | null },
   { label: 'Tiendas',             href: '/admin/stores',        icon: Store,           description: 'Tiendas de usuarios',      badgeKey: null as string | null },
   { label: 'Suscripciones',       href: '/admin/subscriptions', icon: CreditCard,      description: 'Planes y aprobaciones',    badgeKey: 'pending_subscriptions' as string | null },
+  { label: 'Planes',              href: '/admin/plans',         icon: Package,         description: 'Tarifas y créditos',       badgeKey: null as string | null },
+  { label: 'Paquetes IA',         href: '/admin/credit-packages', icon: Wallet,        description: 'Recargas adicionales',     badgeKey: null as string | null },
   { label: 'Pagos',               href: '/admin/payments',      icon: DollarSign,      description: 'Pagos y comprobantes',     badgeKey: 'pending_payments' as string | null },
   { label: 'Créditos AI',         href: '/admin/credit-purchases', icon: Wallet,       description: 'Recargas + OpenAI key',    badgeKey: null as string | null },
   { label: 'Actividad / Auditoría',href: '/admin/audit',        icon: Activity,        description: 'Registro de actividad',    badgeKey: null as string | null },
