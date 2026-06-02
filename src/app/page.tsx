@@ -610,7 +610,7 @@ function NuroProtagonist() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   OPERATIONS CENTER — núcleo NÜRO + 6 canales + métricas + live feed
+   OPERATIONS CENTER v2 — núcleo + canales + 4 métricas vivas + live feed
    ═══════════════════════════════════════════════════════════════ */
 type IconComp = React.ComponentType<{
   className?: string
@@ -621,14 +621,9 @@ type IconComp = React.ComponentType<{
 type ChannelDef = {
   Icon: IconComp
   label: string
-  angle: number // 0=top, 60=top-right, etc (clockwise)
+  sub: string
+  angle: number
   color: string
-}
-
-type MetricDef = {
-  target: number
-  format: (n: number) => string
-  label: string
 }
 
 const InstagramMark: IconComp = ({ className, strokeWidth = 1.8, style }) => (
@@ -643,33 +638,57 @@ const InstagramMark: IconComp = ({ className, strokeWidth = 1.8, style }) => (
   </svg>
 )
 
+/* Shared gradient text style para los números grandes */
+const gradNumberStyle: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  letterSpacing: '-0.04em',
+  background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  backgroundClip: 'text',
+  filter: 'drop-shadow(0 0 12px rgba(142,68,255,0.35))',
+}
+
 function TrustBar() {
   const channels: ChannelDef[] = [
-    { Icon: MessageCircle,  label: 'WhatsApp',       angle: 0,   color: '#10B981' },
-    { Icon: Send,           label: 'Messenger',      angle: 60,  color: '#6B5CFF' },
-    { Icon: InstagramMark,  label: 'Instagram',      angle: 120, color: '#D45BFF' },
-    { Icon: ShoppingBag,    label: 'Tienda Virtual', angle: 180, color: '#D45BFF' },
-    { Icon: Briefcase,      label: 'CRM',            angle: 240, color: '#8E44FF' },
-    { Icon: Bot,            label: 'Agente IA',      angle: 300, color: '#D45BFF' },
-  ]
-
-  const metrics: MetricDef[] = [
-    { target: 527, format: (n) => `+${Math.round(n).toLocaleString('en-US')}`, label: 'Negocios activos' },
-    { target: 2.3, format: (n) => `+${n.toFixed(1)}M`,                          label: 'Mensajes procesados' },
-    { target: 98,  format: (n) => `${Math.round(n)}%`,                          label: 'Tasa de respuesta' },
-    { target: 24,  format: (n) => `${Math.round(n)}/7`,                         label: 'Operación continua' },
+    { Icon: MessageCircle,  label: 'WhatsApp',       sub: '247 chats',     angle: 0,   color: '#10B981' },
+    { Icon: Send,           label: 'Messenger',      sub: '89 chats',      angle: 60,  color: '#6B5CFF' },
+    { Icon: InstagramMark,  label: 'Instagram',      sub: '156 DMs',       angle: 120, color: '#D45BFF' },
+    { Icon: ShoppingBag,    label: 'Tienda Virtual', sub: '12 pedidos',    angle: 180, color: '#D45BFF' },
+    { Icon: Briefcase,      label: 'CRM',            sub: '34 leads',      angle: 240, color: '#8E44FF' },
+    { Icon: Bot,            label: 'Agente IA',      sub: '98% precisión', angle: 300, color: '#D45BFF' },
   ]
 
   return (
     <section className="relative pt-14 pb-16 lg:pt-20 lg:pb-24 overflow-hidden">
-      {/* Soft violet wash behind nucleus area */}
+      {/* Violet wash centrado al núcleo */}
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="w-[900px] h-[700px] rounded-full"
+        <div className="w-[1000px] h-[800px] rounded-full"
           style={{
             background:
-              'radial-gradient(ellipse, rgba(142,68,255,0.22) 0%, rgba(212,91,255,0.06) 35%, transparent 65%)',
-            filter: 'blur(70px)',
+              'radial-gradient(ellipse, rgba(142,68,255,0.24) 0%, rgba(212,91,255,0.08) 35%, transparent 65%)',
+            filter: 'blur(80px)',
           }} />
+      </div>
+
+      {/* Floating ambient particles */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {[...Array(10)].map((_, i) => (
+          <motion.span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: `${(i * 11) % 95}%`,
+              top: `${10 + (i * 19) % 78}%`,
+              width: i % 3 === 0 ? 3 : 2,
+              height: i % 3 === 0 ? 3 : 2,
+              background: i % 2 === 0 ? '#D45BFF' : '#8E44FF',
+              boxShadow: `0 0 8px ${i % 2 === 0 ? 'rgba(212,91,255,0.9)' : 'rgba(142,68,255,0.9)'}`,
+            }}
+            animate={{ y: [0, -36, 0], opacity: [0.25, 0.85, 0.25] }}
+            transition={{ duration: 10 + i * 0.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
+          />
+        ))}
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -679,31 +698,26 @@ function TrustBar() {
           sub="Un solo cerebro orquestando canales, ventas y atención en tiempo real."
         />
 
-        {/* Composition: metrics ◀ nucleus ▶ metrics + live feed */}
-        <div className="relative mt-12 lg:mt-16 grid lg:grid-cols-[1fr_1.5fr_1fr] gap-6 lg:gap-10 items-stretch">
-          {/* Left metrics column */}
-          <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 order-2 lg:order-1">
-            <MetricCard {...metrics[0]} delay={0} />
-            <MetricCard {...metrics[2]} delay={0.12} />
-          </div>
+        {/* 4 métricas vivas */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 lg:mt-14">
+          <BusinessMapMetric delay={0} />
+          <MessagesFlowMetric delay={0.08} />
+          <ResponseRingMetric delay={0.16} />
+          <Clock24Metric delay={0.24} />
+        </div>
 
-          {/* Center: nucleus + 6 channels */}
-          <div className="relative aspect-square w-full max-w-[560px] mx-auto order-1 lg:order-2">
-            <ConnectionLines channels={channels} />
-            {channels.map((c, i) => (
-              <ChannelNode key={c.label} {...c} delay={0.25 + i * 0.08} />
-            ))}
-            <Nucleus />
-          </div>
+        {/* Núcleo + 6 canales orbitando */}
+        <div className="relative aspect-square w-full max-w-[680px] mx-auto mt-14 lg:mt-16">
+          <ConnectionLines channels={channels} />
+          {channels.map((c, i) => (
+            <ChannelNode key={c.label} {...c} delay={0.25 + i * 0.08} />
+          ))}
+          <Nucleus />
+        </div>
 
-          {/* Right column: metrics + live feed */}
-          <div className="flex flex-col gap-4 order-3 lg:order-3">
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
-              <MetricCard {...metrics[1]} delay={0.06} />
-              <MetricCard {...metrics[3]} delay={0.18} />
-            </div>
-            <LiveFeed />
-          </div>
+        {/* Live feed con avatares */}
+        <div className="mt-10 lg:mt-12 max-w-3xl mx-auto">
+          <LiveFeed />
         </div>
 
         {/* Logos marquee abajo */}
@@ -713,7 +727,7 @@ function TrustBar() {
   )
 }
 
-/* ─── Nucleus · holographic NÜRO core ─── */
+/* ─── Nucleus · NÜRO core agrandado ─── */
 function Nucleus() {
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -721,69 +735,61 @@ function Nucleus() {
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
-          width: 280,
-          height: 280,
-          background:
-            'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.18) 35%, transparent 70%)',
-          filter: 'blur(40px)',
+          width: 380, height: 380,
+          background: 'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.20) 35%, transparent 70%)',
+          filter: 'blur(50px)',
         }}
         animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.06, 1] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Pulse ring */}
-      <motion.span
+      {/* Outer dashed orbital ring */}
+      <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          width: 180,
-          height: 180,
-          border: '1px solid rgba(212,91,255,0.4)',
-        }}
-        animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
-      />
-      <motion.span
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          width: 180,
-          height: 180,
-          border: '1px solid rgba(142,68,255,0.5)',
-        }}
-        animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut', delay: 1.5 }}
+        style={{ width: 290, height: 290, border: '1px dashed rgba(212,91,255,0.20)' }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
       />
 
-      {/* Core glass orb with NÜRO */}
+      {/* 3 Pulse rings staggered */}
+      {[0, 1.3, 2.6].map((d, i) => (
+        <motion.span
+          key={i}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ width: 230, height: 230, border: '1px solid rgba(212,91,255,0.4)' }}
+          animate={{ scale: [1, 1.7], opacity: [0.55, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeOut', delay: d }}
+        />
+      ))}
+
+      {/* Core glass orb */}
       <motion.div
         className="relative rounded-full flex items-center justify-center backdrop-blur-xl overflow-hidden"
         style={{
-          width: 170,
-          height: 170,
-          background:
-            'radial-gradient(circle at 35% 30%, rgba(248,250,255,0.18) 0%, rgba(142,68,255,0.35) 40%, rgba(11,16,38,0.85) 100%)',
-          border: '1px solid rgba(212,91,255,0.5)',
+          width: 220, height: 220,
+          background: 'radial-gradient(circle at 35% 30%, rgba(248,250,255,0.20) 0%, rgba(142,68,255,0.38) 40%, rgba(11,16,38,0.85) 100%)',
+          border: '1px solid rgba(212,91,255,0.55)',
           boxShadow:
-            '0 0 60px -6px rgba(142,68,255,0.85), 0 0 0 1px rgba(212,91,255,0.30), inset 0 1px 0 rgba(255,255,255,0.20), inset 0 -8px 30px rgba(142,68,255,0.4)',
+            '0 0 80px -4px rgba(142,68,255,0.95), 0 0 0 1px rgba(212,91,255,0.32), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -10px 36px rgba(142,68,255,0.45)',
         }}
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={AVATAR} alt="NÜRO" className="w-[150%] h-[150%] object-contain"
-          style={{ filter: 'drop-shadow(0 0 20px rgba(212,91,255,0.55))' }} />
+          style={{ filter: 'drop-shadow(0 0 22px rgba(212,91,255,0.7))' }} />
 
-        {/* Top hairline highlight */}
-        <span className="pointer-events-none absolute inset-x-3 top-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)' }} />
+        <span className="pointer-events-none absolute inset-x-4 top-0 h-px"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)' }} />
       </motion.div>
     </div>
   )
 }
 
-/* ─── ChannelNode · pill premium orbitando el núcleo ─── */
-function ChannelNode({ Icon, label, angle, color, delay }: ChannelDef & { delay: number }) {
+/* ─── ChannelNode · pill con sub-actividad ─── */
+function ChannelNode({ Icon, label, sub, angle, color, delay }: ChannelDef & { delay: number }) {
   const rad = (angle - 90) * Math.PI / 180
-  const r = 40 // % from center
+  const r = 42
   const x = 50 + r * Math.cos(rad)
   const y = 50 + r * Math.sin(rad)
 
@@ -793,19 +799,19 @@ function ChannelNode({ Icon, label, angle, color, delay }: ChannelDef & { delay:
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1.08 }}
-      className="absolute z-10 flex items-center gap-2 px-3 py-2 rounded-2xl backdrop-blur-xl"
+      whileHover={{ scale: 1.06 }}
+      className="absolute z-10 flex items-center gap-2.5 px-3 py-2 rounded-2xl backdrop-blur-xl"
       style={{
         top: `${y}%`,
         left: `${x}%`,
         transform: 'translate(-50%, -50%)',
         background: `linear-gradient(135deg, rgba(${hexToRgb(color)},0.16), rgba(11,16,38,0.78))`,
         border: `1px solid rgba(${hexToRgb(color)},0.40)`,
-        boxShadow: `0 10px 26px -8px rgba(${hexToRgb(color)},0.55), inset 0 1px 0 rgba(255,255,255,0.06)`,
+        boxShadow: `0 12px 28px -8px rgba(${hexToRgb(color)},0.55), inset 0 1px 0 rgba(255,255,255,0.06)`,
       }}
     >
       <motion.span
-        className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+        className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0 relative"
         style={{
           background: `rgba(${hexToRgb(color)},0.22)`,
           border: `1px solid rgba(${hexToRgb(color)},0.50)`,
@@ -814,19 +820,24 @@ function ChannelNode({ Icon, label, angle, color, delay }: ChannelDef & { delay:
         animate={{ y: [0, -2, 0] }}
         transition={{ duration: 4 + delay, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <Icon strokeWidth={1.9} style={{ color, width: 14, height: 14 }} />
+        <Icon strokeWidth={1.9} style={{ color, width: 15, height: 15 }} />
       </motion.span>
-      <span className="text-[11.5px] font-medium text-white whitespace-nowrap"
-        style={{ letterSpacing: '-0.01em' }}>
-        {label}
-      </span>
-      <span className="relative flex h-1 w-1 ml-0.5">
+      <div className="min-w-0">
+        <div className="text-[11.5px] font-semibold text-white whitespace-nowrap leading-tight"
+          style={{ letterSpacing: '-0.01em' }}>
+          {label}
+        </div>
+        <div className="text-[9.5px] text-white/55 font-medium whitespace-nowrap leading-tight mt-0.5">
+          {sub}
+        </div>
+      </div>
+      <span className="relative flex h-1.5 w-1.5 ml-1">
         <motion.span className="absolute inline-flex h-full w-full rounded-full"
           style={{ background: color }}
           animate={{ opacity: [1, 0.3, 1] }}
           transition={{ duration: 1.8, repeat: Infinity, delay: delay * 2 }} />
-        <span className="relative inline-flex h-1 w-1 rounded-full"
-          style={{ background: color, boxShadow: `0 0 5px ${color}` }} />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+          style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
       </span>
     </motion.div>
   )
@@ -866,122 +877,429 @@ function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
   )
 }
 
-/* ─── MetricCard · módulo glass premium ─── */
-function MetricCard({ target, format, label, delay }: MetricDef & { delay: number }) {
+/* ─── MetricCardWrapper · contenedor glass premium reutilizable ─── */
+function MetricCardWrapper({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3 }}
-      className="group relative rounded-2xl p-5 backdrop-blur-2xl overflow-hidden transition-all duration-500"
+      className="group relative rounded-2xl p-5 backdrop-blur-2xl overflow-hidden transition-all duration-500 flex flex-col h-full"
       style={{
         background: 'linear-gradient(180deg, rgba(29,46,109,0.40), rgba(11,16,38,0.78))',
         border: '1px solid rgba(142,68,255,0.18)',
-        boxShadow:
-          '0 14px 36px -16px rgba(142,68,255,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
-      }}
-    >
-      {/* Hover border glow */}
+        boxShadow: '0 16px 40px -16px rgba(142,68,255,0.55), inset 0 1px 0 rgba(255,255,255,0.05)',
+        minHeight: 260,
+      }}>
       <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{ boxShadow: '0 0 0 1px rgba(212,91,255,0.40)' }} />
-
-      {/* Top hairline */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.55), transparent)' }} />
-
-      {/* Ambient corner glow */}
-      <div className="pointer-events-none absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-60"
-        style={{
-          background: 'radial-gradient(circle, rgba(142,68,255,0.35), transparent 65%)',
-          filter: 'blur(30px)',
-        }} />
-
-      <div className="relative">
-        <div
-          className="text-[30px] lg:text-[34px] font-medium tabular-nums leading-none mb-2"
-          style={{
-            fontFamily: 'var(--font-display)',
-            letterSpacing: '-0.04em',
-            background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0 0 12px rgba(142,68,255,0.35))',
-          }}
-        >
-          <AnimatedNumber target={target} format={format} />
-        </div>
-        <div className="text-[10.5px] uppercase font-medium text-white/55"
-          style={{ letterSpacing: '0.18em' }}>
-          {label}
-        </div>
-      </div>
+      <div className="pointer-events-none absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-50"
+        style={{ background: 'radial-gradient(circle, rgba(142,68,255,0.30), transparent 65%)', filter: 'blur(28px)' }} />
+      <div className="relative flex flex-col h-full">{children}</div>
     </motion.div>
   )
 }
 
-/* ─── LiveFeed · eventos apareciendo aleatoriamente ─── */
-function LiveFeed() {
-  const allEvents = [
-    { dot: '#10B981', text: 'Venta confirmada' },
-    { dot: '#D45BFF', text: 'Cliente recuperado' },
-    { dot: '#8E44FF', text: 'Pedido recibido' },
-    { dot: '#6B5CFF', text: 'Seguimiento enviado' },
-    { dot: '#10B981', text: 'WhatsApp conectado' },
-    { dot: '#D45BFF', text: 'Conversación iniciada' },
-    { dot: '#8E44FF', text: 'Tienda sincronizada' },
-  ]
+function MetricHeader({ Icon, label }: { Icon: IconComp; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-3">
+      <Icon strokeWidth={2} style={{ color: '#D45BFF', width: 14, height: 14 }} />
+      <span className="text-[10px] uppercase font-semibold text-white/55" style={{ letterSpacing: '0.18em' }}>
+        {label}
+      </span>
+    </div>
+  )
+}
 
-  type Evt = { id: number; dot: string; text: string }
-  const [events, setEvents] = useState<Evt[]>([])
+function MetricFooter({ value, sub }: { value: React.ReactNode; sub: string }) {
+  return (
+    <div className="mt-auto">
+      <div className="text-[26px] lg:text-[30px] font-medium tabular-nums leading-none mb-1" style={gradNumberStyle}>
+        {value}
+      </div>
+      <div className="text-[10px] uppercase font-medium text-white/45" style={{ letterSpacing: '0.16em' }}>
+        {sub}
+      </div>
+    </div>
+  )
+}
+
+/* ─── BusinessMapMetric · mapa mundial holográfico ─── */
+function BusinessMapMetric({ delay }: { delay: number }) {
+  const dots = [
+    { x: 18, y: 38, d: 0 },   { x: 26, y: 50, d: 0.4 },
+    { x: 22, y: 65, d: 0.8 }, { x: 30, y: 72, d: 1.2 },
+    { x: 48, y: 32, d: 0.2 }, { x: 52, y: 42, d: 0.6 },
+    { x: 56, y: 60, d: 1.0 }, { x: 50, y: 72, d: 1.4 },
+    { x: 72, y: 38, d: 0.3 }, { x: 78, y: 48, d: 0.7 },
+    { x: 84, y: 58, d: 1.1 }, { x: 85, y: 72, d: 1.5 },
+  ]
+  return (
+    <MetricCardWrapper delay={delay}>
+      <MetricHeader Icon={Globe} label="Negocios activos" />
+      <div className="relative flex-1 min-h-[120px] mb-3 rounded-lg overflow-hidden"
+        style={{ background: 'rgba(5,8,22,0.5)', border: '1px solid rgba(142,68,255,0.10)' }}>
+        <svg viewBox="0 0 100 80" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+          <g opacity="0.6">
+            <path d="M14 28 Q22 25 28 32 L30 50 Q26 62 22 72 Q18 76 16 72 Q14 60 14 28 Z"
+              fill="rgba(142,68,255,0.10)" stroke="rgba(212,91,255,0.25)" strokeWidth="0.4" />
+            <path d="M42 28 Q52 24 58 32 Q60 45 56 58 Q52 70 48 74 Q44 68 44 55 Q42 42 42 28 Z"
+              fill="rgba(142,68,255,0.10)" stroke="rgba(212,91,255,0.25)" strokeWidth="0.4" />
+            <path d="M66 26 Q78 24 86 32 Q88 42 84 50 Q78 58 72 56 Q66 50 66 38 Z"
+              fill="rgba(142,68,255,0.10)" stroke="rgba(212,91,255,0.25)" strokeWidth="0.4" />
+            <path d="M80 64 Q88 64 88 70 Q86 76 82 74 Q78 70 80 64 Z"
+              fill="rgba(142,68,255,0.10)" stroke="rgba(212,91,255,0.25)" strokeWidth="0.4" />
+          </g>
+
+          {[0, 4, 8, 11].map((i) => (
+            <motion.line key={i}
+              x1={50} y1={50}
+              x2={dots[i].x} y2={dots[i].y}
+              stroke="rgba(212,91,255,0.5)" strokeWidth="0.3" strokeDasharray="1 2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.2, 0.7, 0.2] }}
+              transition={{ duration: 3, repeat: Infinity, delay: dots[i].d }}
+            />
+          ))}
+
+          <circle cx={50} cy={50} r="1.8" fill="#D45BFF"
+            style={{ filter: 'drop-shadow(0 0 3px rgba(212,91,255,1))' }} />
+          <motion.circle cx={50} cy={50} r="3" fill="none" stroke="rgba(212,91,255,0.6)" strokeWidth="0.3"
+            animate={{ r: [3, 7], opacity: [0.6, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }} />
+
+          {dots.map((d, i) => (
+            <motion.circle key={i}
+              cx={d.x} cy={d.y} r="0.9" fill="#D45BFF"
+              style={{ filter: 'drop-shadow(0 0 2px rgba(212,91,255,0.9))' }}
+              animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.3, 1] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: d.d }}
+            />
+          ))}
+        </svg>
+      </div>
+      <MetricFooter
+        value={<AnimatedNumber target={527} format={(n) => `+${Math.round(n).toLocaleString('en-US')}`} />}
+        sub="negocios conectados"
+      />
+    </MetricCardWrapper>
+  )
+}
+
+/* ─── MessagesFlowMetric · flujo de chat ─── */
+function MessagesFlowMetric({ delay }: { delay: number }) {
+  const samples = [
+    { ch: 'WA', color: '#10B981', text: '¿Tienen el azul?' },
+    { ch: 'IG', color: '#D45BFF', text: 'Cuánto cuesta?' },
+    { ch: 'MS', color: '#6B5CFF', text: 'Quiero comprar' },
+    { ch: 'WA', color: '#10B981', text: 'Confirmado, gracias' },
+    { ch: 'IG', color: '#D45BFF', text: 'Hay envío?' },
+    { ch: 'MS', color: '#6B5CFF', text: 'Hola NÜRO' },
+    { ch: 'WA', color: '#10B981', text: 'Pago hecho' },
+  ]
+  type Msg = { id: number; ch: string; color: string; text: string }
+  const [msgs, setMsgs] = useState<Msg[]>([])
   const counter = useRef(0)
   const idx = useRef(0)
 
   useEffect(() => {
-    // Seed initial
-    const seed: Evt[] = [0, 1, 2].map((k) => {
+    const seed: Msg[] = [0, 1].map(k => {
       counter.current += 1
-      const e = allEvents[(idx.current + k) % allEvents.length]
-      return { id: counter.current, ...e }
+      const m = samples[(idx.current + k) % samples.length]
+      return { id: counter.current, ...m }
     })
-    idx.current = 3
-    setEvents(seed)
-
+    idx.current = 2
+    setMsgs(seed)
     const interval = setInterval(() => {
       counter.current += 1
-      idx.current = (idx.current + 1) % allEvents.length
-      const e = allEvents[idx.current]
-      setEvents((prev) => {
-        const next = [...prev, { id: counter.current, ...e }]
-        // Keep last 4 max
-        return next.slice(-4)
-      })
-    }, 2400)
+      idx.current = (idx.current + 1) % samples.length
+      setMsgs(prev => [...prev, { id: counter.current, ...samples[idx.current] }].slice(-3))
+    }, 1900)
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  return (
+    <MetricCardWrapper delay={delay}>
+      <MetricHeader Icon={MessageCircle} label="Mensajes procesados" />
+      <div className="flex-1 flex flex-col justify-end gap-1.5 min-h-[120px] mb-3 overflow-hidden">
+        <AnimatePresence initial={false}>
+          {msgs.map(m => (
+            <motion.div key={m.id} layout
+              initial={{ opacity: 0, y: 10, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4 }}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(212,91,255,0.10)',
+              }}>
+              <span className="shrink-0 text-[8.5px] font-mono uppercase font-semibold px-1.5 py-0.5 rounded"
+                style={{
+                  letterSpacing: '0.12em', color: m.color,
+                  background: `rgba(${hexToRgb(m.color)},0.14)`,
+                  border: `1px solid rgba(${hexToRgb(m.color)},0.35)`,
+                }}>
+                {m.ch}
+              </span>
+              <span className="text-[11px] text-white/75 truncate font-medium">
+                {m.text}
+              </span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+      <MetricFooter
+        value={<AnimatedNumber target={2.3} format={(n) => `+${n.toFixed(1)}M`} />}
+        sub="conversaciones"
+      />
+    </MetricCardWrapper>
+  )
+}
+
+/* ─── ResponseRingMetric · anillo de progreso ─── */
+function ResponseRingMetric({ delay }: { delay: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = useState(0)
+  const started = useRef(false)
+
+  useEffect(() => {
+    if (!ref.current) return
+    const node = ref.current
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true
+        const start = performance.now()
+        const duration = 2.4
+        const target = 98
+        const tick = (now: number) => {
+          const elapsed = (now - start) / 1000
+          const t = Math.min(elapsed / duration, 1)
+          const eased = 1 - Math.pow(1 - t, 3)
+          setProgress(target * eased)
+          if (t < 1) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      }
+    }, { threshold: 0.3 })
+    obs.observe(node)
+    return () => obs.disconnect()
+  }, [])
+
+  const circumference = 2 * Math.PI * 42
+  const offset = circumference * (1 - progress / 100)
+
+  return (
+    <MetricCardWrapper delay={delay}>
+      <MetricHeader Icon={Zap} label="Tasa de respuesta" />
+      <div ref={ref} className="relative flex-1 flex items-center justify-center min-h-[120px] mb-3">
+        <svg width="118" height="118" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stopColor="#6B5CFF" />
+              <stop offset="50%" stopColor="#8E44FF" />
+              <stop offset="100%" stopColor="#D45BFF" />
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="42" fill="none"
+            stroke="rgba(142,68,255,0.16)" strokeWidth="6" />
+          <circle cx="50" cy="50" r="42" fill="none"
+            stroke="url(#ringGrad)" strokeWidth="6" strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            transform="rotate(-90 50 50)"
+            style={{ filter: 'drop-shadow(0 0 8px rgba(142,68,255,0.6))' }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-[28px] font-medium tabular-nums leading-none"
+            style={{
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '-0.04em',
+              background: 'linear-gradient(180deg, #F8FAFF 0%, #D45BFF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+            {Math.round(progress)}%
+          </span>
+          <span className="text-[8.5px] uppercase font-semibold text-emerald-300/95 mt-1.5"
+            style={{ letterSpacing: '0.18em' }}>
+            ● Óptimo
+          </span>
+        </div>
+      </div>
+      <div className="mt-auto">
+        <div className="text-[10px] uppercase font-medium text-white/45" style={{ letterSpacing: '0.16em' }}>
+          respuestas en &lt; 30s
+        </div>
+      </div>
+    </MetricCardWrapper>
+  )
+}
+
+/* ─── Clock24Metric · reloj holográfico ─── */
+function Clock24Metric({ delay }: { delay: number }) {
+  return (
+    <MetricCardWrapper delay={delay}>
+      <MetricHeader Icon={Globe} label="Operación continua" />
+      <div className="relative flex-1 flex items-center justify-center min-h-[120px] mb-3">
+        <svg viewBox="0 0 100 100" width="118" height="118">
+          <circle cx="50" cy="50" r="45" fill="rgba(11,16,38,0.4)" stroke="rgba(212,91,255,0.3)" strokeWidth="0.8" />
+          {Array.from({ length: 12 }).map((_, i) => {
+            const angle = (i * 30 - 90) * Math.PI / 180
+            const r1 = i % 3 === 0 ? 36 : 39
+            const r2 = 42
+            const x1 = 50 + r1 * Math.cos(angle)
+            const y1 = 50 + r1 * Math.sin(angle)
+            const x2 = 50 + r2 * Math.cos(angle)
+            const y2 = 50 + r2 * Math.sin(angle)
+            return (
+              <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+                stroke={i % 3 === 0 ? '#D45BFF' : 'rgba(212,91,255,0.4)'}
+                strokeWidth={i % 3 === 0 ? 1.2 : 0.6}
+                strokeLinecap="round" />
+            )
+          })}
+
+          <motion.line x1="50" y1="50" x2="50" y2="22"
+            stroke="#F8FAFF" strokeWidth="1.4" strokeLinecap="round"
+            style={{ transformOrigin: '50px 50px', filter: 'drop-shadow(0 0 4px rgba(248,250,255,0.7))' }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+          />
+          <motion.line x1="50" y1="50" x2="50" y2="32"
+            stroke="#D45BFF" strokeWidth="1.8" strokeLinecap="round"
+            style={{ transformOrigin: '50px 50px', filter: 'drop-shadow(0 0 5px rgba(212,91,255,1))' }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 140, repeat: Infinity, ease: 'linear' }}
+          />
+
+          <circle cx="50" cy="50" r="2.4" fill="#D45BFF"
+            style={{ filter: 'drop-shadow(0 0 6px rgba(212,91,255,1))' }} />
+          <circle cx="50" cy="50" r="1.2" fill="#F8FAFF" />
+
+          <motion.circle cx="50" cy="50" r="4" fill="none" stroke="rgba(212,91,255,0.5)" strokeWidth="0.4"
+            animate={{ r: [3, 8], opacity: [0.6, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+          />
+        </svg>
+      </div>
+      <div className="mt-auto flex items-baseline justify-between gap-2">
+        <div className="text-[26px] lg:text-[30px] font-medium tabular-nums leading-none" style={gradNumberStyle}>
+          <AnimatedNumber target={24} format={(n) => `${Math.round(n)}/7`} />
+        </div>
+        <span className="text-[9.5px] uppercase font-semibold text-emerald-300/95"
+          style={{ letterSpacing: '0.18em' }}>
+          ● Activo
+        </span>
+      </div>
+    </MetricCardWrapper>
+  )
+}
+
+/* ─── LiveFeed · feed con avatares + timestamps relativos ─── */
+function LiveFeed() {
+  const profiles = [
+    { initials: 'MR', grad: 'linear-gradient(135deg, #6B5CFF, #D45BFF)' },
+    { initials: 'JL', grad: 'linear-gradient(135deg, #D45BFF, #8E44FF)' },
+    { initials: 'AV', grad: 'linear-gradient(135deg, #10B981, #6B5CFF)' },
+    { initials: 'SC', grad: 'linear-gradient(135deg, #8E44FF, #D45BFF)' },
+    { initials: 'PR', grad: 'linear-gradient(135deg, #6B5CFF, #8E44FF)' },
+    { initials: 'KG', grad: 'linear-gradient(135deg, #D45BFF, #6B5CFF)' },
+    { initials: 'NM', grad: 'linear-gradient(135deg, #8E44FF, #10B981)' },
+  ]
+  const actions = [
+    { text: 'Venta confirmada',       status: '#10B981' },
+    { text: 'Cliente recuperado',      status: '#10B981' },
+    { text: 'Nuevo pedido recibido',   status: '#D45BFF' },
+    { text: 'Seguimiento enviado',     status: '#8E44FF' },
+    { text: 'Nuevo cliente conectado', status: '#6B5CFF' },
+    { text: 'Conversación iniciada',   status: '#D45BFF' },
+    { text: 'Tienda sincronizada',     status: '#10B981' },
+  ]
+
+  type Evt = { id: number; initials: string; grad: string; action: string; status: string; createdAt: number }
+  const [events, setEvents] = useState<Evt[]>([])
+  const [, setTick] = useState(0)
+  const counter = useRef(0)
+  const idx = useRef(0)
+  const pidx = useRef(0)
+
+  useEffect(() => {
+    const seed: Evt[] = [0, 1, 2, 3].map(k => {
+      counter.current += 1
+      const a = actions[(idx.current + k) % actions.length]
+      const p = profiles[(pidx.current + k) % profiles.length]
+      return {
+        id: counter.current,
+        initials: p.initials,
+        grad: p.grad,
+        action: a.text,
+        status: a.status,
+        createdAt: Date.now() - (3 - k) * 4000,
+      }
+    })
+    idx.current = 4
+    pidx.current = 4
+    setEvents(seed)
+
+    const evInt = setInterval(() => {
+      counter.current += 1
+      idx.current = (idx.current + 1) % actions.length
+      pidx.current = (pidx.current + 1) % profiles.length
+      const a = actions[idx.current]
+      const p = profiles[pidx.current]
+      setEvents(prev => [...prev, {
+        id: counter.current,
+        initials: p.initials,
+        grad: p.grad,
+        action: a.text,
+        status: a.status,
+        createdAt: Date.now(),
+      }].slice(-4))
+    }, 2400)
+
+    const tickInt = setInterval(() => setTick(t => t + 1), 1000)
+
+    return () => {
+      clearInterval(evInt)
+      clearInterval(tickInt)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const formatAgo = (createdAt: number): string => {
+    const secs = Math.max(0, Math.floor((Date.now() - createdAt) / 1000))
+    if (secs < 5) return 'Justo ahora'
+    if (secs < 60) return `Hace ${secs} seg`
+    const mins = Math.floor(secs / 60)
+    return `Hace ${mins} min`
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="relative rounded-2xl p-5 backdrop-blur-2xl overflow-hidden flex-1"
+      transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      className="relative rounded-2xl p-5 backdrop-blur-2xl overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, rgba(29,46,109,0.40), rgba(11,16,38,0.78))',
         border: '1px solid rgba(142,68,255,0.18)',
-        boxShadow:
-          '0 14px 36px -16px rgba(142,68,255,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+        boxShadow: '0 18px 44px -16px rgba(142,68,255,0.55), inset 0 1px 0 rgba(255,255,255,0.05)',
       }}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.55), transparent)' }} />
 
       {/* Header */}
-      <div className="relative flex items-center justify-between mb-3">
+      <div className="relative flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="relative flex h-1.5 w-1.5">
             <motion.span className="absolute inline-flex h-full w-full rounded-full"
@@ -991,46 +1309,57 @@ function LiveFeed() {
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
               style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
           </span>
-          <span className="text-[10px] uppercase font-semibold"
+          <span className="text-[10.5px] uppercase font-semibold"
             style={{ letterSpacing: '0.22em', color: 'rgba(212,91,255,0.95)' }}>
             LIVE
+          </span>
+          <span className="text-[10.5px] text-white/45 font-medium ml-2 hidden sm:inline">
+            Actividad en tiempo real
           </span>
         </div>
         <span className="text-[9.5px] uppercase font-mono text-white/40"
           style={{ letterSpacing: '0.16em' }}>
-          Actividad
+          Sincronizado
         </span>
       </div>
 
-      {/* Event list */}
-      <div className="relative space-y-2 min-h-[180px]">
+      <div className="relative space-y-2 min-h-[260px]">
         <AnimatePresence initial={false}>
-          {events.map((e) => (
-            <motion.div
-              key={e.id}
-              layout
+          {events.map(e => (
+            <motion.div key={e.id} layout
               initial={{ opacity: 0, x: 16, height: 0 }}
               animate={{ opacity: 1, x: 0, height: 'auto' }}
               exit={{ opacity: 0, x: -16, height: 0 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg overflow-hidden"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl overflow-hidden"
               style={{
                 background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(212,91,255,0.10)',
-              }}
-            >
-              <motion.span className="w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ background: e.dot, boxShadow: `0 0 6px ${e.dot}` }}
-                animate={{ opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              <span className="text-[12px] text-white/75 font-medium leading-none"
-                style={{ letterSpacing: '-0.005em' }}>
-                {e.text}
-              </span>
-              <span className="ml-auto text-[9.5px] text-white/35 font-mono">
-                ahora
-              </span>
+              }}>
+              {/* Avatar */}
+              <div className="w-8 h-8 rounded-full flex items-center justify-center font-semibold text-[10.5px] text-white shrink-0"
+                style={{
+                  background: e.grad,
+                  border: '1px solid rgba(255,255,255,0.18)',
+                  boxShadow: '0 4px 12px -2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.22)',
+                }}>
+                {e.initials}
+              </div>
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ background: e.status, boxShadow: `0 0 5px ${e.status}` }} />
+                  <span className="text-[12.5px] text-white font-semibold leading-none"
+                    style={{ letterSpacing: '-0.005em' }}>
+                    {e.action}
+                  </span>
+                </div>
+                <div className="text-[10.5px] text-white/45 mt-1 font-medium">
+                  {formatAgo(e.createdAt)}
+                </div>
+              </div>
+              <Check className="w-3.5 h-3.5 text-emerald-300/90 shrink-0" strokeWidth={3} />
             </motion.div>
           ))}
         </AnimatePresence>
