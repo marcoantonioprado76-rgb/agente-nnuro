@@ -1886,343 +1886,138 @@ function VideoDemo() {
     setPlaying(true)
   }
 
-  const channels: { Icon: IconComp; label: string; color: string }[] = [
-    { Icon: MessageCircle, label: 'WhatsApp',       color: '#10B981' },
-    { Icon: Send,          label: 'Messenger',      color: '#6B5CFF' },
-    { Icon: InstagramMark, label: 'Instagram',      color: '#D45BFF' },
-    { Icon: ShoppingBag,   label: 'Tienda Virtual', color: '#D45BFF' },
-    { Icon: Bot,           label: 'IA',             color: '#8E44FF' },
-  ]
-
   return (
-    <section id="video" className="relative pt-6 pb-14 lg:pt-8 lg:pb-18">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
-        {/* Editorial bridge */}
+    <section id="video" className="relative pt-8 pb-16 lg:pt-12 lg:pb-20">
+      <div className="max-w-5xl mx-auto px-6 lg:px-8">
+        {/* Title + sub */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center max-w-3xl mx-auto mb-8 lg:mb-10"
+          className="text-center max-w-2xl mx-auto mb-10 lg:mb-12"
         >
-          <span className="inline-block text-[10.5px] uppercase font-semibold mb-3"
-            style={{ letterSpacing: '0.24em', color: 'rgba(212,91,255,0.85)' }}>
-            DEMO · EN VIVO
-          </span>
-          <h2 className="leading-[1.04]"
+          <h2 className="leading-[1.02]"
             style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.04em' }}>
-            <span className="block text-[28px] sm:text-[36px] lg:text-[44px] text-white/85"
+            <span className="block text-[32px] sm:text-[42px] lg:text-[52px] text-white/85"
               style={{ fontWeight: 300 }}>
-              Observa cómo NÜRO atiende,
+              La inteligencia detrás
             </span>
-            <span className="block text-[28px] sm:text-[38px] lg:text-[46px] mt-1.5"
-              style={{ fontWeight: 300 }}>
-              <span className="text-white/85">hace seguimiento y</span>{' '}
-              <span style={{
+            <span className="block text-[36px] sm:text-[48px] lg:text-[60px] mt-1"
+              style={{
                 fontWeight: 700,
+                letterSpacing: '-0.05em',
+              }}>
+              <span className="text-white">de cada </span>
+              <span style={{
                 background: GRAD_MAIN,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 24px rgba(212,91,255,0.45))',
-                letterSpacing: '-0.05em',
               }}>
-                VENDE POR TI.
+                venta.
               </span>
             </span>
           </h2>
-          <p className="mt-5 text-[14.5px] lg:text-[16px] text-white/55 leading-relaxed max-w-xl mx-auto"
+          <p className="mt-6 text-[15px] lg:text-[16.5px] text-white/55 leading-relaxed max-w-xl mx-auto"
             style={{ letterSpacing: '-0.005em' }}>
-            En menos de 3 minutos descubrirás cómo NÜRO convierte conversaciones
-            en{' '}
-            <span className="text-white/85 font-medium" style={{
-              background: 'linear-gradient(180deg, #F8FAFF, #D45BFF)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              oportunidades reales de venta.
-            </span>
+            Descubre cómo NÜRO automatiza conversaciones, seguimiento y ventas
+            desde una única plataforma.
           </p>
         </motion.div>
 
-        {/* Video composition wrap (chips fuera del frame) */}
-        <div className="relative">
-          {/* 4 micro chips alrededor del video */}
-          <FloatingMicroChip
-            className="hidden md:flex top-[-24px] left-[4%] lg:left-[6%]"
-            label="Venta confirmada"
-            value="+$1,250"
-            Icon={Check}
-            color="#10B981"
-            delay={0.55}
-          />
-          <FloatingMicroChip
-            className="hidden md:flex top-[-24px] right-[4%] lg:right-[6%]"
-            label="Cliente recuperado"
-            value="Día 3 · convertido"
-            Icon={TrendingUp}
-            color="#D45BFF"
-            delay={0.7}
-          />
-          <FloatingMicroChip
-            className="hidden md:flex bottom-[-24px] left-[4%] lg:left-[6%]"
-            label="Nuevo pedido"
-            value="3 productos"
-            Icon={ShoppingBag}
-            color="#8E44FF"
-            delay={0.85}
-          />
-          <FloatingMicroChip
-            className="hidden md:flex bottom-[-24px] right-[4%] lg:right-[6%]"
-            label="WhatsApp conectado"
-            value="247 chats hoy"
-            Icon={MessageCircle}
-            color="#10B981"
-            delay={1.0}
-          />
-
-          {/* Video frame premium */}
-          <motion.div
-            initial={{ opacity: 0, y: 22 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="relative rounded-[28px] overflow-hidden"
+        {/* Video frame — minimal premium */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="relative rounded-[24px] overflow-hidden"
+          style={{
+            background: 'rgba(11,16,38,0.55)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow:
+              '0 30px 60px -24px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02)',
+          }}
+        >
+          {/* Top bar — minimal single line */}
+          <div className="relative flex items-center justify-between gap-4 px-5 sm:px-6 py-3.5 backdrop-blur-xl"
             style={{
-              background:
-                'linear-gradient(180deg, rgba(29,46,109,0.40), rgba(11,16,38,0.78))',
-              border: '1px solid rgba(212,91,255,0.30)',
-              boxShadow:
-                '0 40px 100px -28px rgba(142,68,255,0.65), 0 0 0 1px rgba(212,91,255,0.20), inset 0 1px 0 rgba(255,255,255,0.05)',
-            }}
-          >
-            {/* Top hairline */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px z-30"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.70), transparent)' }} />
+              background: 'rgba(11,16,38,0.65)',
+              borderBottom: '1px solid rgba(255,255,255,0.06)',
+            }}>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="relative flex h-1.5 w-1.5">
+                <motion.span className="absolute inline-flex h-full w-full rounded-full"
+                  style={{ background: '#D45BFF' }}
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }} />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                  style={{ background: '#D45BFF' }} />
+              </span>
+              <span className="text-[10.5px] uppercase font-semibold text-white/85"
+                style={{ letterSpacing: '0.22em' }}>
+                Demo en vivo
+              </span>
+            </div>
+            <div className="text-[11px] font-medium text-white/45 truncate"
+              style={{ letterSpacing: '-0.005em' }}>
+              WhatsApp <span className="text-white/25">•</span> Messenger{' '}
+              <span className="text-white/25">•</span> Instagram{' '}
+              <span className="text-white/25">•</span> Tienda Virtual
+            </div>
+          </div>
 
-            {/* Animated border accent (light sweep) */}
-            <motion.div
-              className="pointer-events-none absolute top-0 h-[2px] z-30"
-              style={{
-                width: '28%',
-                background: 'linear-gradient(90deg, transparent, rgba(212,91,255,1), transparent)',
-                boxShadow: '0 0 12px rgba(212,91,255,0.8)',
-              }}
-              animate={{ x: ['-28%', '420%'] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+          {/* Video */}
+          <div className="relative aspect-video"
+            style={{ background: '#050816' }}>
+            <video
+              ref={videoRef}
+              src={VIDEO_URL}
+              controls={playing}
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-contain"
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+              onEnded={() => setPlaying(false)}
             />
 
-            {/* HUD corner brackets */}
-            {[
-              { pos: 'top-3 left-3',     rot: 0 },
-              { pos: 'top-3 right-3',    rot: 90 },
-              { pos: 'bottom-3 right-3', rot: 180 },
-              { pos: 'bottom-3 left-3',  rot: 270 },
-            ].map((c, i) => (
-              <div key={i} className={`pointer-events-none absolute ${c.pos} z-30`}
-                style={{ transform: `rotate(${c.rot}deg)` }}>
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <path d="M 2 12 L 2 2 L 12 2" fill="none"
-                    stroke="rgba(212,91,255,0.70)" strokeWidth="1.3" strokeLinecap="round"
-                    style={{ filter: 'drop-shadow(0 0 3px rgba(212,91,255,0.7))' }} />
-                </svg>
-              </div>
-            ))}
-
-            {/* Top bar premium con tags */}
-            <div className="relative z-20 flex items-center gap-2 flex-wrap px-4 sm:px-5 py-3 backdrop-blur-xl"
-              style={{
-                background: 'linear-gradient(180deg, rgba(11,16,38,0.88), rgba(11,16,38,0.55))',
-                borderBottom: '1px solid rgba(212,91,255,0.18)',
-              }}>
-              {/* ● DEMOSTRACIÓN REAL */}
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-                style={{
-                  background: 'rgba(212,91,255,0.14)',
-                  border: '1px solid rgba(212,91,255,0.42)',
-                  boxShadow: '0 0 14px -4px rgba(212,91,255,0.55)',
-                }}>
-                <span className="relative flex h-1.5 w-1.5">
-                  <motion.span className="absolute inline-flex h-full w-full rounded-full"
-                    style={{ background: '#D45BFF' }}
-                    animate={{ opacity: [1, 0.3, 1], scale: [1, 1.7, 1] }}
-                    transition={{ duration: 1.8, repeat: Infinity }} />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                    style={{ background: '#D45BFF', boxShadow: '0 0 7px rgba(212,91,255,1)' }} />
-                </span>
-                <span className="text-[9.5px] uppercase font-bold"
-                  style={{ letterSpacing: '0.20em', color: 'rgba(248,250,255,0.96)' }}>
-                  Demostración real
-                </span>
-              </div>
-
-              {/* Channel tags ✓ */}
-              {channels.map((c, i) => {
-                const Icon = c.Icon
-                const rgb = hexToRgb(c.color)
-                return (
-                  <motion.div key={i}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.35, delay: 0.2 + i * 0.06 }}
-                    className="flex items-center gap-1.5 px-2 py-1 rounded-full"
+            <AnimatePresence>
+              {!playing && (
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={handlePlay}
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    background:
+                      'radial-gradient(ellipse at center, rgba(142,68,255,0.10) 0%, rgba(5,8,22,0.55) 70%)',
+                  }}
+                  aria-label="Reproducir demo"
+                >
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="relative w-[120px] h-[120px] rounded-full flex items-center justify-center"
                     style={{
-                      background: `rgba(${rgb},0.08)`,
-                      border: `1px solid rgba(${rgb},0.32)`,
-                    }}>
-                    <Check className="w-2.5 h-2.5" strokeWidth={3.5} style={{ color: c.color }} />
-                    <Icon strokeWidth={2} style={{ color: c.color, width: 11, height: 11 }} />
-                    <span className="text-[10px] font-semibold text-white/80 whitespace-nowrap">
-                      {c.label}
-                    </span>
-                  </motion.div>
-                )
-              })}
-            </div>
-
-            {/* Video container */}
-            <div className="relative aspect-video"
-              style={{ background: '#050816' }}>
-              <video
-                ref={videoRef}
-                src={VIDEO_URL}
-                controls={playing}
-                playsInline
-                preload="metadata"
-                className="absolute inset-0 w-full h-full object-contain"
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
-                onEnded={() => setPlaying(false)}
-              />
-
-              <AnimatePresence>
-                {!playing && (
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={handlePlay}
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-4"
-                    style={{
-                      background:
-                        'radial-gradient(ellipse at center, rgba(142,68,255,0.32) 0%, rgba(5,8,22,0.78) 65%)',
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.14)',
+                      backdropFilter: 'blur(12px)',
+                      boxShadow: '0 12px 40px -10px rgba(142,68,255,0.35)',
                     }}
-                    aria-label="Reproducir demo"
                   >
-                    {/* Play button */}
-                    <motion.span
-                      whileHover={{ scale: 1.08 }}
-                      whileTap={{ scale: 0.96 }}
-                      animate={{ scale: [1, 1.03, 1] }}
-                      transition={{ scale: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } }}
-                      className="relative w-24 h-24 sm:w-26 sm:h-26 rounded-full flex items-center justify-center"
-                      style={{
-                        background: GRAD_BTN,
-                        boxShadow:
-                          '0 30px 80px -8px rgba(142,68,255,1), 0 0 0 1px rgba(212,91,255,0.5), 0 0 0 8px rgba(142,68,255,0.18), inset 0 2px 0 rgba(255,255,255,0.32)',
-                      }}
-                    >
-                      <Play className="w-9 h-9 text-white ml-0.5" fill="currentColor"
-                        style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }} />
-                      {[0, 1.1].map((d, i) => (
-                        <motion.span key={i}
-                          className="absolute inset-0 rounded-full pointer-events-none"
-                          style={{ border: '1.5px solid rgba(212,91,255,0.7)' }}
-                          animate={{ scale: [1, 2], opacity: [0.7, 0] }}
-                          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut', delay: d }}
-                        />
-                      ))}
-                    </motion.span>
-
-                    {/* Overlay copy */}
-                    <div className="text-center max-w-md">
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-3 backdrop-blur-xl"
-                        style={{
-                          background: 'rgba(212,91,255,0.16)',
-                          border: '1px solid rgba(212,91,255,0.42)',
-                          boxShadow: '0 0 16px -4px rgba(212,91,255,0.55)',
-                        }}>
-                        <Play className="w-3 h-3" fill="currentColor" style={{ color: '#F8FAFF' }} />
-                        <span className="text-[11px] uppercase font-bold text-white whitespace-nowrap"
-                          style={{ letterSpacing: '0.22em' }}>
-                          Ver demostración en vivo
-                        </span>
-                      </div>
-                      <p className="text-[12.5px] sm:text-[13.5px] text-white/75 leading-relaxed font-medium"
-                        style={{ letterSpacing: '-0.005em' }}>
-                        Mira cómo NÜRO responde clientes, recupera oportunidades
-                        y confirma ventas{' '}
-                        <span className="font-semibold" style={{
-                          background: 'linear-gradient(180deg, #F8FAFF, #D45BFF)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text',
-                        }}>
-                          automáticamente.
-                        </span>
-                      </p>
-                    </div>
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </div>
+                    <Play className="w-9 h-9 text-white ml-1" fill="currentColor"
+                      strokeWidth={0} />
+                  </motion.span>
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
       </div>
     </section>
-  )
-}
-
-function FloatingMicroChip({
-  className, label, value, Icon, color, delay,
-}: {
-  className?: string
-  label: string
-  value: string
-  Icon: IconComp
-  color: string
-  delay: number
-}) {
-  const rgb = hexToRgb(color)
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.85, y: 14 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={`absolute z-20 flex items-center gap-2.5 px-3 py-2 rounded-2xl backdrop-blur-2xl ${className ?? ''}`}
-      style={{
-        background: `linear-gradient(135deg, rgba(${rgb},0.18), rgba(11,16,38,0.85))`,
-        border: `1px solid rgba(${rgb},0.45)`,
-        boxShadow: `0 18px 38px -10px rgba(${rgb},0.65), inset 0 1px 0 rgba(255,255,255,0.07)`,
-      }}
-    >
-      <motion.div
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 5 + delay, repeat: Infinity, ease: 'easeInOut' }}
-        className="contents"
-      >
-        <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-          style={{
-            background: `rgba(${rgb},0.22)`,
-            border: `1px solid rgba(${rgb},0.5)`,
-            boxShadow: `0 0 10px rgba(${rgb},0.45)`,
-          }}>
-          <Icon strokeWidth={2.4} style={{ color, width: 13, height: 13 }} />
-        </span>
-        <div className="min-w-0">
-          <div className="text-[8.5px] uppercase font-semibold text-white/55 mb-0.5 whitespace-nowrap"
-            style={{ letterSpacing: '0.14em' }}>
-            {label}
-          </div>
-          <div className="text-[11.5px] font-semibold text-white leading-none tabular-nums whitespace-nowrap">
-            {value}
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
   )
 }
 
