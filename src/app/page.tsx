@@ -109,15 +109,16 @@ function BackgroundLayers() {
     return () => window.removeEventListener('mousemove', handler)
   }, [])
 
-  // 14 partículas con posiciones pseudo-random pero estables
+  // 18 partículas con posiciones pseudo-random pero estables (mix morado + cyan)
   const particles = useMemo(() => {
-    return Array.from({ length: 14 }).map((_, i) => ({
+    const palette = ['#D45BFF', '#8E44FF', '#06B6D4', '#67E8F9']
+    return Array.from({ length: 18 }).map((_, i) => ({
       left: (i * 13 + 7) % 95,
       top: 8 + ((i * 23 + 11) % 78),
       size: i % 3 === 0 ? 2.5 : 1.5,
-      color: i % 2 === 0 ? '#D45BFF' : '#8E44FF',
+      color: palette[i % palette.length],
       duration: 22 + ((i * 1.7) % 14),
-      delay: i * 0.7,
+      delay: i * 0.55,
       drift: 0.25 + (i % 4) * 0.05,
     }))
   }, [])
@@ -139,11 +140,34 @@ function BackgroundLayers() {
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 90% 70% at 50% 30%, #0B1026 0%, #071426 45%, #020817 100%)',
+            'radial-gradient(ellipse 90% 70% at 50% 30%, #070B1F 0%, #050816 50%, #020611 100%)',
         }}
       />
 
-      {/* ── CAPA 1 · Grid blueprint con respiración 26s + parallax mouse ── */}
+      {/* ── CAPA 1a · Blueprint fino (40px) base, hairline ── */}
+      <div
+        className="absolute inset-0"
+        style={{
+          transform: 'translate3d(calc(var(--mx) * 0.5), calc(var(--my) * 0.5), 0)',
+          transition: 'transform 0.6s ease-out',
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            opacity: 0.035,
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            maskImage:
+              'radial-gradient(ellipse 100% 90% at 50% 45%, black 10%, transparent 85%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 100% 90% at 50% 45%, black 10%, transparent 85%)',
+          }}
+        />
+      </div>
+
+      {/* ── CAPA 1b · Grid blueprint morado, respiración 26s + parallax mouse ── */}
       <div
         className="absolute inset-0"
         style={{
@@ -156,10 +180,10 @@ function BackgroundLayers() {
           animate={{ scale: [1, 1.03, 1] }}
           transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
           style={{
-            opacity: 0.07,
+            opacity: 0.06,
             backgroundImage:
               'linear-gradient(rgba(142,68,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(142,68,255,1) 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
+            backgroundSize: '120px 120px',
             maskImage:
               'radial-gradient(ellipse 92% 82% at 50% 40%, black 0%, transparent 78%)',
             WebkitMaskImage:
@@ -211,6 +235,25 @@ function BackgroundLayers() {
         transition={{ duration: 40, repeat: Infinity, ease: 'easeInOut' }}
       />
 
+      {/* ── CAPA 4b · Glow cyan contrapuesto (top right) ── */}
+      <motion.div
+        className="absolute"
+        style={{
+          top: '8%',
+          right: '-12%',
+          width: 680,
+          height: 680,
+          background:
+            'radial-gradient(circle, rgba(6,182,212,0.22) 0%, rgba(56,189,248,0.10) 35%, transparent 65%)',
+          filter: 'blur(110px)',
+        }}
+        animate={{
+          x: ['0%', '-8%', '0%'],
+          opacity: [0.7, 1, 0.7],
+        }}
+        transition={{ duration: 36, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
       {/* ── Secondary deep accent — bottom left, estático sutil ── */}
       <div
         className="absolute"
@@ -223,6 +266,32 @@ function BackgroundLayers() {
             'radial-gradient(circle, rgba(29,46,109,0.40) 0%, transparent 65%)',
           filter: 'blur(100px)',
         }}
+      />
+
+      {/* ── CAPA 4c · Cyan bottom-right (profundidad) ── */}
+      <div
+        className="absolute"
+        style={{
+          bottom: '-6%',
+          right: '-6%',
+          width: 520,
+          height: 520,
+          background:
+            'radial-gradient(circle, rgba(6,182,212,0.16) 0%, transparent 70%)',
+          filter: 'blur(120px)',
+        }}
+      />
+
+      {/* ── CAPA · Haze depth (capa de profundidad sutil) ── */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 120% 60% at 50% 100%, rgba(11,16,38,0.55) 0%, transparent 60%)',
+          mixBlendMode: 'multiply',
+        }}
+        animate={{ opacity: [0.7, 0.95, 0.7] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* ── CAPA 5 · Partículas mínimas con parallax + float lento ── */}
@@ -463,11 +532,11 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
               fontFamily: 'var(--font-display)',
               letterSpacing: '-0.045em',
             }}>
-            <span className="block text-[36px] sm:text-[44px] lg:text-[54px] text-white/85"
+            <span className="block text-[32px] sm:text-[44px] lg:text-[54px] text-white/85"
               style={{ fontWeight: 300 }}>
               La inteligencia que
             </span>
-            <span className="block text-[60px] sm:text-[78px] lg:text-[92px] mt-1.5"
+            <span className="block text-[52px] sm:text-[78px] lg:text-[92px] mt-1.5"
               style={{
                 fontWeight: 700,
                 letterSpacing: '-0.055em',
@@ -479,7 +548,7 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
               }}>
               CONVIERTE
             </span>
-            <span className="block text-[36px] sm:text-[44px] lg:text-[54px] text-white/85 mt-1.5"
+            <span className="block text-[32px] sm:text-[44px] lg:text-[54px] text-white/85 mt-1.5"
               style={{ fontWeight: 300 }}>
               cada chat en{' '}
               <span style={{
@@ -580,9 +649,9 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
                 >
                   <div className="w-7 h-7 mt-0.5 rounded-lg flex items-center justify-center shrink-0"
                     style={{
-                      background: 'rgba(142,68,255,0.14)',
+                      background: 'linear-gradient(135deg, rgba(142,68,255,0.18), rgba(6,182,212,0.10))',
                       border: '1px solid rgba(212,91,255,0.32)',
-                      boxShadow: '0 0 10px -2px rgba(142,68,255,0.5)',
+                      boxShadow: '0 0 10px -2px rgba(142,68,255,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
                     }}>
                     <Icon strokeWidth={2} style={{ color: '#D45BFF', width: 12, height: 12 }} />
                   </div>
@@ -631,10 +700,24 @@ function NuroProtagonist() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
       style={{ y, opacity }}
-      className="relative h-[560px] sm:h-[660px] lg:h-[780px] flex items-center justify-center"
+      className="relative h-[440px] sm:h-[600px] lg:h-[780px] flex items-center justify-center"
     >
-      {/* Cinematic violet halo */}
+      {/* Cinematic dual halo — violet core + cyan outer */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {/* Cyan outer aura */}
+        <motion.div
+          className="rounded-full absolute"
+          style={{
+            width: 'min(740px, 94%)',
+            height: 'min(740px, 94%)',
+            background:
+              'radial-gradient(circle, rgba(6,182,212,0.28) 0%, rgba(56,189,248,0.10) 40%, transparent 72%)',
+            filter: 'blur(72px)',
+          }}
+          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.04, 1] }}
+          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        {/* Violet core */}
         <motion.div
           className="rounded-full"
           style={{
@@ -649,7 +732,7 @@ function NuroProtagonist() {
         />
       </div>
 
-      {/* Hairline orbital ring */}
+      {/* Hairline orbital ring (cyan inner + violet outer dots) */}
       <motion.div
         className="absolute rounded-full pointer-events-none"
         style={{
@@ -663,9 +746,27 @@ function NuroProtagonist() {
       >
         <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
           style={{ background: '#D45BFF', boxShadow: '0 0 12px rgba(212,91,255,1)' }} />
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 rounded-full"
+          style={{ background: '#06B6D4', boxShadow: '0 0 12px rgba(6,182,212,1)' }} />
       </motion.div>
 
-      {/* NÜRO image */}
+      {/* Inner thin orbital — reverse direction, cyan node */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 'min(560px, 78%)',
+          height: 'min(560px, 78%)',
+          border: '1px dashed rgba(6,182,212,0.18)',
+        }}
+        animate={{ rotate: -360 }}
+        transition={{ duration: 160, repeat: Infinity, ease: 'linear' }}
+        aria-hidden
+      >
+        <span className="absolute top-[15%] right-[12%] w-1 h-1 rounded-full"
+          style={{ background: '#67E8F9', boxShadow: '0 0 10px rgba(103,232,249,1)' }} />
+      </motion.div>
+
+      {/* NÜRO image — dual glow (violet + cyan) */}
       <motion.img
         src={AVATAR}
         alt="NÜRO"
@@ -675,41 +776,52 @@ function NuroProtagonist() {
           width: 'auto',
           maxWidth: '100%',
           filter:
-            'drop-shadow(0 0 100px rgba(142,68,255,0.6)) drop-shadow(0 0 220px rgba(212,91,255,0.38)) drop-shadow(0 30px 80px rgba(5,8,22,0.75))',
+            'drop-shadow(0 0 100px rgba(142,68,255,0.6)) drop-shadow(0 0 220px rgba(212,91,255,0.38)) drop-shadow(0 0 140px rgba(6,182,212,0.28)) drop-shadow(0 30px 80px rgba(5,8,22,0.85))',
         }}
         animate={{ y: [0, -12, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         aria-hidden
       />
 
-      {/* Bottom reflection halo */}
+      {/* Floor shadow — elliptical with soft falloff */}
+      <div className="pointer-events-none absolute bottom-[8%] left-1/2 -translate-x-1/2"
+        style={{
+          width: '52%',
+          height: 26,
+          background: 'radial-gradient(ellipse, rgba(2,6,17,0.85) 0%, rgba(2,6,17,0.4) 45%, transparent 75%)',
+          filter: 'blur(14px)',
+        }}
+        aria-hidden
+      />
+
+      {/* Bottom reflection halo — violet/cyan blend */}
       <div className="pointer-events-none absolute bottom-[12%] left-1/2 -translate-x-1/2 w-[60%] h-[40px]"
         style={{
-          background: 'radial-gradient(ellipse, rgba(212,91,255,0.42), transparent 70%)',
+          background: 'radial-gradient(ellipse, rgba(212,91,255,0.42), rgba(6,182,212,0.15) 60%, transparent 80%)',
           filter: 'blur(20px)',
         }}
         aria-hidden
       />
 
-      {/* ── 5 mini-apps premium flotantes ── */}
+      {/* ── 5 mini-apps premium flotantes (ocultas en mobile para no tapar al NÜRO ni el texto) ── */}
       <WhatsAppPreviewCard
-        className="left-[-2%] top-[7%] lg:left-[-8%] lg:top-[6%]"
+        className="hidden sm:block left-[-2%] top-[7%] lg:left-[-8%] lg:top-[6%]"
         delay={0.55}
       />
       <OrderReceivedCard
-        className="right-[-2%] top-[10%] lg:right-[-4%] lg:top-[8%]"
+        className="hidden sm:block right-[-2%] top-[10%] lg:right-[-4%] lg:top-[8%]"
         delay={0.75}
       />
       <SaleConfirmedCard
-        className="right-[-3%] top-[46%] lg:right-[-9%] lg:top-[44%]"
+        className="hidden sm:block right-[-3%] top-[46%] lg:right-[-9%] lg:top-[44%]"
         delay={0.95}
       />
       <FollowupCard
-        className="left-[-3%] top-[56%] lg:left-[-9%] lg:top-[54%]"
+        className="hidden sm:block left-[-3%] top-[56%] lg:left-[-9%] lg:top-[54%]"
         delay={1.15}
       />
       <NewConversationCard
-        className="left-[16%] bottom-[4%] lg:left-[14%] lg:bottom-[3%]"
+        className="hidden sm:block left-[16%] bottom-[4%] lg:left-[14%] lg:bottom-[3%]"
         delay={1.35}
       />
     </motion.div>
@@ -1292,7 +1404,40 @@ function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
           <stop offset="50%" stopColor="rgba(212,91,255,0.55)" />
           <stop offset="100%" stopColor="rgba(142,68,255,0)" />
         </linearGradient>
+        <linearGradient id="connFlowCyan" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="rgba(6,182,212,0)" />
+          <stop offset="50%" stopColor="rgba(6,182,212,0.5)" />
+          <stop offset="100%" stopColor="rgba(56,189,248,0)" />
+        </linearGradient>
       </defs>
+
+      {/* Orbital ring fino exterior (pulso lento 8s) */}
+      <motion.circle
+        cx="50" cy="50" r="44"
+        fill="none"
+        stroke="rgba(212,91,255,0.18)"
+        strokeWidth="0.2"
+        strokeDasharray="0.5 2"
+        vectorEffect="non-scaling-stroke"
+        animate={{ opacity: [0.5, 1, 0.5], rotate: 360 }}
+        style={{ transformOrigin: '50% 50%' }}
+        transition={{
+          opacity: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
+          rotate:  { duration: 240, repeat: Infinity, ease: 'linear' },
+        }}
+      />
+      {/* Orbital ring fino interior — sentido contrario, cyan */}
+      <motion.circle
+        cx="50" cy="50" r="36"
+        fill="none"
+        stroke="rgba(6,182,212,0.16)"
+        strokeWidth="0.18"
+        strokeDasharray="0.4 1.6"
+        vectorEffect="non-scaling-stroke"
+        animate={{ rotate: -360 }}
+        style={{ transformOrigin: '50% 50%' }}
+        transition={{ duration: 320, repeat: Infinity, ease: 'linear' }}
+      />
 
       {channels.map((c, i) => {
         const rad = (c.angle - 90) * Math.PI / 180
@@ -1309,13 +1454,15 @@ function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
         const cx = 50 + dx * mid + perpX * curvature
         const cy = 50 + dy * mid + perpY * curvature
         const path = `M 50 50 Q ${cx} ${cy} ${x2} ${y2}`
+        const useCyan = i % 2 === 1
 
         return (
           <g key={c.label}>
+            {/* Línea base sólida muy fina */}
             <motion.path
               d={path}
-              stroke="url(#connFlow)"
-              strokeWidth="0.4"
+              stroke={useCyan ? 'url(#connFlowCyan)' : 'url(#connFlow)'}
+              strokeWidth="0.35"
               fill="none"
               vectorEffect="non-scaling-stroke"
               initial={{ opacity: 0, pathLength: 0 }}
@@ -1325,6 +1472,17 @@ function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
                 opacity: { duration: 1.4, delay: 0.3 + i * 0.12 },
                 pathLength: { duration: 1.6, delay: 0.3 + i * 0.12, ease: 'easeOut' },
               }}
+            />
+            {/* Nodo punto en el extremo (junto al panel) — pulso lento */}
+            <motion.circle
+              cx={x2} cy={y2} r="0.7"
+              fill={c.color}
+              style={{ filter: `drop-shadow(0 0 3px ${c.color})` }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              animate={{ opacity: [0.65, 1, 0.65] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
             />
             {/* Partícula viajando del centro al panel */}
             <motion.circle
@@ -1405,20 +1563,27 @@ function MetricCardWrapper({ children, delay = 0 }: { children: React.ReactNode;
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3 }}
+      whileHover={{ y: -4 }}
       className="group relative rounded-2xl p-5 backdrop-blur-2xl overflow-hidden transition-all duration-500 flex flex-col h-full"
       style={{
-        background: 'linear-gradient(180deg, rgba(29,46,109,0.40), rgba(11,16,38,0.78))',
+        background: 'linear-gradient(180deg, rgba(29,46,109,0.42), rgba(11,16,38,0.82))',
         border: '1px solid rgba(142,68,255,0.18)',
-        boxShadow: '0 16px 40px -16px rgba(142,68,255,0.55), inset 0 1px 0 rgba(255,255,255,0.05)',
+        boxShadow:
+          '0 24px 50px -18px rgba(142,68,255,0.55), 0 18px 36px -22px rgba(6,182,212,0.30), inset 0 1px 0 rgba(255,255,255,0.05)',
         minHeight: 260,
       }}>
+      {/* Hover ring */}
       <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{ boxShadow: '0 0 0 1px rgba(212,91,255,0.40)' }} />
+      {/* Top hairline gradient (violet→cyan) */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.55), transparent)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.55) 40%, rgba(6,182,212,0.45) 70%, transparent)' }} />
+      {/* Corner ambient — violet */}
       <div className="pointer-events-none absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-50"
         style={{ background: 'radial-gradient(circle, rgba(142,68,255,0.30), transparent 65%)', filter: 'blur(28px)' }} />
+      {/* Bottom inner glow (the requested floor light) */}
+      <div className="pointer-events-none absolute -bottom-14 -left-10 w-36 h-36 rounded-full opacity-40 group-hover:opacity-70 transition-opacity duration-500"
+        style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.28), transparent 70%)', filter: 'blur(32px)' }} />
       <div className="relative flex flex-col h-full">{children}</div>
     </motion.div>
   )
@@ -1826,10 +1991,10 @@ function LiveFeed() {
       transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
       className="relative rounded-2xl backdrop-blur-2xl overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, rgba(11,16,38,0.78), rgba(11,16,38,0.62))',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: 'linear-gradient(180deg, rgba(11,16,38,0.82), rgba(11,16,38,0.65))',
+        border: '1px solid rgba(255,255,255,0.10)',
         boxShadow:
-          '0 24px 50px -18px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02), inset 0 1px 0 rgba(255,255,255,0.05)',
+          '0 32px 70px -22px rgba(0,0,0,0.65), 0 0 60px -28px rgba(142,68,255,0.40), 0 0 0 1px rgba(212,91,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)',
       }}
     >
       {/* Grid blueprint sutil */}
@@ -1911,12 +2076,15 @@ function LiveFeed() {
                   animate={{ opacity: 1, x: 0, height: 'auto' }}
                   exit={{ opacity: 0, x: -16, height: 0 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl overflow-hidden"
+                  className="group/row relative flex items-center gap-3 px-3 py-2.5 rounded-xl overflow-hidden transition-colors hover:bg-white/[0.04]"
                   style={{
                     background: 'rgba(255,255,255,0.025)',
-                    border: '1px solid rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.06)',
                   }}
                 >
+                  {/* LED edge indicator izquierdo */}
+                  <span aria-hidden className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] rounded-r-full"
+                    style={{ background: e.status, boxShadow: `0 0 8px ${e.status}` }} />
                   {/* Business image */}
                   <div className="relative w-11 h-11 rounded-lg overflow-hidden shrink-0"
                     style={{
@@ -2070,34 +2238,44 @@ function PartnerLogos() {
   const looped = [...logos, ...logos]
 
   return (
-    <div className="relative mt-8 pt-8 overflow-hidden">
-      <span className="block text-[10px] uppercase font-medium text-white/35 text-center mb-5"
+    <div className="relative mt-10 pt-8 overflow-hidden">
+      {/* Background strip — subtle gradient with hairline top */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.30), transparent)' }} />
+      <div className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'linear-gradient(180deg, rgba(11,16,38,0.0), rgba(142,68,255,0.04) 50%, rgba(11,16,38,0.0))',
+        }} />
+
+      <span className="relative block text-[10px] uppercase font-medium text-white/35 text-center mb-5"
         style={{ letterSpacing: '0.22em' }}>
         Construido sobre tecnología de clase mundial
       </span>
 
-      <motion.div
-        className="flex items-center gap-12 lg:gap-16 whitespace-nowrap"
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
-      >
-        {looped.map((l, i) => {
-          const Mark = l.Mark
-          return (
-            <div key={i}
-              className="group shrink-0 flex items-center justify-center h-9 px-2 transition-all duration-300"
-            >
-              <Mark />
-            </div>
-          )
-        })}
-      </motion.div>
-
-      {/* Fade edges */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-24"
-        style={{ background: 'linear-gradient(90deg, #050816, transparent)' }} />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-24"
-        style={{ background: 'linear-gradient(90deg, transparent, #050816)' }} />
+      <div className="relative"
+        style={{
+          maskImage:
+            'linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
+        }}>
+        <motion.div
+          className="flex items-center gap-12 lg:gap-16 whitespace-nowrap"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 44, repeat: Infinity, ease: 'linear' }}
+        >
+          {looped.map((l, i) => {
+            const Mark = l.Mark
+            return (
+              <div key={i}
+                className="group shrink-0 flex items-center justify-center h-9 px-2 transition-all duration-300"
+              >
+                <Mark />
+              </div>
+            )
+          })}
+        </motion.div>
+      </div>
     </div>
   )
 }
@@ -2244,11 +2422,24 @@ function VideoDemo() {
           className="relative rounded-[24px] overflow-hidden"
           style={{
             background: 'rgba(11,16,38,0.55)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.10)',
             boxShadow:
-              '0 30px 60px -24px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02)',
+              '0 40px 80px -24px rgba(0,0,0,0.7), 0 0 60px -20px rgba(142,68,255,0.45), 0 0 80px -30px rgba(6,182,212,0.3), 0 0 0 1px rgba(212,91,255,0.10), inset 0 1px 0 rgba(255,255,255,0.04)',
           }}
         >
+          {/* Outer ambient glow ring */}
+          <span aria-hidden className="pointer-events-none absolute -inset-px rounded-[24px]"
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(142,68,255,0.22), transparent 40%, rgba(6,182,212,0.18))',
+              mask: 'linear-gradient(#000, #000) content-box, linear-gradient(#000, #000)',
+              WebkitMask: 'linear-gradient(#000, #000) content-box, linear-gradient(#000, #000)',
+              maskComposite: 'exclude',
+              WebkitMaskComposite: 'xor',
+              padding: 1,
+            }}
+          />
+
           {/* Top bar — minimal single line */}
           <div className="relative flex items-center justify-between gap-4 px-5 sm:px-6 py-3.5 backdrop-blur-xl"
             style={{
@@ -2302,23 +2493,32 @@ function VideoDemo() {
                   className="absolute inset-0 flex items-center justify-center"
                   style={{
                     background:
-                      'radial-gradient(ellipse at center, rgba(142,68,255,0.10) 0%, rgba(5,8,22,0.55) 70%)',
+                      'radial-gradient(ellipse at center, rgba(5,8,22,0.0) 0%, rgba(5,8,22,0.55) 60%, rgba(5,8,22,0.78) 100%)',
                   }}
                   aria-label="Reproducir demo"
                 >
+                  {/* Outer pulse ring */}
+                  <motion.span aria-hidden className="absolute w-[120px] h-[120px] rounded-full"
+                    style={{ border: '1px solid rgba(212,91,255,0.45)' }}
+                    animate={{ scale: [1, 1.35, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+                  />
                   <motion.span
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.06 }}
                     whileTap={{ scale: 0.97 }}
-                    className="relative w-[120px] h-[120px] rounded-full flex items-center justify-center"
+                    className="relative w-[96px] h-[96px] rounded-full flex items-center justify-center"
                     style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.14)',
-                      backdropFilter: 'blur(12px)',
-                      boxShadow: '0 12px 40px -10px rgba(142,68,255,0.35)',
+                      background: 'rgba(11,16,38,0.45)',
+                      border: '1px solid rgba(212,91,255,0.55)',
+                      backdropFilter: 'blur(14px)',
+                      boxShadow:
+                        '0 18px 50px -10px rgba(142,68,255,0.55), 0 0 0 4px rgba(142,68,255,0.10), inset 0 1px 0 rgba(255,255,255,0.18)',
                     }}
                   >
-                    <Play className="w-9 h-9 text-white ml-1" fill="currentColor"
-                      strokeWidth={0} />
+                    <Play className="w-7 h-7 text-white ml-1" fill="currentColor"
+                      strokeWidth={0}
+                      style={{ filter: 'drop-shadow(0 0 8px rgba(212,91,255,0.7))' }}
+                    />
                   </motion.span>
                 </motion.button>
               )}
@@ -2350,18 +2550,43 @@ function HowItWorks() {
         />
 
         <div className="grid lg:grid-cols-3 gap-10 lg:gap-12 mt-16 lg:mt-20 relative">
-          <div className="hidden lg:block absolute top-7 left-[16%] right-[16%] h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(212,91,255,0.30), transparent)' }} />
+          {/* SVG connection line con flujo */}
+          <svg
+            aria-hidden
+            className="hidden lg:block absolute top-[100px] left-[10%] right-[10%] pointer-events-none"
+            style={{ height: 24, width: '80%' }}
+            viewBox="0 0 100 4"
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="howFlow" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="rgba(212,91,255,0)" />
+                <stop offset="25%" stopColor="rgba(212,91,255,0.45)" />
+                <stop offset="50%" stopColor="rgba(6,182,212,0.55)" />
+                <stop offset="75%" stopColor="rgba(212,91,255,0.45)" />
+                <stop offset="100%" stopColor="rgba(212,91,255,0)" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="2" x2="100" y2="2"
+              stroke="url(#howFlow)" strokeWidth="0.4"
+              vectorEffect="non-scaling-stroke" />
+            {/* Partícula viajando por la línea */}
+            <motion.circle r="0.7" cy="2" fill="#D45BFF"
+              style={{ filter: 'drop-shadow(0 0 3px rgba(212,91,255,1))' }}
+              animate={{ cx: [0, 100], opacity: [0, 1, 1, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', times: [0, 0.1, 0.9, 1] }}
+            />
+          </svg>
 
           {steps.map((s, idx) => {
             const Icon = s.icon
             return (
               <motion.div
                 key={s.n}
-                initial={{ opacity: 0, y: 18 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.55, delay: idx * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.6, delay: idx * 0.15, ease: [0.22, 1, 0.36, 1] }}
                 className="relative text-center"
               >
                 <span className="block text-[10.5px] uppercase font-medium mb-4"
@@ -2369,14 +2594,20 @@ function HowItWorks() {
                   {s.n}
                 </span>
 
-                <div className="relative inline-flex w-14 h-14 rounded-2xl items-center justify-center mb-6"
+                {/* Glass circle con doble glow violet/cyan */}
+                <div className="relative inline-flex w-16 h-16 rounded-full items-center justify-center mb-6"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(142,68,255,0.22), rgba(11,16,38,0.6))',
-                    border: '1px solid rgba(212,91,255,0.28)',
-                    boxShadow: '0 0 28px -8px rgba(142,68,255,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
+                    background: 'radial-gradient(circle at 35% 30%, rgba(142,68,255,0.32), rgba(11,16,38,0.85) 70%)',
+                    border: '1px solid rgba(212,91,255,0.38)',
+                    backdropFilter: 'blur(20px)',
+                    boxShadow:
+                      '0 0 32px -6px rgba(142,68,255,0.55), 0 0 22px -8px rgba(6,182,212,0.35), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -10px 24px -10px rgba(212,91,255,0.20)',
                   }}>
-                  <Icon className="w-6 h-6" strokeWidth={1.5}
-                    style={{ color: '#D45BFF' }} />
+                  {/* Hairline ring inner */}
+                  <span aria-hidden className="absolute inset-1.5 rounded-full pointer-events-none"
+                    style={{ border: '1px solid rgba(255,255,255,0.06)' }} />
+                  <Icon className="w-6 h-6 relative" strokeWidth={1.5}
+                    style={{ color: '#D45BFF', filter: 'drop-shadow(0 0 6px rgba(212,91,255,0.6))' }} />
                 </div>
 
                 <h3 className="text-[22px] lg:text-[24px] font-medium text-white leading-tight mb-3"
