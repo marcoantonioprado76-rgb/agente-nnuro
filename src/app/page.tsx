@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { Space_Grotesk, Inter } from 'next/font/google'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import {
   ShoppingBag, Sparkles, ArrowRight, Play, MessageCircle,
   Check, Menu, X, Zap, Brain, Globe, Briefcase,
@@ -53,44 +53,46 @@ export default function LandingPage() {
   }
 
   return (
-    <div
-      className={`${display.variable} ${body.variable} relative min-h-screen overflow-x-hidden`}
-      style={{
-        // Background sólido — iOS Safari recomponía `transparent` cada vez que
-        // la URL bar aparecía/desaparecía durante el scroll. La página
-        // "se apagaba y prendía" porque las capas fixed se repintaban
-        // todas en ese momento.
-        background: '#050816',
-        fontFamily: 'var(--font-body), Inter, ui-sans-serif, system-ui',
-        color: '#F8FAFF',
-      }}
-    >
-      <BackgroundLayers />
-
-      {/* Mouse-reactive volumetric light */}
+    <MotionConfig reducedMotion="user">
       <div
-        ref={mouseLightRef}
-        className="pointer-events-none fixed top-0 left-0 w-[640px] h-[640px]"
+        className={`${display.variable} ${body.variable} relative min-h-screen overflow-x-hidden`}
         style={{
-          background:
-            'radial-gradient(circle, rgba(142,68,255,0.22) 0%, rgba(212,91,255,0.10) 30%, transparent 65%)',
-          filter: 'blur(50px)',
-          zIndex: 1,
-          willChange: 'transform',
-          transform: 'translate3d(-1000px, -1000px, 0)',
+          // Background sólido — iOS Safari recomponía `transparent` cada vez que
+          // la URL bar aparecía/desaparecía durante el scroll. La página
+          // "se apagaba y prendía" porque las capas fixed se repintaban
+          // todas en ese momento.
+          background: '#050816',
+          fontFamily: 'var(--font-body), Inter, ui-sans-serif, system-ui',
+          color: '#F8FAFF',
         }}
-        aria-hidden
-      />
+      >
+        <BackgroundLayers />
 
-      <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+        {/* Mouse-reactive volumetric light */}
+        <div
+          ref={mouseLightRef}
+          className="pointer-events-none fixed top-0 left-0 w-[640px] h-[640px]"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(142,68,255,0.22) 0%, rgba(212,91,255,0.10) 30%, transparent 65%)',
+            filter: 'blur(50px)',
+            zIndex: 1,
+            willChange: 'transform',
+            transform: 'translate3d(-1000px, -1000px, 0)',
+          }}
+          aria-hidden
+        />
 
-      <main className="relative" style={{ zIndex: 2 }}>
-        <Hero onNav={navTo} />
-        <VideoDemo />
-        <TrustBar />
-        <HowItWorks />
-      </main>
-    </div>
+        <Navbar onNav={navTo} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+
+        <main className="relative" style={{ zIndex: 2 }}>
+          <Hero onNav={navTo} />
+          <VideoDemo />
+          <TrustBar />
+          <HowItWorks />
+        </main>
+      </div>
+    </MotionConfig>
   )
 }
 
@@ -286,19 +288,18 @@ function BackgroundLayers() {
         }}
       />
 
-      {/* ── CAPA · Haze depth (capa de profundidad sutil) ── */}
-      <motion.div
+      {/* ── CAPA · Haze depth · estática (mix-blend-mode animado causa repaint cascading) ── */}
+      <div
         className="absolute inset-0"
         style={{
           background:
             'radial-gradient(ellipse 120% 60% at 50% 100%, rgba(11,16,38,0.55) 0%, transparent 60%)',
-          mixBlendMode: 'multiply',
+          opacity: 0.85,
+          pointerEvents: 'none',
         }}
-        animate={{ opacity: [0.7, 0.95, 0.7] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* ── CAPA 5 · Partículas mínimas con parallax + float lento ── */}
+      {/* ── CAPA 5 · Partículas estáticas con glow (opacity infinita causaba flicker en mobile) ── */}
       <div
         className="absolute inset-0"
         style={{
@@ -307,7 +308,7 @@ function BackgroundLayers() {
         }}
       >
         {particles.map((p, i) => (
-          <motion.span
+          <span
             key={i}
             className="absolute rounded-full"
             style={{
@@ -317,16 +318,7 @@ function BackgroundLayers() {
               height: p.size,
               background: p.color,
               boxShadow: `0 0 10px ${p.color}`,
-            }}
-            animate={{
-              y: [0, -28, 0],
-              opacity: [0.22, 0.85, 0.22],
-            }}
-            transition={{
-              duration: p.duration,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: p.delay,
+              opacity: 0.55,
             }}
           />
         ))}
@@ -516,14 +508,8 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
               boxShadow: '0 0 14px -4px rgba(142,68,255,0.4)',
             }}
           >
-            <span className="relative flex h-1.5 w-1.5">
-              <motion.span className="absolute inline-flex h-full w-full rounded-full"
-                style={{ background: '#D45BFF' }}
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 2, repeat: Infinity }} />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
-            </span>
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+              style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
             <span className="text-[11px] uppercase font-medium"
               style={{ letterSpacing: '0.18em', color: 'rgba(212,91,255,0.95)' }}>
               NÜRO · AI Sales Platform
@@ -579,15 +565,9 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
 
           {/* CTAs premium */}
           <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            {/* Primary — pulse halo + shine + inner glow on hover */}
+            {/* Primary — shine + inner glow en hover (sin pulse halo infinito) */}
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               className="relative w-full sm:w-auto">
-              {/* Outer pulsing ring */}
-              <motion.span className="pointer-events-none absolute -inset-px rounded-2xl"
-                style={{ background: GRAD_BTN }}
-                animate={{ scale: [1, 1.06, 1], opacity: [0.42, 0, 0.42] }}
-                transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-              />
               <Link
                 href="/register"
                 className="relative group/cta inline-flex items-center justify-center gap-2.5 px-7 rounded-2xl text-white font-semibold overflow-hidden w-full sm:w-auto"
@@ -627,14 +607,12 @@ function Hero({ onNav }: { onNav: (id: string) => void }) {
               {/* Inner hover glow */}
               <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover/v:opacity-100 transition-opacity duration-500"
                 style={{ boxShadow: 'inset 0 0 22px rgba(212,91,255,0.25)' }} />
-              <motion.span
+              <span
                 className="relative w-7 h-7 rounded-full flex items-center justify-center"
                 style={{ background: 'rgba(212,91,255,0.22)', border: '1px solid rgba(212,91,255,0.5)' }}
-                animate={{ scale: [1, 1.06, 1] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <Play className="w-2.5 h-2.5 ml-0.5" fill="currentColor" style={{ color: '#D45BFF' }} />
-              </motion.span>
+              </span>
               VER DEMOSTRACIÓN
             </motion.button>
           </div>
@@ -704,7 +682,7 @@ function NuroProtagonist() {
     >
       {/* Cinematic dual halo — violet core + cyan outer */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Cyan outer aura */}
+        {/* Cyan outer aura — animación lenta, sin cambios bruscos de opacity */}
         <motion.div
           className="rounded-full absolute"
           style={{
@@ -714,10 +692,10 @@ function NuroProtagonist() {
               'radial-gradient(circle, rgba(6,182,212,0.28) 0%, rgba(56,189,248,0.10) 40%, transparent 72%)',
             filter: 'blur(72px)',
           }}
-          animate={{ opacity: [0.5, 0.85, 0.5], scale: [1, 1.04, 1] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ opacity: [0.7, 0.85, 0.7] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
         />
-        {/* Violet core */}
+        {/* Violet core — animación lenta, sin scale */}
         <motion.div
           className="rounded-full"
           style={{
@@ -727,8 +705,8 @@ function NuroProtagonist() {
               'radial-gradient(circle, rgba(142,68,255,0.55) 0%, rgba(212,91,255,0.22) 35%, transparent 70%)',
             filter: 'blur(55px)',
           }}
-          animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.05, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ opacity: [0.85, 1, 0.85] }}
+          transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
 
@@ -875,12 +853,7 @@ function WhatsAppPreviewCard({ className, delay }: { className?: string; delay: 
         <div className="flex-1 min-w-0">
           <div className="text-[10.5px] font-semibold text-white leading-none">Carolina M.</div>
           <div className="flex items-center gap-1 text-[8.5px] text-emerald-300 mt-0.5">
-            <span className="relative flex h-1 w-1">
-              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity }} />
-              <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400" />
-            </span>
+            <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400" />
             En línea
           </div>
         </div>
@@ -903,10 +876,10 @@ function WhatsAppPreviewCard({ className, delay }: { className?: string; delay: 
         <div className="flex items-center gap-1.5 pt-1">
           <div className="flex items-center gap-0.5 px-1.5 py-1 rounded-full"
             style={{ background: 'rgba(255,255,255,0.04)' }}>
-            {[0, 0.18, 0.36].map((d, i) => (
-              <motion.span key={i} className="w-1 h-1 rounded-full bg-white/55"
-                animate={{ opacity: [0.3, 1, 0.3], y: [0, -1.5, 0] }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: d }}
+            {/* Static "trail" — sin animación: 3 dots con opacidades graduadas */}
+            {[0.45, 0.7, 1].map((o, i) => (
+              <span key={i} className="w-1 h-1 rounded-full bg-white"
+                style={{ opacity: o }}
               />
             ))}
           </div>
@@ -983,15 +956,13 @@ function SaleConfirmedCard({ className, delay }: { className?: string; delay: nu
     <FloatingCardWrap className={`w-[200px] ${className ?? ''}`} delay={delay} accent="#10B981">
       <div className="relative px-3 py-3">
         <div className="flex items-center gap-2 mb-1.5">
-          <motion.div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+          <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: 'linear-gradient(135deg, #10B981, #6B5CFF)',
               boxShadow: '0 0 12px rgba(16,185,129,0.6)',
-            }}
-            animate={{ scale: [1, 1.08, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}>
+            }}>
             <Check className="w-3 h-3 text-white" strokeWidth={3.5} />
-          </motion.div>
+          </div>
           <span className="text-[9.5px] uppercase font-semibold text-emerald-200"
             style={{ letterSpacing: '0.14em' }}>
             Venta confirmada
@@ -1074,11 +1045,6 @@ function NewConversationCard({ className, delay }: { className?: string; delay: 
             boxShadow: '0 0 10px rgba(212,91,255,0.45)',
           }}>
           <Sparkles className="w-3.5 h-3.5" style={{ color: '#D45BFF' }} strokeWidth={2.2} />
-          <motion.span className="absolute inset-0 rounded-lg pointer-events-none"
-            style={{ border: '1px solid rgba(212,91,255,0.55)' }}
-            animate={{ scale: [1, 1.45], opacity: [0.7, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-          />
         </div>
         <div className="min-w-0 flex-1">
           <div className="text-[8.5px] uppercase font-semibold text-white/55"
@@ -1224,7 +1190,7 @@ function TrustBar() {
 function Nucleus() {
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-      {/* Halo energético violeta (capa profunda) */}
+      {/* Halo energético violeta · suavizado a 16s (era 7s), sólo opacity */}
       <motion.div
         className="absolute rounded-full"
         style={{
@@ -1234,8 +1200,8 @@ function Nucleus() {
             'radial-gradient(circle, rgba(142,68,255,0.45) 0%, rgba(212,91,255,0.16) 38%, transparent 72%)',
           filter: 'blur(60px)',
         }}
-        animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.05, 1] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ opacity: [0.78, 0.95, 0.78] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* Anillo orbital exterior — rotación lenta */}
@@ -1265,20 +1231,11 @@ function Nucleus() {
         transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
       />
 
-      {/* 2 ondas suaves (radar) muy sutiles */}
-      {[0, 1.8].map((d, i) => (
-        <motion.span
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            width: '52%',
-            height: '52%',
-            border: '1px solid rgba(212,91,255,0.18)',
-          }}
-          animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
-          transition={{ duration: 3.6, repeat: Infinity, ease: 'easeOut', delay: d }}
-        />
-      ))}
+      {/* Rings estáticos en lugar de radar (las ondas expanding causaban repaint cada 3.6s) */}
+      <span aria-hidden className="absolute rounded-full"
+        style={{ width: '58%', height: '58%', border: '1px solid rgba(212,91,255,0.16)' }} />
+      <span aria-hidden className="absolute rounded-full"
+        style={{ width: '70%', height: '70%', border: '1px solid rgba(212,91,255,0.08)' }} />
 
       {/* NÜRO completo, libre — protagonista absoluto */}
       <motion.img
@@ -1362,10 +1319,6 @@ function SystemPanel({
           </span>
         </div>
         <span className="relative flex h-1.5 w-1.5">
-          <motion.span className="absolute inline-flex h-full w-full rounded-full"
-            style={{ background: color }}
-            animate={{ opacity: [1, 0.35, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity, delay: delay * 2 }} />
           <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
             style={{ background: color, boxShadow: `0 0 5px ${color}` }} />
         </span>
@@ -1411,20 +1364,17 @@ function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
         </linearGradient>
       </defs>
 
-      {/* Orbital ring fino exterior (pulso lento 8s) */}
+      {/* Orbital ring fino exterior · sólo rotación lenta (sin pulso opacity) */}
       <motion.circle
         cx="50" cy="50" r="44"
         fill="none"
-        stroke="rgba(212,91,255,0.18)"
+        stroke="rgba(212,91,255,0.22)"
         strokeWidth="0.2"
         strokeDasharray="0.5 2"
         vectorEffect="non-scaling-stroke"
-        animate={{ opacity: [0.5, 1, 0.5], rotate: 360 }}
+        animate={{ rotate: 360 }}
         style={{ transformOrigin: '50% 50%' }}
-        transition={{
-          opacity: { duration: 8, repeat: Infinity, ease: 'easeInOut' },
-          rotate:  { duration: 240, repeat: Infinity, ease: 'linear' },
-        }}
+        transition={{ duration: 240, repeat: Infinity, ease: 'linear' }}
       />
       {/* Orbital ring fino interior — sentido contrario, cyan */}
       <motion.circle
@@ -1473,16 +1423,14 @@ function ConnectionLines({ channels }: { channels: ChannelDef[] }) {
                 pathLength: { duration: 1.6, delay: 0.3 + i * 0.12, ease: 'easeOut' },
               }}
             />
-            {/* Nodo punto en el extremo (junto al panel) — pulso lento */}
+            {/* Nodo punto en el extremo — estático */}
             <motion.circle
               cx={x2} cy={y2} r="0.7"
               fill={c.color}
-              style={{ filter: `drop-shadow(0 0 3px ${c.color})` }}
+              style={{ filter: `drop-shadow(0 0 3px ${c.color})`, opacity: 0.85 }}
               initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              whileInView={{ opacity: 0.85 }}
               viewport={{ once: true, amount: 0.2 }}
-              animate={{ opacity: [0.65, 1, 0.65] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
             />
             {/* Partícula viajando del centro al panel */}
             <motion.circle
@@ -1524,13 +1472,8 @@ function SystemStatus() {
           background: 'rgba(11,16,38,0.6)',
           border: '1px solid rgba(255,255,255,0.08)',
         }}>
-        <span className="relative flex h-1.5 w-1.5">
-          <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
-            animate={{ opacity: [1, 0.3, 1], scale: [1, 1.8, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity }} />
-          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
-            style={{ boxShadow: '0 0 6px rgba(52,211,153,0.95)' }} />
-        </span>
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"
+          style={{ boxShadow: '0 0 6px rgba(52,211,153,0.95)' }} />
         <span className="text-[10.5px] uppercase font-bold text-white"
           style={{ letterSpacing: '0.22em' }}>
           NÜRO ONLINE
@@ -1641,28 +1584,23 @@ function BusinessMapMetric({ delay }: { delay: number }) {
           </g>
 
           {[0, 4, 8, 11].map((i) => (
-            <motion.line key={i}
+            <line key={i}
               x1={50} y1={50}
               x2={dots[i].x} y2={dots[i].y}
-              stroke="rgba(212,91,255,0.5)" strokeWidth="0.3" strokeDasharray="1 2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0.2, 0.7, 0.2] }}
-              transition={{ duration: 3, repeat: Infinity, delay: dots[i].d }}
+              stroke="rgba(212,91,255,0.4)" strokeWidth="0.3" strokeDasharray="1 2"
             />
           ))}
 
           <circle cx={50} cy={50} r="1.8" fill="#D45BFF"
             style={{ filter: 'drop-shadow(0 0 3px rgba(212,91,255,1))' }} />
-          <motion.circle cx={50} cy={50} r="3" fill="none" stroke="rgba(212,91,255,0.6)" strokeWidth="0.3"
-            animate={{ r: [3, 7], opacity: [0.6, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }} />
+          {/* Ring expanding eliminado para evitar repaint cada 2.5s */}
+          <circle cx={50} cy={50} r="4" fill="none" stroke="rgba(212,91,255,0.25)" strokeWidth="0.25" />
 
+          {/* Dots estáticos con glow */}
           {dots.map((d, i) => (
-            <motion.circle key={i}
+            <circle key={i}
               cx={d.x} cy={d.y} r="0.9" fill="#D45BFF"
-              style={{ filter: 'drop-shadow(0 0 2px rgba(212,91,255,0.9))' }}
-              animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.3, 1] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: d.d }}
+              style={{ filter: 'drop-shadow(0 0 2px rgba(212,91,255,0.9))', opacity: 0.7 + (i % 3) * 0.1 }}
             />
           ))}
         </svg>
@@ -1869,10 +1807,7 @@ function Clock24Metric({ delay }: { delay: number }) {
             style={{ filter: 'drop-shadow(0 0 6px rgba(212,91,255,1))' }} />
           <circle cx="50" cy="50" r="1.2" fill="#F8FAFF" />
 
-          <motion.circle cx="50" cy="50" r="4" fill="none" stroke="rgba(212,91,255,0.5)" strokeWidth="0.4"
-            animate={{ r: [3, 8], opacity: [0.6, 0] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
-          />
+          <circle cx="50" cy="50" r="6" fill="none" stroke="rgba(212,91,255,0.3)" strokeWidth="0.3" />
         </svg>
       </div>
       <div className="mt-auto flex items-baseline justify-between gap-2">
@@ -1916,15 +1851,16 @@ function LiveFeed() {
     action: string
     status: string
     createdAt: number
+    relativeLabel: string
   }
 
   const [events, setEvents] = useState<Evt[]>([])
-  const [, setTick] = useState(0)
   const counter = useRef(0)
   const aIdx = useRef(0)
   const bIdx = useRef(0)
 
   useEffect(() => {
+    const seedLabels = ['Hace 18 seg', 'Hace 12 seg', 'Hace 6 seg', 'Justo ahora']
     const seed: Evt[] = [0, 1, 2, 3].map(k => {
       counter.current += 1
       const a = actions[(aIdx.current + k) % actions.length]
@@ -1935,43 +1871,40 @@ function LiveFeed() {
         action: a.text,
         status: a.status,
         createdAt: Date.now() - (3 - k) * 4500,
+        relativeLabel: seedLabels[k],
       }
     })
     aIdx.current = 4
     bIdx.current = 4
     setEvents(seed)
 
+    // Frecuencia bajada de 2.8s → 6s. El tick de 1s para "Hace X seg" se
+    // eliminó: ahora cada evento tiene un label fijo en `relativeLabel`,
+    // así no re-renderizamos todas las filas cada segundo.
     const evInt = setInterval(() => {
       counter.current += 1
       aIdx.current = (aIdx.current + 1) % actions.length
       bIdx.current = (bIdx.current + 1) % businesses.length
       const a = actions[aIdx.current]
       const b = businesses[bIdx.current]
-      setEvents(prev => [...prev, {
-        id: counter.current,
-        business: b,
-        action: a.text,
-        status: a.status,
-        createdAt: Date.now(),
-      }].slice(-4))
-    }, 2800)
+      setEvents(prev => {
+        const next: Evt[] = [...prev, {
+          id: counter.current,
+          business: b,
+          action: a.text,
+          status: a.status,
+          createdAt: Date.now(),
+          relativeLabel: 'Justo ahora',
+        }].slice(-4)
+        // Reescribir labels de los anteriores para que se vea "antiguedad" sin recalcular Date.now en cada render
+        const LABELS = ['Justo ahora', 'Hace 6 seg', 'Hace 12 seg', 'Hace 18 seg']
+        return next.map((evt, i) => ({ ...evt, relativeLabel: LABELS[next.length - 1 - i] ?? 'Hace un momento' }))
+      })
+    }, 6000)
 
-    const tickInt = setInterval(() => setTick(t => t + 1), 1000)
-
-    return () => {
-      clearInterval(evInt)
-      clearInterval(tickInt)
-    }
+    return () => { clearInterval(evInt) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const formatAgo = (createdAt: number): string => {
-    const secs = Math.max(0, Math.floor((Date.now() - createdAt) / 1000))
-    if (secs < 5) return 'Justo ahora'
-    if (secs < 60) return `Hace ${secs} seg`
-    const mins = Math.floor(secs / 60)
-    return `Hace ${mins} min`
-  }
 
   // 12 partículas estáticas pero animadas para el fondo
   const particles = useMemo(() => Array.from({ length: 12 }).map((_, i) => ({
@@ -2008,9 +1941,9 @@ function LiveFeed() {
           WebkitMaskImage: 'radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 78%)',
         }} />
 
-      {/* Partículas flotando */}
+      {/* Partículas estáticas — sin opacity flicker, sólo glow fijo */}
       {particles.map((p, i) => (
-        <motion.span
+        <span
           key={i}
           className="pointer-events-none absolute rounded-full"
           style={{
@@ -2020,13 +1953,7 @@ function LiveFeed() {
             height: p.size,
             background: p.color,
             boxShadow: `0 0 6px ${p.color}`,
-          }}
-          animate={{ y: [0, -20, 0], opacity: [0.2, 0.7, 0.2] }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: p.delay,
+            opacity: 0.5,
           }}
         />
       ))}
@@ -2039,14 +1966,8 @@ function LiveFeed() {
       <div className="relative flex items-center justify-between px-5 lg:px-6 py-4 border-b"
         style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-2">
-          <span className="relative flex h-1.5 w-1.5">
-            <motion.span className="absolute inline-flex h-full w-full rounded-full"
-              style={{ background: '#D45BFF' }}
-              animate={{ opacity: [1, 0.3, 1], scale: [1, 1.7, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity }} />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-              style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
-          </span>
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+            style={{ background: '#D45BFF', boxShadow: '0 0 6px rgba(212,91,255,0.95)' }} />
           <span className="text-[10.5px] uppercase font-semibold text-white"
             style={{ letterSpacing: '0.22em' }}>
             LIVE
@@ -2120,7 +2041,7 @@ function LiveFeed() {
                         {e.action}
                       </span>
                       <span className="text-[10px] text-white/40 ml-1">
-                        · {formatAgo(e.createdAt)}
+                        · {e.relativeLabel}
                       </span>
                     </div>
                   </div>
@@ -2211,12 +2132,8 @@ function LiveFeed() {
           {/* System status footer */}
           <div className="mt-auto pt-3 flex items-center gap-1.5 text-[10px] text-emerald-300/85 font-medium"
             style={{ letterSpacing: '0.18em' }}>
-            <span className="relative flex h-1 w-1">
-              <motion.span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400"
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity }} />
-              <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400" />
-            </span>
+            <span className="relative inline-flex h-1 w-1 rounded-full bg-emerald-400"
+              style={{ boxShadow: '0 0 4px rgba(52,211,153,0.85)' }} />
             <span className="uppercase">Sistema activo</span>
           </div>
         </div>
@@ -2444,14 +2361,8 @@ function VideoDemo() {
               borderBottom: '1px solid rgba(255,255,255,0.06)',
             }}>
             <div className="flex items-center gap-2 shrink-0">
-              <span className="relative flex h-1.5 w-1.5">
-                <motion.span className="absolute inline-flex h-full w-full rounded-full"
-                  style={{ background: '#D45BFF' }}
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }} />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                  style={{ background: '#D45BFF' }} />
-              </span>
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full"
+                style={{ background: '#D45BFF', boxShadow: '0 0 5px rgba(212,91,255,0.85)' }} />
               <span className="text-[10.5px] uppercase font-semibold text-white/85"
                 style={{ letterSpacing: '0.22em' }}>
                 Demo en vivo
@@ -2493,11 +2404,9 @@ function VideoDemo() {
                   }}
                   aria-label="Reproducir demo"
                 >
-                  {/* Outer pulse ring */}
-                  <motion.span aria-hidden className="absolute w-[120px] h-[120px] rounded-full"
-                    style={{ border: '1px solid rgba(212,91,255,0.45)' }}
-                    animate={{ scale: [1, 1.35, 1], opacity: [0.5, 0, 0.5] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+                  {/* Static ring exterior (sin pulse) */}
+                  <span aria-hidden className="absolute w-[120px] h-[120px] rounded-full"
+                    style={{ border: '1px solid rgba(212,91,255,0.25)' }}
                   />
                   <motion.span
                     whileHover={{ scale: 1.06 }}

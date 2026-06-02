@@ -1360,3 +1360,37 @@ html, body {
 .nuro-particle-1   { animation: nuro-particle-1 11s ease-in-out infinite; }
 .nuro-particle-2   { animation: nuro-particle-2 13s ease-in-out infinite; }
 .nuro-particle-3   { animation: nuro-particle-3 9s  ease-in-out infinite; }
+
+/* ─────────────────────────────────────────────────────────────
+   prefers-reduced-motion · respeto del setting del usuario.
+   Frena casi al instante TODAS las animaciones CSS (no afecta
+   framer-motion, que se controla aparte con MotionConfig).
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Mobile · ralentizar animaciones agresivas y desactivar
+   shimmer/breathe que parpadeaban en iOS Safari.
+   No tocamos transform de scroll (smooth) ni transiciones de hover.
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nuro-holo-sweep,
+  .nuro-energy-pulse,
+  .nuro-icon-breathe {
+    animation: none !important;
+  }
+  .nuro-particle-1,
+  .nuro-particle-2,
+  .nuro-particle-3 {
+    animation-duration: 28s !important;
+  }
+}
