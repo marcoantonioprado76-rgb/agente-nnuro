@@ -33,7 +33,8 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/images') ||
-    pathname.match(/\.(ico|png|jpg|jpeg|svg|webp|woff2?|css|js)$/)
+    pathname.startsWith('/landing-nuro') ||
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|webp|gif|woff2?|css|js|html|mp4|mp3|webm|gltf|glb|json|map)$/)
   ) {
     return NextResponse.next();
   }
