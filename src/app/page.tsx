@@ -397,6 +397,7 @@ export default function LandingPage() {
 
         {/* ─── TRANSICIÓN ─── */}
         <section id="transicion">
+          <div className="trans-scrim" aria-hidden />
           <div className="trans-wrap">
             <span className="eyebrow">
               <span className="eyebrow-dot" /> Plataforma comercial inteligente
@@ -415,16 +416,19 @@ export default function LandingPage() {
 
         {/* ─── DEMO VIDEO ─── */}
         <section id="demo">
-          <div className="demo-scrim" />
+          <div className="demo-scrim" aria-hidden />
           <div className="demo-wrap">
-            <span className="eyebrow">
-              <span className="eyebrow-dot" /> Demo en video
-            </span>
-            <h2 className="h-2">Descubre cómo trabaja NÜRO por tu negocio.</h2>
-            <p className="lead lead-sm">
-              Mira en menos de dos minutos cómo una experiencia automatizada puede ayudarte a
-              atender mejor.
-            </p>
+            {/* Encabezado independiente · 38px de separación al reproductor */}
+            <div className="demo-head">
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> Demo en video
+              </span>
+              <h2 className="h-2">Descubre cómo trabaja NÜRO por tu negocio.</h2>
+              <p className="lead lead-sm">
+                Mira en menos de dos minutos cómo una experiencia automatizada puede ayudarte a
+                atender mejor.
+              </p>
+            </div>
             <div className="video-frame">
               <iframe
                 src="https://player.vimeo.com/video/1197763990?title=0&byline=0&portrait=0&dnt=1"
@@ -442,6 +446,7 @@ export default function LandingPage() {
 
         {/* ─── VISIÓN ─── */}
         <section id="vision">
+          <div className="vision-scrim" aria-hidden />
           <div className="side-card">
             <span className="eyebrow">
               <span className="eyebrow-dot" /> Visión
@@ -587,26 +592,44 @@ export default function LandingPage() {
           100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
         }
 
-        #scene { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
+        /* z-index: scene/particles → 1 (robot y partículas detrás de TODO el contenido) */
+        #scene { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         #scene canvas { display: block; width: 100%; height: 100%; }
 
         /* ═══════════════════════════════════════════════════════════
            CONTENIDO · paleta editorial premium
            Texto:    #F5F3FF principal · #B8B2C8 secundario · #8E879F auxiliar
            Acento:   #A855F7 violeta · #D946EF fucsia (puntual)
-           Cards:    negro violeta translúcido con borde fino baja opacidad
+           Cards:    negro violeta translúcido oscuro, blur, borde fino
+           Z-INDEX: bg 0 · robot/partículas 1 · scrims 2 · contenido 3 · nav 10
            ═══════════════════════════════════════════════════════════ */
-        .content { position: relative; z-index: 10; }
+        .content { position: relative; z-index: 3; }
         section {
-          min-height: 100vh;
+          /* Quitamos min-height: 100vh global — solo el hero lo necesita.
+             Cada sección crece según contenido. padding-block fluido. */
           display: flex; flex-direction: column;
-          padding: 7vh 6vw;
+          padding-block: clamp(72px, 9vw, 132px);
+          padding-inline: 6vw;
           position: relative;
         }
 
-        /* ── NAVBAR (scroll-aware) ── */
+        /* Estructura interna estándar por sección: etiqueta → título → texto → cta/indicadores */
+        .stack { display: flex; flex-direction: column; }
+
+        /* ── Capas decorativas locales (scrims) · z-index 2 ── */
+        .hero-bg,
+        .trans-scrim,
+        .vision-scrim,
+        .demo-scrim,
+        .testi-scrim {
+          position: absolute;
+          pointer-events: none;
+          z-index: 2;
+        }
+
+        /* ── NAVBAR (scroll-aware) · z-index 10 ── */
         .topbar {
-          position: fixed; top: 0; left: 0; width: 100%; z-index: 20;
+          position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
           display: flex; align-items: center; justify-content: space-between;
           padding: 18px 6vw;
           background: transparent;
@@ -643,18 +666,26 @@ export default function LandingPage() {
         .btn-primary {
           background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
           color: #fff;
-          box-shadow: 0 12px 28px -10px rgba(168,85,247,.55), inset 0 1px 0 rgba(255,255,255,.18);
+          box-shadow:
+            0 14px 32px -12px rgba(168,85,247,.55),
+            0 4px 12px -2px rgba(0,0,0,.4),
+            inset 0 1px 0 rgba(255,255,255,.18);
         }
         .btn-primary:hover {
           transform: translateY(-2px);
-          box-shadow: 0 18px 38px -10px rgba(168,85,247,.65), inset 0 1px 0 rgba(255,255,255,.22);
+          box-shadow:
+            0 20px 42px -12px rgba(168,85,247,.65),
+            0 6px 16px -2px rgba(0,0,0,.45),
+            inset 0 1px 0 rgba(255,255,255,.22);
         }
         .btn-ghost {
-          background: transparent; color: #F5F3FF;
+          background: rgba(12,7,31,.55); color: #F5F3FF;
           border: 1px solid rgba(168,85,247,.32);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
         }
         .btn-ghost:hover {
-          background: rgba(168,85,247,.08);
+          background: rgba(168,85,247,.12);
           border-color: rgba(168,85,247,.55);
         }
         .btn-nav { font-size: 13.5px; padding: 10px 18px; border-radius: 999px; }
@@ -664,11 +695,14 @@ export default function LandingPage() {
         .eyebrow {
           display: inline-flex; align-items: center; gap: 9px;
           font-size: 11.5px; font-weight: 600;
-          color: #B8B2C8;
+          color: #C8C2D8;
           letter-spacing: .22em; text-transform: uppercase;
           padding: 8px 14px; border-radius: 999px;
-          background: rgba(168,85,247,.06);
-          border: 1px solid rgba(168,85,247,.18);
+          background: rgba(168,85,247,.08);
+          border: 1px solid rgba(168,85,247,.22);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          align-self: flex-start;
         }
         .eyebrow-dot {
           width: 6px; height: 6px; border-radius: 50%;
@@ -676,58 +710,87 @@ export default function LandingPage() {
           box-shadow: 0 0 8px rgba(168,85,247,.7);
         }
 
-        /* ── TIPOGRAFÍA ── */
-        h1, h2, h3 { color: #F5F3FF; letter-spacing: -.03em; line-height: 1.06; font-weight: 700; }
+        /* ── TIPOGRAFÍA · clamps exactos del brief + text-shadow elegante ── */
+        h1, h2, h3 {
+          color: #F5F3FF;
+          letter-spacing: -.03em; line-height: 1.06; font-weight: 700;
+          text-shadow:
+            0 3px 12px rgba(0,0,0,.75),
+            0 8px 30px rgba(0,0,0,.45);
+        }
         .h-display {
-          font-size: clamp(38px, 6.4vw, 80px);
-          font-weight: 800; letter-spacing: -.035em; line-height: 1.02;
-          max-width: 18ch; margin: 18px auto 18px;
+          font-size: clamp(2.3rem, 5vw, 4.8rem);
+          font-weight: 800;
+          letter-spacing: -.055em;
+          line-height: 1.02;
+          max-width: 18ch;
         }
         .h-2 {
-          font-size: clamp(28px, 3.6vw, 46px);
-          font-weight: 700; letter-spacing: -.028em; line-height: 1.08;
+          font-size: clamp(2rem, 4vw, 3.8rem);
+          font-weight: 800;
+          letter-spacing: -.045em;
+          line-height: 1.05;
           max-width: 22ch;
         }
         .accent {
           background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
-          -webkit-background-clip: text; background-clip: text; color: transparent;
+          -webkit-background-clip: text; background-clip: text;
+          color: transparent;
+          /* El text-shadow de h1/h2 funciona vía text-shadow del padre porque
+             el span hereda — pero al ser texto en gradient, no se ve la sombra.
+             Le añadimos un drop-shadow filter para preservar legibilidad. */
+          filter: drop-shadow(0 3px 12px rgba(0,0,0,.55));
         }
         .lead {
-          color: #B8B2C8; font-size: 16.5px; font-weight: 400;
-          line-height: 1.6; letter-spacing: -.005em;
-          max-width: 56ch;
+          color: #C0BAD0;
+          font-size: clamp(1rem, 1.4vw, 1.2rem);
+          font-weight: 500;
+          line-height: 1.7;
+          letter-spacing: -.005em;
+          max-width: 680px;
+          text-shadow: 0 2px 8px rgba(0,0,0,.70);
         }
-        .lead-sm { font-size: 15px; max-width: 52ch; }
+        .lead-sm { font-size: clamp(.95rem, 1.2vw, 1.05rem); max-width: 56ch; }
 
         /* ─────────────────────────────────────────────────────────
-           HERO · composición editorial liviana, sin caja gigante
-           Capa de protección sutil detrás del texto, no tapa al robot
+           HERO · única sección con min-height: 100vh
+           Estructura flujo normal: eyebrow → título → lead → CTAs → hint
            ───────────────────────────────────────────────────────── */
         #hero {
-          justify-content: flex-end; text-align: center; align-items: center;
-          padding-bottom: 6vh;
+          min-height: 100vh;
+          justify-content: flex-end;
+          align-items: center; text-align: center;
+          padding-bottom: clamp(48px, 6vh, 80px);
+          padding-top: 120px;
         }
         #hero .hero-bg {
-          position: absolute; left: 50%; bottom: 0;
-          width: min(880px, 90%); height: 58%;
+          left: 50%; bottom: 0;
+          width: min(880px, 92%); height: 60%;
           transform: translateX(-50%);
           background:
-            radial-gradient(70% 90% at 50% 75%, rgba(10,7,20,.86) 0%, rgba(10,7,20,.55) 45%, transparent 80%);
-          pointer-events: none;
+            radial-gradient(ellipse at center,
+              rgba(4,3,16,.78) 0%,
+              rgba(4,3,16,.44) 48%,
+              rgba(4,3,16,0) 78%);
         }
-        #hero .hero-text { position: relative; max-width: 720px; margin: 0 auto; }
-        #hero .lead { margin: 0 auto 24px; }
-        #hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        #hero .hero-text {
+          position: relative;
+          max-width: 760px; margin: 0 auto;
+          display: flex; flex-direction: column; align-items: center;
+          gap: 18px;
+        }
+        #hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
 
         .scroll-hint {
-          margin-top: 30px; color: #8E879F;
+          margin-top: 26px; color: #B8B2C8;
           font-size: 11px; font-weight: 600; letter-spacing: .26em;
           display: flex; flex-direction: column; align-items: center; gap: 8px;
           animation: bob 2.4s ease-in-out infinite;
+          text-shadow: 0 2px 8px rgba(0,0,0,.70);
         }
         .scroll-hint i {
           width: 20px; height: 32px;
-          border: 1.5px solid rgba(142,135,159,.45);
+          border: 1.5px solid rgba(184,178,200,.55);
           border-radius: 12px; position: relative;
         }
         .scroll-hint i::after {
@@ -740,41 +803,70 @@ export default function LandingPage() {
         @keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
         /* ─────────────────────────────────────────────────────────
-           TRANSICIÓN · mucho aire, 3 indicadores sin paneles gigantes
+           TRANSICIÓN · contenedor centrado max 980 · capa radial detrás
            ───────────────────────────────────────────────────────── */
         #transicion {
           justify-content: center; align-items: center; text-align: center;
         }
-        .trans-wrap { max-width: 720px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-        .trans-wrap .h-2 { margin-top: 4px; }
-        .trans-wrap .lead { margin: 0 auto 8px; text-align: center; }
+        .trans-scrim {
+          left: 50%; top: 50%;
+          width: min(1100px, 96%); height: min(680px, 92%);
+          transform: translate(-50%, -50%);
+          background: radial-gradient(ellipse at center,
+            rgba(4,3,16,.78) 0%,
+            rgba(4,3,16,.44) 48%,
+            rgba(4,3,16,0) 78%);
+        }
+        .trans-wrap {
+          position: relative;
+          max-width: 980px; width: 100%; margin: 0 auto;
+          display: flex; flex-direction: column; align-items: center;
+          gap: 22px;
+        }
+        .trans-wrap .eyebrow { align-self: center; }
+        .trans-wrap .h-2 { text-align: center; }
+        .trans-wrap .lead { text-align: center; margin: 0 auto; }
         .pillar-row {
-          margin-top: 14px;
-          display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+          margin-top: 8px;
+          display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
           list-style: none; padding: 0;
         }
         .pillar-row li {
           display: inline-flex; align-items: center; gap: 8px;
           font-size: 13.5px; font-weight: 600; color: #F5F3FF;
-          padding: 10px 16px; border-radius: 999px;
-          background: rgba(20,14,38,.55);
-          border: 1px solid rgba(168,85,247,.18);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          padding: 10px 18px; border-radius: 999px;
+          background: rgba(12,7,31,.82);
+          border: 1px solid rgba(168,85,247,.28);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          box-shadow: 0 12px 28px -16px rgba(0,0,0,.55);
         }
         .pillar-row li :global(svg) { color: #A855F7; }
 
         /* ─────────────────────────────────────────────────────────
-           DEMO VIDEO · marco premium, sin decoración alrededor
+           DEMO VIDEO · header independiente con scrim radial detrás
+           Encabezado → 30px → reproductor
            ───────────────────────────────────────────────────────── */
-        #demo { justify-content: center; align-items: center; text-align: center; }
-        #demo .demo-scrim {
-          position: absolute; inset: 0; pointer-events: none;
-          background: radial-gradient(58% 58% at 50% 55%, rgba(10,7,20,.88) 0%, rgba(10,7,20,.30) 65%, transparent 100%);
+        #demo {
+          justify-content: center; align-items: center; text-align: center;
         }
-        #demo .demo-wrap { position: relative; width: 100%; max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        #demo .h-2 { text-align: center; margin: 4px 0 0; }
-        #demo .lead { text-align: center; margin: 0 auto 18px; }
+        #demo .demo-scrim {
+          inset: 0;
+          background:
+            radial-gradient(58% 58% at 50% 55%, rgba(4,3,16,.84) 0%, rgba(4,3,16,.35) 60%, transparent 100%);
+        }
+        #demo .demo-wrap {
+          position: relative; width: 100%; max-width: 960px; margin: 0 auto;
+          display: flex; flex-direction: column; align-items: center;
+        }
+        .demo-head {
+          display: flex; flex-direction: column; align-items: center;
+          gap: 14px;
+          margin-bottom: 38px;   /* separación mínima 30px+ del reproductor */
+          max-width: 720px;
+        }
+        .demo-head .h-2 { text-align: center; }
+        .demo-head .lead { text-align: center; margin: 0; }
         .video-frame {
           position: relative; width: 100%; aspect-ratio: 16/9; margin: 0 auto;
           border-radius: 18px; overflow: hidden; background: #0a0714;
@@ -789,83 +881,121 @@ export default function LandingPage() {
         }
         .video-link {
           display: inline-flex; align-items: center; gap: 7px;
-          margin-top: 14px;
+          margin-top: 20px;
           color: #B8B2C8; text-decoration: none;
           font-weight: 600; font-size: 13.5px; letter-spacing: -.005em;
           transition: color .2s;
+          text-shadow: 0 2px 8px rgba(0,0,0,.70);
         }
         .video-link :global(svg) { color: #A855F7; }
         .video-link:hover { color: #F5F3FF; }
 
         /* ─────────────────────────────────────────────────────────
-           VISIÓN · panel compacto a la derecha, sin exceso de brillo
+           VISIÓN · panel a la derecha · scrim horizontal detrás
+           Card flex column gap 18 · sin absolute · líneas detrás
            ───────────────────────────────────────────────────────── */
-        #vision { justify-content: center; }
-        .side-card {
-          max-width: 440px;
-          background: rgba(20,14,38,.58);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
-          border: 1px solid rgba(168,85,247,.16);
-          border-radius: 18px;
-          padding: 30px 32px;
-          display: flex; flex-direction: column; gap: 14px;
+        #vision {
+          justify-content: center;
+          /* Las líneas decorativas del fondo pasan detrás de la card (z-index 1),
+             la card está en flujo normal (z-index 3) */
         }
-        #vision .side-card { margin-left: auto; }
-        .side-card .h-2 { font-size: clamp(24px, 2.8vw, 34px); margin: 4px 0 0; }
-        .side-card .lead { font-size: 15.5px; line-height: 1.62; }
+        .vision-scrim {
+          inset: 0;
+          background: linear-gradient(
+            -90deg,
+            rgba(6,4,18,.92) 0%,
+            rgba(9,5,26,.76) 58%,
+            rgba(9,5,26,.12) 100%);
+        }
+        .side-card {
+          position: relative;
+          max-width: 460px;
+          width: 100%;
+          margin-left: auto;
+          background: rgba(12,7,31,.82);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          border: 1px solid rgba(168,85,247,.28);
+          border-radius: 18px;
+          padding: 32px 34px;
+          display: flex; flex-direction: column; gap: 18px;
+          box-shadow: 0 20px 55px rgba(0,0,0,.32);
+        }
+        .side-card .h-2 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); max-width: 100%; }
+        .side-card .lead { font-size: clamp(.95rem, 1.2vw, 1.05rem); max-width: 100%; }
 
         /* ─────────────────────────────────────────────────────────
-           SERVICIOS · 2 cards translúcidas compactas
+           SERVICIOS · 2 cards verticales con orden interno consistente
            ───────────────────────────────────────────────────────── */
         #servicios { justify-content: center; }
-        .serv-wrap { max-width: 580px; display: flex; flex-direction: column; gap: 14px; }
-        .serv-wrap .h-2 { font-size: clamp(24px, 3vw, 36px); margin: 6px 0 14px; max-width: 18ch; }
-        .serv-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .serv-wrap {
+          max-width: 580px; width: 100%;
+          display: flex; flex-direction: column; gap: 22px;
+        }
+        .serv-wrap .h-2 { font-size: clamp(1.6rem, 2.8vw, 2.4rem); max-width: 18ch; }
+        .serv-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
         .serv-card {
-          background: rgba(20,14,38,.58);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(168,85,247,.16);
+          background: rgba(12,7,31,.82);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          border: 1px solid rgba(168,85,247,.28);
           border-radius: 14px;
-          padding: 20px 22px;
+          padding: 22px 24px;
           transition: transform .25s, border-color .25s, box-shadow .25s;
-          display: flex; flex-direction: column; gap: 6px;
+          display: flex; flex-direction: column; gap: 10px;
+          box-shadow: 0 20px 55px rgba(0,0,0,.32);
         }
         .serv-card:hover {
-          border-color: rgba(168,85,247,.42);
+          border-color: rgba(168,85,247,.52);
           transform: translateY(-2px);
-          box-shadow: 0 18px 36px -16px rgba(168,85,247,.32);
+          box-shadow: 0 26px 64px -16px rgba(168,85,247,.35);
         }
         .serv-ic {
-          width: 42px; height: 42px; border-radius: 11px;
+          width: 44px; height: 44px; border-radius: 12px;
           display: grid; place-items: center;
           color: #A855F7;
-          background: rgba(168,85,247,.10);
-          border: 1px solid rgba(168,85,247,.22);
-          margin-bottom: 10px;
+          background: rgba(168,85,247,.12);
+          border: 1px solid rgba(168,85,247,.28);
         }
-        .serv-card h3 { font-size: 17.5px; font-weight: 700; letter-spacing: -.018em; }
+        .serv-card h3 {
+          font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+          font-weight: 700; letter-spacing: -.018em;
+        }
         .serv-card p {
-          color: #B8B2C8; font-size: 14.5px; line-height: 1.6; max-width: 48ch;
+          color: #C0BAD0;
+          font-size: clamp(.9rem, 1.05vw, 1rem);
+          font-weight: 500;
+          line-height: 1.65;
+          max-width: 48ch;
         }
 
         /* ─────────────────────────────────────────────────────────
-           TESTIMONIOS · cards compactas con foto + tipo + tag
+           TESTIMONIOS · header independiente + 38px al carrusel
+           Tarjetas más bajas · máscara lateral suave (ya estaba)
            ───────────────────────────────────────────────────────── */
-        #testimonios { justify-content: center; align-items: center; text-align: center; gap: 16px; }
-        #testimonios .testi-scrim {
-          position: absolute; inset: 0; pointer-events: none;
-          background: radial-gradient(82% 72% at 50% 50%, rgba(10,7,20,.78) 0%, rgba(10,7,20,.30) 65%, transparent 100%);
+        #testimonios {
+          justify-content: center; align-items: center; text-align: center;
+          gap: 38px; /* separación mínima entre header y carrusel */
         }
-        .testi-head { position: relative; margin-bottom: 8px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .testi-head .h-2 { font-size: clamp(26px, 3.2vw, 40px); max-width: 22ch; text-align: center; }
+        #testimonios .testi-scrim {
+          inset: 0;
+          background: radial-gradient(82% 60% at 50% 28%, rgba(4,3,16,.82) 0%, rgba(4,3,16,.34) 60%, transparent 100%);
+        }
+        .testi-head {
+          position: relative;
+          display: flex; flex-direction: column; align-items: center; gap: 14px;
+          max-width: 720px;
+        }
+        .testi-head .h-2 {
+          font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+          max-width: 22ch; text-align: center;
+        }
         .marquee {
           position: relative; width: 100%; overflow: hidden;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-                  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+                  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
         }
-        /* Movimiento más lento y suave: 60s vs 42s del original */
+        /* Movimiento lento y suave */
         .mtrack { display: flex; gap: 14px; width: max-content; will-change: transform; padding: 6px 0; }
         .mtrack.to-left  { animation: marqueeLeft  60s linear infinite; }
         .mtrack.to-right { animation: marqueeRight 60s linear infinite; }
@@ -876,94 +1006,128 @@ export default function LandingPage() {
         .tcard {
           display: flex; align-items: flex-start; gap: 12px; flex: 0 0 auto;
           width: 300px;
-          background: rgba(20,14,38,.66);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border: 1px solid rgba(168,85,247,.14);
+          background: rgba(12,7,31,.82);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border: 1px solid rgba(168,85,247,.22);
           border-radius: 12px;
-          padding: 13px 15px; text-align: left;
+          padding: 12px 14px; text-align: left;
+          box-shadow: 0 14px 38px -14px rgba(0,0,0,.5);
         }
         .tcard img {
           width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
           border: 1.5px solid rgba(168,85,247,.32); background: #1a1330;
         }
-        .tcard-body { min-width: 0; flex: 1; }
+        .tcard-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
         .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .tcard .tn  { font-weight: 700; font-size: 13.5px; color: #F5F3FF; letter-spacing: -.01em; }
+        .tcard .tn  {
+          font-weight: 700; font-size: 13.5px; color: #F5F3FF;
+          letter-spacing: -.01em;
+        }
         .tcard-tag {
           display: inline-block;
-          font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+          font-size: 9.5px; font-weight: 600;
+          letter-spacing: .12em; text-transform: uppercase;
           padding: 3px 8px; border-radius: 999px;
-          color: #B8B2C8;
-          background: rgba(168,85,247,.08);
-          border: 1px solid rgba(168,85,247,.18);
+          color: #C0BAD0;
+          background: rgba(168,85,247,.10);
+          border: 1px solid rgba(168,85,247,.22);
           white-space: nowrap;
         }
-        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.28); background: rgba(217,70,239,.06); }
-        .tcard-tipo { font-size: 11px; color: #8E879F; margin-top: 2px; }
+        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.30); background: rgba(217,70,239,.08); }
+        .tcard-tipo { font-size: 11px; color: #8E879F; }
         .tcard .tt  {
-          font-size: 12.5px; color: #B8B2C8; line-height: 1.45; margin-top: 6px;
-          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+          font-size: 12.5px; color: #C0BAD0; line-height: 1.5; margin-top: 6px;
+          display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
           overflow: hidden;
         }
 
         /* ─────────────────────────────────────────────────────────
-           CTA FINAL · centrado, panel limpio
+           CTA FINAL
            ───────────────────────────────────────────────────────── */
-        #cta { justify-content: flex-end; align-items: center; text-align: center; padding-bottom: 9vh; }
+        #cta {
+          justify-content: center; align-items: center; text-align: center;
+        }
         #cta .cta-inner {
-          max-width: 720px;
-          background: radial-gradient(120% 120% at 50% 0%, rgba(14,9,28,.85) 0%, rgba(14,9,28,.55) 60%, transparent 100%);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border: 1px solid rgba(168,85,247,.12);
+          max-width: 720px; width: 100%;
+          background: radial-gradient(120% 120% at 50% 0%, rgba(12,7,31,.85) 0%, rgba(12,7,31,.55) 60%, transparent 100%);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(168,85,247,.22);
           border-radius: 22px;
           padding: 36px 40px 32px;
           display: flex; flex-direction: column; align-items: center; gap: 22px;
+          box-shadow: 0 24px 60px rgba(0,0,0,.36);
         }
-        #cta .h-2 { font-size: clamp(28px, 4.4vw, 52px); max-width: 18ch; }
+        #cta .h-2 { font-size: clamp(2rem, 4.4vw, 3.4rem); max-width: 18ch; text-align: center; }
         #cta .footer-note {
-          margin-top: 18px; color: #8E879F; font-size: 12px; font-weight: 500;
+          margin-top: 14px; color: #8E879F; font-size: 12px; font-weight: 500;
           letter-spacing: .04em;
         }
 
         /* ═══════════════════════════════════════════════════════════
-           RESPONSIVE · mobile-first ajustes
+           RESPONSIVE
            ═══════════════════════════════════════════════════════════ */
+        @media (max-width: 1024px) {
+          section { padding-block: 72px; padding-inline: 5vw; }
+          .topbar { padding: 16px 5vw; }
+          .topbar.is-scrolled { padding: 12px 5vw; }
+        }
+
         @media (max-width: 820px) {
           .topbar .menu { display: none; }
-          .topbar { padding: 14px 5vw; }
-          .topbar.is-scrolled { padding: 12px 5vw; }
+          .topbar { padding: 14px 20px; }
+          .topbar.is-scrolled { padding: 12px 20px; }
           .topbar .logo-nuro { height: 24px; }
           .topbar .auth-btns { gap: 8px; }
           .topbar .auth-btns .btn { padding: 8px 12px; font-size: 12.5px; border-radius: 9px; }
-          .side-card, #vision .side-card { margin: 0 auto; max-width: 92%; }
-          .serv-wrap { margin: 0 auto; max-width: 92%; }
-          section { padding: 8vh 6vw; min-height: auto; }
-          /* Cards en una sola columna y NO sobre el robot — empujadas abajo */
-          #hero, #vision, #servicios { padding-bottom: 6vh; }
-          #hero { justify-content: flex-end; }
-          #hero .hero-bg { height: 70%; }
-          #hero .h-display { font-size: clamp(34px, 9vw, 56px); margin: 12px auto 14px; }
-          #hero .lead { font-size: 14px; margin: 0 auto 18px; max-width: 36ch; }
+
+          /* padding lateral 20px en mobile · sin scroll horizontal */
+          section { padding-block: 56px; padding-inline: 20px; }
+
+          /* Hero más compacto */
+          #hero { min-height: 100vh; padding-bottom: 40px; padding-top: 96px; }
+          #hero .hero-bg { width: 96%; height: 58%; }
+          #hero .h-display { max-width: 100%; }
+          #hero .cta-row { gap: 10px; }
+          #hero .btn { padding: 11px 20px; font-size: 14px; }
           #hero .scroll-hint { display: none; }
-          #hero .btn { padding: 12px 22px; font-size: 14px; }
-          #transicion { padding-top: 10vh; }
-          .trans-wrap .h-2 { font-size: clamp(24px, 6vw, 32px); }
+
+          /* Transición */
+          .trans-wrap { gap: 18px; }
+          .trans-scrim { width: 100%; height: 90%; }
+          .pillar-row { gap: 10px; }
           .pillar-row li { font-size: 12.5px; padding: 8px 14px; }
-          .side-card { padding: 22px 22px; }
-          .side-card .h-2 { font-size: 22px; }
-          .side-card .lead { font-size: 14px; }
-          .serv-grid { grid-template-columns: 1fr; }
-          .serv-card { padding: 18px 18px; }
-          .serv-card p { font-size: 13.5px; }
-          .tcard { width: 250px; }
-          .tcard .tt { font-size: 12px; }
-          .video-frame { border-radius: 14px; }
-          #cta .cta-inner { padding: 26px 22px 22px; }
-          #cta .h-2 { font-size: clamp(24px, 7vw, 36px); }
+
+          /* Demo · separación 30px del reproductor en mobile */
+          .demo-head { margin-bottom: 30px; gap: 12px; }
+
+          /* Visión · panel centrado a 1 columna, casi todo ancho */
+          .side-card { padding: 24px 22px; max-width: 100%; margin: 0 auto; }
+          .vision-scrim {
+            background: radial-gradient(ellipse at center,
+              rgba(4,3,16,.78) 0%,
+              rgba(4,3,16,.44) 50%,
+              rgba(4,3,16,0) 80%);
+          }
+
+          /* Servicios · 1 columna */
+          .serv-wrap { max-width: 100%; margin: 0 auto; gap: 18px; }
+          .serv-grid { grid-template-columns: 1fr; gap: 14px; }
+          .serv-card { padding: 20px 20px; }
+
+          /* Testimonios · cards más compactas */
+          #testimonios { gap: 28px; }
+          .tcard { width: 270px; }
+          .tcard .tt { -webkit-line-clamp: 3; }
+
+          /* CTA */
+          #cta .cta-inner { padding: 28px 22px 24px; }
           .btn-lg { font-size: 14.5px; padding: 14px 22px; }
         }
+
+        /* Sin scroll horizontal en ninguna sección */
+        section { overflow-x: clip; }
 
         @media (prefers-reduced-motion: reduce) {
           .particle, .bg-glow, .scroll-hint, .mtrack { animation: none !important; }
