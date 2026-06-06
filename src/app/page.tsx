@@ -23,7 +23,6 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const ROBOT_GLB_PATH = '/landing/nuro-robot.glb'
-const FALLBACK_IMAGE = '/landing/robot.png'
 
 const TESTIMONIOS = [
   { foto: 'https://randomuser.me/api/portraits/women/68.jpg', nombre: 'María González',   texto: 'El agente de IA atiende a mis clientes a toda hora. Cerré más ventas en un mes que en todo el trimestre.' },
@@ -142,9 +141,8 @@ export default function LandingPage() {
     }
     robot.add(ringsGroup)
 
-    // ── Carga del modelo / fallback ──
+    // ── Modelo del robot ──
     let model: THREE.Object3D | null = null
-    let usingFallback = false
 
     const hideLoader = () => loaderRef.current?.classList.add('hide')
 
@@ -159,19 +157,245 @@ export default function LandingPage() {
       obj.position.sub(center.multiplyScalar(s))
     }
 
-    function buildFallback() {
-      usingFallback = true
-      new THREE.TextureLoader().load(FALLBACK_IMAGE, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace
-        const ar = (tex.image.width || 408) / (tex.image.height || 612)
-        const h = 2.5, w = h * ar
-        const plane = new THREE.Mesh(
-          new THREE.PlaneGeometry(w, h),
-          new THREE.MeshBasicMaterial({ map: tex, transparent: true })
-        )
-        model = plane
-        robot.add(model)
+    /* ─────────────────────────────────────────────────────────────
+     *  ROBOT PARAMÉTRICO NÜRO (sin GLB)
+     *  Construido con primitivas Three.js · gira 360° real con el scroll.
+     *  Paleta: cuerpo metal oscuro · acentos neón violeta + cyan + magenta.
+     *  Para sustituirlo por un modelo real, copiá tu .glb a
+     *    public/landing/nuro-robot.glb
+     *  (la página lo detecta sola al recargar).
+     * ───────────────────────────────────────────────────────────── */
+    function buildParametricRobot(): THREE.Group {
+      const g = new THREE.Group()
+
+      // Materiales reutilizables
+      const matBody = new THREE.MeshStandardMaterial({
+        color: 0x1a1133, metalness: 0.85, roughness: 0.28,
       })
+      const matAccent = new THREE.MeshStandardMaterial({
+        color: 0x2a1745, metalness: 0.9, roughness: 0.22,
+        emissive: 0x6b3aff, emissiveIntensity: 0.45,
+      })
+      const matNeonViolet = new THREE.MeshStandardMaterial({
+        color: 0x1a0d33, metalness: 0.4, roughness: 0.3,
+        emissive: 0x9b5cff, emissiveIntensity: 1.6,
+      })
+      const matNeonCyan = new THREE.MeshStandardMaterial({
+        color: 0x001a1f, metalness: 0.4, roughness: 0.3,
+        emissive: 0x06b6d4, emissiveIntensity: 1.5,
+      })
+      const matNeonMagenta = new THREE.MeshStandardMaterial({
+        color: 0x33001a, metalness: 0.4, roughness: 0.3,
+        emissive: 0xe0219a, emissiveIntensity: 1.4,
+      })
+      const matGlossWhite = new THREE.MeshStandardMaterial({
+        color: 0xf8faff, metalness: 0.7, roughness: 0.18,
+      })
+
+      // ── Cabeza · esfera ligeramente achatada + visor frontal ──
+      const head = new THREE.Mesh(
+        new THREE.SphereGeometry(0.46, 48, 32),
+        matBody
+      )
+      head.scale.set(1, 0.92, 1)
+      head.position.y = 1.1
+      g.add(head)
+
+      // Visor horizontal estilo Daft Punk, cyan brillante
+      const visor = new THREE.Mesh(
+        new THREE.SphereGeometry(0.47, 48, 32, 0, Math.PI * 2, Math.PI * 0.42, Math.PI * 0.2),
+        matNeonCyan
+      )
+      visor.scale.set(1.001, 0.95, 1.001)
+      visor.position.y = 1.1
+      g.add(visor)
+
+      // 2 puntos brillantes dentro del visor (ojos)
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xb8f5ff })
+      const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.025, 16, 12), eyeMat)
+      const eyeR = eyeL.clone()
+      eyeL.position.set(-0.12, 1.13, 0.43)
+      eyeR.position.set( 0.12, 1.13, 0.43)
+      g.add(eyeL, eyeR)
+
+      // Antena en la cabeza con luz pulsante violeta
+      const antennaRod = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.012, 0.014, 0.22, 12),
+        matAccent
+      )
+      antennaRod.position.y = 1.52
+      g.add(antennaRod)
+      const antennaTip = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 16, 12),
+        matNeonMagenta
+      )
+      antennaTip.position.y = 1.66
+      g.add(antennaTip)
+
+      // ── Cuello ──
+      const neck = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.10, 0.13, 0.14, 16),
+        matAccent
+      )
+      neck.position.y = 0.79
+      g.add(neck)
+
+      // ── Torso · BoxGeometry con bordes biselados (RoundedBoxGeometry no está en core, usamos box estándar) ──
+      const torso = new THREE.Mesh(
+        new THREE.BoxGeometry(0.78, 0.92, 0.46),
+        matBody
+      )
+      torso.position.y = 0.30
+      g.add(torso)
+
+      // Línea de acento violeta vertical en el torso
+      const torsoLine = new THREE.Mesh(
+        new THREE.BoxGeometry(0.04, 0.78, 0.005),
+        matNeonViolet
+      )
+      torsoLine.position.set(0, 0.30, 0.235)
+      g.add(torsoLine)
+
+      // Núcleo brillante en el pecho (corazón energético)
+      const coreOuter = new THREE.Mesh(
+        new THREE.CircleGeometry(0.13, 32),
+        matAccent
+      )
+      coreOuter.position.set(0, 0.42, 0.236)
+      g.add(coreOuter)
+      const coreInner = new THREE.Mesh(
+        new THREE.CircleGeometry(0.08, 32),
+        matNeonViolet
+      )
+      coreInner.position.set(0, 0.42, 0.237)
+      g.add(coreInner)
+      const coreCenter = new THREE.Mesh(
+        new THREE.CircleGeometry(0.035, 24),
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
+      )
+      coreCenter.position.set(0, 0.42, 0.238)
+      g.add(coreCenter)
+
+      // Hombros · esferas
+      const shoulder = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 24, 18),
+        matAccent
+      )
+      const shoulderL = shoulder.clone(); shoulderL.position.set(-0.49, 0.6, 0)
+      const shoulderR = shoulder.clone(); shoulderR.position.set( 0.49, 0.6, 0)
+      g.add(shoulderL, shoulderR)
+
+      // Función helper para construir un brazo (upper + elbow + forearm + hand)
+      function buildArm(side: 1 | -1) {
+        const arm = new THREE.Group()
+        const upper = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.10, 0.085, 0.5, 18),
+          matBody
+        )
+        upper.position.y = -0.27
+        arm.add(upper)
+
+        const elbow = new THREE.Mesh(
+          new THREE.SphereGeometry(0.095, 18, 14),
+          matAccent
+        )
+        elbow.position.y = -0.55
+        arm.add(elbow)
+
+        const forearm = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.082, 0.07, 0.46, 18),
+          matBody
+        )
+        forearm.position.y = -0.80
+        arm.add(forearm)
+
+        // Anillo neón en el antebrazo
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(0.085, 0.011, 8, 32),
+          matNeonCyan
+        )
+        ring.rotation.x = Math.PI / 2
+        ring.position.y = -0.72
+        arm.add(ring)
+
+        const hand = new THREE.Mesh(
+          new THREE.SphereGeometry(0.10, 18, 14),
+          matAccent
+        )
+        hand.position.y = -1.06
+        hand.scale.set(1, 1.15, 1)
+        arm.add(hand)
+
+        arm.position.set(side * 0.49, 0.6, 0)
+        // Ligera inclinación hacia el cuerpo
+        arm.rotation.z = side * 0.08
+        return arm
+      }
+      g.add(buildArm(-1), buildArm(1))
+
+      // ── Cadera ──
+      const hip = new THREE.Mesh(
+        new THREE.BoxGeometry(0.7, 0.18, 0.42),
+        matAccent
+      )
+      hip.position.y = -0.20
+      g.add(hip)
+
+      // Función helper para construir una pierna
+      function buildLeg(side: 1 | -1) {
+        const leg = new THREE.Group()
+        const thigh = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.13, 0.11, 0.55, 18),
+          matBody
+        )
+        thigh.position.y = -0.30
+        leg.add(thigh)
+
+        const knee = new THREE.Mesh(
+          new THREE.SphereGeometry(0.12, 18, 14),
+          matAccent
+        )
+        knee.position.y = -0.60
+        leg.add(knee)
+
+        const shin = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.105, 0.09, 0.5, 18),
+          matBody
+        )
+        shin.position.y = -0.87
+        leg.add(shin)
+
+        // Anillo neón violeta en la pantorrilla
+        const ringLeg = new THREE.Mesh(
+          new THREE.TorusGeometry(0.10, 0.013, 8, 32),
+          matNeonViolet
+        )
+        ringLeg.rotation.x = Math.PI / 2
+        ringLeg.position.y = -0.78
+        leg.add(ringLeg)
+
+        const foot = new THREE.Mesh(
+          new THREE.BoxGeometry(0.20, 0.10, 0.30),
+          matGlossWhite
+        )
+        foot.position.set(0, -1.16, 0.04)
+        leg.add(foot)
+
+        leg.position.set(side * 0.22, -0.30, 0)
+        return leg
+      }
+      g.add(buildLeg(-1), buildLeg(1))
+
+      // Sombras + frustum culling explícito
+      g.traverse((o) => {
+        if ((o as THREE.Mesh).isMesh) {
+          o.castShadow = true
+          o.receiveShadow = true
+          o.frustumCulled = true
+        }
+      })
+
+      return g
     }
 
     function loadRobot() {
@@ -179,6 +403,7 @@ export default function LandingPage() {
       gltfLoader.load(
         ROBOT_GLB_PATH,
         (gltf) => {
+          // ✅ Modelo real cargado
           model = gltf.scene
           model.traverse((o) => {
             if ((o as THREE.Mesh).isMesh) {
@@ -192,8 +417,11 @@ export default function LandingPage() {
         },
         undefined,
         () => {
-          console.warn('[NÜRO] No se encontró', ROBOT_GLB_PATH, '→ usando PNG fallback.')
-          buildFallback()
+          // ⚠️ Sin GLB → construir robot paramétrico (gira 360° igual)
+          console.info('[NÜRO] No hay GLB en', ROBOT_GLB_PATH, '· usando robot paramétrico.')
+          model = buildParametricRobot()
+          centerAndScale(model, 2.5)
+          robot.add(model)
           hideLoader()
         }
       )
@@ -214,9 +442,7 @@ export default function LandingPage() {
       target.camY  = THREE.MathUtils.lerp(0.60, 0.06, ease)
       target.lookY = THREE.MathUtils.lerp(0.60, 0.00, ease)
       target.posY  = p > 0.85 ? THREE.MathUtils.lerp(0, endPosY, (p - 0.85) / 0.15) : 0
-      target.rotY  = usingFallback
-        ? THREE.MathUtils.degToRad(15) * Math.sin(p * Math.PI * 2)
-        : p * Math.PI * 2
+      target.rotY  = p * Math.PI * 2
     }
 
     const scrollTrigger = ScrollTrigger.create({
@@ -249,7 +475,6 @@ export default function LandingPage() {
       robot.rotation.y = current.rotY
       robot.position.y = current.posY + (reduceMotion ? 0 : Math.sin(t * 1.1) * 0.05)
 
-      if (usingFallback && model) (model as THREE.Mesh).rotation.y = 0
       ringsGroup.rotation.z = t * 0.15
       ;(platform.material as THREE.MeshBasicMaterial).opacity = 0.75 + Math.sin(t * 1.6) * 0.18
 
