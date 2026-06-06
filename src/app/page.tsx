@@ -397,7 +397,6 @@ export default function LandingPage() {
 
         {/* ─── TRANSICIÓN ─── */}
         <section id="transicion">
-          <div className="trans-scrim" aria-hidden />
           <div className="trans-wrap">
             <span className="eyebrow">
               <span className="eyebrow-dot" /> Plataforma comercial inteligente
@@ -416,7 +415,6 @@ export default function LandingPage() {
 
         {/* ─── DEMO VIDEO ─── */}
         <section id="demo">
-          <div className="demo-scrim" aria-hidden />
           <div className="demo-wrap">
             {/* Encabezado independiente · 38px de separación al reproductor */}
             <div className="demo-head">
@@ -446,7 +444,6 @@ export default function LandingPage() {
 
         {/* ─── VISIÓN ─── */}
         <section id="vision">
-          <div className="vision-scrim" aria-hidden />
           <div className="side-card">
             <span className="eyebrow">
               <span className="eyebrow-dot" /> Visión
@@ -624,12 +621,11 @@ export default function LandingPage() {
         /* Estructura interna estándar por sección: etiqueta → título → texto → cta/indicadores */
         .stack { display: flex; flex-direction: column; }
 
-        /* ── Capas decorativas locales (scrims) · z-index 2 ── */
-        .hero-bg,
-        .trans-scrim,
-        .vision-scrim,
-        .demo-scrim,
-        .testi-scrim {
+        /* ── Capa decorativa local del hero · z-index 2 ──
+           El resto de secciones usa ::before localizados detrás de su
+           encabezado (no scrims globales con inset:0 que oscurezcan
+           todo el contenido). */
+        .hero-bg {
           position: absolute;
           pointer-events: none;
           z-index: 2;
@@ -811,25 +807,34 @@ export default function LandingPage() {
         @keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
         /* ─────────────────────────────────────────────────────────
-           TRANSICIÓN · contenedor centrado max 980 · capa radial detrás
+           TRANSICIÓN · contenedor centrado max 980 · capa radial LOCAL
+           detrás del encabezado (no cubre toda la sección)
            ───────────────────────────────────────────────────────── */
         #transicion {
           justify-content: center; align-items: center; text-align: center;
         }
-        .trans-scrim {
-          left: 50%; top: 50%;
-          width: min(1100px, 96%); height: min(680px, 92%);
-          transform: translate(-50%, -50%);
-          background: radial-gradient(ellipse at center,
-            rgba(4,3,16,.78) 0%,
-            rgba(4,3,16,.44) 48%,
-            rgba(4,3,16,0) 78%);
-        }
         .trans-wrap {
           position: relative;
+          z-index: 3;
           max-width: 980px; width: 100%; margin: 0 auto;
           display: flex; flex-direction: column; align-items: center;
           gap: 22px;
+        }
+        /* Capa oscura LOCAL detrás del bloque de texto · z-index -1
+           NUNCA encima del contenido ni de los indicadores */
+        .trans-wrap::before {
+          content: '';
+          position: absolute;
+          inset: -40px -80px;
+          z-index: -1;
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(5,3,18,.72) 0%,
+            rgba(5,3,18,.40) 48%,
+            rgba(5,3,18,0)  78%
+          );
+          filter: blur(12px);
         }
         .trans-wrap .eyebrow { align-self: center; }
         .trans-wrap .h-2 { text-align: center; }
@@ -852,26 +857,40 @@ export default function LandingPage() {
         .pillar-row li :global(svg) { color: #A855F7; }
 
         /* ─────────────────────────────────────────────────────────
-           DEMO VIDEO · header independiente con scrim radial detrás
-           Encabezado → 30px → reproductor
+           DEMO VIDEO · header independiente con capa LOCAL detrás
+           del título (no cubre el reproductor)
            ───────────────────────────────────────────────────────── */
         #demo {
           justify-content: center; align-items: center; text-align: center;
         }
-        #demo .demo-scrim {
-          inset: 0;
-          background:
-            radial-gradient(58% 58% at 50% 55%, rgba(4,3,16,.84) 0%, rgba(4,3,16,.35) 60%, transparent 100%);
-        }
         #demo .demo-wrap {
-          position: relative; width: 100%; max-width: 960px; margin: 0 auto;
+          position: relative;
+          z-index: 3;
+          width: 100%; max-width: 960px; margin: 0 auto;
           display: flex; flex-direction: column; align-items: center;
         }
         .demo-head {
+          position: relative;
           display: flex; flex-direction: column; align-items: center;
-          gap: 14px;
-          margin-bottom: 38px;   /* separación mínima 30px+ del reproductor */
+          gap: 18px;             /* eyebrow ↔ título ↔ párrafo */
+          margin-bottom: 38px;   /* separación mínima del reproductor */
           max-width: 720px;
+          padding-inline: 24px;
+        }
+        /* Capa oscura LOCAL detrás del encabezado · z-index -1 */
+        .demo-head::before {
+          content: '';
+          position: absolute;
+          inset: -50px -90px;
+          z-index: -1;
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(5,3,18,.74) 0%,
+            rgba(5,3,18,.42) 48%,
+            rgba(5,3,18,0)  78%
+          );
+          filter: blur(12px);
         }
         .demo-head .h-2 { text-align: center; }
         .demo-head .lead { text-align: center; margin: 0; }
@@ -899,21 +918,11 @@ export default function LandingPage() {
         .video-link:hover { color: #F5F3FF; }
 
         /* ─────────────────────────────────────────────────────────
-           VISIÓN · panel a la derecha · scrim horizontal detrás
-           Card flex column gap 18 · sin absolute · líneas detrás
+           VISIÓN · la card ya tiene background sólido y bordes con
+           contraste; NO necesita scrim global encima de la sección.
            ───────────────────────────────────────────────────────── */
         #vision {
           justify-content: center;
-          /* Las líneas decorativas del fondo pasan detrás de la card (z-index 1),
-             la card está en flujo normal (z-index 3) */
-        }
-        .vision-scrim {
-          inset: 0;
-          background: linear-gradient(
-            -90deg,
-            rgba(6,4,18,.92) 0%,
-            rgba(9,5,26,.76) 58%,
-            rgba(9,5,26,.12) 100%);
         }
         .side-card {
           position: relative;
@@ -1174,16 +1183,11 @@ export default function LandingPage() {
           .pillar-row li { font-size: 12.5px; padding: 8px 14px; }
 
           /* Demo · separación 30px del reproductor en mobile */
-          .demo-head { margin-bottom: 30px; gap: 12px; }
+          .demo-head { margin-bottom: 30px; gap: 14px; padding-inline: 20px; }
+          .demo-head::before { inset: -30px -50px; }
 
           /* Visión · panel centrado a 1 columna, casi todo ancho */
           .side-card { padding: 24px 22px; max-width: 100%; margin: 0 auto; }
-          .vision-scrim {
-            background: radial-gradient(ellipse at center,
-              rgba(4,3,16,.78) 0%,
-              rgba(4,3,16,.44) 50%,
-              rgba(4,3,16,0) 80%);
-          }
 
           /* Servicios · 1 columna */
           .serv-wrap { max-width: 100%; margin: 0 auto; gap: 18px; }
