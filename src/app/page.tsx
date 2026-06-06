@@ -487,24 +487,32 @@ export default function LandingPage() {
         </section>
 
         {/* ─── TESTIMONIOS ─── */}
+        {/* Estructura en 2 capas independientes:
+             - .testi-head (z 5): encabezado con capa oscura LOCAL (::before)
+             - .testi-carousel (z 4): carrusel infinito, separado del header
+            El robot global (#scene z 1) queda detrás de TODO el contenido. */}
         <section id="testimonios">
-          <div className="testi-scrim" />
-          <div className="testi-head">
-            <span className="eyebrow">
-              <span className="eyebrow-dot" /> Prueba social
-            </span>
-            <h2 className="h-2">Negocios que ya crecen con NÜRO.</h2>
+          <div className="testi-content">
+            <div className="testi-head">
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> Prueba social
+              </span>
+              <h2 className="h-2">Negocios que ya crecen con <span className="testi-accent">NÜRO</span>.</h2>
+            </div>
+
+            <div className="testi-carousel">
+              <div className="marquee"><div className="mtrack to-right">
+                {[...TESTI_LEFT, ...TESTI_LEFT].map((t, i) => (
+                  <Tcard key={`L${i}`} t={t} />
+                ))}
+              </div></div>
+              <div className="marquee"><div className="mtrack to-left">
+                {[...TESTI_RIGHT, ...TESTI_RIGHT].map((t, i) => (
+                  <Tcard key={`R${i}`} t={t} />
+                ))}
+              </div></div>
+            </div>
           </div>
-          <div className="marquee"><div className="mtrack to-right">
-            {[...TESTI_LEFT, ...TESTI_LEFT].map((t, i) => (
-              <Tcard key={`L${i}`} t={t} />
-            ))}
-          </div></div>
-          <div className="marquee"><div className="mtrack to-left">
-            {[...TESTI_RIGHT, ...TESTI_RIGHT].map((t, i) => (
-              <Tcard key={`R${i}`} t={t} />
-            ))}
-          </div></div>
         </section>
 
         {/* ─── CTA FINAL ─── */}
@@ -970,32 +978,93 @@ export default function LandingPage() {
         }
 
         /* ─────────────────────────────────────────────────────────
-           TESTIMONIOS · header independiente + 38px al carrusel
-           Tarjetas más bajas · máscara lateral suave (ya estaba)
+           TESTIMONIOS · 2 capas independientes: head + carrusel
+           El overlay oscuro VIVE solo detrás del título (::before),
+           NUNCA encima del contenido. Robot global queda detrás (z 1).
            ───────────────────────────────────────────────────────── */
         #testimonios {
-          justify-content: center; align-items: center; text-align: center;
-          gap: 38px; /* separación mínima entre header y carrusel */
+          padding-block: clamp(90px, 10vw, 150px);
+          padding-inline: 6vw;
+          overflow: hidden;
+          display: block; /* sin flex global · cada bloque maneja su propio layout */
         }
-        #testimonios .testi-scrim {
-          inset: 0;
-          background: radial-gradient(82% 60% at 50% 28%, rgba(4,3,16,.82) 0%, rgba(4,3,16,.34) 60%, transparent 100%);
+        .testi-content {
+          position: relative;
+          z-index: 3;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
+
+        /* ── Encabezado independiente (z 5) ── */
         .testi-head {
           position: relative;
-          display: flex; flex-direction: column; align-items: center; gap: 14px;
-          max-width: 720px;
+          z-index: 5;
+          display: flex; flex-direction: column; align-items: center;
+          justify-content: center;
+          gap: 18px;
+          text-align: center;
+          max-width: 900px;
+          margin: 0 auto 54px; /* separación mínima del carrusel */
+          padding-inline: 24px;
         }
+        /* Capa oscura LOCAL · radial suave SOLO detrás del título */
+        .testi-head::before {
+          content: '';
+          position: absolute;
+          inset: -60px -100px;
+          z-index: -1; /* atrás del título y la etiqueta, nunca encima */
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(5,3,18,.78) 0%,
+            rgba(5,3,18,.44) 45%,
+            rgba(5,3,18,0)  76%
+          );
+          filter: blur(12px);
+        }
+        .testi-head .eyebrow { align-self: center; }
         .testi-head .h-2 {
-          font-size: clamp(1.8rem, 3.2vw, 2.6rem);
-          max-width: 22ch; text-align: center;
+          margin: 0;
+          max-width: 860px;
+          color: #F7F5FF;
+          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', sans-serif;
+          font-size: clamp(2rem, 3.6vw, 3.4rem);
+          font-weight: 800;
+          line-height: 1.04;
+          letter-spacing: -.055em;
+          text-align: center;
+          text-shadow:
+            0 4px 10px rgba(0,0,0,.92),
+            0 10px 34px rgba(0,0,0,.76);
+        }
+        .testi-head .testi-accent {
+          color: #C084FC;
+          background: none;
+          -webkit-text-fill-color: #C084FC;
+          filter: none;
+          text-shadow:
+            0 4px 10px rgba(0,0,0,.92),
+            0 10px 34px rgba(0,0,0,.72);
+        }
+
+        /* ── Carrusel separado del encabezado (z 4) ── */
+        .testi-carousel {
+          position: relative;
+          z-index: 4;
+          width: 100%;
+          margin-top: 12px; /* 54 + 12 = 66px desde el header (≥ 48px exigido) */
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
         }
         .marquee {
-          position: relative; width: 100%; overflow: hidden;
+          position: relative;
+          width: 100%;
+          overflow: hidden;
           -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
                   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
         }
-        /* Movimiento lento y suave */
         .mtrack { display: flex; gap: 14px; width: max-content; will-change: transform; padding: 6px 0; }
         .mtrack.to-left  { animation: marqueeLeft  60s linear infinite; }
         .mtrack.to-right { animation: marqueeRight 60s linear infinite; }
@@ -1003,41 +1072,46 @@ export default function LandingPage() {
         @keyframes marqueeRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
         .marquee:hover .mtrack { animation-play-state: paused; }
 
+        /* ── Tarjetas con MÁS contraste (sin oscurecer la sección) ── */
         .tcard {
-          display: flex; align-items: flex-start; gap: 12px; flex: 0 0 auto;
-          width: 300px;
-          background: rgba(12,7,31,.82);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
-          border: 1px solid rgba(168,85,247,.22);
-          border-radius: 12px;
-          padding: 12px 14px; text-align: left;
-          box-shadow: 0 14px 38px -14px rgba(0,0,0,.5);
+          position: relative;
+          z-index: 4;
+          display: flex; align-items: flex-start; gap: 14px; flex: 0 0 auto;
+          width: 320px;
+          background: rgba(14,8,34,.86);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(168,85,247,.26);
+          border-radius: 18px;
+          padding: 22px; text-align: left;
+          box-shadow:
+            0 18px 46px rgba(0,0,0,.34),
+            inset 0 1px 0 rgba(255,255,255,.03);
         }
         .tcard img {
-          width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
+          width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
           border: 1.5px solid rgba(168,85,247,.32); background: #1a1330;
         }
-        .tcard-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
-        .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .tcard-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .tcard .tn  {
-          font-weight: 700; font-size: 13.5px; color: #F5F3FF;
+          font-weight: 700; font-size: 1rem; color: #F5F2FF;
           letter-spacing: -.01em;
         }
         .tcard-tag {
           display: inline-block;
           font-size: 9.5px; font-weight: 600;
           letter-spacing: .12em; text-transform: uppercase;
-          padding: 3px 8px; border-radius: 999px;
+          padding: 3px 9px; border-radius: 999px;
           color: #C0BAD0;
-          background: rgba(168,85,247,.10);
-          border: 1px solid rgba(168,85,247,.22);
+          background: rgba(168,85,247,.12);
+          border: 1px solid rgba(168,85,247,.26);
           white-space: nowrap;
         }
-        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.30); background: rgba(217,70,239,.08); }
-        .tcard-tipo { font-size: 11px; color: #8E879F; }
+        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.34); background: rgba(217,70,239,.10); }
+        .tcard-tipo { font-size: 11.5px; color: #9892AB; }
         .tcard .tt  {
-          font-size: 12.5px; color: #C0BAD0; line-height: 1.5; margin-top: 6px;
+          font-size: .94rem; color: #B8B2C8; line-height: 1.55; margin-top: 8px;
           display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
           overflow: hidden;
         }
@@ -1116,9 +1190,27 @@ export default function LandingPage() {
           .serv-grid { grid-template-columns: 1fr; gap: 14px; }
           .serv-card { padding: 20px 20px; }
 
-          /* Testimonios · cards más compactas */
-          #testimonios { gap: 28px; }
-          .tcard { width: 270px; }
+          /* Testimonios mobile · header reducido y separado del carrusel */
+          #testimonios { padding-block: 72px; padding-inline: 20px; }
+          .testi-head {
+            gap: 14px;
+            margin: 0 auto 38px;
+            padding-inline: 20px;
+            max-width: 100%;
+          }
+          .testi-head::before {
+            inset: -40px -60px;
+          }
+          .testi-head .h-2 {
+            font-size: clamp(1.8rem, 9vw, 2.6rem);
+            line-height: 1.05;
+          }
+          .testi-carousel { gap: 16px; margin-top: 0; }
+          .tcard {
+            width: min(300px, 86vw);
+            padding: 18px;
+            border-radius: 16px;
+          }
           .tcard .tt { -webkit-line-clamp: 3; }
 
           /* CTA */
