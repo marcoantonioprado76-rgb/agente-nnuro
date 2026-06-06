@@ -18,7 +18,6 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -44,7 +43,6 @@ const TESTI_RIGHT = TESTIMONIOS.slice(mitad)
 
 export default function LandingPage() {
   const sceneRef    = useRef<HTMLDivElement>(null)
-  const loaderRef   = useRef<HTMLDivElement>(null)
   const particlesRef = useRef<HTMLDivElement>(null)
 
   // ──────────────  PARTÍCULAS FLOTANTES  ──────────────
@@ -81,15 +79,19 @@ export default function LandingPage() {
     const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100)
     camera.position.set(0, 0.9, 2.3)
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+    // Antialias solo en desktop · pixelRatio máx 1.5 en lugar de 2 (ahorra GPU brutal en retina mobile)
+    const isPhone = innerWidth < 820
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isPhone })
     renderer.setSize(innerWidth, innerHeight)
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.1
     container.appendChild(renderer.domElement)
 
-    const pmrem = new THREE.PMREMGenerator(renderer)
-    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    // PMREMGenerator + RoomEnvironment eliminados — costaban ~200ms de GPU
+    // en la primera carga y no aportan nada cuando el robot es un PNG plano.
+    // Si en el futuro se carga un GLB con materiales metálicos, se puede
+    // reactivar puntualmente dentro del callback onLoad de GLTFLoader.
 
     // Luces
     scene.add(new THREE.AmbientLight(0x3a2a66, 0.6))
@@ -146,8 +148,6 @@ export default function LandingPage() {
     let model: THREE.Object3D | null = null
     let usingFallback = false   // true cuando se usa el PNG plano del robot original
 
-    const hideLoader = () => loaderRef.current?.classList.add('hide')
-
     function centerAndScale(obj: THREE.Object3D, targetHeight: number) {
       const box = new THREE.Box3().setFromObject(obj)
       const size = new THREE.Vector3()
@@ -199,14 +199,12 @@ export default function LandingPage() {
           })
           centerAndScale(model, 2.5)
           robot.add(model)
-          hideLoader()
         },
         undefined,
         () => {
           // ⚠️ Sin GLB → usar el PNG plano del robot original
           console.info('[NÜRO] No hay GLB en', ROBOT_GLB_PATH, '· usando imagen plana del robot.')
           buildFallback()
-          hideLoader()
         }
       )
     }
@@ -237,7 +235,9 @@ export default function LandingPage() {
       trigger: '.content',
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 1,
+      // 1s de smoothing extra hacía sentir el scroll perezoso. 0.4s = respuesta
+      // casi inmediata pero sin saltos (la cámara aún ease entre frames).
+      scrub: 0.4,
       onUpdate: (self) => applyProgress(self.progress),
     })
 
@@ -287,18 +287,25 @@ export default function LandingPage() {
     // Arranque
     applyProgress(0)
     animate()
-    requestAnimationFrame(() => setTimeout(loadRobot, 60))
-    const safety = setTimeout(hideLoader, 6000)
+    // Carga del modelo diferida: si el browser soporta requestIdleCallback,
+    // espera a que el main thread esté libre (mejor first paint). Fallback: timeout 100ms.
+    type IdleWin = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number
+    }
+    const w = window as IdleWin
+    if (typeof w.requestIdleCallback === 'function') {
+      w.requestIdleCallback(loadRobot, { timeout: 600 })
+    } else {
+      setTimeout(loadRobot, 100)
+    }
 
     // Cleanup
     return () => {
       cancelAnimationFrame(rafId)
-      clearTimeout(safety)
       document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('resize', onResize)
       scrollTrigger.kill()
       renderer.dispose()
-      pmrem.dispose()
       tex.dispose()
       platform.geometry.dispose()
       ;(platform.material as THREE.MeshBasicMaterial).dispose()
@@ -321,7 +328,6 @@ export default function LandingPage() {
       <div className="bg-glow-warm" />
       <div id="particles" ref={particlesRef} />
       <div id="scene" ref={sceneRef} />
-      <div id="loader" ref={loaderRef}><div className="loader-ring" /></div>
 
       <div className="topbar">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -501,18 +507,6 @@ export default function LandingPage() {
 
         #scene { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
         #scene canvas { display: block; width: 100%; height: 100%; }
-
-        #loader {
-          position: fixed; inset: 0; z-index: 30; display: grid; place-items: center;
-          background: var(--negro); transition: opacity .8s ease;
-        }
-        #loader.hide { opacity: 0; pointer-events: none; }
-        .loader-ring {
-          width: 54px; height: 54px; border-radius: 50%;
-          border: 3px solid rgba(155,92,255,.18); border-top-color: var(--azul-neon);
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .content { position: relative; z-index: 10; }
         section {
