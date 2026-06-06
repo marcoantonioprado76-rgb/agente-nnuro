@@ -15,26 +15,42 @@
  * (la página lo detecta automáticamente; sin él usa el PNG plano).
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Manrope } from 'next/font/google'
+import { Bot, Store, Clock, Send, Sparkles, Play, ArrowRight } from 'lucide-react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+const manrope = Manrope({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-manrope',
+})
+
 const ROBOT_GLB_PATH = '/landing/nuro-robot.glb'
 const ROBOT_IMAGE    = '/landing/robot.png'
 
-const TESTIMONIOS = [
-  { foto: 'https://randomuser.me/api/portraits/women/68.jpg', nombre: 'María González',   texto: 'El agente de IA atiende a mis clientes a toda hora. Cerré más ventas en un mes que en todo el trimestre.' },
-  { foto: 'https://randomuser.me/api/portraits/men/32.jpg',   nombre: 'Carlos Méndez',    texto: 'Mi tienda virtual quedó impecable y profesional. Ahora mis productos se venden solos.' },
-  { foto: 'https://randomuser.me/api/portraits/women/44.jpg', nombre: 'Lucía Fernández',  texto: 'Respondo al instante aunque esté durmiendo. NÜRO no descansa y se nota en los resultados.' },
-  { foto: 'https://randomuser.me/api/portraits/men/75.jpg',   nombre: 'Andrés Rojas',     texto: 'El seguimiento automático recuperó clientes que ya daba por perdidos. ¡Gracias NÜRO!' },
-  { foto: 'https://randomuser.me/api/portraits/women/65.jpg', nombre: 'Valentina Torres', texto: 'Pasé de responder tarde a atender 24/7. Mis clientes aman la rapidez.' },
-  { foto: 'https://randomuser.me/api/portraits/men/11.jpg',   nombre: 'Diego Ramírez',    texto: 'Monté mi tienda online en días, no en meses. Moderna y muy fácil de usar.' },
-  { foto: 'https://randomuser.me/api/portraits/women/90.jpg', nombre: 'Camila Herrera',   texto: 'El agente presenta mi oferta mejor que yo. Profesional y siempre disponible.' },
-  { foto: 'https://randomuser.me/api/portraits/men/4.jpg',    nombre: 'Jorge Castillo',   texto: 'Más prospectos atendidos y más ventas confirmadas. NÜRO transformó mi negocio.' },
-  { foto: 'https://randomuser.me/api/portraits/women/12.jpg', nombre: 'Paola Núñez',      texto: 'Una imagen profesional las 24 horas. Mis clientes confían más en mi marca.' },
-  { foto: 'https://randomuser.me/api/portraits/men/47.jpg',   nombre: 'Sebastián Vargas', texto: 'La IA cierra ventas mientras yo me enfoco en crecer. Resultados increíbles.' },
+type Testimonio = {
+  foto: string
+  nombre: string
+  tipo: string       // tipo de negocio (subtítulo)
+  tag: 'Agente IA' | 'Tienda virtual'
+  texto: string      // máximo ~2 líneas
+}
+
+const TESTIMONIOS: Testimonio[] = [
+  { foto: 'https://randomuser.me/api/portraits/women/68.jpg', nombre: 'María González',   tipo: 'Boutique de moda',        tag: 'Agente IA',      texto: 'El agente atiende a toda hora. Cerré más ventas en un mes que en todo el trimestre.' },
+  { foto: 'https://randomuser.me/api/portraits/men/32.jpg',   nombre: 'Carlos Méndez',    tipo: 'Distribuidora',           tag: 'Tienda virtual', texto: 'Mi tienda quedó impecable y profesional. Mis productos ahora se venden solos.' },
+  { foto: 'https://randomuser.me/api/portraits/women/44.jpg', nombre: 'Lucía Fernández',  tipo: 'Centro estético',         tag: 'Agente IA',      texto: 'Respondo al instante aunque esté durmiendo. Se nota en los resultados.' },
+  { foto: 'https://randomuser.me/api/portraits/men/75.jpg',   nombre: 'Andrés Rojas',     tipo: 'Inmobiliaria',            tag: 'Agente IA',      texto: 'El seguimiento automático recuperó clientes que daba por perdidos.' },
+  { foto: 'https://randomuser.me/api/portraits/women/65.jpg', nombre: 'Valentina Torres', tipo: 'Pastelería artesanal',    tag: 'Agente IA',      texto: 'Pasé de responder tarde a atender 24/7. Mis clientes aman la rapidez.' },
+  { foto: 'https://randomuser.me/api/portraits/men/11.jpg',   nombre: 'Diego Ramírez',    tipo: 'E-commerce',              tag: 'Tienda virtual', texto: 'Monté mi tienda online en días, no en meses. Moderna y muy fácil de usar.' },
+  { foto: 'https://randomuser.me/api/portraits/women/90.jpg', nombre: 'Camila Herrera',   tipo: 'Servicios profesionales', tag: 'Agente IA',      texto: 'El agente presenta mi oferta mejor que yo. Profesional y siempre disponible.' },
+  { foto: 'https://randomuser.me/api/portraits/men/4.jpg',    nombre: 'Jorge Castillo',   tipo: 'Marketing digital',       tag: 'Agente IA',      texto: 'Más prospectos atendidos y más ventas confirmadas. Transformó mi negocio.' },
+  { foto: 'https://randomuser.me/api/portraits/women/12.jpg', nombre: 'Paola Núñez',      tipo: 'Spa & wellness',          tag: 'Tienda virtual', texto: 'Una imagen profesional las 24 horas. Mis clientes confían más en mi marca.' },
+  { foto: 'https://randomuser.me/api/portraits/men/47.jpg',   nombre: 'Sebastián Vargas', tipo: 'Academia online',         tag: 'Agente IA',      texto: 'La IA cierra ventas mientras yo me enfoco en crecer. Resultados increíbles.' },
 ]
 
 const mitad = Math.ceil(TESTIMONIOS.length / 2)
@@ -42,8 +58,17 @@ const TESTI_LEFT  = TESTIMONIOS.slice(0, mitad)
 const TESTI_RIGHT = TESTIMONIOS.slice(mitad)
 
 export default function LandingPage() {
-  const sceneRef    = useRef<HTMLDivElement>(null)
+  const sceneRef     = useRef<HTMLDivElement>(null)
   const particlesRef = useRef<HTMLDivElement>(null)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Navbar scroll-aware: añade fondo blur al pasar 24px de scroll
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // ──────────────  PARTÍCULAS FLOTANTES  ──────────────
   useEffect(() => {
@@ -321,7 +346,7 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <>
+    <div className={manrope.variable}>
       <div className="bg-gradient" />
       <div className="bg-grid" />
       <div className="bg-glow" />
@@ -329,7 +354,7 @@ export default function LandingPage() {
       <div id="particles" ref={particlesRef} />
       <div id="scene" ref={sceneRef} />
 
-      <div className="topbar">
+      <header className={`topbar ${scrolled ? 'is-scrolled' : ''}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/landing/logo-blanco.png" className="logo-nuro" alt="NÜRO" />
         <nav className="menu">
@@ -342,31 +367,64 @@ export default function LandingPage() {
           <a href="/login"    className="btn btn-ghost btn-nav">Iniciar sesión</a>
           <a href="/register" className="btn btn-primary btn-nav">Registrarse</a>
         </div>
-      </div>
+      </header>
 
       <main className="content">
+        {/* ─── HERO ─── */}
         <section id="hero">
-          <div className="scrim" />
+          <div className="hero-bg" aria-hidden />
           <div className="hero-text">
-            <span className="badge"><span className="dot" /> Inteligencia Artificial para tu negocio</span>
-            <h1 className="grad">NÜRO</h1>
-            <div className="sub">Tecnología que trabaja contigo.</div>
-            <p>Un ecosistema inteligente diseñado para transformar la manera en la que tu negocio
-              atrae prospectos, atiende clientes y convierte oportunidades en ventas.</p>
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> Agentes de inteligencia artificial para negocios
+            </span>
+            <h1 className="h-display">
+              Tu negocio sigue trabajando, <span className="accent">incluso cuando tú no estás.</span>
+            </h1>
+            <p className="lead">
+              NÜRO combina agentes de ventas con inteligencia artificial y tiendas virtuales
+              profesionales para atender, hacer seguimiento y convertir oportunidades durante
+              todo el día.
+            </p>
             <div className="cta-row">
-              <a href="#vision" className="btn btn-primary">Descubrir NÜRO →</a>
-              <a href="#cta"    className="btn btn-ghost">Solicitar demostración</a>
+              <a href="#demo" className="btn btn-primary">
+                Ver cómo funciona <ArrowRight size={16} strokeWidth={2.4} />
+              </a>
+              <a href="#cta" className="btn btn-ghost">Solicitar demostración</a>
             </div>
-            <div className="scroll-hint"><i />DESLIZA</div>
+            <div className="scroll-hint" aria-hidden><i />DESLIZA</div>
           </div>
         </section>
 
+        {/* ─── TRANSICIÓN ─── */}
+        <section id="transicion">
+          <div className="trans-wrap">
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> Plataforma comercial inteligente
+            </span>
+            <h2 className="h-2">Una nueva forma de hacer crecer tu negocio.</h2>
+            <p className="lead lead-sm">
+              Automatiza la atención comercial sin perder cercanía con tus clientes.
+            </p>
+            <ul className="pillar-row">
+              <li><Clock    size={15} strokeWidth={1.8} /> Atención 24/7</li>
+              <li><Send     size={15} strokeWidth={1.8} /> Seguimiento automático</li>
+              <li><Sparkles size={15} strokeWidth={1.8} /> Presencia digital profesional</li>
+            </ul>
+          </div>
+        </section>
+
+        {/* ─── DEMO VIDEO ─── */}
         <section id="demo">
           <div className="demo-scrim" />
           <div className="demo-wrap">
-            <span className="badge"><span className="dot" /> Demo en video</span>
-            <h2>Mira <span className="grad">NÜRO</span> en acción</h2>
-            <div className="demo-sub">En un minuto entiendes cómo trabaja por tu negocio.</div>
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> Demo en video
+            </span>
+            <h2 className="h-2">Descubre cómo trabaja NÜRO por tu negocio.</h2>
+            <p className="lead lead-sm">
+              Mira en menos de dos minutos cómo una experiencia automatizada puede ayudarte a
+              atender mejor.
+            </p>
             <div className="video-frame">
               <iframe
                 src="https://player.vimeo.com/video/1197763990?title=0&byline=0&portrait=0&dnt=1"
@@ -376,47 +434,61 @@ export default function LandingPage() {
                 title="NÜRO en acción"
               />
             </div>
-            <a className="video-link" href="https://vimeo.com/1197763990" target="_blank" rel="noopener noreferrer">Ver en Vimeo ↗</a>
+            <a className="video-link" href="https://vimeo.com/1197763990" target="_blank" rel="noopener noreferrer">
+              <Play size={12} strokeWidth={2.4} /> Ver en Vimeo
+            </a>
           </div>
         </section>
 
+        {/* ─── VISIÓN ─── */}
         <section id="vision">
           <div className="side-card">
-            <h2>Tu negocio activo <span className="grad-azul">incluso cuando no estás conectado.</span></h2>
-            <p>NÜRO combina <strong>agentes de inteligencia artificial</strong> y <strong>tiendas
-              virtuales profesionales</strong> para que tu negocio atienda, presente tu oferta y
-              venda las 24 horas — con una presencia impecable, incluso cuando tú no estás conectado.</p>
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> Visión
+            </span>
+            <h2 className="h-2">
+              Tu negocio activo, <span className="accent">incluso cuando no estás conectado.</span>
+            </h2>
+            <p className="lead lead-sm">
+              Mientras tú te enfocas en crecer, NÜRO mantiene tu atención comercial en
+              movimiento: responde, organiza conversaciones y muestra tu oferta con una imagen
+              profesional.
+            </p>
           </div>
         </section>
 
+        {/* ─── SERVICIOS ─── */}
         <section id="servicios">
           <div className="serv-wrap">
-            <span className="badge"><span className="dot" /> Nuestros servicios</span>
-            <h2>Dos formas en que <span className="grad">NÜRO</span> hace crecer tu negocio</h2>
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> Servicios
+            </span>
+            <h2 className="h-2">Dos formas en que NÜRO hace crecer tu negocio.</h2>
             <div className="serv-grid">
               <article className="serv-card">
-                <div className="serv-ic">🤖</div>
-                <h3>Agentes de IA · 24/7</h3>
-                <p>Agentes de inteligencia artificial que trabajan las 24 horas, los 7 días de la
-                  semana. Atienden a tus prospectos, presentan tu oferta, hacen seguimiento, te
-                  ayudan en el cierre y confirman las ventas — sin descanso.</p>
+                <div className="serv-ic"><Bot size={22} strokeWidth={1.6} /></div>
+                <h3>Agentes IA de ventas</h3>
+                <p>Atienden consultas, presentan tu oferta, realizan seguimiento y ayudan a
+                  confirmar ventas durante las 24 horas.</p>
               </article>
               <article className="serv-card">
-                <div className="serv-ic">🛍️</div>
+                <div className="serv-ic"><Store size={22} strokeWidth={1.6} /></div>
                 <h3>Tiendas virtuales profesionales</h3>
-                <p>Tiendas virtuales para todo tipo de negocio, diseñadas para mostrar tus productos
-                  y servicios de forma organizada, moderna y atractiva — listas para vender y dar
-                  una imagen profesional.</p>
+                <p>Presenta tus productos o servicios con una experiencia digital clara,
+                  moderna y preparada para convertir visitas en oportunidades.</p>
               </article>
             </div>
           </div>
         </section>
 
+        {/* ─── TESTIMONIOS ─── */}
         <section id="testimonios">
           <div className="testi-scrim" />
           <div className="testi-head">
-            <span className="badge"><span className="dot" /> Prueba social</span>
-            <h2>Negocios que ya crecen con <span className="grad">NÜRO</span></h2>
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> Prueba social
+            </span>
+            <h2 className="h-2">Negocios que ya crecen con NÜRO.</h2>
           </div>
           <div className="marquee"><div className="mtrack to-right">
             {[...TESTI_LEFT, ...TESTI_LEFT].map((t, i) => (
@@ -430,10 +502,13 @@ export default function LandingPage() {
           </div></div>
         </section>
 
+        {/* ─── CTA FINAL ─── */}
         <section id="cta">
           <div className="cta-inner">
-            <h2>Lleva tu negocio hacia una <span className="grad">nueva generación digital.</span></h2>
-            <a href="/register" className="btn btn-primary" style={{ fontSize: 18, padding: '18px 38px' }}>Agendar una demostración →</a>
+            <h2 className="h-2">Lleva tu negocio a una nueva generación digital.</h2>
+            <a href="/register" className="btn btn-primary btn-lg">
+              Solicitar demostración <ArrowRight size={18} strokeWidth={2.4} />
+            </a>
             <div className="footer-note">© NÜRO · Tecnología que trabaja contigo.</div>
           </div>
         </section>
@@ -441,21 +516,28 @@ export default function LandingPage() {
 
       <style jsx global>{`
         :root {
+          /* Paleta original (usada por la animación de fondo · NO TOCAR) */
           --naranja:#e0219a;
           --naranja-claro:#b16cff;
           --azul-neon:#9b5cff;
           --azul-glow:rgba(155,92,255,.55);
           --negro:#0a0714;
           --azul-oscuro:#150f2c;
-          --texto:#ECE8F7;
-          --texto-suave:#A99FC4;
+          /* Paleta editorial nueva (rediseño 2026) */
+          --text-1:#F5F3FF;   /* texto principal */
+          --text-2:#B8B2C8;   /* texto secundario */
+          --text-3:#8E879F;   /* texto auxiliar */
+          --acc-violet:#A855F7;
+          --acc-fuchsia:#D946EF;
         }
         html { scroll-behavior: smooth; }
         body {
-          font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-          color: var(--texto);
+          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+          color: var(--text-1);
           background: var(--negro);
           overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
         .bg-gradient {
@@ -508,6 +590,12 @@ export default function LandingPage() {
         #scene { position: fixed; inset: 0; z-index: 4; pointer-events: none; }
         #scene canvas { display: block; width: 100%; height: 100%; }
 
+        /* ═══════════════════════════════════════════════════════════
+           CONTENIDO · paleta editorial premium
+           Texto:    #F5F3FF principal · #B8B2C8 secundario · #8E879F auxiliar
+           Acento:   #A855F7 violeta · #D946EF fucsia (puntual)
+           Cards:    negro violeta translúcido con borde fino baja opacidad
+           ═══════════════════════════════════════════════════════════ */
         .content { position: relative; z-index: 10; }
         section {
           min-height: 100vh;
@@ -516,269 +604,390 @@ export default function LandingPage() {
           position: relative;
         }
 
+        /* ── NAVBAR (scroll-aware) ── */
         .topbar {
           position: fixed; top: 0; left: 0; width: 100%; z-index: 20;
           display: flex; align-items: center; justify-content: space-between;
-          padding: 22px 6vw;
-          background: linear-gradient(to bottom, rgba(10,7,20,.7), transparent);
+          padding: 18px 6vw;
+          background: transparent;
+          border-bottom: 1px solid transparent;
+          transition: background .35s ease, border-color .35s ease, backdrop-filter .35s ease, padding .25s ease;
+          will-change: background, backdrop-filter;
         }
-        .topbar .logo-nuro { height: 30px; filter: drop-shadow(0 2px 12px rgba(155,92,255,.45)); }
-        .topbar .menu { display: flex; gap: 28px; align-items: center; }
+        .topbar.is-scrolled {
+          background: rgba(10,7,20,.62);
+          border-bottom-color: rgba(168,85,247,.10);
+          backdrop-filter: blur(14px) saturate(140%);
+          -webkit-backdrop-filter: blur(14px) saturate(140%);
+          padding: 14px 6vw;
+        }
+        .topbar .logo-nuro { height: 28px; filter: drop-shadow(0 2px 10px rgba(168,85,247,.32)); }
+        .topbar .menu { display: flex; gap: 30px; align-items: center; }
         .topbar .menu a {
-          color: var(--texto-suave); text-decoration: none;
-          font-size: 15px; font-weight: 500; transition: .2s;
+          color: #B8B2C8; text-decoration: none;
+          font-size: 14px; font-weight: 600; letter-spacing: -.005em;
+          transition: color .2s;
         }
-        .topbar .menu a:hover { color: #fff; }
-        .topbar .auth-btns { display: flex; gap: 12px; align-items: center; }
+        .topbar .menu a:hover { color: #F5F3FF; }
+        .topbar .auth-btns { display: flex; gap: 10px; align-items: center; }
 
+        /* ── BOTONES ── */
         .btn {
           display: inline-flex; align-items: center; gap: 8px;
-          border: none; cursor: pointer;
-          font-size: 16px; font-weight: 700; padding: 15px 30px;
-          border-radius: 13px; transition: transform .2s, box-shadow .2s; text-decoration: none;
+          border: 0; cursor: pointer;
+          font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+          padding: 14px 26px; border-radius: 12px;
+          transition: transform .22s ease, box-shadow .22s ease, background .22s ease, color .22s ease, border-color .22s ease;
+          text-decoration: none; white-space: nowrap;
         }
         .btn-primary {
-          background: linear-gradient(95deg, #7c3aed 0%, #e0219a 52%, #b16cff 100%); color: #fff;
-          box-shadow: 0 14px 38px -8px rgba(224,33,154,.6), 0 0 24px -6px rgba(155,92,255,.5);
+          background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
+          color: #fff;
+          box-shadow: 0 12px 28px -10px rgba(168,85,247,.55), inset 0 1px 0 rgba(255,255,255,.18);
         }
         .btn-primary:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 22px 48px -8px rgba(224,33,154,.7), 0 0 34px -4px rgba(155,92,255,.6);
+          transform: translateY(-2px);
+          box-shadow: 0 18px 38px -10px rgba(168,85,247,.65), inset 0 1px 0 rgba(255,255,255,.22);
         }
         .btn-ghost {
-          background: rgba(255,255,255,.05); color: #fff;
-          border: 1px solid rgba(155,92,255,.35);
-          box-shadow: 0 0 0 0 var(--azul-glow);
+          background: transparent; color: #F5F3FF;
+          border: 1px solid rgba(168,85,247,.32);
         }
-        .btn-ghost:hover { background: rgba(155,92,255,.12); box-shadow: 0 0 26px -4px var(--azul-glow); }
-        .btn-nav { font-size: 14px; padding: 11px 22px; border-radius: 999px; }
+        .btn-ghost:hover {
+          background: rgba(168,85,247,.08);
+          border-color: rgba(168,85,247,.55);
+        }
+        .btn-nav { font-size: 13.5px; padding: 10px 18px; border-radius: 999px; }
+        .btn-lg  { font-size: 16.5px; padding: 16px 32px; border-radius: 14px; }
 
-        .badge {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: rgba(155,92,255,.1); border: 1px solid rgba(155,92,255,.3);
-          color: var(--azul-neon); font-size: 13px; font-weight: 600;
-          padding: 7px 15px; border-radius: 999px;
+        /* ── EYEBROW (etiqueta sutil de sección) ── */
+        .eyebrow {
+          display: inline-flex; align-items: center; gap: 9px;
+          font-size: 11.5px; font-weight: 600;
+          color: #B8B2C8;
+          letter-spacing: .22em; text-transform: uppercase;
+          padding: 8px 14px; border-radius: 999px;
+          background: rgba(168,85,247,.06);
+          border: 1px solid rgba(168,85,247,.18);
         }
-        .badge .dot {
-          width: 8px; height: 8px; border-radius: 50%;
-          background: var(--azul-neon);
-          box-shadow: 0 0 10px var(--azul-neon);
-          animation: pulse 1.8s infinite;
+        .eyebrow-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #A855F7;
+          box-shadow: 0 0 8px rgba(168,85,247,.7);
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
 
-        h1, h2 { letter-spacing: -1px; line-height: 1.05; font-weight: 800; }
-        .grad {
-          background: linear-gradient(110deg, var(--naranja), var(--naranja-claro) 55%, #d8c7ff);
+        /* ── TIPOGRAFÍA ── */
+        h1, h2, h3 { color: #F5F3FF; letter-spacing: -.03em; line-height: 1.06; font-weight: 700; }
+        .h-display {
+          font-size: clamp(38px, 6.4vw, 80px);
+          font-weight: 800; letter-spacing: -.035em; line-height: 1.02;
+          max-width: 18ch; margin: 18px auto 18px;
+        }
+        .h-2 {
+          font-size: clamp(28px, 3.6vw, 46px);
+          font-weight: 700; letter-spacing: -.028em; line-height: 1.08;
+          max-width: 22ch;
+        }
+        .accent {
+          background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
           -webkit-background-clip: text; background-clip: text; color: transparent;
         }
-        .grad-azul {
-          background: linear-gradient(110deg, #d8c7ff, var(--azul-neon));
-          -webkit-background-clip: text; background-clip: text; color: transparent;
+        .lead {
+          color: #B8B2C8; font-size: 16.5px; font-weight: 400;
+          line-height: 1.6; letter-spacing: -.005em;
+          max-width: 56ch;
         }
+        .lead-sm { font-size: 15px; max-width: 52ch; }
 
-        #hero { justify-content: flex-end; text-align: center; align-items: center; padding-bottom: 5vh; }
-        #hero .scrim {
-          position: absolute; left: 0; right: 0; bottom: 0; height: 62%; pointer-events: none;
-          background: linear-gradient(to top, rgba(10,7,20,.94) 16%, rgba(10,7,20,.55) 52%, transparent 100%);
+        /* ─────────────────────────────────────────────────────────
+           HERO · composición editorial liviana, sin caja gigante
+           Capa de protección sutil detrás del texto, no tapa al robot
+           ───────────────────────────────────────────────────────── */
+        #hero {
+          justify-content: flex-end; text-align: center; align-items: center;
+          padding-bottom: 6vh;
         }
-        #hero .hero-text { position: relative; max-width: 680px; margin: 0 auto; }
-        #hero .badge { margin-bottom: 10px; }
-        #hero h1 {
-          font-size: clamp(54px, 9vw, 112px); font-weight: 900;
-          letter-spacing: -3px; line-height: .95;
-          text-shadow: 0 6px 40px rgba(224,33,154,.35);
+        #hero .hero-bg {
+          position: absolute; left: 50%; bottom: 0;
+          width: min(880px, 90%); height: 58%;
+          transform: translateX(-50%);
+          background:
+            radial-gradient(70% 90% at 50% 75%, rgba(10,7,20,.86) 0%, rgba(10,7,20,.55) 45%, transparent 80%);
+          pointer-events: none;
         }
-        #hero .sub {
-          font-size: clamp(17px, 2.2vw, 24px);
-          color: var(--azul-neon); font-weight: 600; margin-top: 4px;
-        }
-        #hero .hero-text p {
-          color: var(--texto-suave); font-size: 16px; line-height: 1.55;
-          margin: 14px auto 20px; max-width: 540px;
-        }
-        #hero .cta-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        #hero .hero-text { position: relative; max-width: 720px; margin: 0 auto; }
+        #hero .lead { margin: 0 auto 24px; }
+        #hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
         .scroll-hint {
-          margin-top: 30px; color: var(--texto-suave);
-          font-size: 13px; letter-spacing: 2px;
+          margin-top: 30px; color: #8E879F;
+          font-size: 11px; font-weight: 600; letter-spacing: .26em;
           display: flex; flex-direction: column; align-items: center; gap: 8px;
-          animation: bob 2s ease-in-out infinite;
+          animation: bob 2.4s ease-in-out infinite;
         }
         .scroll-hint i {
-          width: 22px; height: 36px;
-          border: 2px solid rgba(154,166,189,.5);
+          width: 20px; height: 32px;
+          border: 1.5px solid rgba(142,135,159,.45);
           border-radius: 12px; position: relative;
         }
         .scroll-hint i::after {
-          content: ''; position: absolute; top: 6px; left: 50%;
-          width: 3px; height: 7px; border-radius: 2px;
-          background: var(--azul-neon); transform: translateX(-50%);
-          animation: wheel 1.6s infinite;
+          content: ''; position: absolute; top: 5px; left: 50%;
+          width: 2.5px; height: 6px; border-radius: 2px;
+          background: #A855F7; transform: translateX(-50%);
+          animation: wheel 1.8s infinite;
         }
-        @keyframes wheel { 0% { opacity: 1; top: 6px; } 100% { opacity: 0; top: 18px; } }
-        @keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+        @keyframes wheel { 0% { opacity: 1; top: 5px; } 100% { opacity: 0; top: 17px; } }
+        @keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
-        #vision { justify-content: center; }
-        .side-card {
-          max-width: 430px;
-          background: rgba(22,16,42,.55); backdrop-filter: blur(12px);
-          border: 1px solid rgba(155,92,255,.18); border-radius: 20px;
-          padding: 36px 34px;
+        /* ─────────────────────────────────────────────────────────
+           TRANSICIÓN · mucho aire, 3 indicadores sin paneles gigantes
+           ───────────────────────────────────────────────────────── */
+        #transicion {
+          justify-content: center; align-items: center; text-align: center;
         }
-        #vision .side-card { margin-left: auto; }
-        .side-card h2 { font-size: clamp(26px, 3.4vw, 40px); margin-bottom: 18px; }
-        .side-card p { color: var(--texto-suave); font-size: 17px; line-height: 1.65; }
+        .trans-wrap { max-width: 720px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .trans-wrap .h-2 { margin-top: 4px; }
+        .trans-wrap .lead { margin: 0 auto 8px; text-align: center; }
+        .pillar-row {
+          margin-top: 14px;
+          display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+          list-style: none; padding: 0;
+        }
+        .pillar-row li {
+          display: inline-flex; align-items: center; gap: 8px;
+          font-size: 13.5px; font-weight: 600; color: #F5F3FF;
+          padding: 10px 16px; border-radius: 999px;
+          background: rgba(20,14,38,.55);
+          border: 1px solid rgba(168,85,247,.18);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+        .pillar-row li :global(svg) { color: #A855F7; }
 
-        #ecosistema { justify-content: center; }
-        .eco-wrap { max-width: 460px; }
-        .eco-wrap h2 { font-size: clamp(26px, 3.4vw, 40px); margin-bottom: 24px; }
-        .eco-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .eco-item {
-          background: rgba(22,16,42,.6); backdrop-filter: blur(10px);
-          border: 1px solid rgba(155,92,255,.16); border-radius: 14px;
-          padding: 16px 16px; display: flex; align-items: center; gap: 11px;
-          font-size: 15px; font-weight: 600; transition: .25s;
-        }
-        .eco-item:hover {
-          border-color: rgba(224,33,154,.5); transform: translateY(-3px);
-          box-shadow: 0 14px 30px -12px rgba(224,33,154,.4);
-        }
-        .eco-item .ic {
-          min-width: 34px; height: 34px; border-radius: 10px;
-          display: grid; place-items: center; font-size: 17px;
-          background: linear-gradient(135deg, rgba(155,92,255,.25), rgba(155,92,255,.05));
-          border: 1px solid rgba(155,92,255,.3);
-        }
-
+        /* ─────────────────────────────────────────────────────────
+           DEMO VIDEO · marco premium, sin decoración alrededor
+           ───────────────────────────────────────────────────────── */
         #demo { justify-content: center; align-items: center; text-align: center; }
         #demo .demo-scrim {
           position: absolute; inset: 0; pointer-events: none;
-          background: radial-gradient(60% 60% at 50% 55%, rgba(10,7,20,.82) 0%, rgba(10,7,20,.35) 60%, transparent 100%);
+          background: radial-gradient(58% 58% at 50% 55%, rgba(10,7,20,.88) 0%, rgba(10,7,20,.30) 65%, transparent 100%);
         }
-        #demo .demo-wrap { position: relative; width: 100%; max-width: 920px; margin: 0 auto; }
-        #demo h2 { font-size: clamp(28px, 4vw, 46px); margin: 14px 0 6px; }
-        #demo .demo-sub { color: var(--texto-suave); font-size: 17px; margin-bottom: 22px; }
+        #demo .demo-wrap { position: relative; width: 100%; max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        #demo .h-2 { text-align: center; margin: 4px 0 0; }
+        #demo .lead { text-align: center; margin: 0 auto 18px; }
         .video-frame {
           position: relative; width: 100%; aspect-ratio: 16/9; margin: 0 auto;
-          border-radius: 22px; overflow: hidden; background: #0a0714;
-          border: 1px solid rgba(155,92,255,.4);
+          border-radius: 18px; overflow: hidden; background: #0a0714;
+          border: 1px solid rgba(168,85,247,.22);
           box-shadow:
-            0 40px 90px -24px rgba(155,92,255,.55),
-            0 0 0 1px rgba(255,255,255,.05) inset,
-            0 0 60px -10px rgba(224,33,154,.35);
+            0 30px 70px -28px rgba(0,0,0,.75),
+            0 0 0 1px rgba(255,255,255,.04) inset;
         }
         .video-frame iframe {
           position: absolute; inset: 0; width: 100%; height: 100%;
           border: 0; display: block;
         }
         .video-link {
-          display: inline-block; margin-top: 18px;
-          color: var(--azul-neon); text-decoration: none;
-          font-weight: 600; font-size: 15px; transition: .2s;
+          display: inline-flex; align-items: center; gap: 7px;
+          margin-top: 14px;
+          color: #B8B2C8; text-decoration: none;
+          font-weight: 600; font-size: 13.5px; letter-spacing: -.005em;
+          transition: color .2s;
         }
-        .video-link:hover { color: #fff; }
+        .video-link :global(svg) { color: #A855F7; }
+        .video-link:hover { color: #F5F3FF; }
 
+        /* ─────────────────────────────────────────────────────────
+           VISIÓN · panel compacto a la derecha, sin exceso de brillo
+           ───────────────────────────────────────────────────────── */
+        #vision { justify-content: center; }
+        .side-card {
+          max-width: 440px;
+          background: rgba(20,14,38,.58);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border: 1px solid rgba(168,85,247,.16);
+          border-radius: 18px;
+          padding: 30px 32px;
+          display: flex; flex-direction: column; gap: 14px;
+        }
+        #vision .side-card { margin-left: auto; }
+        .side-card .h-2 { font-size: clamp(24px, 2.8vw, 34px); margin: 4px 0 0; }
+        .side-card .lead { font-size: 15.5px; line-height: 1.62; }
+
+        /* ─────────────────────────────────────────────────────────
+           SERVICIOS · 2 cards translúcidas compactas
+           ───────────────────────────────────────────────────────── */
         #servicios { justify-content: center; }
-        .serv-wrap { max-width: 560px; }
-        .serv-wrap h2 { font-size: clamp(26px, 3.4vw, 40px); margin: 14px 0 22px; max-width: 520px; }
-        .serv-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        .serv-wrap { max-width: 580px; display: flex; flex-direction: column; gap: 14px; }
+        .serv-wrap .h-2 { font-size: clamp(24px, 3vw, 36px); margin: 6px 0 14px; max-width: 18ch; }
+        .serv-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         .serv-card {
-          background: rgba(22,16,42,.62); backdrop-filter: blur(10px);
-          border: 1px solid rgba(155,92,255,.18); border-radius: 16px;
-          padding: 20px 22px; transition: .25s;
+          background: rgba(20,14,38,.58);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(168,85,247,.16);
+          border-radius: 14px;
+          padding: 20px 22px;
+          transition: transform .25s, border-color .25s, box-shadow .25s;
+          display: flex; flex-direction: column; gap: 6px;
         }
         .serv-card:hover {
-          border-color: rgba(224,33,154,.5); transform: translateY(-3px);
-          box-shadow: 0 18px 36px -14px rgba(224,33,154,.4);
+          border-color: rgba(168,85,247,.42);
+          transform: translateY(-2px);
+          box-shadow: 0 18px 36px -16px rgba(168,85,247,.32);
         }
         .serv-ic {
-          width: 48px; height: 48px; border-radius: 13px;
-          display: grid; place-items: center; font-size: 24px; margin-bottom: 12px;
-          background: linear-gradient(135deg, rgba(155,92,255,.28), rgba(224,33,154,.18));
-          border: 1px solid rgba(155,92,255,.3);
+          width: 42px; height: 42px; border-radius: 11px;
+          display: grid; place-items: center;
+          color: #A855F7;
+          background: rgba(168,85,247,.10);
+          border: 1px solid rgba(168,85,247,.22);
+          margin-bottom: 10px;
         }
-        .serv-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-        .serv-card p { color: var(--texto-suave); font-size: 15px; line-height: 1.6; }
+        .serv-card h3 { font-size: 17.5px; font-weight: 700; letter-spacing: -.018em; }
+        .serv-card p {
+          color: #B8B2C8; font-size: 14.5px; line-height: 1.6; max-width: 48ch;
+        }
 
-        #testimonios { justify-content: center; align-items: center; text-align: center; gap: 18px; }
+        /* ─────────────────────────────────────────────────────────
+           TESTIMONIOS · cards compactas con foto + tipo + tag
+           ───────────────────────────────────────────────────────── */
+        #testimonios { justify-content: center; align-items: center; text-align: center; gap: 16px; }
         #testimonios .testi-scrim {
           position: absolute; inset: 0; pointer-events: none;
           background: radial-gradient(82% 72% at 50% 50%, rgba(10,7,20,.78) 0%, rgba(10,7,20,.30) 65%, transparent 100%);
         }
-        .testi-head { position: relative; margin-bottom: 6px; }
-        .testi-head h2 { font-size: clamp(26px, 3.6vw, 42px); margin-top: 12px; }
+        .testi-head { position: relative; margin-bottom: 8px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .testi-head .h-2 { font-size: clamp(26px, 3.2vw, 40px); max-width: 22ch; text-align: center; }
         .marquee {
           position: relative; width: 100%; overflow: hidden;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-                  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+                  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
         }
-        .mtrack { display: flex; gap: 16px; width: max-content; will-change: transform; }
-        .mtrack.to-left  { animation: marqueeLeft  42s linear infinite; }
-        .mtrack.to-right { animation: marqueeRight 42s linear infinite; }
+        /* Movimiento más lento y suave: 60s vs 42s del original */
+        .mtrack { display: flex; gap: 14px; width: max-content; will-change: transform; padding: 6px 0; }
+        .mtrack.to-left  { animation: marqueeLeft  60s linear infinite; }
+        .mtrack.to-right { animation: marqueeRight 60s linear infinite; }
         @keyframes marqueeLeft  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
         @keyframes marqueeRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
         .marquee:hover .mtrack { animation-play-state: paused; }
+
         .tcard {
-          display: flex; align-items: center; gap: 12px; flex: 0 0 auto;
-          width: 320px;
-          background: rgba(22,16,42,.72); backdrop-filter: blur(8px);
-          border: 1px solid rgba(155,92,255,.2); border-radius: 14px;
-          padding: 12px 15px; text-align: left;
+          display: flex; align-items: flex-start; gap: 12px; flex: 0 0 auto;
+          width: 300px;
+          background: rgba(20,14,38,.66);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border: 1px solid rgba(168,85,247,.14);
+          border-radius: 12px;
+          padding: 13px 15px; text-align: left;
         }
         .tcard img {
-          width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
-          border: 2px solid rgba(155,92,255,.45); background: #1a1330;
+          width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
+          border: 1.5px solid rgba(168,85,247,.32); background: #1a1330;
         }
-        .tcard .tn { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-        .tcard .tt { font-size: 12.5px; color: var(--texto-suave); line-height: 1.4; }
+        .tcard-body { min-width: 0; flex: 1; }
+        .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .tcard .tn  { font-weight: 700; font-size: 13.5px; color: #F5F3FF; letter-spacing: -.01em; }
+        .tcard-tag {
+          display: inline-block;
+          font-size: 9.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+          padding: 3px 8px; border-radius: 999px;
+          color: #B8B2C8;
+          background: rgba(168,85,247,.08);
+          border: 1px solid rgba(168,85,247,.18);
+          white-space: nowrap;
+        }
+        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.28); background: rgba(217,70,239,.06); }
+        .tcard-tipo { font-size: 11px; color: #8E879F; margin-top: 2px; }
+        .tcard .tt  {
+          font-size: 12.5px; color: #B8B2C8; line-height: 1.45; margin-top: 6px;
+          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
 
+        /* ─────────────────────────────────────────────────────────
+           CTA FINAL · centrado, panel limpio
+           ───────────────────────────────────────────────────────── */
         #cta { justify-content: flex-end; align-items: center; text-align: center; padding-bottom: 9vh; }
         #cta .cta-inner {
           max-width: 720px;
-          background: radial-gradient(120% 120% at 50% 0%, rgba(14,9,28,.82) 0%, rgba(14,9,28,.55) 60%, transparent 100%);
-          backdrop-filter: blur(6px); border-radius: 26px;
-          padding: 34px 40px 30px;
+          background: radial-gradient(120% 120% at 50% 0%, rgba(14,9,28,.85) 0%, rgba(14,9,28,.55) 60%, transparent 100%);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border: 1px solid rgba(168,85,247,.12);
+          border-radius: 22px;
+          padding: 36px 40px 32px;
+          display: flex; flex-direction: column; align-items: center; gap: 22px;
         }
-        #cta h2 { font-size: clamp(32px, 5vw, 60px); margin-bottom: 28px; }
-        #cta .footer-note { margin-top: 40px; color: var(--texto-suave); font-size: 13px; }
+        #cta .h-2 { font-size: clamp(28px, 4.4vw, 52px); max-width: 18ch; }
+        #cta .footer-note {
+          margin-top: 18px; color: #8E879F; font-size: 12px; font-weight: 500;
+          letter-spacing: .04em;
+        }
 
+        /* ═══════════════════════════════════════════════════════════
+           RESPONSIVE · mobile-first ajustes
+           ═══════════════════════════════════════════════════════════ */
         @media (max-width: 820px) {
           .topbar .menu { display: none; }
-          .topbar { padding: 16px 5vw; }
-          .topbar .logo-nuro { height: 25px; }
+          .topbar { padding: 14px 5vw; }
+          .topbar.is-scrolled { padding: 12px 5vw; }
+          .topbar .logo-nuro { height: 24px; }
           .topbar .auth-btns { gap: 8px; }
-          .topbar .auth-btns .btn { padding: 9px 13px; font-size: 12.5px; border-radius: 10px; }
-          .side-card, #vision .side-card { margin: 0 auto; }
-          .serv-wrap { margin: 0 auto; }
-          section { padding: 9vh 7vw; }
-          #hero { padding-bottom: 4vh; }
-          #hero .scrim { height: 70%; }
-          #hero h1 { font-size: clamp(46px, 15vw, 72px); }
-          #hero .sub { font-size: 16px; }
-          #hero .hero-text p { font-size: 14px; margin: 12px auto 18px; max-width: 340px; }
+          .topbar .auth-btns .btn { padding: 8px 12px; font-size: 12.5px; border-radius: 9px; }
+          .side-card, #vision .side-card { margin: 0 auto; max-width: 92%; }
+          .serv-wrap { margin: 0 auto; max-width: 92%; }
+          section { padding: 8vh 6vw; min-height: auto; }
+          /* Cards en una sola columna y NO sobre el robot — empujadas abajo */
+          #hero, #vision, #servicios { padding-bottom: 6vh; }
+          #hero { justify-content: flex-end; }
+          #hero .hero-bg { height: 70%; }
+          #hero .h-display { font-size: clamp(34px, 9vw, 56px); margin: 12px auto 14px; }
+          #hero .lead { font-size: 14px; margin: 0 auto 18px; max-width: 36ch; }
           #hero .scroll-hint { display: none; }
-          #hero .btn { padding: 13px 24px; font-size: 15px; }
-          #vision, #servicios { justify-content: flex-end; padding-bottom: 8vh; }
-          .side-card p { font-size: 14px; }
-          .serv-card p { font-size: 14px; }
+          #hero .btn { padding: 12px 22px; font-size: 14px; }
+          #transicion { padding-top: 10vh; }
+          .trans-wrap .h-2 { font-size: clamp(24px, 6vw, 32px); }
+          .pillar-row li { font-size: 12.5px; padding: 8px 14px; }
+          .side-card { padding: 22px 22px; }
+          .side-card .h-2 { font-size: 22px; }
+          .side-card .lead { font-size: 14px; }
+          .serv-grid { grid-template-columns: 1fr; }
+          .serv-card { padding: 18px 18px; }
+          .serv-card p { font-size: 13.5px; }
           .tcard { width: 250px; }
+          .tcard .tt { font-size: 12px; }
+          .video-frame { border-radius: 14px; }
+          #cta .cta-inner { padding: 26px 22px 22px; }
+          #cta .h-2 { font-size: clamp(24px, 7vw, 36px); }
+          .btn-lg { font-size: 14.5px; padding: 14px 22px; }
         }
+
         @media (prefers-reduced-motion: reduce) {
-          .particle, .bg-glow, .scroll-hint { animation: none; }
+          .particle, .bg-glow, .scroll-hint, .mtrack { animation: none !important; }
+          .topbar { transition: none; }
         }
       `}</style>
-    </>
+    </div>
   )
 }
 
-function Tcard({ t }: { t: { foto: string; nombre: string; texto: string } }) {
+function Tcard({ t }: { t: Testimonio }) {
   return (
     <div className="tcard">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={t.foto} alt={t.nombre} loading="lazy"
         onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/landing/robot.png' }} />
-      <div>
-        <div className="tn">{t.nombre}</div>
+      <div className="tcard-body">
+        <div className="tcard-head">
+          <div className="tn">{t.nombre}</div>
+          <span className={`tcard-tag ${t.tag === 'Tienda virtual' ? 'is-tienda' : 'is-agente'}`}>
+            {t.tag}
+          </span>
+        </div>
+        <div className="tcard-tipo">{t.tipo}</div>
         <div className="tt">{t.texto}</div>
       </div>
     </div>
