@@ -113,6 +113,31 @@ const nuroConfig = {
     micro: ['Atención continua', 'Tienda virtual profesional', 'Sistema preparado para crecer'],
   },
 
+  video: {
+    eyebrow: 'DEMO EN VIDEO',
+    title: 'Descubre cómo trabaja NÜRO por tu negocio.',
+    sub: 'Mira en menos de dos minutos cómo una experiencia automatizada puede ayudarte a atender mejor.',
+    vimeoId: '1197763990',
+    linkLabel: 'Ver en Vimeo',
+  },
+
+  testimonials: {
+    eyebrow: 'PRUEBA SOCIAL',
+    title: 'Negocios que ya crecen con NÜRO.',
+    items: [
+      { foto: 'https://randomuser.me/api/portraits/women/68.jpg', nombre: 'María González',   tipo: 'Boutique de moda',        tag: 'Agente IA' as const,      texto: 'El agente atiende a toda hora. Cerré más ventas en un mes que en todo el trimestre.' },
+      { foto: 'https://randomuser.me/api/portraits/men/32.jpg',   nombre: 'Carlos Méndez',    tipo: 'Distribuidora',           tag: 'Tienda virtual' as const, texto: 'Mi tienda quedó impecable y profesional. Mis productos ahora se venden solos.' },
+      { foto: 'https://randomuser.me/api/portraits/women/44.jpg', nombre: 'Lucía Fernández',  tipo: 'Centro estético',         tag: 'Agente IA' as const,      texto: 'Respondo al instante aunque esté durmiendo. Se nota en los resultados.' },
+      { foto: 'https://randomuser.me/api/portraits/men/75.jpg',   nombre: 'Andrés Rojas',     tipo: 'Inmobiliaria',            tag: 'Agente IA' as const,      texto: 'El seguimiento automático recuperó clientes que daba por perdidos.' },
+      { foto: 'https://randomuser.me/api/portraits/women/65.jpg', nombre: 'Valentina Torres', tipo: 'Pastelería artesanal',    tag: 'Agente IA' as const,      texto: 'Pasé de responder tarde a atender 24/7. Mis clientes aman la rapidez.' },
+      { foto: 'https://randomuser.me/api/portraits/men/11.jpg',   nombre: 'Diego Ramírez',    tipo: 'E-commerce',              tag: 'Tienda virtual' as const, texto: 'Monté mi tienda online en días, no en meses. Moderna y muy fácil de usar.' },
+      { foto: 'https://randomuser.me/api/portraits/women/90.jpg', nombre: 'Camila Herrera',   tipo: 'Servicios profesionales', tag: 'Agente IA' as const,      texto: 'El agente presenta mi oferta mejor que yo. Profesional y siempre disponible.' },
+      { foto: 'https://randomuser.me/api/portraits/men/4.jpg',    nombre: 'Jorge Castillo',   tipo: 'Marketing digital',       tag: 'Agente IA' as const,      texto: 'Más prospectos atendidos y más ventas confirmadas. Transformó mi negocio.' },
+      { foto: 'https://randomuser.me/api/portraits/women/12.jpg', nombre: 'Paola Núñez',      tipo: 'Spa & wellness',          tag: 'Tienda virtual' as const, texto: 'Una imagen profesional las 24 horas. Mis clientes confían más en mi marca.' },
+      { foto: 'https://randomuser.me/api/portraits/men/47.jpg',   nombre: 'Sebastián Vargas', tipo: 'Academia online',         tag: 'Agente IA' as const,      texto: 'La IA cierra ventas mientras yo me enfoco en crecer. Resultados increíbles.' },
+    ],
+  },
+
   banner: {
     title: 'Tu próximo cliente podría estar escribiendo ahora mismo.',
     sub: 'NÜRO te ayuda a construir una experiencia de atención y ventas disponible incluso cuando tú no estás conectado.',
@@ -142,6 +167,36 @@ const capsuleIcons = {
   store: Store,
   phone: Smartphone,
 } as const
+
+// Split de testimonios en 2 filas para el carrusel infinito
+type Testimonio = (typeof nuroConfig.testimonials.items)[number]
+const _mitad     = Math.ceil(nuroConfig.testimonials.items.length / 2)
+const testiLeft  = nuroConfig.testimonials.items.slice(0, _mitad)
+const testiRight = nuroConfig.testimonials.items.slice(_mitad)
+
+function Tcard({ t }: { t: Testimonio }) {
+  return (
+    <div className="tcard">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={t.foto}
+        alt={t.nombre}
+        loading="lazy"
+        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/landing/robot.png' }}
+      />
+      <div className="tcard-body">
+        <div className="tcard-head">
+          <div className="tn">{t.nombre}</div>
+          <span className={`tcard-tag ${t.tag === 'Tienda virtual' ? 'is-tienda' : 'is-agente'}`}>
+            {t.tag}
+          </span>
+        </div>
+        <div className="tcard-tipo">{t.tipo}</div>
+        <div className="tt">{t.texto}</div>
+      </div>
+    </div>
+  )
+}
 
 export default function LandingPage() {
   const sceneRef     = useRef<HTMLDivElement>(null)
@@ -435,8 +490,8 @@ export default function LandingPage() {
         <nav className="menu">
           <a href="#problemas">Problema</a>
           <a href="#solucion">Solución</a>
-          <a href="#capsulas">Funciones</a>
-          <a href="#banner">Empezar</a>
+          <a href="#demo">Demo</a>
+          <a href="#testimonios">Clientes</a>
         </nav>
         <div className="auth-btns">
           <a href={nuroConfig.loginUrl}    className="btn btn-ghost btn-nav">Iniciar sesión</a>
@@ -662,6 +717,67 @@ export default function LandingPage() {
               </li>
             ))}
           </ul>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════
+            7.5 · VIDEO DEMO (Vimeo)
+            ═══════════════════════════════════════════════════ */}
+        <section id="demo">
+          <div className="demo-wrap">
+            <div className="demo-head">
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> {nuroConfig.video.eyebrow}
+              </span>
+              <h2 className="h-2">{nuroConfig.video.title}</h2>
+              <p className="lead lead-sm">{nuroConfig.video.sub}</p>
+            </div>
+            <div className="video-frame">
+              <iframe
+                src={`https://player.vimeo.com/video/${nuroConfig.video.vimeoId}?title=0&byline=0&portrait=0&dnt=1`}
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                allowFullScreen
+                loading="lazy"
+                title="NÜRO en acción"
+              />
+            </div>
+            <a
+              className="video-link"
+              href={`https://vimeo.com/${nuroConfig.video.vimeoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Sparkles size={12} strokeWidth={2.4} /> {nuroConfig.video.linkLabel}
+            </a>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════
+            7.6 · TESTIMONIOS (carrusel infinito)
+            ═══════════════════════════════════════════════════ */}
+        <section id="testimonios">
+          <div className="testi-content">
+            <div className="testi-head">
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> {nuroConfig.testimonials.eyebrow}
+              </span>
+              <h2 className="h-2">
+                Negocios que ya crecen con{' '}
+                <span className="testi-accent">NÜRO</span>.
+              </h2>
+            </div>
+            <div className="testi-carousel">
+              <div className="marquee"><div className="mtrack to-right">
+                {[...testiLeft, ...testiLeft].map((t, i) => (
+                  <Tcard key={`L${i}`} t={t} />
+                ))}
+              </div></div>
+              <div className="marquee"><div className="mtrack to-left">
+                {[...testiRight, ...testiRight].map((t, i) => (
+                  <Tcard key={`R${i}`} t={t} />
+                ))}
+              </div></div>
+            </div>
+          </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════
@@ -1448,6 +1564,192 @@ export default function LandingPage() {
         .micro-list :global(svg) { color: #A855F7; }
 
         /* ═══════════════════════════════════════════════════════════════
+           7.5 · VIDEO DEMO (Vimeo) · marco premium
+           ═══════════════════════════════════════════════════════════════ */
+        #demo {
+          justify-content: center; align-items: center; text-align: center;
+        }
+        #demo .demo-wrap {
+          position: relative;
+          z-index: 3;
+          width: 100%; max-width: 960px; margin: 0 auto;
+          display: flex; flex-direction: column; align-items: center;
+        }
+        .demo-head {
+          position: relative;
+          display: flex; flex-direction: column; align-items: center;
+          gap: 18px;
+          margin-bottom: 38px;
+          max-width: 720px;
+          padding-inline: 24px;
+        }
+        /* Capa oscura LOCAL detrás del encabezado · z-index -1 */
+        .demo-head::before {
+          content: '';
+          position: absolute;
+          inset: -50px -90px;
+          z-index: -1;
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(5,3,18,.74) 0%,
+            rgba(5,3,18,.42) 48%,
+            rgba(5,3,18,0)  78%
+          );
+          filter: blur(12px);
+        }
+        .demo-head .h-2 { text-align: center; }
+        .demo-head .lead { text-align: center; margin: 0; }
+
+        .video-frame {
+          position: relative; width: 100%; aspect-ratio: 16/9; margin: 0 auto;
+          border-radius: 18px; overflow: hidden; background: #0a0714;
+          border: 1px solid rgba(168,85,247,.22);
+          box-shadow:
+            0 30px 70px -28px rgba(0,0,0,.75),
+            0 0 0 1px rgba(255,255,255,.04) inset;
+        }
+        .video-frame iframe {
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          border: 0; display: block;
+        }
+        .video-link {
+          display: inline-flex; align-items: center; gap: 7px;
+          margin-top: 20px;
+          color: #B8B2C8; text-decoration: none;
+          font-weight: 600; font-size: 13.5px;
+          letter-spacing: -.005em;
+          transition: color .2s;
+          text-shadow: 0 2px 8px rgba(0,0,0,.70);
+        }
+        .video-link :global(svg) { color: #A855F7; }
+        .video-link:hover { color: #F5F3FF; }
+
+        /* ═══════════════════════════════════════════════════════════════
+           7.6 · TESTIMONIOS · carrusel infinito 2 filas
+           Capa oscura LOCAL solo detrás del encabezado (no global)
+           ═══════════════════════════════════════════════════════════════ */
+        #testimonios {
+          padding-block: clamp(72px, 9vw, 132px);
+          padding-inline: 6vw;
+          display: block; /* el content interno maneja layout */
+          overflow: hidden;
+        }
+        .testi-content {
+          position: relative;
+          z-index: 3;
+          display: flex; flex-direction: column; align-items: center;
+        }
+        .testi-head {
+          position: relative;
+          z-index: 5;
+          display: flex; flex-direction: column; align-items: center;
+          gap: 18px;
+          text-align: center;
+          max-width: 900px;
+          margin: 0 auto 54px;
+          padding-inline: 24px;
+        }
+        .testi-head::before {
+          content: '';
+          position: absolute;
+          inset: -60px -100px;
+          z-index: -1;
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(5,3,18,.78) 0%,
+            rgba(5,3,18,.44) 45%,
+            rgba(5,3,18,0)   76%
+          );
+          filter: blur(12px);
+        }
+        .testi-head .h-2 {
+          margin: 0;
+          max-width: 860px;
+          color: #F7F5FF;
+          font-size: clamp(2rem, 3.6vw, 3.4rem);
+          font-weight: 800;
+          line-height: 1.04;
+          letter-spacing: -.055em;
+          text-align: center;
+          text-shadow:
+            0 4px 10px rgba(0,0,0,.92),
+            0 10px 34px rgba(0,0,0,.76);
+        }
+        .testi-head .testi-accent {
+          color: #C084FC;
+          background: none;
+          -webkit-text-fill-color: #C084FC;
+          filter: none;
+          text-shadow:
+            0 4px 10px rgba(0,0,0,.92),
+            0 10px 34px rgba(0,0,0,.72);
+        }
+
+        .testi-carousel {
+          position: relative;
+          z-index: 4;
+          width: 100%;
+          margin-top: 12px;
+          display: flex; flex-direction: column; gap: 20px;
+        }
+        .marquee {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+                  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        }
+        .mtrack { display: flex; gap: 14px; width: max-content; will-change: transform; padding: 6px 0; }
+        .mtrack.to-left  { animation: marqueeLeft  60s linear infinite; }
+        .mtrack.to-right { animation: marqueeRight 60s linear infinite; }
+        @keyframes marqueeLeft  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
+        @keyframes marqueeRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
+        .marquee:hover .mtrack { animation-play-state: paused; }
+
+        .tcard {
+          position: relative;
+          z-index: 4;
+          display: flex; align-items: flex-start; gap: 14px; flex: 0 0 auto;
+          width: 320px;
+          background: rgba(14,8,34,.86);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(168,85,247,.26);
+          border-radius: 18px;
+          padding: 22px;
+          text-align: left;
+          box-shadow:
+            0 18px 46px rgba(0,0,0,.34),
+            inset 0 1px 0 rgba(255,255,255,.03);
+        }
+        .tcard img {
+          width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
+          border: 1.5px solid rgba(168,85,247,.32); background: #1a1330;
+        }
+        .tcard-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .tcard .tn  { font-weight: 700; font-size: 1rem; color: #F5F2FF; letter-spacing: -.01em; }
+        .tcard-tag {
+          display: inline-block;
+          font-size: 9.5px; font-weight: 600;
+          letter-spacing: .12em; text-transform: uppercase;
+          padding: 3px 9px; border-radius: 999px;
+          color: #C0BAD0;
+          background: rgba(168,85,247,.12);
+          border: 1px solid rgba(168,85,247,.26);
+          white-space: nowrap;
+        }
+        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.34); background: rgba(217,70,239,.10); }
+        .tcard-tipo { font-size: 11.5px; color: #9892AB; }
+        .tcard .tt  {
+          font-size: .94rem; color: #B8B2C8; line-height: 1.55; margin-top: 8px;
+          display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
            8 · BANNER FINAL
            ═══════════════════════════════════════════════════════════════ */
         #banner { align-items: center; }
@@ -1614,10 +1916,25 @@ export default function LandingPage() {
           .footer { padding: 40px 20px 24px; }
           .footer-links { grid-template-columns: 1fr 1fr; gap: 10px 28px; }
           .footer-bottom { flex-direction: column; gap: 16px; }
+
+          /* Video mobile */
+          .demo-head { margin-bottom: 30px; gap: 14px; padding-inline: 20px; }
+          .demo-head::before { inset: -30px -50px; }
+          .video-frame { border-radius: 14px; }
+          .video-link { font-size: 12.5px; }
+
+          /* Testimonios mobile */
+          #testimonios { padding-block: 72px; padding-inline: 20px; }
+          .testi-head { gap: 14px; margin: 0 auto 38px; padding-inline: 20px; max-width: 100%; }
+          .testi-head::before { inset: -40px -60px; }
+          .testi-head .h-2 { font-size: clamp(1.8rem, 9vw, 2.6rem); line-height: 1.05; }
+          .testi-carousel { gap: 16px; margin-top: 0; }
+          .tcard { width: min(300px, 86vw); padding: 18px; border-radius: 16px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .particle, .bg-glow, .ticker-left, .ticker-right, .online-pulse, .phone-mockup {
+          .particle, .bg-glow, .ticker-left, .ticker-right, .online-pulse, .phone-mockup,
+          .mtrack {
             animation: none !important;
           }
           .topbar { transition: none; }
