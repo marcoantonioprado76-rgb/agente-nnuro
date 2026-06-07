@@ -535,6 +535,38 @@ export default function LandingPage() {
         </section>
 
         {/* ═══════════════════════════════════════════════════
+            1.5 · VIDEO DEMO (Vimeo) · debajo del hero
+            ═══════════════════════════════════════════════════ */}
+        <section id="demo">
+          <div className="demo-wrap">
+            <div className="demo-head">
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> {nuroConfig.video.eyebrow}
+              </span>
+              <h2 className="h-2">{nuroConfig.video.title}</h2>
+              <p className="lead lead-sm">{nuroConfig.video.sub}</p>
+            </div>
+            <div className="video-frame">
+              <iframe
+                src={`https://player.vimeo.com/video/${nuroConfig.video.vimeoId}?title=0&byline=0&portrait=0&dnt=1`}
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                allowFullScreen
+                loading="lazy"
+                title="NÜRO en acción"
+              />
+            </div>
+            <a
+              className="video-link"
+              href={`https://vimeo.com/${nuroConfig.video.vimeoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Sparkles size={12} strokeWidth={2.4} /> {nuroConfig.video.linkLabel}
+            </a>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════
             2 · TICKER FRANJA INFINITA · 2 filas en sentidos opuestos
             ═══════════════════════════════════════════════════ */}
         <section id="ticker" aria-label="Características NÜRO">
@@ -717,38 +749,6 @@ export default function LandingPage() {
               </li>
             ))}
           </ul>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════
-            7.5 · VIDEO DEMO (Vimeo)
-            ═══════════════════════════════════════════════════ */}
-        <section id="demo">
-          <div className="demo-wrap">
-            <div className="demo-head">
-              <span className="eyebrow">
-                <span className="eyebrow-dot" /> {nuroConfig.video.eyebrow}
-              </span>
-              <h2 className="h-2">{nuroConfig.video.title}</h2>
-              <p className="lead lead-sm">{nuroConfig.video.sub}</p>
-            </div>
-            <div className="video-frame">
-              <iframe
-                src={`https://player.vimeo.com/video/${nuroConfig.video.vimeoId}?title=0&byline=0&portrait=0&dnt=1`}
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-                allowFullScreen
-                loading="lazy"
-                title="NÜRO en acción"
-              />
-            </div>
-            <a
-              className="video-link"
-              href={`https://vimeo.com/${nuroConfig.video.vimeoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Sparkles size={12} strokeWidth={2.4} /> {nuroConfig.video.linkLabel}
-            </a>
-          </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════
