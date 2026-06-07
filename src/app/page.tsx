@@ -396,15 +396,20 @@ export default function LandingPage() {
         </section>
 
         {/* ─── TRANSICIÓN ─── */}
+        {/* Estructura en 2 bloques independientes para evitar superposiciones:
+             - .trans-head: eyebrow + título + descripción (capa oscura propia)
+             - .pillar-row: 3 indicadores separados con margen claro */}
         <section id="transicion">
           <div className="trans-wrap">
-            <span className="eyebrow">
-              <span className="eyebrow-dot" /> Plataforma comercial inteligente
-            </span>
-            <h2 className="h-2">Una nueva forma de hacer crecer tu negocio.</h2>
-            <p className="lead lead-sm">
-              Automatiza la atención comercial sin perder cercanía con tus clientes.
-            </p>
+            <div className="trans-head">
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> Plataforma comercial inteligente
+              </span>
+              <h2 className="h-2">Una nueva forma de hacer crecer tu negocio.</h2>
+              <p className="lead lead-sm">
+                Automatiza la atención comercial sin perder cercanía con tus clientes.
+              </p>
+            </div>
             <ul className="pillar-row">
               <li><Clock    size={15} strokeWidth={1.8} /> Atención 24/7</li>
               <li><Send     size={15} strokeWidth={1.8} /> Seguimiento automático</li>
@@ -807,8 +812,10 @@ export default function LandingPage() {
         @keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
         /* ─────────────────────────────────────────────────────────
-           TRANSICIÓN · contenedor centrado max 980 · capa radial LOCAL
-           detrás del encabezado (no cubre toda la sección)
+           TRANSICIÓN · 2 bloques independientes:
+             1) .trans-head   → eyebrow + h2 + lead (capa oscura local)
+             2) .pillar-row   → 3 indicadores · separación visible
+           NUNCA hay overlay sobre toda la sección.
            ───────────────────────────────────────────────────────── */
         #transicion {
           justify-content: center; align-items: center; text-align: center;
@@ -818,43 +825,66 @@ export default function LandingPage() {
           z-index: 3;
           max-width: 980px; width: 100%; margin: 0 auto;
           display: flex; flex-direction: column; align-items: center;
-          gap: 22px;
+          gap: 44px;             /* separación clara entre head y pillars */
+          padding-inline: 24px;
         }
-        /* Capa oscura LOCAL detrás del bloque de texto · z-index -1
-           NUNCA encima del contenido ni de los indicadores */
-        .trans-wrap::before {
+        /* Bloque de texto · su propia capa oscura local detrás */
+        .trans-head {
+          position: relative;
+          display: flex; flex-direction: column; align-items: center;
+          gap: 22px;             /* eyebrow ↔ h2 ↔ lead (≥18 brief) */
+          max-width: 860px;
+          text-align: center;
+        }
+        /* Capa oscura LOCAL · solo detrás del bloque de texto · z-index -1 */
+        .trans-head::before {
           content: '';
           position: absolute;
-          inset: -40px -80px;
+          inset: -56px -120px;
           z-index: -1;
           pointer-events: none;
           background: radial-gradient(
             ellipse at center,
-            rgba(5,3,18,.72) 0%,
-            rgba(5,3,18,.40) 48%,
-            rgba(5,3,18,0)  78%
+            rgba(5,3,18,.86) 0%,
+            rgba(5,3,18,.58) 42%,
+            rgba(5,3,18,.20) 70%,
+            rgba(5,3,18,0)   86%
           );
-          filter: blur(12px);
+          filter: blur(14px);
         }
-        .trans-wrap .eyebrow { align-self: center; }
-        .trans-wrap .h-2 { text-align: center; }
-        .trans-wrap .lead { text-align: center; margin: 0 auto; }
+        .trans-head .eyebrow {
+          align-self: center;
+          /* text-shadow para que la etiqueta no se pierda si la capa local
+             se atenúa en los bordes laterales */
+          text-shadow: 0 2px 8px rgba(0,0,0,.70);
+        }
+        .trans-head .h-2 { text-align: center; }
+        .trans-head .lead {
+          text-align: center; margin: 0 auto; max-width: 56ch;
+        }
+        /* Indicadores · cards sólidas, separadas del texto · z-index 3 */
         .pillar-row {
-          margin-top: 8px;
-          display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+          margin: 0;
+          display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
           list-style: none; padding: 0;
+          position: relative;
+          z-index: 3;
         }
         .pillar-row li {
           display: inline-flex; align-items: center; gap: 8px;
           font-size: 13.5px; font-weight: 600; color: #F5F3FF;
-          padding: 10px 18px; border-radius: 999px;
-          background: rgba(12,7,31,.82);
-          border: 1px solid rgba(168,85,247,.28);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          box-shadow: 0 12px 28px -16px rgba(0,0,0,.55);
+          padding: 11px 18px; border-radius: 999px;
+          background: rgba(12,7,31,.86);
+          border: 1px solid rgba(168,85,247,.32);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          box-shadow:
+            0 14px 32px -14px rgba(0,0,0,.55),
+            inset 0 1px 0 rgba(255,255,255,.04);
+          /* text-shadow ligero para legibilidad si el robot brilla detrás */
+          text-shadow: 0 1px 3px rgba(0,0,0,.55);
         }
-        .pillar-row li :global(svg) { color: #A855F7; }
+        .pillar-row li :global(svg) { color: #A855F7; flex-shrink: 0; }
 
         /* ─────────────────────────────────────────────────────────
            DEMO VIDEO · header independiente con capa LOCAL detrás
@@ -1176,11 +1206,12 @@ export default function LandingPage() {
           #hero .btn { padding: 11px 20px; font-size: 14px; }
           #hero .scroll-hint { display: none; }
 
-          /* Transición */
-          .trans-wrap { gap: 18px; }
-          .trans-scrim { width: 100%; height: 90%; }
+          /* Transición mobile · gap más generoso entre texto e indicadores */
+          .trans-wrap { gap: 36px; padding-inline: 20px; }
+          .trans-head { gap: 18px; }
+          .trans-head::before { inset: -36px -50px; }
           .pillar-row { gap: 10px; }
-          .pillar-row li { font-size: 12.5px; padding: 8px 14px; }
+          .pillar-row li { font-size: 12.5px; padding: 9px 14px; }
 
           /* Demo · separación 30px del reproductor en mobile */
           .demo-head { margin-bottom: 30px; gap: 14px; padding-inline: 20px; }
