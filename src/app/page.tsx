@@ -1,23 +1,22 @@
 'use client'
 
 /**
- * Landing NÜRO · cinematográfica scroll-driven
+ * Landing NÜRO · narrativa comercial · estructura inspirada en referencia
  *
- * Convertida desde el HTML autocontenido de AGENCIA DE MARKETING NURO
- * (landing-nuro/index.html) a componente React/Next nativo:
- *   - CSS inline → <style jsx global> dentro del componente
- *   - Three.js (CDN module) → dependencia npm `three`
- *   - GSAP + ScrollTrigger (CDN) → dependencia npm `gsap`
- *   - JS inline (partículas, testimonios, escena 3D) → hooks useEffect
+ *   PROTEGIDO (no se toca lógica visual):
+ *   - Fondo animado completo (.bg-gradient, .bg-grid, .bg-glow, .bg-glow-warm, partículas)
+ *   - Escena Three.js + GSAP ScrollTrigger (robot con rotación/escala con scroll)
+ *   - Lógica de navbar scroll-aware
  *
- * Para activar el robot 3D real, copia tu modelo a
- *   public/landing/nuro-robot.glb
- * (la página lo detecta automáticamente; sin él usa el PNG plano).
+ *   CONTENIDO editable: ver `nuroConfig` debajo.
  */
 
 import { useEffect, useRef, useState } from 'react'
 import { Manrope } from 'next/font/google'
-import { Bot, Store, Clock, Send, Sparkles, Play, ArrowRight } from 'lucide-react'
+import {
+  ArrowRight, Bot, Store, MessageCircle, Smartphone,
+  CheckCircle, Sparkles, Send, Boxes, ChevronUp,
+} from 'lucide-react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import gsap from 'gsap'
@@ -32,37 +31,126 @@ const manrope = Manrope({
 const ROBOT_GLB_PATH = '/landing/nuro-robot.glb'
 const ROBOT_IMAGE    = '/landing/robot.png'
 
-type Testimonio = {
-  foto: string
-  nombre: string
-  tipo: string       // tipo de negocio (subtítulo)
-  tag: 'Agente IA' | 'Tienda virtual'
-  texto: string      // máximo ~2 líneas
+/* ════════════════════════════════════════════════════════════════
+   CONFIGURACIÓN CENTRALIZADA · edita aquí textos, imágenes y enlaces
+   ════════════════════════════════════════════════════════════════ */
+const nuroConfig = {
+  brand: 'NÜRO',
+  registerUrl: '/register',
+  loginUrl: '/login',
+
+  hero: {
+    label: 'EL FUTURO DE LAS VENTAS YA COMENZÓ',
+    description:
+      'Con NÜRO, tus clientes pueden recibir atención, seguimiento y una experiencia comercial más organizada durante todo el día.',
+    primaryCta: 'QUIERO CONOCER NÜRO',
+    micro: 'Agentes IA 24/7 · Seguimiento inteligente · Tiendas virtuales',
+    chipLabel: 'NÜRO ONLINE',
+    chipSub: 'Activo 24/7',
+  },
+
+  ticker: [
+    'AGENTES IA 24/7',
+    'RESPUESTAS AUTOMÁTICAS',
+    'SEGUIMIENTO INTELIGENTE',
+    'TIENDAS VIRTUALES',
+    'ATENCIÓN SIN PAUSAS',
+    'MENOS PROSPECTOS PERDIDOS',
+    'VENTAS MÁS ORGANIZADAS',
+    'TU NEGOCIO SIEMPRE ACTIVO',
+  ],
+
+  numbered: {
+    title: 'No pierdas ventas por responder demasiado tarde.',
+    items: [
+      'Un cliente pregunta por tu producto, pero nadie responde a tiempo.',
+      'Llegan nuevos prospectos, pero el seguimiento se queda pendiente.',
+      'Tu negocio depende de que estés conectado todo el día.',
+      'Cada conversación olvidada puede convertirse en una oportunidad perdida.',
+    ],
+    closingTop: 'No necesitas trabajar más horas.',
+    closingBottom: 'Necesitas un sistema que trabaje contigo.',
+  },
+
+  phone: {
+    /** Ruta editable para sustituir la imagen interna del celular */
+    image: '/landing/nuro-mobile-preview.webp',
+    bubbleTitle: 'NÜRO está disponible para atender nuevas oportunidades.',
+    bubbleBody:
+      'Puede responder consultas, presentar información y ayudarte a mantener activa la conversación con cada prospecto.',
+    title: '¿Tu negocio está preparado para responder a todos?',
+    problems: [
+      'Los mensajes llegan mientras estás ocupado atendiendo otras tareas.',
+      'Algunos clientes esperan demasiado tiempo para recibir una respuesta.',
+      'No siempre recuerdas volver a escribir a cada prospecto.',
+      'Presentar tus productos manualmente consume tiempo.',
+      'Muchas oportunidades se enfrían antes de llegar al cierre.',
+    ],
+    closing:
+      'NÜRO te ayuda a construir una experiencia comercial más organizada, disponible y preparada para crecer contigo.',
+  },
+
+  invitation: {
+    upper: 'No se trata solamente de responder mensajes.',
+    titleTop: 'Es el momento de construir',
+    titleBottom: 'una nueva forma de vender.',
+    sub: 'Con NÜRO, puedes transformar la atención de tus clientes en una experiencia más rápida, organizada y preparada para crecer.',
+  },
+
+  capsules: {
+    items: [
+      { icon: 'bot',   text: 'Agentes IA disponibles 24/7' },
+      { icon: 'send',  text: 'Seguimiento de prospectos' },
+      { icon: 'box',   text: 'Presentación de productos y servicios' },
+      { icon: 'check', text: 'Confirmación de información comercial' },
+      { icon: 'store', text: 'Tiendas virtuales para distintos negocios' },
+      { icon: 'phone', text: 'Experiencia adaptable a celular y computadora' },
+    ] as Array<{ icon: keyof typeof capsuleIcons; text: string }>,
+    textBefore: 'Tu negocio',
+    accent: 'no necesita detenerse',
+    textAfter: 'cuando termina tu jornada.',
+    cta: 'QUIERO DAR EL SIGUIENTE PASO',
+    micro: ['Atención continua', 'Tienda virtual profesional', 'Sistema preparado para crecer'],
+  },
+
+  banner: {
+    title: 'Tu próximo cliente podría estar escribiendo ahora mismo.',
+    sub: 'NÜRO te ayuda a construir una experiencia de atención y ventas disponible incluso cuando tú no estás conectado.',
+    cta: 'CREAR MI CUENTA',
+    altCta: 'YA TENGO UNA CUENTA · INICIAR SESIÓN',
+  },
+
+  footer: {
+    desc: 'Agentes IA y tiendas virtuales para negocios que quieren avanzar.',
+    links: [
+      { href: '#hero',       label: 'Inicio' },
+      { href: '#capsulas',   label: 'Agentes IA' },
+      { href: '#solucion',   label: 'Tiendas virtuales' },
+      { href: '#problemas',  label: 'Cómo funciona' },
+      { href: '/login',      label: 'Iniciar sesión' },
+      { href: '/register',   label: 'Registrarse' },
+    ],
+    copyright: '© 2026 NÜRO. Todos los derechos reservados.',
+  },
 }
 
-const TESTIMONIOS: Testimonio[] = [
-  { foto: 'https://randomuser.me/api/portraits/women/68.jpg', nombre: 'María González',   tipo: 'Boutique de moda',        tag: 'Agente IA',      texto: 'El agente atiende a toda hora. Cerré más ventas en un mes que en todo el trimestre.' },
-  { foto: 'https://randomuser.me/api/portraits/men/32.jpg',   nombre: 'Carlos Méndez',    tipo: 'Distribuidora',           tag: 'Tienda virtual', texto: 'Mi tienda quedó impecable y profesional. Mis productos ahora se venden solos.' },
-  { foto: 'https://randomuser.me/api/portraits/women/44.jpg', nombre: 'Lucía Fernández',  tipo: 'Centro estético',         tag: 'Agente IA',      texto: 'Respondo al instante aunque esté durmiendo. Se nota en los resultados.' },
-  { foto: 'https://randomuser.me/api/portraits/men/75.jpg',   nombre: 'Andrés Rojas',     tipo: 'Inmobiliaria',            tag: 'Agente IA',      texto: 'El seguimiento automático recuperó clientes que daba por perdidos.' },
-  { foto: 'https://randomuser.me/api/portraits/women/65.jpg', nombre: 'Valentina Torres', tipo: 'Pastelería artesanal',    tag: 'Agente IA',      texto: 'Pasé de responder tarde a atender 24/7. Mis clientes aman la rapidez.' },
-  { foto: 'https://randomuser.me/api/portraits/men/11.jpg',   nombre: 'Diego Ramírez',    tipo: 'E-commerce',              tag: 'Tienda virtual', texto: 'Monté mi tienda online en días, no en meses. Moderna y muy fácil de usar.' },
-  { foto: 'https://randomuser.me/api/portraits/women/90.jpg', nombre: 'Camila Herrera',   tipo: 'Servicios profesionales', tag: 'Agente IA',      texto: 'El agente presenta mi oferta mejor que yo. Profesional y siempre disponible.' },
-  { foto: 'https://randomuser.me/api/portraits/men/4.jpg',    nombre: 'Jorge Castillo',   tipo: 'Marketing digital',       tag: 'Agente IA',      texto: 'Más prospectos atendidos y más ventas confirmadas. Transformó mi negocio.' },
-  { foto: 'https://randomuser.me/api/portraits/women/12.jpg', nombre: 'Paola Núñez',      tipo: 'Spa & wellness',          tag: 'Tienda virtual', texto: 'Una imagen profesional las 24 horas. Mis clientes confían más en mi marca.' },
-  { foto: 'https://randomuser.me/api/portraits/men/47.jpg',   nombre: 'Sebastián Vargas', tipo: 'Academia online',         tag: 'Agente IA',      texto: 'La IA cierra ventas mientras yo me enfoco en crecer. Resultados increíbles.' },
-]
-
-const mitad = Math.ceil(TESTIMONIOS.length / 2)
-const TESTI_LEFT  = TESTIMONIOS.slice(0, mitad)
-const TESTI_RIGHT = TESTIMONIOS.slice(mitad)
+const capsuleIcons = {
+  bot:   Bot,
+  send:  Send,
+  box:   Boxes,
+  check: CheckCircle,
+  store: Store,
+  phone: Smartphone,
+} as const
 
 export default function LandingPage() {
   const sceneRef     = useRef<HTMLDivElement>(null)
   const particlesRef = useRef<HTMLDivElement>(null)
   const [scrolled, setScrolled] = useState(false)
 
-  // Navbar scroll-aware: añade fondo blur al pasar 24px de scroll
+  // ──────────────────────────────────────────────
+  // ▼  PROTEGIDO · navbar scroll-aware  ▼
+  // ──────────────────────────────────────────────
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
     onScroll()
@@ -70,7 +158,9 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // ──────────────  PARTÍCULAS FLOTANTES  ──────────────
+  // ──────────────────────────────────────────────
+  // ▼  PROTEGIDO · partículas flotantes  ▼
+  // ──────────────────────────────────────────────
   useEffect(() => {
     const box = particlesRef.current
     if (!box) return
@@ -91,7 +181,9 @@ export default function LandingPage() {
     return () => { els.forEach((e) => e.remove()) }
   }, [])
 
-  // ──────────────  ESCENA THREE.JS + GSAP SCROLLTRIGGER  ──────────────
+  // ──────────────────────────────────────────────
+  // ▼  PROTEGIDO · ESCENA THREE.JS + GSAP  ▼
+  // ──────────────────────────────────────────────
   useEffect(() => {
     const container = sceneRef.current
     if (!container) return
@@ -99,12 +191,10 @@ export default function LandingPage() {
     gsap.registerPlugin(ScrollTrigger)
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // ── Setup Three.js ──
     const scene  = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100)
     camera.position.set(0, 0.9, 2.3)
 
-    // Antialias solo en desktop · pixelRatio máx 1.5 en lugar de 2 (ahorra GPU brutal en retina mobile)
     const isPhone = innerWidth < 820
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isPhone })
     renderer.setSize(innerWidth, innerHeight)
@@ -112,11 +202,6 @@ export default function LandingPage() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.1
     container.appendChild(renderer.domElement)
-
-    // PMREMGenerator + RoomEnvironment eliminados — costaban ~200ms de GPU
-    // en la primera carga y no aportan nada cuando el robot es un PNG plano.
-    // Si en el futuro se carga un GLB con materiales metálicos, se puede
-    // reactivar puntualmente dentro del callback onLoad de GLTFLoader.
 
     // Luces
     scene.add(new THREE.AmbientLight(0x3a2a66, 0.6))
@@ -133,11 +218,10 @@ export default function LandingPage() {
     warm.position.set(2.6, -0.6, 1.8)
     scene.add(warm)
 
-    // Grupo robot
     const robot = new THREE.Group()
     scene.add(robot)
 
-    // Plataforma circular luminosa
+    // Plataforma circular
     const cv = document.createElement('canvas')
     cv.width = cv.height = 256
     const ctx = cv.getContext('2d')!
@@ -156,7 +240,7 @@ export default function LandingPage() {
     platform.position.y = -1.28
     robot.add(platform)
 
-    // Anillos tecnológicos
+    // Anillos
     const ringsGroup = new THREE.Group()
     for (let i = 0; i < 3; i++) {
       const ring = new THREE.Mesh(
@@ -169,9 +253,9 @@ export default function LandingPage() {
     }
     robot.add(ringsGroup)
 
-    // ── Modelo del robot ──
+    // Modelo robot · GLB con fallback PNG
     let model: THREE.Object3D | null = null
-    let usingFallback = false   // true cuando se usa el PNG plano del robot original
+    let usingFallback = false
 
     function centerAndScale(obj: THREE.Object3D, targetHeight: number) {
       const box = new THREE.Box3().setFromObject(obj)
@@ -184,16 +268,6 @@ export default function LandingPage() {
       obj.position.sub(center.multiplyScalar(s))
     }
 
-    /* ─────────────────────────────────────────────────────────────
-     *  ROBOT FALLBACK · usa la imagen PNG original (robot.png) sobre
-     *  un plano transparente. Como es 2D, no rota 360°: hace un
-     *  vaivén lateral de ±15° para dar sensación de presencia sin
-     *  enseñar el "lado delgado" del plano.
-     *
-     *  Para activar el 3D real con rotación 360° completa, copiá
-     *  tu modelo .glb a public/landing/nuro-robot.glb — la página
-     *  lo detecta sola al recargar.
-     * ───────────────────────────────────────────────────────────── */
     function buildFallback() {
       usingFallback = true
       new THREE.TextureLoader().load(ROBOT_IMAGE, (tex) => {
@@ -214,7 +288,6 @@ export default function LandingPage() {
       gltfLoader.load(
         ROBOT_GLB_PATH,
         (gltf) => {
-          // ✅ Modelo real cargado → rotación 360° completa
           model = gltf.scene
           model.traverse((o) => {
             if ((o as THREE.Mesh).isMesh) {
@@ -227,14 +300,13 @@ export default function LandingPage() {
         },
         undefined,
         () => {
-          // ⚠️ Sin GLB → usar el PNG plano del robot original
-          console.info('[NÜRO] No hay GLB en', ROBOT_GLB_PATH, '· usando imagen plana del robot.')
+          console.info('[NÜRO] No hay GLB · usando imagen plana del robot.')
           buildFallback()
         }
       )
     }
 
-    // ── Estado animado ──
+    // Estado animado + ScrollTrigger
     const target  = { rotY: 0, camZ: 2.3, camY: 0.9, lookY: 0.95, posY: 0 }
     const current = { ...target }
     let isMobile = innerWidth < 820
@@ -249,8 +321,6 @@ export default function LandingPage() {
       target.camY  = THREE.MathUtils.lerp(0.60, 0.06, ease)
       target.lookY = THREE.MathUtils.lerp(0.60, 0.00, ease)
       target.posY  = p > 0.85 ? THREE.MathUtils.lerp(0, endPosY, (p - 0.85) / 0.15) : 0
-      // PNG plano → vaivén suave de ±15° (no se vería bien al rotar 360°).
-      // GLB real (cuando exista) → vuelta completa ligada al scroll.
       target.rotY  = usingFallback
         ? THREE.MathUtils.degToRad(15) * Math.sin(p * Math.PI * 2)
         : p * Math.PI * 2
@@ -260,13 +330,10 @@ export default function LandingPage() {
       trigger: '.content',
       start: 'top top',
       end: 'bottom bottom',
-      // 1s de smoothing extra hacía sentir el scroll perezoso. 0.4s = respuesta
-      // casi inmediata pero sin saltos (la cámara aún ease entre frames).
       scrub: 0.4,
       onUpdate: (self) => applyProgress(self.progress),
     })
 
-    // ── Render loop ──
     const clock = new THREE.Clock()
     let visible = true
     const onVisibility = () => { visible = !document.hidden }
@@ -288,7 +355,6 @@ export default function LandingPage() {
       robot.rotation.y = current.rotY
       robot.position.y = current.posY + (reduceMotion ? 0 : Math.sin(t * 1.1) * 0.05)
 
-      // Si es el PNG plano, que el mesh interno NO rote (el grupo ya hace ±15°).
       if (usingFallback && model) (model as THREE.Mesh).rotation.y = 0
 
       ringsGroup.rotation.z = t * 0.15
@@ -309,11 +375,9 @@ export default function LandingPage() {
     }
     window.addEventListener('resize', onResize)
 
-    // Arranque
     applyProgress(0)
     animate()
-    // Carga del modelo diferida: si el browser soporta requestIdleCallback,
-    // espera a que el main thread esté libre (mejor first paint). Fallback: timeout 100ms.
+
     type IdleWin = Window & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number
     }
@@ -324,7 +388,6 @@ export default function LandingPage() {
       setTimeout(loadRobot, 100)
     }
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(rafId)
       document.removeEventListener('visibilitychange', onVisibility)
@@ -344,210 +407,328 @@ export default function LandingPage() {
       }
     }
   }, [])
+  // ──────────────────────────────────────────────
+  // ▲  FIN ZONA PROTEGIDA  ▲
+  // ──────────────────────────────────────────────
+
+  const handleScrollTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
 
   return (
     <div className={manrope.variable}>
+      {/* ▼ CAPAS DE FONDO INTOCABLES ▼ */}
       <div className="bg-gradient" />
       <div className="bg-grid" />
       <div className="bg-glow" />
       <div className="bg-glow-warm" />
       <div id="particles" ref={particlesRef} />
       <div id="scene" ref={sceneRef} />
+      {/* ▲ FIN CAPAS DE FONDO ▲ */}
 
+      {/* ─── NAVBAR ─── */}
       <header className={`topbar ${scrolled ? 'is-scrolled' : ''}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/landing/logo-blanco.png" className="logo-nuro" alt="NÜRO" />
         <nav className="menu">
-          <a href="#demo">Demo</a>
-          <a href="#vision">Visión</a>
-          <a href="#servicios">Servicios</a>
-          <a href="#testimonios">Testimonios</a>
+          <a href="#problemas">Problema</a>
+          <a href="#solucion">Solución</a>
+          <a href="#capsulas">Funciones</a>
+          <a href="#banner">Empezar</a>
         </nav>
         <div className="auth-btns">
-          <a href="/login"    className="btn btn-ghost btn-nav">Iniciar sesión</a>
-          <a href="/register" className="btn btn-primary btn-nav">Registrarse</a>
+          <a href={nuroConfig.loginUrl}    className="btn btn-ghost btn-nav">Iniciar sesión</a>
+          <a href={nuroConfig.registerUrl} className="btn btn-primary btn-nav">Registrarse</a>
         </div>
       </header>
 
       <main className="content">
-        {/* ─── HERO ─── */}
+        {/* ═══════════════════════════════════════════════════
+            1 · HERO PRINCIPAL · texto izquierda · chip discreto
+            ═══════════════════════════════════════════════════ */}
         <section id="hero">
-          <div className="hero-bg" aria-hidden />
-          <div className="hero-text">
-            <span className="eyebrow">
-              <span className="eyebrow-dot" /> Agentes de inteligencia artificial para negocios
-            </span>
-            <h1 className="h-display">
-              Tu negocio sigue trabajando, <span className="accent">incluso cuando tú no estás.</span>
-            </h1>
-            <p className="lead">
-              NÜRO combina agentes de ventas con inteligencia artificial y tiendas virtuales
-              profesionales para atender, hacer seguimiento y convertir oportunidades durante
-              todo el día.
-            </p>
-            <div className="cta-row">
-              <a href="#demo" className="btn btn-primary">
-                Ver cómo funciona <ArrowRight size={16} strokeWidth={2.4} />
-              </a>
-              <a href="#cta" className="btn btn-ghost">Solicitar demostración</a>
-            </div>
-            <div className="scroll-hint" aria-hidden><i />DESLIZA</div>
-          </div>
-        </section>
-
-        {/* ─── TRANSICIÓN ─── */}
-        {/* Estructura en 2 bloques independientes para evitar superposiciones:
-             - .trans-head: eyebrow + título + descripción (capa oscura propia)
-             - .pillar-row: 3 indicadores separados con margen claro */}
-        <section id="transicion">
-          <div className="trans-wrap">
-            <div className="trans-head">
+          <div className="hero-grid">
+            <div className="hero-text">
               <span className="eyebrow">
-                <span className="eyebrow-dot" /> Plataforma comercial inteligente
+                <span className="eyebrow-dot" /> {nuroConfig.hero.label}
               </span>
-              <h2 className="h-2">Una nueva forma de hacer crecer tu negocio.</h2>
-              <p className="lead lead-sm">
-                Automatiza la atención comercial sin perder cercanía con tus clientes.
-              </p>
+              <h1 className="h-display">
+                Tu negocio puede seguir{' '}
+                <span className="accent">vendiendo</span>
+                {' '}incluso{' '}
+                <span className="accent">cuando tú no estás conectado.</span>
+              </h1>
+              <p className="lead">{nuroConfig.hero.description}</p>
+              <div className="cta-row">
+                <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
+                  {nuroConfig.hero.primaryCta} <ArrowRight size={16} strokeWidth={2.4} />
+                </a>
+              </div>
+              <p className="micro-text">{nuroConfig.hero.micro}</p>
             </div>
-            <ul className="pillar-row">
-              <li><Clock    size={15} strokeWidth={1.8} /> Atención 24/7</li>
-              <li><Send     size={15} strokeWidth={1.8} /> Seguimiento automático</li>
-              <li><Sparkles size={15} strokeWidth={1.8} /> Presencia digital profesional</li>
-            </ul>
+
+            {/* Chip discreto · "NÜRO ONLINE" · no compite con el robot del fondo */}
+            <div className="online-chip" aria-hidden="false">
+              <span className="online-pulse" />
+              <div>
+                <div className="online-label">{nuroConfig.hero.chipLabel}</div>
+                <div className="online-sub">{nuroConfig.hero.chipSub}</div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ─── DEMO VIDEO ─── */}
-        <section id="demo">
-          <div className="demo-wrap">
-            {/* Encabezado independiente · 38px de separación al reproductor */}
-            <div className="demo-head">
+        {/* ═══════════════════════════════════════════════════
+            2 · TICKER FRANJA INFINITA · 2 filas en sentidos opuestos
+            ═══════════════════════════════════════════════════ */}
+        <section id="ticker" aria-label="Características NÜRO">
+          <div className="ticker-row">
+            <div className="ticker-track ticker-left">
+              {[...nuroConfig.ticker, ...nuroConfig.ticker].map((t, i) => (
+                <span key={`t1-${i}`} className="ticker-item">
+                  <span className="ticker-dot" /> {t}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="ticker-row ticker-row-soft">
+            <div className="ticker-track ticker-right">
+              {[...nuroConfig.ticker, ...nuroConfig.ticker].map((t, i) => (
+                <span key={`t2-${i}`} className="ticker-item">
+                  <span className="ticker-dot" /> {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════
+            3 · TARJETA NUMERADA · 4 problemas (01–04)
+            ═══════════════════════════════════════════════════ */}
+        <section id="problemas">
+          <div className="numbered-card">
+            <h2 className="numbered-title">{nuroConfig.numbered.title}</h2>
+            <ol className="numbered-list">
+              {nuroConfig.numbered.items.map((t, i) => (
+                <li key={i} className="numbered-row">
+                  <span className="num">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="num-text">{t}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <p className="numbered-closing">
+            <span>{nuroConfig.numbered.closingTop}</span>
+            <strong className="accent-soft">{nuroConfig.numbered.closingBottom}</strong>
+          </p>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════
+            4 · CELULAR + LISTA DE PROBLEMAS
+            ═══════════════════════════════════════════════════ */}
+        <section id="solucion">
+          <div className="phone-grid">
+            {/* Mockup · imagen editable en /landing/nuro-mobile-preview.webp */}
+            <figure className="phone-mockup">
+              <div className="phone-shadow" aria-hidden />
+              <div className="phone-frame">
+                <div className="phone-notch" aria-hidden />
+                <div className="phone-screen">
+                  {/* Si existe la imagen real, se muestra; si no, queda el SVG mockup */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={nuroConfig.phone.image}
+                    alt="Vista móvil del ecosistema NÜRO"
+                    className="phone-img"
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                  {/* Mockup fallback (siempre visible debajo) · tarjeta tipo mensaje */}
+                  <div className="phone-fallback">
+                    <div className="phone-status">
+                      <span>9:41</span>
+                      <span className="phone-status-dots">●●●●</span>
+                    </div>
+                    <div className="phone-msg-card">
+                      <div className="phone-msg-head">
+                        <div className="phone-avatar">
+                          <Bot size={16} strokeWidth={1.8} />
+                        </div>
+                        <div className="phone-msg-meta">
+                          <div className="phone-msg-name">NÜRO</div>
+                          <div className="phone-msg-time">ahora</div>
+                        </div>
+                      </div>
+                      <p className="phone-msg-title">{nuroConfig.phone.bubbleTitle}</p>
+                      <p className="phone-msg-body">{nuroConfig.phone.bubbleBody}</p>
+                    </div>
+                    <div className="phone-input">
+                      <MessageCircle size={14} strokeWidth={1.8} />
+                      <span>Responder…</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </figure>
+
+            <div className="phone-text">
               <span className="eyebrow">
-                <span className="eyebrow-dot" /> Demo en video
+                <span className="eyebrow-dot" /> Una experiencia comercial activa
               </span>
-              <h2 className="h-2">Descubre cómo trabaja NÜRO por tu negocio.</h2>
-              <p className="lead lead-sm">
-                Mira en menos de dos minutos cómo una experiencia automatizada puede ayudarte a
-                atender mejor.
-              </p>
+              <h2 className="h-2">{nuroConfig.phone.title}</h2>
+              <ul className="problems-list">
+                {nuroConfig.phone.problems.map((p, i) => (
+                  <li key={i}>
+                    <Sparkles size={14} strokeWidth={1.8} />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="lead lead-sm">{nuroConfig.phone.closing}</p>
             </div>
-            <div className="video-frame">
-              <iframe
-                src="https://player.vimeo.com/video/1197763990?title=0&byline=0&portrait=0&dnt=1"
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-                allowFullScreen
-                loading="lazy"
-                title="NÜRO en acción"
-              />
-            </div>
-            <a className="video-link" href="https://vimeo.com/1197763990" target="_blank" rel="noopener noreferrer">
-              <Play size={12} strokeWidth={2.4} /> Ver en Vimeo
-            </a>
           </div>
         </section>
 
-        {/* ─── VISIÓN ─── */}
-        <section id="vision">
-          <div className="side-card">
-            <span className="eyebrow">
-              <span className="eyebrow-dot" /> Visión
-            </span>
-            <h2 className="h-2">
-              Tu negocio activo, <span className="accent">incluso cuando no estás conectado.</span>
+        {/* ═══════════════════════════════════════════════════
+            5 · DIVISOR DECORATIVO
+            ═══════════════════════════════════════════════════ */}
+        <div className="divider" role="presentation" aria-hidden>
+          <svg viewBox="0 0 320 36" width="320" height="36" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="divLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="rgba(168,85,247,0)" />
+                <stop offset="50%" stopColor="rgba(168,85,247,.55)" />
+                <stop offset="100%" stopColor="rgba(168,85,247,0)" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="18" x2="135" y2="18" stroke="url(#divLine)" strokeWidth="1" />
+            <line x1="185" y1="18" x2="320" y2="18" stroke="url(#divLine)" strokeWidth="1" />
+            <circle cx="160" cy="18" r="11" fill="none" stroke="rgba(168,85,247,.35)" strokeWidth="1" />
+            <circle cx="160" cy="18" r="5"  fill="#A855F7" />
+            <circle cx="160" cy="18" r="2.4" fill="#F5F3FF" />
+          </svg>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════
+            6 · INVITACIÓN AL CAMBIO
+            ═══════════════════════════════════════════════════ */}
+        <section id="invitacion">
+          <div className="invitation-wrap">
+            <span className="upper-line">{nuroConfig.invitation.upper}</span>
+            <h2 className="h-display">
+              {nuroConfig.invitation.titleTop}<br />
+              <span className="accent">{nuroConfig.invitation.titleBottom}</span>
             </h2>
-            <p className="lead lead-sm">
-              Mientras tú te enfocas en crecer, NÜRO mantiene tu atención comercial en
-              movimiento: responde, organiza conversaciones y muestra tu oferta con una imagen
-              profesional.
-            </p>
+            <p className="lead">{nuroConfig.invitation.sub}</p>
           </div>
         </section>
 
-        {/* ─── SERVICIOS ─── */}
-        <section id="servicios">
-          <div className="serv-wrap">
-            <span className="eyebrow">
-              <span className="eyebrow-dot" /> Servicios
-            </span>
-            <h2 className="h-2">Dos formas en que NÜRO hace crecer tu negocio.</h2>
-            <div className="serv-grid">
-              <article className="serv-card">
-                <div className="serv-ic"><Bot size={22} strokeWidth={1.6} /></div>
-                <h3>Agentes IA de ventas</h3>
-                <p>Atienden consultas, presentan tu oferta, realizan seguimiento y ayudan a
-                  confirmar ventas durante las 24 horas.</p>
-              </article>
-              <article className="serv-card">
-                <div className="serv-ic"><Store size={22} strokeWidth={1.6} /></div>
-                <h3>Tiendas virtuales profesionales</h3>
-                <p>Presenta tus productos o servicios con una experiencia digital clara,
-                  moderna y preparada para convertir visitas en oportunidades.</p>
-              </article>
-            </div>
-          </div>
-        </section>
+        {/* ═══════════════════════════════════════════════════
+            7 · CÁPSULAS INFORMATIVAS
+            ═══════════════════════════════════════════════════ */}
+        <section id="capsulas">
+          <ul className="caps-grid">
+            {nuroConfig.capsules.items.map((c, i) => {
+              const Icon = capsuleIcons[c.icon]
+              return (
+                <li key={i} className="cap">
+                  <Icon size={15} strokeWidth={1.8} />
+                  <span>{c.text}</span>
+                </li>
+              )
+            })}
+          </ul>
 
-        {/* ─── TESTIMONIOS ─── */}
-        {/* Estructura en 2 capas independientes:
-             - .testi-head (z 5): encabezado con capa oscura LOCAL (::before)
-             - .testi-carousel (z 4): carrusel infinito, separado del header
-            El robot global (#scene z 1) queda detrás de TODO el contenido. */}
-        <section id="testimonios">
-          <div className="testi-content">
-            <div className="testi-head">
-              <span className="eyebrow">
-                <span className="eyebrow-dot" /> Prueba social
-              </span>
-              <h2 className="h-2">Negocios que ya crecen con <span className="testi-accent">NÜRO</span>.</h2>
-            </div>
+          <p className="caps-text">
+            {nuroConfig.capsules.textBefore}{' '}
+            <span className="accent">{nuroConfig.capsules.accent}</span>{' '}
+            {nuroConfig.capsules.textAfter}
+          </p>
 
-            <div className="testi-carousel">
-              <div className="marquee"><div className="mtrack to-right">
-                {[...TESTI_LEFT, ...TESTI_LEFT].map((t, i) => (
-                  <Tcard key={`L${i}`} t={t} />
-                ))}
-              </div></div>
-              <div className="marquee"><div className="mtrack to-left">
-                {[...TESTI_RIGHT, ...TESTI_RIGHT].map((t, i) => (
-                  <Tcard key={`R${i}`} t={t} />
-                ))}
-              </div></div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── CTA FINAL ─── */}
-        <section id="cta">
-          <div className="cta-inner">
-            <h2 className="h-2">Lleva tu negocio a una nueva generación digital.</h2>
-            <a href="/register" className="btn btn-primary btn-lg">
-              Solicitar demostración <ArrowRight size={18} strokeWidth={2.4} />
+          <div className="cta-row">
+            <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
+              {nuroConfig.capsules.cta} <ArrowRight size={18} strokeWidth={2.4} />
             </a>
-            <div className="footer-note">© NÜRO · Tecnología que trabaja contigo.</div>
+          </div>
+
+          <ul className="micro-list">
+            {nuroConfig.capsules.micro.map((m, i) => (
+              <li key={i}>
+                <CheckCircle size={12} strokeWidth={2.4} />
+                {m}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════
+            8 · BANNER FINAL DE CONVERSIÓN
+            ═══════════════════════════════════════════════════ */}
+        <section id="banner">
+          <div className="banner-card">
+            <h2 className="h-2">{nuroConfig.banner.title}</h2>
+            <p className="lead">{nuroConfig.banner.sub}</p>
+            <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
+              {nuroConfig.banner.cta} <ArrowRight size={18} strokeWidth={2.4} />
+            </a>
+            <a href={nuroConfig.loginUrl} className="alt-link">
+              {nuroConfig.banner.altCta}
+            </a>
           </div>
         </section>
       </main>
 
+      {/* ═══════════════════════════════════════════════════
+          9 · FOOTER MINIMALISTA
+          ═══════════════════════════════════════════════════ */}
+      <footer className="footer">
+        <div className="footer-grid">
+          <div className="footer-brand">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/landing/logo-blanco.png" className="logo-nuro" alt="NÜRO" />
+            <p>{nuroConfig.footer.desc}</p>
+          </div>
+          <ul className="footer-links">
+            {nuroConfig.footer.links.map((l) => (
+              <li key={`${l.href}-${l.label}`}>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="footer-line" />
+        <div className="footer-bottom">
+          <span>{nuroConfig.footer.copyright}</span>
+          <button type="button" className="back-top" onClick={handleScrollTop} aria-label="Volver arriba">
+            <ChevronUp size={14} strokeWidth={2.4} />
+          </button>
+        </div>
+      </footer>
+
       <style jsx global>{`
+        /* ═══════════════════════════════════════════════════════════════
+           TOKENS · paleta
+           ═══════════════════════════════════════════════════════════════ */
         :root {
-          /* Paleta original (usada por la animación de fondo · NO TOCAR) */
           --naranja:#e0219a;
           --naranja-claro:#b16cff;
           --azul-neon:#9b5cff;
           --azul-glow:rgba(155,92,255,.55);
           --negro:#0a0714;
           --azul-oscuro:#150f2c;
-          /* Paleta editorial nueva (rediseño 2026) */
-          --text-1:#F5F3FF;   /* texto principal */
-          --text-2:#B8B2C8;   /* texto secundario */
-          --text-3:#8E879F;   /* texto auxiliar */
+          --text-1:#F5F3FF;
+          --text-2:#B8B2C8;
+          --text-3:#8E879F;
           --acc-violet:#A855F7;
           --acc-fuchsia:#D946EF;
         }
         html { scroll-behavior: smooth; }
         body {
-          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
           color: var(--text-1);
           background: var(--negro);
           overflow-x: hidden;
@@ -555,6 +736,7 @@ export default function LandingPage() {
           -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ▼▼▼ INTOCABLE · fondo animado y escena 3D ▼▼▼ */
         .bg-gradient {
           position: fixed; inset: 0; z-index: 0; pointer-events: none;
           background: radial-gradient(120% 90% at 50% 8%, #241a45 0%, var(--azul-oscuro) 38%, var(--negro) 72%);
@@ -601,42 +783,23 @@ export default function LandingPage() {
           90%  { opacity: .5; }
           100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
         }
-
-        /* z-index: scene/particles → 1 (robot y partículas detrás de TODO el contenido) */
         #scene { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         #scene canvas { display: block; width: 100%; height: 100%; }
+        /* ▲▲▲ FIN INTOCABLE ▲▲▲ */
 
-        /* ═══════════════════════════════════════════════════════════
-           CONTENIDO · paleta editorial premium
-           Texto:    #F5F3FF principal · #B8B2C8 secundario · #8E879F auxiliar
-           Acento:   #A855F7 violeta · #D946EF fucsia (puntual)
-           Cards:    negro violeta translúcido oscuro, blur, borde fino
-           Z-INDEX: bg 0 · robot/partículas 1 · scrims 2 · contenido 3 · nav 10
-           ═══════════════════════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════════════════════════
+           LAYOUT GLOBAL
+           ═══════════════════════════════════════════════════════════════ */
         .content { position: relative; z-index: 3; }
         section {
-          /* Quitamos min-height: 100vh global — solo el hero lo necesita.
-             Cada sección crece según contenido. padding-block fluido. */
           display: flex; flex-direction: column;
           padding-block: clamp(72px, 9vw, 132px);
           padding-inline: 6vw;
           position: relative;
+          overflow-x: clip;
         }
 
-        /* Estructura interna estándar por sección: etiqueta → título → texto → cta/indicadores */
-        .stack { display: flex; flex-direction: column; }
-
-        /* ── Capa decorativa local del hero · z-index 2 ──
-           El resto de secciones usa ::before localizados detrás de su
-           encabezado (no scrims globales con inset:0 que oscurezcan
-           todo el contenido). */
-        .hero-bg {
-          position: absolute;
-          pointer-events: none;
-          z-index: 2;
-        }
-
-        /* ── NAVBAR (scroll-aware) · z-index 10 ── */
+        /* ─── NAVBAR ─── */
         .topbar {
           position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
           display: flex; align-items: center; justify-content: space-between;
@@ -654,23 +817,24 @@ export default function LandingPage() {
           padding: 14px 6vw;
         }
         .topbar .logo-nuro { height: 28px; filter: drop-shadow(0 2px 10px rgba(168,85,247,.32)); }
-        .topbar .menu { display: flex; gap: 30px; align-items: center; }
+        .topbar .menu { display: flex; gap: 28px; align-items: center; }
         .topbar .menu a {
           color: #B8B2C8; text-decoration: none;
-          font-size: 14px; font-weight: 600; letter-spacing: -.005em;
+          font-size: 14px; font-weight: 600;
           transition: color .2s;
         }
         .topbar .menu a:hover { color: #F5F3FF; }
         .topbar .auth-btns { display: flex; gap: 10px; align-items: center; }
 
-        /* ── BOTONES ── */
+        /* ─── BOTONES ─── */
         .btn {
           display: inline-flex; align-items: center; gap: 8px;
           border: 0; cursor: pointer;
-          font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+          font-size: 15px; font-weight: 650;
           padding: 14px 26px; border-radius: 12px;
-          transition: transform .22s ease, box-shadow .22s ease, background .22s ease, color .22s ease, border-color .22s ease;
+          transition: transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease;
           text-decoration: none; white-space: nowrap;
+          letter-spacing: -.005em;
         }
         .btn-primary {
           background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
@@ -698,12 +862,12 @@ export default function LandingPage() {
           border-color: rgba(168,85,247,.55);
         }
         .btn-nav { font-size: 13.5px; padding: 10px 18px; border-radius: 999px; }
-        .btn-lg  { font-size: 16.5px; padding: 16px 32px; border-radius: 14px; }
+        .btn-lg  { font-size: 16px; padding: 16px 30px; border-radius: 14px; font-weight: 700; }
 
-        /* ── EYEBROW (etiqueta sutil de sección) ── */
+        /* ─── EYEBROW + TIPOGRAFÍA ─── */
         .eyebrow {
           display: inline-flex; align-items: center; gap: 9px;
-          font-size: 11.5px; font-weight: 600;
+          font-size: 11.5px; font-weight: 700;
           color: #C8C2D8;
           letter-spacing: .22em; text-transform: uppercase;
           padding: 8px 14px; border-radius: 999px;
@@ -715,14 +879,11 @@ export default function LandingPage() {
         }
         .eyebrow-dot {
           width: 6px; height: 6px; border-radius: 50%;
-          background: #A855F7;
-          box-shadow: 0 0 8px rgba(168,85,247,.7);
+          background: #A855F7; box-shadow: 0 0 8px rgba(168,85,247,.7);
         }
-
-        /* ── TIPOGRAFÍA · clamps exactos del brief + text-shadow elegante ── */
         h1, h2, h3 {
-          color: #F5F3FF;
-          letter-spacing: -.03em; line-height: 1.06; font-weight: 700;
+          color: #F5F3FF; font-weight: 800;
+          letter-spacing: -.03em; line-height: 1.06;
           text-shadow:
             0 3px 12px rgba(0,0,0,.75),
             0 8px 30px rgba(0,0,0,.45);
@@ -730,461 +891,586 @@ export default function LandingPage() {
         .h-display {
           font-size: clamp(2.3rem, 5vw, 4.8rem);
           font-weight: 800;
-          letter-spacing: -.055em;
-          line-height: 1.02;
+          letter-spacing: -.055em; line-height: 1.02;
           max-width: 18ch;
         }
         .h-2 {
-          font-size: clamp(2rem, 4vw, 3.8rem);
+          font-size: clamp(2rem, 4vw, 3.6rem);
           font-weight: 800;
-          letter-spacing: -.045em;
-          line-height: 1.05;
+          letter-spacing: -.045em; line-height: 1.05;
           max-width: 22ch;
         }
         .accent {
           background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
           -webkit-background-clip: text; background-clip: text;
           color: transparent;
-          /* El text-shadow de h1/h2 funciona vía text-shadow del padre porque
-             el span hereda — pero al ser texto en gradient, no se ve la sombra.
-             Le añadimos un drop-shadow filter para preservar legibilidad. */
           filter: drop-shadow(0 3px 12px rgba(0,0,0,.55));
+        }
+        .accent-soft {
+          color: #C084FC; font-weight: 700;
+          text-shadow: 0 2px 10px rgba(0,0,0,.80);
         }
         .lead {
           color: #C0BAD0;
           font-size: clamp(1rem, 1.4vw, 1.2rem);
-          font-weight: 500;
-          line-height: 1.7;
+          font-weight: 500; line-height: 1.7;
           letter-spacing: -.005em;
           max-width: 680px;
           text-shadow: 0 2px 8px rgba(0,0,0,.70);
         }
         .lead-sm { font-size: clamp(.95rem, 1.2vw, 1.05rem); max-width: 56ch; }
 
-        /* ─────────────────────────────────────────────────────────
-           HERO · única sección con min-height: 100vh
-           Estructura flujo normal: eyebrow → título → lead → CTAs → hint
-           ───────────────────────────────────────────────────────── */
+        .cta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .micro-text {
+          color: #8E879F; font-size: 12px; font-weight: 500;
+          letter-spacing: .04em; margin: 0;
+          text-shadow: 0 1px 6px rgba(0,0,0,.6);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           1 · HERO
+           ═══════════════════════════════════════════════════════════════ */
         #hero {
           min-height: 100vh;
-          justify-content: flex-end;
-          align-items: center; text-align: center;
-          padding-bottom: clamp(48px, 6vh, 80px);
+          justify-content: center;
           padding-top: 120px;
+          padding-bottom: 80px;
         }
-        #hero .hero-bg {
-          left: 50%; bottom: 0;
-          width: min(880px, 92%); height: 60%;
-          transform: translateX(-50%);
-          background:
-            radial-gradient(ellipse at center,
-              rgba(4,3,16,.78) 0%,
-              rgba(4,3,16,.44) 48%,
-              rgba(4,3,16,0) 78%);
-        }
-        #hero .hero-text {
+        .hero-grid {
           position: relative;
-          max-width: 760px; margin: 0 auto;
-          display: flex; flex-direction: column; align-items: center;
-          gap: 18px;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) min(420px, 38%);
+          gap: 48px;
+          align-items: center;
+          max-width: 1200px; width: 100%;
+          margin: 0 auto;
         }
-        #hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
-
-        .scroll-hint {
-          margin-top: 26px; color: #B8B2C8;
-          font-size: 11px; font-weight: 600; letter-spacing: .26em;
-          display: flex; flex-direction: column; align-items: center; gap: 8px;
-          animation: bob 2.4s ease-in-out infinite;
-          text-shadow: 0 2px 8px rgba(0,0,0,.70);
-        }
-        .scroll-hint i {
-          width: 20px; height: 32px;
-          border: 1.5px solid rgba(184,178,200,.55);
-          border-radius: 12px; position: relative;
-        }
-        .scroll-hint i::after {
-          content: ''; position: absolute; top: 5px; left: 50%;
-          width: 2.5px; height: 6px; border-radius: 2px;
-          background: #A855F7; transform: translateX(-50%);
-          animation: wheel 1.8s infinite;
-        }
-        @keyframes wheel { 0% { opacity: 1; top: 5px; } 100% { opacity: 0; top: 17px; } }
-        @keyframes bob   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
-
-        /* ─────────────────────────────────────────────────────────
-           TRANSICIÓN · 2 bloques independientes:
-             1) .trans-head   → eyebrow + h2 + lead (capa oscura local)
-             2) .pillar-row   → 3 indicadores · separación visible
-           NUNCA hay overlay sobre toda la sección.
-           ───────────────────────────────────────────────────────── */
-        #transicion {
-          justify-content: center; align-items: center; text-align: center;
-        }
-        .trans-wrap {
+        .hero-text {
           position: relative;
-          z-index: 3;
-          max-width: 980px; width: 100%; margin: 0 auto;
-          display: flex; flex-direction: column; align-items: center;
-          gap: 44px;             /* separación clara entre head y pillars */
-          padding-inline: 24px;
+          display: flex; flex-direction: column; gap: 22px;
+          max-width: 640px;
         }
-        /* Bloque de texto · su propia capa oscura local detrás */
-        .trans-head {
-          position: relative;
-          display: flex; flex-direction: column; align-items: center;
-          gap: 22px;             /* eyebrow ↔ h2 ↔ lead (≥18 brief) */
-          max-width: 860px;
-          text-align: center;
-        }
-        /* Capa oscura LOCAL · solo detrás del bloque de texto · z-index -1 */
-        .trans-head::before {
+        /* Capa oscura local detrás del bloque de texto (no global) */
+        .hero-text::before {
           content: '';
           position: absolute;
-          inset: -56px -120px;
+          inset: -48px -80px -32px -48px;
           z-index: -1;
           pointer-events: none;
-          background: radial-gradient(
-            ellipse at center,
+          background: linear-gradient(
+            90deg,
             rgba(5,3,18,.86) 0%,
-            rgba(5,3,18,.58) 42%,
-            rgba(5,3,18,.20) 70%,
-            rgba(5,3,18,0)   86%
+            rgba(5,3,18,.58) 55%,
+            rgba(5,3,18,.10) 92%,
+            rgba(5,3,18,0)  100%
           );
           filter: blur(14px);
         }
-        .trans-head .eyebrow {
-          align-self: center;
-          /* text-shadow para que la etiqueta no se pierda si la capa local
-             se atenúa en los bordes laterales */
-          text-shadow: 0 2px 8px rgba(0,0,0,.70);
-        }
-        .trans-head .h-2 { text-align: center; }
-        .trans-head .lead {
-          text-align: center; margin: 0 auto; max-width: 56ch;
-        }
-        /* Indicadores · cards sólidas, separadas del texto · z-index 3 */
-        .pillar-row {
-          margin: 0;
-          display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-          list-style: none; padding: 0;
+        .hero-text .h-display { max-width: 100%; margin: 0; }
+        .hero-text .lead { margin: 0; }
+
+        /* Chip flotante "NÜRO ONLINE" (lado derecho, cerca del robot) */
+        .online-chip {
           position: relative;
           z-index: 3;
-        }
-        .pillar-row li {
-          display: inline-flex; align-items: center; gap: 8px;
-          font-size: 13.5px; font-weight: 600; color: #F5F3FF;
-          padding: 11px 18px; border-radius: 999px;
-          background: rgba(12,7,31,.86);
+          align-self: end;
+          justify-self: end;
+          display: inline-flex; align-items: center; gap: 12px;
+          padding: 14px 18px;
+          background: rgba(12,7,31,.82);
           border: 1px solid rgba(168,85,247,.32);
+          border-radius: 14px;
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
-          box-shadow:
-            0 14px 32px -14px rgba(0,0,0,.55),
-            inset 0 1px 0 rgba(255,255,255,.04);
-          /* text-shadow ligero para legibilidad si el robot brilla detrás */
-          text-shadow: 0 1px 3px rgba(0,0,0,.55);
+          box-shadow: 0 20px 55px rgba(0,0,0,.32);
+          max-width: 220px;
         }
-        .pillar-row li :global(svg) { color: #A855F7; flex-shrink: 0; }
+        .online-pulse {
+          width: 10px; height: 10px; border-radius: 50%;
+          background: #10B981;
+          box-shadow: 0 0 12px rgba(16,185,129,.85);
+          flex-shrink: 0;
+          animation: pulseDot 2.4s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%      { opacity: .55; transform: scale(.85); }
+        }
+        .online-label {
+          font-size: 11px; font-weight: 700;
+          letter-spacing: .22em; color: #F5F3FF;
+          text-transform: uppercase;
+        }
+        .online-sub {
+          font-size: 11.5px; font-weight: 500;
+          color: #B8B2C8; margin-top: 2px;
+        }
 
-        /* ─────────────────────────────────────────────────────────
-           DEMO VIDEO · header independiente con capa LOCAL detrás
-           del título (no cubre el reproductor)
-           ───────────────────────────────────────────────────────── */
-        #demo {
-          justify-content: center; align-items: center; text-align: center;
+        /* ═══════════════════════════════════════════════════════════════
+           2 · TICKER
+           ═══════════════════════════════════════════════════════════════ */
+        #ticker {
+          padding-block: clamp(28px, 4vw, 56px);
+          padding-inline: 0;
+          gap: 12px;
         }
-        #demo .demo-wrap {
+        .ticker-row {
           position: relative;
-          z-index: 3;
-          width: 100%; max-width: 960px; margin: 0 auto;
-          display: flex; flex-direction: column; align-items: center;
+          width: 100%;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+                  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
         }
-        .demo-head {
+        .ticker-row-soft { opacity: .5; filter: blur(.3px); }
+        .ticker-track {
+          display: flex; gap: 28px;
+          width: max-content;
+          will-change: transform;
+          padding: 6px 0;
+        }
+        .ticker-left  { animation: tkLeft  56s linear infinite; }
+        .ticker-right { animation: tkRight 70s linear infinite; }
+        @keyframes tkLeft  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
+        @keyframes tkRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
+        .ticker-item {
+          display: inline-flex; align-items: center; gap: 10px;
+          flex-shrink: 0;
+          font-size: 12.5px; font-weight: 700;
+          letter-spacing: .26em; text-transform: uppercase;
+          color: #C0BAD0;
+          padding: 10px 18px; border-radius: 999px;
+          background: rgba(12,7,31,.55);
+          border: 1px solid rgba(168,85,247,.20);
+        }
+        .ticker-dot {
+          width: 5px; height: 5px; border-radius: 50%;
+          background: #A855F7; flex-shrink: 0;
+          box-shadow: 0 0 6px rgba(168,85,247,.7);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           3 · TARJETA NUMERADA
+           ═══════════════════════════════════════════════════════════════ */
+        #problemas {
+          align-items: center; text-align: center;
+          gap: 32px;
+        }
+        .numbered-card {
+          width: 100%; max-width: 720px;
+          background: rgba(20,14,42,.85);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          border: 1px solid rgba(168,85,247,.22);
+          border-radius: 18px;
+          padding: 38px 32px;
+          display: flex; flex-direction: column; gap: 20px;
+          box-shadow: 0 24px 60px rgba(0,0,0,.36);
+        }
+        .numbered-title {
+          color: #F5F3FF; text-align: center;
+          font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+          font-weight: 700; letter-spacing: -.025em; line-height: 1.2;
+          margin: 0 auto;
+          max-width: 28ch;
+          text-shadow: 0 2px 10px rgba(0,0,0,.65);
+        }
+        .numbered-list {
+          list-style: none; padding: 0; margin: 0;
+          display: flex; flex-direction: column; gap: 10px;
+        }
+        .numbered-row {
+          display: flex; align-items: center; gap: 16px;
+          padding: 14px 18px;
+          background: rgba(5,3,18,.78);
+          border: 1px solid rgba(168,85,247,.18);
+          border-radius: 12px;
+          text-align: left;
+        }
+        .numbered-row .num {
+          color: #C084FC; font-weight: 800;
+          font-size: 16px; letter-spacing: -.02em;
+          font-style: italic; min-width: 28px;
+          flex-shrink: 0;
+        }
+        .numbered-row .num-text {
+          color: #C0BAD0; font-size: 14.5px; line-height: 1.55;
+        }
+        .numbered-closing {
+          text-align: center;
+          color: #C0BAD0; font-size: 15px;
+          font-weight: 500; line-height: 1.55;
+          max-width: 36ch; margin: 0 auto;
+          display: flex; flex-direction: column; gap: 6px;
+          text-shadow: 0 2px 8px rgba(0,0,0,.7);
+        }
+        .numbered-closing strong {
+          font-size: 17px;
+          font-weight: 700;
+          font-style: normal;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           4 · CELULAR + LISTA
+           ═══════════════════════════════════════════════════════════════ */
+        #solucion { justify-content: center; }
+        .phone-grid {
+          display: grid;
+          grid-template-columns: minmax(260px, 320px) 1fr;
+          gap: 60px;
+          align-items: center;
+          max-width: 1100px;
+          width: 100%;
+          margin: 0 auto;
+        }
+        .phone-mockup {
           position: relative;
-          display: flex; flex-direction: column; align-items: center;
-          gap: 18px;             /* eyebrow ↔ título ↔ párrafo */
-          margin-bottom: 38px;   /* separación mínima del reproductor */
-          max-width: 720px;
-          padding-inline: 24px;
+          width: 100%;
+          max-width: 280px;
+          margin: 0 auto;
+          transform: rotate(-3deg);
+          animation: phoneFloat 6s ease-in-out infinite;
         }
-        /* Capa oscura LOCAL detrás del encabezado · z-index -1 */
-        .demo-head::before {
+        @keyframes phoneFloat {
+          0%, 100% { transform: rotate(-3deg) translateY(0); }
+          50%      { transform: rotate(-3deg) translateY(-8px); }
+        }
+        .phone-shadow {
+          position: absolute;
+          left: 8%; right: 8%; bottom: -28px;
+          height: 28px;
+          background: radial-gradient(ellipse at center, rgba(168,85,247,.32) 0%, rgba(0,0,0,0) 70%);
+          filter: blur(14px);
+          z-index: -1;
+        }
+        .phone-frame {
+          position: relative;
+          aspect-ratio: 9 / 19.5;
+          border-radius: 38px;
+          background: linear-gradient(180deg, #1a1133, #0a0714);
+          border: 2px solid rgba(168,85,247,.30);
+          padding: 8px;
+          box-shadow:
+            0 24px 60px rgba(0,0,0,.55),
+            inset 0 1px 0 rgba(255,255,255,.06);
+        }
+        .phone-notch {
+          position: absolute; top: 14px; left: 50%;
+          transform: translateX(-50%);
+          width: 90px; height: 22px;
+          background: #050316;
+          border-radius: 12px;
+          z-index: 2;
+        }
+        .phone-screen {
+          position: relative;
+          width: 100%; height: 100%;
+          border-radius: 32px;
+          background: linear-gradient(180deg, #1a1033 0%, #050316 100%);
+          overflow: hidden;
+        }
+        .phone-img {
+          position: absolute; inset: 0;
+          width: 100%; height: 100%;
+          object-fit: cover;
+          z-index: 1;
+        }
+        .phone-fallback {
+          position: absolute; inset: 0;
+          display: flex; flex-direction: column;
+          padding: 48px 16px 18px;
+          gap: 14px;
+        }
+        .phone-status {
+          display: flex; justify-content: space-between;
+          font-size: 10.5px; font-weight: 600;
+          color: #B8B2C8;
+          margin-top: 4px;
+        }
+        .phone-status-dots { letter-spacing: 1px; }
+        .phone-msg-card {
+          background: rgba(168,85,247,.10);
+          border: 1px solid rgba(168,85,247,.30);
+          border-radius: 14px;
+          padding: 14px;
+          display: flex; flex-direction: column; gap: 8px;
+          backdrop-filter: blur(6px);
+        }
+        .phone-msg-head {
+          display: flex; align-items: center; gap: 10px;
+        }
+        .phone-avatar {
+          width: 32px; height: 32px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #A855F7, #D946EF);
+          display: grid; place-items: center;
+          color: #fff;
+        }
+        .phone-msg-meta { display: flex; flex-direction: column; gap: 2px; }
+        .phone-msg-name { font-size: 12px; font-weight: 700; color: #F5F3FF; }
+        .phone-msg-time { font-size: 10px; color: #8E879F; }
+        .phone-msg-title {
+          font-size: 11.5px; font-weight: 700;
+          color: #F5F3FF; line-height: 1.4;
+          margin: 0;
+        }
+        .phone-msg-body {
+          font-size: 10.5px; color: #B8B2C8; line-height: 1.5;
+          margin: 0;
+        }
+        .phone-input {
+          margin-top: auto;
+          display: flex; align-items: center; gap: 8px;
+          padding: 9px 12px;
+          background: rgba(255,255,255,.05);
+          border: 1px solid rgba(168,85,247,.18);
+          border-radius: 999px;
+          color: #8E879F; font-size: 10.5px;
+        }
+
+        .phone-text {
+          position: relative;
+          display: flex; flex-direction: column; gap: 20px;
+          max-width: 540px;
+        }
+        .phone-text::before {
           content: '';
           position: absolute;
-          inset: -50px -90px;
+          inset: -40px -60px;
           z-index: -1;
           pointer-events: none;
           background: radial-gradient(
             ellipse at center,
-            rgba(5,3,18,.74) 0%,
-            rgba(5,3,18,.42) 48%,
+            rgba(5,3,18,.72) 0%,
+            rgba(5,3,18,.40) 48%,
             rgba(5,3,18,0)  78%
           );
           filter: blur(12px);
         }
-        .demo-head .h-2 { text-align: center; }
-        .demo-head .lead { text-align: center; margin: 0; }
-        .video-frame {
-          position: relative; width: 100%; aspect-ratio: 16/9; margin: 0 auto;
-          border-radius: 18px; overflow: hidden; background: #0a0714;
-          border: 1px solid rgba(168,85,247,.22);
-          box-shadow:
-            0 30px 70px -28px rgba(0,0,0,.75),
-            0 0 0 1px rgba(255,255,255,.04) inset;
+        .problems-list {
+          list-style: none; padding: 0; margin: 0;
+          display: flex; flex-direction: column; gap: 12px;
         }
-        .video-frame iframe {
-          position: absolute; inset: 0; width: 100%; height: 100%;
-          border: 0; display: block;
+        .problems-list li {
+          display: flex; align-items: flex-start; gap: 12px;
+          color: #C0BAD0; font-size: 14.5px;
+          line-height: 1.55;
+          text-shadow: 0 1px 6px rgba(0,0,0,.55);
         }
-        .video-link {
-          display: inline-flex; align-items: center; gap: 7px;
-          margin-top: 20px;
-          color: #B8B2C8; text-decoration: none;
-          font-weight: 600; font-size: 13.5px; letter-spacing: -.005em;
-          transition: color .2s;
-          text-shadow: 0 2px 8px rgba(0,0,0,.70);
+        .problems-list :global(svg) {
+          color: #C084FC; flex-shrink: 0;
+          margin-top: 4px;
+          filter: drop-shadow(0 0 4px rgba(168,85,247,.4));
         }
-        .video-link :global(svg) { color: #A855F7; }
-        .video-link:hover { color: #F5F3FF; }
 
-        /* ─────────────────────────────────────────────────────────
-           VISIÓN · la card ya tiene background sólido y bordes con
-           contraste; NO necesita scrim global encima de la sección.
-           ───────────────────────────────────────────────────────── */
-        #vision {
-          justify-content: center;
+        /* ═══════════════════════════════════════════════════════════════
+           5 · DIVISOR
+           ═══════════════════════════════════════════════════════════════ */
+        .divider {
+          padding-block: clamp(48px, 6vw, 84px);
+          display: flex; justify-content: center;
+          position: relative; z-index: 3;
         }
-        .side-card {
+        .divider svg { filter: drop-shadow(0 0 12px rgba(168,85,247,.4)); }
+
+        /* ═══════════════════════════════════════════════════════════════
+           6 · INVITACIÓN
+           ═══════════════════════════════════════════════════════════════ */
+        #invitacion {
+          align-items: center; text-align: center;
+        }
+        .invitation-wrap {
           position: relative;
-          max-width: 460px;
-          width: 100%;
-          margin-left: auto;
-          background: rgba(12,7,31,.82);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          border: 1px solid rgba(168,85,247,.28);
-          border-radius: 18px;
-          padding: 32px 34px;
-          display: flex; flex-direction: column; gap: 18px;
-          box-shadow: 0 20px 55px rgba(0,0,0,.32);
+          max-width: 880px;
+          display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
-        .side-card .h-2 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); max-width: 100%; }
-        .side-card .lead { font-size: clamp(.95rem, 1.2vw, 1.05rem); max-width: 100%; }
-
-        /* ─────────────────────────────────────────────────────────
-           SERVICIOS · 2 cards verticales con orden interno consistente
-           ───────────────────────────────────────────────────────── */
-        #servicios { justify-content: center; }
-        .serv-wrap {
-          max-width: 580px; width: 100%;
-          display: flex; flex-direction: column; gap: 22px;
-        }
-        .serv-wrap .h-2 { font-size: clamp(1.6rem, 2.8vw, 2.4rem); max-width: 18ch; }
-        .serv-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
-        .serv-card {
-          background: rgba(12,7,31,.82);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          border: 1px solid rgba(168,85,247,.28);
-          border-radius: 14px;
-          padding: 22px 24px;
-          transition: transform .25s, border-color .25s, box-shadow .25s;
-          display: flex; flex-direction: column; gap: 10px;
-          box-shadow: 0 20px 55px rgba(0,0,0,.32);
-        }
-        .serv-card:hover {
-          border-color: rgba(168,85,247,.52);
-          transform: translateY(-2px);
-          box-shadow: 0 26px 64px -16px rgba(168,85,247,.35);
-        }
-        .serv-ic {
-          width: 44px; height: 44px; border-radius: 12px;
-          display: grid; place-items: center;
-          color: #A855F7;
-          background: rgba(168,85,247,.12);
-          border: 1px solid rgba(168,85,247,.28);
-        }
-        .serv-card h3 {
-          font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-          font-weight: 700; letter-spacing: -.018em;
-        }
-        .serv-card p {
-          color: #C0BAD0;
-          font-size: clamp(.9rem, 1.05vw, 1rem);
-          font-weight: 500;
-          line-height: 1.65;
-          max-width: 48ch;
-        }
-
-        /* ─────────────────────────────────────────────────────────
-           TESTIMONIOS · 2 capas independientes: head + carrusel
-           El overlay oscuro VIVE solo detrás del título (::before),
-           NUNCA encima del contenido. Robot global queda detrás (z 1).
-           ───────────────────────────────────────────────────────── */
-        #testimonios {
-          padding-block: clamp(90px, 10vw, 150px);
-          padding-inline: 6vw;
-          overflow: hidden;
-          display: block; /* sin flex global · cada bloque maneja su propio layout */
-        }
-        .testi-content {
-          position: relative;
-          z-index: 3;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        /* ── Encabezado independiente (z 5) ── */
-        .testi-head {
-          position: relative;
-          z-index: 5;
-          display: flex; flex-direction: column; align-items: center;
-          justify-content: center;
-          gap: 18px;
-          text-align: center;
-          max-width: 900px;
-          margin: 0 auto 54px; /* separación mínima del carrusel */
-          padding-inline: 24px;
-        }
-        /* Capa oscura LOCAL · radial suave SOLO detrás del título */
-        .testi-head::before {
+        .invitation-wrap::before {
           content: '';
           position: absolute;
-          inset: -60px -100px;
-          z-index: -1; /* atrás del título y la etiqueta, nunca encima */
+          inset: -50px -100px;
+          z-index: -1;
           pointer-events: none;
           background: radial-gradient(
             ellipse at center,
-            rgba(5,3,18,.78) 0%,
-            rgba(5,3,18,.44) 45%,
-            rgba(5,3,18,0)  76%
+            rgba(5,3,18,.82) 0%,
+            rgba(5,3,18,.50) 48%,
+            rgba(5,3,18,0)  78%
           );
-          filter: blur(12px);
+          filter: blur(14px);
         }
-        .testi-head .eyebrow { align-self: center; }
-        .testi-head .h-2 {
-          margin: 0;
-          max-width: 860px;
-          color: #F7F5FF;
-          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', sans-serif;
-          font-size: clamp(2rem, 3.6vw, 3.4rem);
-          font-weight: 800;
-          line-height: 1.04;
-          letter-spacing: -.055em;
-          text-align: center;
-          text-shadow:
-            0 4px 10px rgba(0,0,0,.92),
-            0 10px 34px rgba(0,0,0,.76);
+        .upper-line {
+          color: #B8B2C8; font-size: 14px;
+          font-weight: 500; letter-spacing: -.005em;
+          font-style: italic;
+          text-shadow: 0 2px 8px rgba(0,0,0,.7);
         }
-        .testi-head .testi-accent {
-          color: #C084FC;
-          background: none;
-          -webkit-text-fill-color: #C084FC;
-          filter: none;
-          text-shadow:
-            0 4px 10px rgba(0,0,0,.92),
-            0 10px 34px rgba(0,0,0,.72);
+        .invitation-wrap .h-display {
+          text-align: center; margin: 0;
+          max-width: 22ch;
+        }
+        .invitation-wrap .lead {
+          text-align: center; margin: 0 auto;
+          max-width: 56ch;
         }
 
-        /* ── Carrusel separado del encabezado (z 4) ── */
-        .testi-carousel {
-          position: relative;
-          z-index: 4;
-          width: 100%;
-          margin-top: 12px; /* 54 + 12 = 66px desde el header (≥ 48px exigido) */
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
+        /* ═══════════════════════════════════════════════════════════════
+           7 · CÁPSULAS
+           ═══════════════════════════════════════════════════════════════ */
+        #capsulas {
+          align-items: center; text-align: center;
+          gap: 32px;
         }
-        .marquee {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-                  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        .caps-grid {
+          list-style: none; padding: 0; margin: 0;
+          display: flex; flex-wrap: wrap; justify-content: center;
+          gap: 10px;
+          max-width: 840px;
         }
-        .mtrack { display: flex; gap: 14px; width: max-content; will-change: transform; padding: 6px 0; }
-        .mtrack.to-left  { animation: marqueeLeft  60s linear infinite; }
-        .mtrack.to-right { animation: marqueeRight 60s linear infinite; }
-        @keyframes marqueeLeft  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
-        @keyframes marqueeRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
-        .marquee:hover .mtrack { animation-play-state: paused; }
+        .cap {
+          display: inline-flex; align-items: center; gap: 8px;
+          font-size: 13px; font-weight: 600;
+          color: #C0BAD0;
+          padding: 10px 16px; border-radius: 999px;
+          background: rgba(12,7,31,.55);
+          border: 1px solid rgba(168,85,247,.20);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          text-shadow: 0 1px 4px rgba(0,0,0,.5);
+        }
+        .cap :global(svg) {
+          color: #A855F7; flex-shrink: 0;
+        }
+        .caps-text {
+          color: #F5F3FF; font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+          font-weight: 600; line-height: 1.4;
+          letter-spacing: -.01em;
+          max-width: 36ch; margin: 0;
+          text-shadow: 0 2px 10px rgba(0,0,0,.7);
+        }
+        .micro-list {
+          list-style: none; padding: 0; margin: 0;
+          display: flex; flex-wrap: wrap; justify-content: center;
+          gap: 16px 22px;
+        }
+        .micro-list li {
+          display: inline-flex; align-items: center; gap: 6px;
+          color: #8E879F; font-size: 12px; font-weight: 500;
+          letter-spacing: .02em;
+          text-shadow: 0 1px 6px rgba(0,0,0,.55);
+        }
+        .micro-list :global(svg) { color: #A855F7; }
 
-        /* ── Tarjetas con MÁS contraste (sin oscurecer la sección) ── */
-        .tcard {
-          position: relative;
-          z-index: 4;
-          display: flex; align-items: flex-start; gap: 14px; flex: 0 0 auto;
-          width: 320px;
-          background: rgba(14,8,34,.86);
+        /* ═══════════════════════════════════════════════════════════════
+           8 · BANNER FINAL
+           ═══════════════════════════════════════════════════════════════ */
+        #banner { align-items: center; }
+        .banner-card {
+          width: 100%; max-width: 760px;
+          margin: 0 auto;
+          padding: 40px 36px;
+          border-radius: 22px;
+          background:
+            linear-gradient(135deg, rgba(168,85,247,.10) 0%, rgba(217,70,239,.06) 100%),
+            rgba(12,7,31,.78);
+          border: 1px solid rgba(168,85,247,.28);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(168,85,247,.26);
-          border-radius: 18px;
-          padding: 22px; text-align: left;
           box-shadow:
-            0 18px 46px rgba(0,0,0,.34),
-            inset 0 1px 0 rgba(255,255,255,.03);
+            0 30px 70px -28px rgba(0,0,0,.65),
+            0 0 60px -28px rgba(168,85,247,.45);
+          display: flex; flex-direction: column; align-items: center;
+          text-align: center; gap: 22px;
         }
-        .tcard img {
-          width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
-          border: 1.5px solid rgba(168,85,247,.32); background: #1a1330;
+        .banner-card .h-2 {
+          font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+          max-width: 20ch;
         }
-        .tcard-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .tcard .tn  {
-          font-weight: 700; font-size: 1rem; color: #F5F2FF;
-          letter-spacing: -.01em;
+        .banner-card .lead {
+          margin: 0 auto; max-width: 52ch;
         }
-        .tcard-tag {
-          display: inline-block;
-          font-size: 9.5px; font-weight: 600;
-          letter-spacing: .12em; text-transform: uppercase;
-          padding: 3px 9px; border-radius: 999px;
-          color: #C0BAD0;
-          background: rgba(168,85,247,.12);
-          border: 1px solid rgba(168,85,247,.26);
-          white-space: nowrap;
+        .alt-link {
+          color: #B8B2C8; text-decoration: none;
+          font-size: 12.5px; font-weight: 600;
+          letter-spacing: .14em; text-transform: uppercase;
+          padding: 6px 12px; border-radius: 8px;
+          transition: color .2s;
+          text-shadow: 0 1px 6px rgba(0,0,0,.6);
         }
-        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.34); background: rgba(217,70,239,.10); }
-        .tcard-tipo { font-size: 11.5px; color: #9892AB; }
-        .tcard .tt  {
-          font-size: .94rem; color: #B8B2C8; line-height: 1.55; margin-top: 8px;
-          display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
+        .alt-link:hover { color: #F5F3FF; }
 
-        /* ─────────────────────────────────────────────────────────
-           CTA FINAL
-           ───────────────────────────────────────────────────────── */
-        #cta {
-          justify-content: center; align-items: center; text-align: center;
+        /* ═══════════════════════════════════════════════════════════════
+           9 · FOOTER
+           ═══════════════════════════════════════════════════════════════ */
+        .footer {
+          position: relative;
+          z-index: 3;
+          padding: 56px 6vw 32px;
+          background: rgba(5,3,18,.55);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
         }
-        #cta .cta-inner {
-          max-width: 720px; width: 100%;
-          background: radial-gradient(120% 120% at 50% 0%, rgba(12,7,31,.85) 0%, rgba(12,7,31,.55) 60%, transparent 100%);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(168,85,247,.22);
-          border-radius: 22px;
-          padding: 36px 40px 32px;
-          display: flex; flex-direction: column; align-items: center; gap: 22px;
-          box-shadow: 0 24px 60px rgba(0,0,0,.36);
+        .footer-grid {
+          max-width: 1100px; margin: 0 auto;
+          display: grid;
+          grid-template-columns: minmax(220px, 1fr) auto;
+          gap: 40px; align-items: start;
         }
-        #cta .h-2 { font-size: clamp(2rem, 4.4vw, 3.4rem); max-width: 18ch; text-align: center; }
-        #cta .footer-note {
-          margin-top: 14px; color: #8E879F; font-size: 12px; font-weight: 500;
+        .footer-brand {
+          display: flex; flex-direction: column; gap: 14px;
+          max-width: 360px;
+        }
+        .footer-brand .logo-nuro { height: 26px; align-self: flex-start; }
+        .footer-brand p {
+          color: #8E879F; font-size: 13px;
+          line-height: 1.6; margin: 0;
+        }
+        .footer-links {
+          list-style: none; padding: 0; margin: 0;
+          display: grid;
+          grid-template-columns: repeat(2, auto);
+          gap: 12px 36px;
+        }
+        .footer-links a {
+          color: #B8B2C8; text-decoration: none;
+          font-size: 13.5px; font-weight: 500;
+          transition: color .2s;
+        }
+        .footer-links a:hover { color: #F5F3FF; }
+        .footer-line {
+          max-width: 1100px; margin: 32px auto 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(168,85,247,.22), transparent);
+        }
+        .footer-bottom {
+          max-width: 1100px; margin: 18px auto 0;
+          display: flex; align-items: center; justify-content: space-between;
+          color: #8E879F; font-size: 11.5px; font-weight: 500;
           letter-spacing: .04em;
         }
+        .back-top {
+          width: 32px; height: 32px;
+          border-radius: 50%;
+          background: rgba(168,85,247,.08);
+          border: 1px solid rgba(168,85,247,.22);
+          color: #B8B2C8;
+          cursor: pointer;
+          display: grid; place-items: center;
+          transition: background .2s, color .2s;
+        }
+        .back-top:hover { background: rgba(168,85,247,.16); color: #F5F3FF; }
 
-        /* ═══════════════════════════════════════════════════════════
+        /* ═══════════════════════════════════════════════════════════════
            RESPONSIVE
-           ═══════════════════════════════════════════════════════════ */
+           ═══════════════════════════════════════════════════════════════ */
         @media (max-width: 1024px) {
           section { padding-block: 72px; padding-inline: 5vw; }
           .topbar { padding: 16px 5vw; }
           .topbar.is-scrolled { padding: 12px 5vw; }
+          .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+          .online-chip { justify-self: start; }
+          .phone-grid { grid-template-columns: 1fr; gap: 40px; }
+          .phone-mockup { order: 2; }
+          .phone-text { order: 1; }
+          .footer-grid { grid-template-columns: 1fr; gap: 28px; }
         }
 
         @media (max-width: 820px) {
@@ -1195,92 +1481,50 @@ export default function LandingPage() {
           .topbar .auth-btns { gap: 8px; }
           .topbar .auth-btns .btn { padding: 8px 12px; font-size: 12.5px; border-radius: 9px; }
 
-          /* padding lateral 20px en mobile · sin scroll horizontal */
           section { padding-block: 56px; padding-inline: 20px; }
 
-          /* Hero más compacto */
-          #hero { min-height: 100vh; padding-bottom: 40px; padding-top: 96px; }
-          #hero .hero-bg { width: 96%; height: 58%; }
-          #hero .h-display { max-width: 100%; }
-          #hero .cta-row { gap: 10px; }
-          #hero .btn { padding: 11px 20px; font-size: 14px; }
-          #hero .scroll-hint { display: none; }
+          #hero { min-height: 100vh; padding-top: 96px; padding-bottom: 40px; }
+          .hero-text::before { inset: -28px -28px -20px -20px; }
+          .hero-text .h-display { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+          .hero-text .lead { font-size: 14px; }
+          .online-chip { padding: 12px 14px; max-width: 100%; }
 
-          /* Transición mobile · gap más generoso entre texto e indicadores */
-          .trans-wrap { gap: 36px; padding-inline: 20px; }
-          .trans-head { gap: 18px; }
-          .trans-head::before { inset: -36px -50px; }
-          .pillar-row { gap: 10px; }
-          .pillar-row li { font-size: 12.5px; padding: 9px 14px; }
+          .ticker-item { font-size: 11px; padding: 8px 14px; }
+          .ticker-track { gap: 20px; }
 
-          /* Demo · separación 30px del reproductor en mobile */
-          .demo-head { margin-bottom: 30px; gap: 14px; padding-inline: 20px; }
-          .demo-head::before { inset: -30px -50px; }
+          .numbered-card { padding: 28px 22px; border-radius: 16px; }
+          .numbered-title { font-size: 1.25rem; }
+          .numbered-row { padding: 12px 14px; gap: 12px; }
+          .numbered-row .num-text { font-size: 13.5px; }
 
-          /* Visión · panel centrado a 1 columna, casi todo ancho */
-          .side-card { padding: 24px 22px; max-width: 100%; margin: 0 auto; }
+          .phone-grid { gap: 32px; }
+          .phone-text::before { inset: -28px -28px; }
+          .problems-list li { font-size: 13.5px; }
 
-          /* Servicios · 1 columna */
-          .serv-wrap { max-width: 100%; margin: 0 auto; gap: 18px; }
-          .serv-grid { grid-template-columns: 1fr; gap: 14px; }
-          .serv-card { padding: 20px 20px; }
+          .invitation-wrap::before { inset: -32px -40px; }
+          .invitation-wrap .h-display { font-size: clamp(2rem, 9vw, 2.6rem); }
+          .invitation-wrap .lead { font-size: 14px; }
 
-          /* Testimonios mobile · header reducido y separado del carrusel */
-          #testimonios { padding-block: 72px; padding-inline: 20px; }
-          .testi-head {
-            gap: 14px;
-            margin: 0 auto 38px;
-            padding-inline: 20px;
-            max-width: 100%;
-          }
-          .testi-head::before {
-            inset: -40px -60px;
-          }
-          .testi-head .h-2 {
-            font-size: clamp(1.8rem, 9vw, 2.6rem);
-            line-height: 1.05;
-          }
-          .testi-carousel { gap: 16px; margin-top: 0; }
-          .tcard {
-            width: min(300px, 86vw);
-            padding: 18px;
-            border-radius: 16px;
-          }
-          .tcard .tt { -webkit-line-clamp: 3; }
+          .caps-text { font-size: 17px; }
+          .cap { font-size: 12.5px; padding: 9px 14px; }
 
-          /* CTA */
-          #cta .cta-inner { padding: 28px 22px 24px; }
-          .btn-lg { font-size: 14.5px; padding: 14px 22px; }
+          .banner-card { padding: 28px 22px; border-radius: 18px; }
+          .banner-card .h-2 { font-size: clamp(1.4rem, 6.5vw, 1.85rem); }
+          .banner-card .lead { font-size: 13.5px; }
+          .btn-lg { font-size: 14px; padding: 13px 22px; }
+
+          .footer { padding: 40px 20px 24px; }
+          .footer-links { grid-template-columns: 1fr 1fr; gap: 10px 28px; }
+          .footer-bottom { flex-direction: column; gap: 16px; }
         }
 
-        /* Sin scroll horizontal en ninguna sección */
-        section { overflow-x: clip; }
-
         @media (prefers-reduced-motion: reduce) {
-          .particle, .bg-glow, .scroll-hint, .mtrack { animation: none !important; }
+          .particle, .bg-glow, .ticker-left, .ticker-right, .online-pulse, .phone-mockup {
+            animation: none !important;
+          }
           .topbar { transition: none; }
         }
       `}</style>
-    </div>
-  )
-}
-
-function Tcard({ t }: { t: Testimonio }) {
-  return (
-    <div className="tcard">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={t.foto} alt={t.nombre} loading="lazy"
-        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/landing/robot.png' }} />
-      <div className="tcard-body">
-        <div className="tcard-head">
-          <div className="tn">{t.nombre}</div>
-          <span className={`tcard-tag ${t.tag === 'Tienda virtual' ? 'is-tienda' : 'is-agente'}`}>
-            {t.tag}
-          </span>
-        </div>
-        <div className="tcard-tipo">{t.tipo}</div>
-        <div className="tt">{t.texto}</div>
-      </div>
     </div>
   )
 }
