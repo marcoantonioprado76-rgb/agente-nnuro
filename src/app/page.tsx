@@ -454,11 +454,10 @@ export default function LandingPage() {
               <span className="eyebrow">
                 <span className="eyebrow-dot" /> {nuroConfig.hero.label}
               </span>
-              <h1 className="h-display">
-                Tu negocio puede seguir{' '}
-                <span className="accent">vendiendo</span>
-                {' '}incluso{' '}
-                <span className="accent">cuando tú no estás conectado.</span>
+              <h1 className="hero-title">
+                <span className="hero-line">Tu negocio puede seguir</span>
+                <span className="hero-line hero-accent">vendiendo 24/7</span>
+                <span className="hero-line">incluso cuando tú no estás conectado.</span>
               </h1>
               <p className="lead">{nuroConfig.hero.description}</p>
               <div className="cta-row">
@@ -928,7 +927,7 @@ export default function LandingPage() {
         }
 
         /* ═══════════════════════════════════════════════════════════════
-           1 · HERO
+           1 · HERO · premium editorial · texto izquierda · chip lateral
            ═══════════════════════════════════════════════════════════════ */
         #hero {
           min-height: 100vh;
@@ -939,7 +938,7 @@ export default function LandingPage() {
         .hero-grid {
           position: relative;
           display: grid;
-          grid-template-columns: minmax(0, 1fr) min(420px, 38%);
+          grid-template-columns: minmax(0, 1fr) min(380px, 36%);
           gap: 48px;
           align-items: center;
           max-width: 1200px; width: 100%;
@@ -947,7 +946,8 @@ export default function LandingPage() {
         }
         .hero-text {
           position: relative;
-          display: flex; flex-direction: column; gap: 22px;
+          display: flex; flex-direction: column;
+          gap: 26px;             /* aire entre etiqueta · título · lead · CTA */
           max-width: 640px;
         }
         /* Capa oscura local detrás del bloque de texto (no global) */
@@ -959,31 +959,119 @@ export default function LandingPage() {
           pointer-events: none;
           background: linear-gradient(
             90deg,
-            rgba(5,3,18,.86) 0%,
-            rgba(5,3,18,.58) 55%,
+            rgba(5,3,18,.82) 0%,
+            rgba(5,3,18,.55) 55%,
             rgba(5,3,18,.10) 92%,
             rgba(5,3,18,0)  100%
           );
           filter: blur(14px);
         }
-        .hero-text .h-display { max-width: 100%; margin: 0; }
-        .hero-text .lead { margin: 0; }
 
-        /* Chip flotante "NÜRO ONLINE" (lado derecho, cerca del robot) */
+        /* ─── Etiqueta superior · compacta · spacing reducido ─── */
+        .hero-text .eyebrow {
+          font-size: 11px;
+          letter-spacing: .18em;  /* menor que el .22 global · más compacta */
+          padding: 7px 13px;
+          color: #DCD3F0;
+          background: rgba(168,85,247,.10);
+          border-color: rgba(168,85,247,.24);
+        }
+
+        /* ─── Título principal · 3 líneas con jerarquía clara ─── */
+        .hero-title {
+          margin: 0;
+          display: flex; flex-direction: column;
+          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+          font-weight: 800;
+          font-size: clamp(3.3rem, 5vw, 5.4rem);
+          line-height: 0.98;
+          letter-spacing: -.055em;
+          max-width: 630px;
+        }
+        .hero-line {
+          display: block;
+          color: #FFFFFF;
+          /* Sombra discreta (NO fuerte) — mejora lectura sobre el robot */
+          text-shadow:
+            0 2px 8px rgba(0,0,0,.55),
+            0 6px 22px rgba(0,0,0,.38);
+        }
+
+        /* ─── Frase destacada "vendiendo 24/7" · lila luminoso ─── */
+        .hero-accent {
+          background: linear-gradient(90deg, #C084FC 0%, #A855F7 45%, #E879F9 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          -webkit-text-fill-color: transparent;
+          /* Glow controlado para legibilidad sin exagerar */
+          text-shadow:
+            0 0 18px rgba(168,85,247,.28),
+            0 4px 14px rgba(0,0,0,.22);
+        }
+
+        /* ─── Párrafo descriptivo · más contraste ─── */
+        .hero-text .lead {
+          margin: 0;
+          max-width: 620px;
+          font-size: clamp(1.05rem, 1.25vw, 1.20rem);   /* 17–20px desktop */
+          font-weight: 500;
+          line-height: 1.65;
+          color: rgba(255,255,255,.82);
+          text-shadow: 0 2px 8px rgba(0,0,0,.55);
+        }
+
+        /* ─── Botón principal del hero · degradado premium · flecha hover ─── */
+        #hero .btn-primary {
+          background: linear-gradient(90deg, #A855F7 0%, #D946EF 100%);
+          box-shadow:
+            0 10px 28px rgba(168,85,247,.25),
+            0 0 18px rgba(217,70,239,.18),
+            inset 0 1px 0 rgba(255,255,255,.20);
+          transition:
+            transform .35s cubic-bezier(.2,.7,.2,1),
+            box-shadow .35s cubic-bezier(.2,.7,.2,1);
+        }
+        #hero .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow:
+            0 14px 36px rgba(168,85,247,.32),
+            0 0 24px rgba(217,70,239,.24),
+            inset 0 1px 0 rgba(255,255,255,.24);
+        }
+        /* Flecha lucide se desliza ligeramente a la derecha en hover */
+        #hero .btn-primary :global(svg) {
+          transition: transform .35s cubic-bezier(.2,.7,.2,1);
+        }
+        #hero .btn-primary:hover :global(svg) {
+          transform: translateX(4px);
+        }
+
+        /* ─── Microtexto debajo del botón ─── */
+        .hero-text .micro-text {
+          margin: 0;
+          font-size: 13px;
+          font-weight: 500;
+          color: rgba(255,255,255,.58);
+          letter-spacing: .04em;
+          text-shadow: 0 1px 4px rgba(0,0,0,.45);
+        }
+
+        /* ─── Microtarjeta "NÜRO ONLINE" · compacta, no tapa al robot ─── */
         .online-chip {
           position: relative;
           z-index: 3;
           align-self: end;
           justify-self: end;
           display: inline-flex; align-items: center; gap: 12px;
-          padding: 14px 18px;
-          background: rgba(12,7,31,.82);
-          border: 1px solid rgba(168,85,247,.32);
+          padding: 13px 16px;
+          background: rgba(12,7,31,.78);
+          border: 1px solid rgba(168,85,247,.26);
           border-radius: 14px;
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
-          box-shadow: 0 20px 55px rgba(0,0,0,.32);
-          max-width: 220px;
+          box-shadow: 0 18px 48px rgba(0,0,0,.34);
+          max-width: 200px;
         }
         .online-pulse {
           width: 10px; height: 10px; border-radius: 50%;
@@ -1484,9 +1572,19 @@ export default function LandingPage() {
           section { padding-block: 56px; padding-inline: 20px; }
 
           #hero { min-height: 100vh; padding-top: 96px; padding-bottom: 40px; }
+          .hero-text { gap: 22px; max-width: 100%; }
           .hero-text::before { inset: -28px -28px -20px -20px; }
-          .hero-text .h-display { font-size: clamp(2.2rem, 9vw, 3.2rem); }
-          .hero-text .lead { font-size: 14px; }
+          .hero-title {
+            font-size: clamp(2.4rem, 11vw, 3.6rem);
+            line-height: 1;
+            max-width: 100%;
+          }
+          .hero-text .lead {
+            font-size: 14.5px;
+            line-height: 1.6;
+            max-width: 100%;
+          }
+          .hero-text .micro-text { font-size: 12px; }
           .online-chip { padding: 12px 14px; max-width: 100%; }
 
           .ticker-item { font-size: 11px; padding: 8px 14px; }
