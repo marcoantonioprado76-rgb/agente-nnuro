@@ -214,6 +214,41 @@ export default function LandingPage() {
   }, [])
 
   // ──────────────────────────────────────────────
+  // ▼  Reveal editorial · IntersectionObserver  ▼
+  // Aparece eyebrow → título → lead → CTA con stagger suave
+  // (transform + opacity solamente · respeta prefers-reduced-motion)
+  // ──────────────────────────────────────────────
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    // Si el usuario prefiere menos movimiento, marcamos todo como visible directamente
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll<HTMLElement>('[data-reveal]')
+        .forEach((el) => el.classList.add('is-visible'))
+      return
+    }
+    const targets = document.querySelectorAll<HTMLElement>('[data-reveal]')
+    if (!targets.length) return
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            io.unobserve(entry.target) // anima una sola vez
+          }
+        })
+      },
+      {
+        threshold: 0.15,
+        // Dispara un poco antes de que el elemento esté totalmente visible
+        rootMargin: '0px 0px -80px 0px',
+      }
+    )
+    targets.forEach((t) => io.observe(t))
+    return () => io.disconnect()
+  }, [])
+
+  // ──────────────────────────────────────────────
   // ▼  PROTEGIDO · partículas flotantes  ▼
   // ──────────────────────────────────────────────
   useEffect(() => {
@@ -506,25 +541,25 @@ export default function LandingPage() {
         <section id="hero">
           <div className="hero-grid">
             <div className="hero-text">
-              <span className="eyebrow">
+              <span className="eyebrow" data-reveal>
                 <span className="eyebrow-dot" /> {nuroConfig.hero.label}
               </span>
-              <h1 className="hero-title">
+              <h1 className="hero-title" data-reveal data-delay="1">
                 <span className="hero-line">Tu negocio puede seguir</span>
                 <span className="hero-line hero-accent">vendiendo 24/7</span>
                 <span className="hero-line">incluso cuando tú no estás conectado.</span>
               </h1>
-              <p className="lead">{nuroConfig.hero.description}</p>
-              <div className="cta-row">
+              <p className="lead" data-reveal data-delay="2">{nuroConfig.hero.description}</p>
+              <div className="cta-row" data-reveal data-delay="3">
                 <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
                   {nuroConfig.hero.primaryCta} <ArrowRight size={16} strokeWidth={2.4} />
                 </a>
               </div>
-              <p className="micro-text">{nuroConfig.hero.micro}</p>
+              <p className="micro-text" data-reveal data-delay="4">{nuroConfig.hero.micro}</p>
             </div>
 
             {/* Chip discreto · "NÜRO ONLINE" · no compite con el robot del fondo */}
-            <div className="online-chip" aria-hidden="false">
+            <div className="online-chip" aria-hidden="false" data-reveal data-delay="3">
               <span className="online-pulse" />
               <div>
                 <div className="online-label">{nuroConfig.hero.chipLabel}</div>
@@ -540,13 +575,13 @@ export default function LandingPage() {
         <section id="demo">
           <div className="demo-wrap">
             <div className="demo-head">
-              <span className="eyebrow">
+              <span className="eyebrow" data-reveal>
                 <span className="eyebrow-dot" /> {nuroConfig.video.eyebrow}
               </span>
-              <h2 className="h-2">{nuroConfig.video.title}</h2>
-              <p className="lead lead-sm">{nuroConfig.video.sub}</p>
+              <h2 className="h-2" data-reveal data-delay="1">{nuroConfig.video.title}</h2>
+              <p className="lead lead-sm" data-reveal data-delay="2">{nuroConfig.video.sub}</p>
             </div>
-            <div className="video-frame">
+            <div className="video-frame" data-reveal data-delay="3">
               <iframe
                 src={`https://player.vimeo.com/video/${nuroConfig.video.vimeoId}?title=0&byline=0&portrait=0&dnt=1`}
                 allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
@@ -560,6 +595,7 @@ export default function LandingPage() {
               href={`https://vimeo.com/${nuroConfig.video.vimeoId}`}
               target="_blank"
               rel="noopener noreferrer"
+              data-reveal data-delay="4"
             >
               <Sparkles size={12} strokeWidth={2.4} /> {nuroConfig.video.linkLabel}
             </a>
@@ -594,18 +630,18 @@ export default function LandingPage() {
             3 · TARJETA NUMERADA · 4 problemas (01–04)
             ═══════════════════════════════════════════════════ */}
         <section id="problemas">
-          <div className="numbered-card">
-            <h2 className="numbered-title">{nuroConfig.numbered.title}</h2>
+          <div className="numbered-card" data-reveal>
+            <h2 className="numbered-title" data-reveal data-delay="1">{nuroConfig.numbered.title}</h2>
             <ol className="numbered-list">
               {nuroConfig.numbered.items.map((t, i) => (
-                <li key={i} className="numbered-row">
+                <li key={i} className="numbered-row" data-reveal data-delay={String(Math.min(i + 2, 5))}>
                   <span className="num">{String(i + 1).padStart(2, '0')}</span>
                   <span className="num-text">{t}</span>
                 </li>
               ))}
             </ol>
           </div>
-          <p className="numbered-closing">
+          <p className="numbered-closing" data-reveal data-delay="2">
             <span>{nuroConfig.numbered.closingTop}</span>
             <strong className="accent-soft">{nuroConfig.numbered.closingBottom}</strong>
           </p>
@@ -617,7 +653,7 @@ export default function LandingPage() {
         <section id="solucion">
           <div className="phone-grid">
             {/* Mockup · imagen editable en /landing/nuro-mobile-preview.webp */}
-            <figure className="phone-mockup">
+            <figure className="phone-mockup" data-reveal>
               <div className="phone-shadow" aria-hidden />
               <div className="phone-frame">
                 <div className="phone-notch" aria-hidden />
@@ -662,19 +698,19 @@ export default function LandingPage() {
             </figure>
 
             <div className="phone-text">
-              <span className="eyebrow">
+              <span className="eyebrow" data-reveal data-delay="1">
                 <span className="eyebrow-dot" /> Una experiencia comercial activa
               </span>
-              <h2 className="h-2">{nuroConfig.phone.title}</h2>
+              <h2 className="h-2" data-reveal data-delay="2">{nuroConfig.phone.title}</h2>
               <ul className="problems-list">
                 {nuroConfig.phone.problems.map((p, i) => (
-                  <li key={i}>
+                  <li key={i} data-reveal data-delay={String(Math.min(i + 3, 6))}>
                     <Sparkles size={14} strokeWidth={1.8} />
                     <span>{p}</span>
                   </li>
                 ))}
               </ul>
-              <p className="lead lead-sm">{nuroConfig.phone.closing}</p>
+              <p className="lead lead-sm" data-reveal data-delay="5">{nuroConfig.phone.closing}</p>
             </div>
           </div>
         </section>
@@ -682,7 +718,7 @@ export default function LandingPage() {
         {/* ═══════════════════════════════════════════════════
             5 · DIVISOR DECORATIVO
             ═══════════════════════════════════════════════════ */}
-        <div className="divider" role="presentation" aria-hidden>
+        <div className="divider" role="presentation" aria-hidden data-reveal>
           <svg viewBox="0 0 320 36" width="320" height="36" preserveAspectRatio="xMidYMid meet">
             <defs>
               <linearGradient id="divLine" x1="0" y1="0" x2="1" y2="0">
@@ -704,12 +740,12 @@ export default function LandingPage() {
             ═══════════════════════════════════════════════════ */}
         <section id="invitacion">
           <div className="invitation-wrap">
-            <span className="upper-line">{nuroConfig.invitation.upper}</span>
-            <h2 className="h-display">
+            <span className="upper-line" data-reveal>{nuroConfig.invitation.upper}</span>
+            <h2 className="h-display" data-reveal data-delay="1">
               {nuroConfig.invitation.titleTop}<br />
               <span className="accent">{nuroConfig.invitation.titleBottom}</span>
             </h2>
-            <p className="lead">{nuroConfig.invitation.sub}</p>
+            <p className="lead" data-reveal data-delay="2">{nuroConfig.invitation.sub}</p>
           </div>
         </section>
 
@@ -721,7 +757,7 @@ export default function LandingPage() {
             {nuroConfig.capsules.items.map((c, i) => {
               const Icon = capsuleIcons[c.icon]
               return (
-                <li key={i} className="cap">
+                <li key={i} className="cap" data-reveal data-delay={String(Math.min(Math.floor(i / 2) + 1, 4))}>
                   <Icon size={15} strokeWidth={1.8} />
                   <span>{c.text}</span>
                 </li>
@@ -729,19 +765,19 @@ export default function LandingPage() {
             })}
           </ul>
 
-          <p className="caps-text">
+          <p className="caps-text" data-reveal data-delay="2">
             {nuroConfig.capsules.textBefore}{' '}
             <span className="accent">{nuroConfig.capsules.accent}</span>{' '}
             {nuroConfig.capsules.textAfter}
           </p>
 
-          <div className="cta-row">
+          <div className="cta-row" data-reveal data-delay="3">
             <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
               {nuroConfig.capsules.cta} <ArrowRight size={18} strokeWidth={2.4} />
             </a>
           </div>
 
-          <ul className="micro-list">
+          <ul className="micro-list" data-reveal data-delay="4">
             {nuroConfig.capsules.micro.map((m, i) => (
               <li key={i}>
                 <CheckCircle size={12} strokeWidth={2.4} />
@@ -757,15 +793,15 @@ export default function LandingPage() {
         <section id="testimonios">
           <div className="testi-content">
             <div className="testi-head">
-              <span className="eyebrow">
+              <span className="eyebrow" data-reveal>
                 <span className="eyebrow-dot" /> {nuroConfig.testimonials.eyebrow}
               </span>
-              <h2 className="h-2">
+              <h2 className="h-2" data-reveal data-delay="1">
                 Negocios que ya crecen con{' '}
                 <span className="testi-accent">NÜRO</span>.
               </h2>
             </div>
-            <div className="testi-carousel">
+            <div className="testi-carousel" data-reveal data-delay="2">
               <div className="marquee"><div className="mtrack to-right">
                 {[...testiLeft, ...testiLeft].map((t, i) => (
                   <Tcard key={`L${i}`} t={t} />
@@ -784,13 +820,13 @@ export default function LandingPage() {
             8 · BANNER FINAL DE CONVERSIÓN
             ═══════════════════════════════════════════════════ */}
         <section id="banner">
-          <div className="banner-card">
-            <h2 className="h-2">{nuroConfig.banner.title}</h2>
-            <p className="lead">{nuroConfig.banner.sub}</p>
-            <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
+          <div className="banner-card" data-reveal>
+            <h2 className="h-2" data-reveal data-delay="1">{nuroConfig.banner.title}</h2>
+            <p className="lead" data-reveal data-delay="2">{nuroConfig.banner.sub}</p>
+            <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg" data-reveal data-delay="3">
               {nuroConfig.banner.cta} <ArrowRight size={18} strokeWidth={2.4} />
             </a>
-            <a href={nuroConfig.loginUrl} className="alt-link">
+            <a href={nuroConfig.loginUrl} className="alt-link" data-reveal data-delay="4">
               {nuroConfig.banner.altCta}
             </a>
           </div>
@@ -1932,12 +1968,43 @@ export default function LandingPage() {
           .tcard { width: min(300px, 86vw); padding: 18px; border-radius: 16px; }
         }
 
+        /* ═══════════════════════════════════════════════════════════════
+           REVEAL · entrada editorial suave al hacer scroll
+           Elementos marcados con [data-reveal] parten invisibles + 18px
+           hacia abajo y aparecen cuando entran al viewport.
+           Stagger opcional con [data-delay="1..6"] (50ms por nivel).
+           Solo transform + opacity · sin layout reflow.
+           ═══════════════════════════════════════════════════════════════ */
+        [data-reveal] {
+          opacity: 0;
+          transform: translate3d(0, 18px, 0);
+          transition:
+            opacity .75s cubic-bezier(.22, 1, .36, 1),
+            transform .75s cubic-bezier(.22, 1, .36, 1);
+          will-change: opacity, transform;
+        }
+        [data-reveal].is-visible {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+        [data-reveal][data-delay="1"] { transition-delay: .05s; }
+        [data-reveal][data-delay="2"] { transition-delay: .12s; }
+        [data-reveal][data-delay="3"] { transition-delay: .20s; }
+        [data-reveal][data-delay="4"] { transition-delay: .28s; }
+        [data-reveal][data-delay="5"] { transition-delay: .36s; }
+        [data-reveal][data-delay="6"] { transition-delay: .44s; }
+
         @media (prefers-reduced-motion: reduce) {
           .particle, .bg-glow, .ticker-left, .ticker-right, .online-pulse, .phone-mockup,
           .mtrack {
             animation: none !important;
           }
           .topbar { transition: none; }
+          [data-reveal] {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+          }
         }
       `}</style>
     </div>
