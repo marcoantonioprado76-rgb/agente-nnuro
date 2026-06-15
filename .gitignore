@@ -45,3 +45,6 @@ next-env.d.ts
 
 # local screenshots
 IMAGENES/
+
+# Playwright MCP snapshots (local debug only)
+.playwright-mcp/
