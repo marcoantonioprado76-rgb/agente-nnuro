@@ -56,6 +56,27 @@ interface StoreMeta {
   slug: string
 }
 
+interface StoreOrder {
+  id: string
+  customer_name: string
+  customer_phone: string
+  customer_city?: string | null
+  payment_method: string
+  items: Array<{ name: string; quantity: number; price: number }>
+  total: number
+  currency: string
+  status: string
+  created_at: string
+}
+
+const ORDER_STATUS: Record<string, { label: string; color: string }> = {
+  pending:   { label: 'Pendiente',  color: '#F59E0B' },
+  confirmed: { label: 'Confirmado', color: '#10B981' },
+  shipped:   { label: 'Enviado',    color: '#8B5CF6' },
+  delivered: { label: 'Entregado',  color: '#22D3EE' },
+  cancelled: { label: 'Cancelado',  color: '#EF4444' },
+}
+
 interface ProductForm {
   name: string
   category: string
@@ -120,16 +141,19 @@ export default function StoreInventoryPage({
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [orders, setOrders] = useState<StoreOrder[]>([])
 
   useEffect(() => {
     async function load() {
       try {
-        const [storeRes, productsRes] = await Promise.all([
+        const [storeRes, productsRes, ordersRes] = await Promise.all([
           fetch(`/api/stores/${storeId}`),
           fetch(`/api/stores/${storeId}/products`),
+          fetch(`/api/stores/${storeId}/orders`),
         ])
         if (storeRes.ok) setStore(await storeRes.json())
         if (productsRes.ok) setProducts(await productsRes.json())
+        if (ordersRes.ok) { const d = await ordersRes.json(); setOrders(d.orders || []) }
       } catch (err) {
         console.error('Error:', err)
       } finally {
@@ -138,6 +162,23 @@ export default function StoreInventoryPage({
     }
     load()
   }, [storeId])
+
+  const changeOrderStatus = async (orderId: string, status: string) => {
+    const prev = orders
+    setOrders(os => os.map(o => (o.id === orderId ? { ...o, status } : o)))
+    try {
+      const res = await fetch(`/api/stores/${storeId}/orders`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, status }),
+      })
+      if (!res.ok) throw new Error()
+      toast.success('Pedido actualizado')
+    } catch {
+      setOrders(prev)
+      toast.error('No se pudo actualizar el pedido')
+    }
+  }
 
   const openCreate = () => {
     setEditingId(null)
@@ -352,6 +393,55 @@ export default function StoreInventoryPage({
             </div>
           )}
         </div>
+
+        {/* ═══ PEDIDOS RECIBIDOS ═══ */}
+        {orders.length > 0 && (
+          <div
+            className="relative rounded-2xl overflow-hidden"
+            style={{ background: 'linear-gradient(180deg, rgba(17,29,53,0.6) 0%, rgba(13,21,41,0.8) 100%)', border: '1px solid rgba(255,255,255,0.04)' }}
+          >
+            <div className="px-5 py-4 flex items-center gap-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: 'rgba(16,185,129,0.08)' }}>
+                <ShoppingBag className="h-3.5 w-3.5 text-[#10B981]" />
+              </div>
+              <h3 className="text-[15px] font-bold text-white">Pedidos recibidos</h3>
+              <span className="text-[12px] text-[#94A3B8]/50">({orders.length})</span>
+            </div>
+            <div>
+              {orders.map((o) => {
+                const st = ORDER_STATUS[o.status] || ORDER_STATUS.pending
+                return (
+                  <div key={o.id} className="px-5 py-3.5 flex flex-wrap items-center gap-x-4 gap-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.03)' }}>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13.5px] font-semibold text-white truncate">
+                        {o.customer_name} <span className="text-[#94A3B8]/50 font-normal">· {o.customer_phone}</span>
+                      </p>
+                      <p className="text-[12px] text-[#94A3B8]/40 truncate">
+                        {(o.items || []).map((it) => `${it.name} x${it.quantity}`).join(', ')}
+                        {o.customer_city ? ` · ${o.customer_city}` : ''}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[14px] font-bold text-white">{currencySymbol[o.currency] || '$'}{Number(o.total).toLocaleString()}</p>
+                      <p className="text-[11px] text-[#94A3B8]/30">{new Date(o.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className="inline-flex h-2 w-2 rounded-full" style={{ background: st.color }} title={st.label} />
+                    <select
+                      value={o.status}
+                      onChange={(e) => changeOrderStatus(o.id, e.target.value)}
+                      className="h-8 rounded-lg px-2 text-[12px] text-white outline-none cursor-pointer"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    >
+                      {Object.entries(ORDER_STATUS).map(([value, { label }]) => (
+                        <option key={value} value={value} style={{ background: '#0D1529' }}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ═══ CONTENT ═══ */}
         {products.length === 0 ? (
