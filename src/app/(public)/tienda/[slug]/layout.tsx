@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
+// Metadata siempre fresca (favicon / OG): sin esto se cachea y muestra lo viejo.
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ slug: string }>
   children: React.ReactNode

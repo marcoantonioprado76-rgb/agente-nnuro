@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase/server'
 
+// Siempre fresco: sin esto, Next cachea la respuesta y la tienda muestra datos
+// viejos (p. ej. portada/favicon recién subidos no aparecen).
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // Public endpoint - no auth required
 export async function GET(
   _request: NextRequest,
