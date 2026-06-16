@@ -255,6 +255,11 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
   const textSecondary = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.6)'
   const textMuted = isDark ? 'rgba(255,255,255,0.35)' : 'rgba(15,23,42,0.4)'
   const glowColor = isDark ? `${accent}22` : `${accent}15`
+  // Campos del formulario (donde el cliente escribe sus datos): SIEMPRE claros
+  // —fondo blanco + texto oscuro— para que se lean bien en cualquier tema.
+  const fieldBg = '#FFFFFF'
+  const fieldText = '#0F172A'
+  const fieldBorder = 'rgba(15,23,42,0.18)'
 
   /* ── Cart logic ── */
   const categories = ['TODOS', ...Array.from(new Set(products.map(p => p.category.toUpperCase())))]
@@ -1022,20 +1027,20 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
                           onChange={e => setCustomer(prev => ({ ...prev, [field.key]: e.target.value }))}
                           placeholder={field.placeholder}
                           type={field.type || 'text'}
-                          className="h-12 rounded-xl text-base"
-                          style={{ backgroundColor: surfaceDeep, borderColor: border, color: textPrimary }}
+                          className="h-12 rounded-xl text-base placeholder:text-slate-400"
+                          style={{ backgroundColor: fieldBg, borderColor: fieldBorder, color: fieldText }}
                         />
                       </div>
                     ))}
 
                     <div className="space-y-1.5">
                       <Label className="text-xs uppercase tracking-wider flex items-center gap-1.5" style={{ color: textMuted }}><MapPin className="h-3 w-3" /> Direccion *</Label>
-                      <Textarea value={customer.address} onChange={e => setCustomer(prev => ({ ...prev, address: e.target.value }))} placeholder="Av. America #123" rows={2} className="rounded-xl text-base resize-none" style={{ backgroundColor: surfaceDeep, borderColor: border, color: textPrimary }} />
+                      <Textarea value={customer.address} onChange={e => setCustomer(prev => ({ ...prev, address: e.target.value }))} placeholder="Av. America #123" rows={2} className="rounded-xl text-base resize-none placeholder:text-slate-400" style={{ backgroundColor: fieldBg, borderColor: fieldBorder, color: fieldText }} />
                     </div>
 
                     <div className="space-y-1.5">
                       <Label className="text-xs uppercase tracking-wider" style={{ color: textMuted }}>Referencia (opcional)</Label>
-                      <Input value={customer.reference} onChange={e => setCustomer(prev => ({ ...prev, reference: e.target.value }))} placeholder="Cerca del mercado central" className="h-12 rounded-xl text-base" style={{ backgroundColor: surfaceDeep, borderColor: border, color: textPrimary }} />
+                      <Input value={customer.reference} onChange={e => setCustomer(prev => ({ ...prev, reference: e.target.value }))} placeholder="Cerca del mercado central" className="h-12 rounded-xl text-base placeholder:text-slate-400" style={{ backgroundColor: fieldBg, borderColor: fieldBorder, color: fieldText }} />
                     </div>
 
                     {/* Location */}
@@ -1049,7 +1054,7 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
                           </Button>
                           {geoError && <p className="text-xs text-red-400 text-center">{geoError}</p>}
                           <div className="flex gap-2">
-                            <Input placeholder="O pega enlace de Google Maps" onChange={e => { setCustomer(prev => ({ ...prev, google_maps_url: e.target.value, latitude: null, longitude: null })); setLocationMode('manual') }} className="h-11 rounded-xl text-sm flex-1" style={{ backgroundColor: surfaceDeep, borderColor: border, color: textPrimary }} />
+                            <Input placeholder="O pega enlace de Google Maps" onChange={e => { setCustomer(prev => ({ ...prev, google_maps_url: e.target.value, latitude: null, longitude: null })); setLocationMode('manual') }} className="h-11 rounded-xl text-sm flex-1 placeholder:text-slate-400" style={{ backgroundColor: fieldBg, borderColor: fieldBorder, color: fieldText }} />
                           </div>
                         </div>
                       ) : (
