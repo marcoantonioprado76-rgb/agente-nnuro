@@ -29,7 +29,8 @@ const navItems = [
   { label: 'Panel',             href: '/dashboard',    icon: LayoutDashboard },
   { label: 'Agentes de IA',     href: '/bots',         icon: Bot             },
   { label: 'Tiendas Virtuales', href: '/stores',       icon: Store           },
-  { label: 'Ventas Confirmadas',href: '/sales',        icon: ShoppingBag     },
+  // Neutralizado: "Ventas Confirmadas" oculto del menú (la página /sales sigue existiendo). Descomenta para reactivar.
+  // { label: 'Ventas Confirmadas',href: '/sales',        icon: ShoppingBag     },
   { label: 'Wallet',            href: '/wallet',       icon: Wallet          },
   { label: 'Suscripción',       href: '/subscription', icon: CreditCard      },
   { label: 'Perfil',            href: '/profile',      icon: UserCircle      },

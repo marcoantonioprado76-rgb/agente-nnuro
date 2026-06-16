@@ -17,7 +17,8 @@ const baseItems = [
   { label: 'Inicio',  href: '/dashboard',    icon: LayoutDashboard },
   { label: 'Bots',    href: '/bots',         icon: Bot             },
   { label: 'Tiendas', href: '/stores',       icon: Store           },
-  { label: 'Ventas',  href: '/sales',        icon: ShoppingBag     },
+  // Neutralizado: "Ventas" oculto del menú móvil (la página /sales sigue existiendo). Descomenta para reactivar.
+  // { label: 'Ventas',  href: '/sales',        icon: ShoppingBag     },
   { label: 'Plan',    href: '/subscription', icon: CreditCard      },
 ]
 
