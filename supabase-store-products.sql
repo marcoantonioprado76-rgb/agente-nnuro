@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS public.store_products (
   category    TEXT NOT NULL DEFAULT 'General',
   currency    TEXT NOT NULL DEFAULT 'USD',
   price       DECIMAL(10,2) NOT NULL DEFAULT 0,
+  offer_price DECIMAL(10,2),
   stock       INTEGER NOT NULL DEFAULT 0,
   description TEXT,
   is_active   BOOLEAN NOT NULL DEFAULT TRUE,
@@ -62,3 +63,6 @@ CREATE POLICY "store_products_public_read" ON public.store_products
 DROP POLICY IF EXISTS "store_product_images_public_read" ON public.store_product_images;
 CREATE POLICY "store_product_images_public_read" ON public.store_product_images
   FOR SELECT USING (TRUE);
+
+-- Precio de oferta (añadido 2026-06; idempotente para DBs existentes)
+ALTER TABLE public.store_products ADD COLUMN IF NOT EXISTS offer_price DECIMAL(10,2);

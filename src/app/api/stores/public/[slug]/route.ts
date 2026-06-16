@@ -41,7 +41,7 @@ export async function GET(
     // Fetch active products with images
     const { data: products } = await service
       .from('store_products')
-      .select('id, name, category, currency, price, stock, description, is_active, store_product_images(id, image_url, sort_order)')
+      .select('id, name, category, currency, price, offer_price, stock, description, is_active, store_product_images(id, image_url, sort_order)')
       .eq('store_id', store.id)
       .eq('is_active', true)
       .order('created_at', { ascending: false })

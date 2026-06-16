@@ -44,6 +44,7 @@ interface StoreProduct {
   category: string
   currency: string
   price: number
+  offer_price?: number
   stock: number
   description?: string
   is_active: boolean
@@ -82,6 +83,7 @@ interface ProductForm {
   category: string
   currency: string
   price: number
+  offer_price: number
   stock: number
   description: string
   images: string[]
@@ -92,6 +94,7 @@ const emptyForm: ProductForm = {
   category: 'General',
   currency: 'USD',
   price: 0,
+  offer_price: 0,
   stock: 0,
   description: '',
   images: [],
@@ -197,6 +200,7 @@ export default function StoreInventoryPage({
       category: product.category,
       currency: product.currency,
       price: product.price,
+      offer_price: product.offer_price || 0,
       stock: product.stock,
       description: product.description || '',
       images: imgs,
@@ -213,6 +217,7 @@ export default function StoreInventoryPage({
       category: form.category,
       currency: form.currency,
       price: form.price,
+      offer_price: form.offer_price || null,
       stock: form.stock,
       description: form.description.trim() || null,
       images: form.images.filter(u => u.trim()),
@@ -686,6 +691,17 @@ export default function StoreInventoryPage({
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label className="text-[11px] text-[#10B981]/70 uppercase tracking-wider font-semibold">Precio de oferta</Label>
+                  <Input
+                    type="number"
+                    value={form.offer_price || ''}
+                    onChange={(e) => setForm(prev => ({ ...prev, offer_price: parseFloat(e.target.value) || 0 }))}
+                    placeholder="Opcional"
+                    className="text-white h-11 border-0 rounded-xl"
+                    style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.18)' }}
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label className="text-[11px] text-[#94A3B8]/50 uppercase tracking-wider font-semibold">Stock</Label>
                   <Input
                     type="number"
@@ -852,10 +868,19 @@ function ProductCard({
         )}
 
         {/* Price */}
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-[20px] font-extrabold tracking-tight" style={{ color: '#A78BFA' }}>
-            {sym} {product.price?.toLocaleString()}
-          </span>
+        <div className="flex items-baseline gap-1.5 flex-wrap">
+          {product.offer_price && product.offer_price > 0 && product.offer_price < product.price ? (
+            <>
+              <span className="text-[20px] font-extrabold tracking-tight" style={{ color: '#10B981' }}>
+                {sym} {product.offer_price.toLocaleString()}
+              </span>
+              <span className="text-[12px] line-through text-[#94A3B8]/40">{sym} {product.price?.toLocaleString()}</span>
+            </>
+          ) : (
+            <span className="text-[20px] font-extrabold tracking-tight" style={{ color: '#A78BFA' }}>
+              {sym} {product.price?.toLocaleString()}
+            </span>
+          )}
           <span className="text-[11px] text-[#94A3B8]/30 font-medium">{product.currency}</span>
         </div>
 
@@ -972,9 +997,14 @@ function ProductListItem({
 
       {/* Price */}
       <div className="text-right shrink-0 min-w-[80px]">
-        <span className="text-[16px] font-extrabold text-[#A78BFA]">
-          {sym} {product.price?.toLocaleString()}
-        </span>
+        {product.offer_price && product.offer_price > 0 && product.offer_price < product.price ? (
+          <>
+            <span className="text-[16px] font-extrabold text-[#10B981]">{sym} {product.offer_price.toLocaleString()}</span>
+            <span className="block text-[11px] line-through text-[#94A3B8]/40">{sym} {product.price?.toLocaleString()}</span>
+          </>
+        ) : (
+          <span className="text-[16px] font-extrabold text-[#A78BFA]">{sym} {product.price?.toLocaleString()}</span>
+        )}
       </div>
 
       {/* Actions */}

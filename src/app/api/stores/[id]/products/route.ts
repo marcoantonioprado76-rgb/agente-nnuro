@@ -76,11 +76,15 @@ export async function POST(
     }
 
     const body = await request.json()
-    const { name, category, currency, price, stock, description, images } = body
+    const { name, category, currency, price, stock, description, images, offer_price } = body
 
     if (!name) {
       return NextResponse.json({ error: 'El nombre del producto es requerido' }, { status: 400 })
     }
+
+    // Precio de oferta: sólo se guarda si es un número positivo y menor al precio normal.
+    const offer = (offer_price != null && Number(offer_price) > 0 && Number(offer_price) < Number(price || 0))
+      ? Number(offer_price) : null
 
     // Create product (id generated app-side; Prisma default doesn't run on Supabase direct insert)
     const { data: product, error } = await service
@@ -94,6 +98,7 @@ export async function POST(
         category: category || 'General',
         currency: currency || 'USD',
         price: price || 0,
+        offer_price: offer,
         stock: stock || 0,
         description: description?.trim() || null,
       })

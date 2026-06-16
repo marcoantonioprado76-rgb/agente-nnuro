@@ -97,12 +97,23 @@ interface StoreData {
   favicon_url?: string | null
 }
 
+/** Precio efectivo: usa la oferta si es válida (positiva y menor al precio normal). */
+const priceOf = (p: { price: number; offer_price?: number | null }): number => {
+  const off = p.offer_price != null ? Number(p.offer_price) : null
+  return (off != null && off > 0 && off < Number(p.price)) ? off : Number(p.price)
+}
+const hasOffer = (p: { price: number; offer_price?: number | null }): boolean => {
+  const off = p.offer_price != null ? Number(p.offer_price) : null
+  return off != null && off > 0 && off < Number(p.price)
+}
+
 interface StoreProductPublic {
   id: string
   name: string
   category: string
   currency: string
   price: number
+  offer_price?: number | null
   stock: number
   description?: string
   store_product_images?: Array<{ id: string; image_url: string; sort_order: number }>
@@ -269,7 +280,7 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
     else setCart(prev => prev.map(c => c.product.id === productId ? { ...c, quantity: qty } : c))
   }
 
-  const cartTotal = cart.reduce((s, c) => s + c.product.price * c.quantity, 0)
+  const cartTotal = cart.reduce((s, c) => s + priceOf(c.product) * c.quantity, 0)
   const cartCount = cart.reduce((s, c) => s + c.quantity, 0)
   const mainCurrency = cart[0]?.product.currency || products[0]?.currency || 'USD'
   const sym = currencySymbol[mainCurrency] || '$'
@@ -287,7 +298,7 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
       const res = await fetch(`/api/stores/public/${slug}/orders`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          products: cart.map(c => ({ id: c.product.id, name: c.product.name, quantity: c.quantity, price: c.product.price })),
+          products: cart.map(c => ({ id: c.product.id, name: c.product.name, quantity: c.quantity, price: priceOf(c.product) })),
           total: cartTotal, currency: mainCurrency,
           customer_name: customer.name.trim(), customer_phone: customer.phone.trim(),
           city: customer.city.trim(), address: customer.address.trim(), reference: customer.reference.trim(),
@@ -303,7 +314,7 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
 
   const sendWhatsApp = () => {
     if (!store?.whatsapp_number || cart.length === 0) return
-    const lines = cart.map(i => `- ${i.product.name} x${i.quantity} = ${currencySymbol[i.product.currency] || '$'}${(i.product.price * i.quantity).toLocaleString()} ${i.product.currency}`)
+    const lines = cart.map(i => `- ${i.product.name} x${i.quantity} = ${currencySymbol[i.product.currency] || '$'}${(priceOf(i.product) * i.quantity).toLocaleString()} ${i.product.currency}`)
     const payLabels: Record<string, string> = { whatsapp: 'WhatsApp', transfer: 'Transferencia', cash: 'Contra entrega' }
     const msg = encodeURIComponent(
       `Hola, quiero realizar el siguiente pedido:\n\n*Tienda: ${store.name}*\n\n*Productos:*\n${lines.join('\n')}\n\n*Total: ${sym}${cartTotal.toLocaleString()} ${mainCurrency}*\n\n*Datos:*\nNombre: ${customer.name}\nTelefono: ${customer.phone}\nCiudad: ${customer.city}\nDireccion: ${customer.address}\n${customer.reference ? `Referencia: ${customer.reference}\n` : ''}${customer.google_maps_url ? `\nUbicacion:\n${customer.google_maps_url}\n` : ''}\nPago: ${payLabels[customer.payment_method] || customer.payment_method}${orderId ? `\n\nPedido #${orderId.substring(0, 8)}` : ''}`
@@ -690,10 +701,16 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
                     )}
 
                     {/* Price */}
-                    <div className="flex items-baseline gap-1">
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
                       <span className="text-base sm:text-2xl font-black leading-none" style={{ color: accent }}>
-                        {pSym}{product.price.toLocaleString()}
+                        {pSym}{priceOf(product).toLocaleString()}
                       </span>
+                      {hasOffer(product) && (
+                        <>
+                          <span className="text-[10px] sm:text-sm line-through leading-none" style={{ color: textMuted }}>{pSym}{product.price.toLocaleString()}</span>
+                          <span className="text-[7px] sm:text-[9px] font-extrabold px-1.5 py-0.5 rounded-full leading-none" style={{ background: '#10B981', color: '#04110B' }}>OFERTA</span>
+                        </>
+                      )}
                       <span className="text-[8px] sm:text-[10px] font-medium" style={{ color: textMuted }}>{product.currency}</span>
                     </div>
 
@@ -815,10 +832,16 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
                 </h2>
 
                 {/* Price */}
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-2xl sm:text-3xl font-black" style={{ color: accent }}>
-                    {dpSym}{dp.price.toLocaleString()}
+                    {dpSym}{priceOf(dp).toLocaleString()}
                   </span>
+                  {hasOffer(dp) && (
+                    <>
+                      <span className="text-base sm:text-lg line-through" style={{ color: textMuted }}>{dpSym}{dp.price.toLocaleString()}</span>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full" style={{ background: '#10B981', color: '#04110B' }}>OFERTA</span>
+                    </>
+                  )}
                   <span className="text-xs font-medium" style={{ color: textMuted }}>{dp.currency}</span>
                 </div>
 
@@ -945,14 +968,14 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold truncate" style={{ color: textPrimary }}>{item.product.name}</p>
-                                <p className="text-xs" style={{ color: textMuted }}>{iSym}{item.product.price.toLocaleString()} c/u</p>
+                                <p className="text-xs" style={{ color: textMuted }}>{iSym}{priceOf(item.product).toLocaleString()} c/u</p>
                               </div>
                               <div className="flex items-center gap-1">
                                 <button onClick={() => updateCartQty(item.product.id, item.quantity - 1)} className="h-8 w-8 rounded-lg flex items-center justify-center active:scale-90" style={{ backgroundColor: surface, color: textPrimary }}><Minus className="h-3 w-3" /></button>
                                 <span className="w-6 text-center text-sm font-bold" style={{ color: textPrimary }}>{item.quantity}</span>
                                 <button onClick={() => updateCartQty(item.product.id, item.quantity + 1)} className="h-8 w-8 rounded-lg flex items-center justify-center active:scale-90" style={{ backgroundColor: surface, color: textPrimary }}><Plus className="h-3 w-3" /></button>
                               </div>
-                              <p className="text-sm font-bold min-w-[65px] text-right" style={{ color: accent }}>{iSym}{(item.product.price * item.quantity).toLocaleString()}</p>
+                              <p className="text-sm font-bold min-w-[65px] text-right" style={{ color: accent }}>{iSym}{(priceOf(item.product) * item.quantity).toLocaleString()}</p>
                             </div>
                           )
                         })}
@@ -1101,7 +1124,7 @@ export default function PublicStorePage({ params }: { params: { slug: string } }
                     {cart.map(item => (
                       <div key={item.product.id} className="flex justify-between text-sm">
                         <span style={{ color: textSecondary }}>{item.product.name} x{item.quantity}</span>
-                        <span className="font-medium" style={{ color: textPrimary }}>{sym}{(item.product.price * item.quantity).toLocaleString()}</span>
+                        <span className="font-medium" style={{ color: textPrimary }}>{sym}{(priceOf(item.product) * item.quantity).toLocaleString()}</span>
                       </div>
                     ))}
                     <div className="pt-2 flex justify-between" style={{ borderTop: `1px solid ${border}` }}>

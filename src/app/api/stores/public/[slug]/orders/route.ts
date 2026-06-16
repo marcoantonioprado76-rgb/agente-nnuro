@@ -59,7 +59,7 @@ export async function POST(
     const ids = requested.map((p) => p.id)
     const { data: dbProducts, error: prodErr } = await service
       .from('store_products')
-      .select('id, name, price, currency, stock, is_active')
+      .select('id, name, price, offer_price, currency, stock, is_active')
       .eq('store_id', store.id)
       .in('id', ids)
 
@@ -76,14 +76,17 @@ export async function POST(
     const items: Array<{ id: string; name: string; quantity: number; price: number; lineTotal: number }> = []
 
     for (const req of requested) {
-      const prod = byId.get(req.id) as { id: string; name: string; price: number; currency?: string; stock?: number | null; is_active?: boolean } | undefined
+      const prod = byId.get(req.id) as { id: string; name: string; price: number; offer_price?: number | null; currency?: string; stock?: number | null; is_active?: boolean } | undefined
       if (!prod || prod.is_active === false) {
         return NextResponse.json({ error: 'Uno de los productos ya no está disponible' }, { status: 400 })
       }
       if (prod.stock !== null && prod.stock !== undefined && Number(prod.stock) < req.quantity) {
         return NextResponse.json({ error: `Stock insuficiente para "${prod.name}"` }, { status: 409 })
       }
-      const price = Number(prod.price) || 0
+      // Usa el precio de oferta si es válido (positivo y menor al normal); si no, el precio normal.
+      const base = Number(prod.price) || 0
+      const off = prod.offer_price != null ? Number(prod.offer_price) : null
+      const price = (off != null && off > 0 && off < base) ? off : base
       const lineTotal = price * req.quantity
       subtotal += lineTotal
       currency = prod.currency || currency
