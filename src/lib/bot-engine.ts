@@ -11,6 +11,7 @@ import { transcribeAudio, analyzeImage, chatWithUsage, ChatMessage, BotJsonRespo
 import { markAsRead, sendText, sendImage, sendVideo } from './ycloud'
 import { createUserNotification } from './notifications'
 import { resolveOpenAIKey, logAiUsage } from './ai-credits'
+import { acquireBufferLock, releaseBufferLock } from './buffer-lock'
 
 const BUFFER_DELAY_MS = 15_000
 const MAX_HISTORY_MESSAGES = 6
@@ -318,10 +319,6 @@ export class BotEngine {
     if (!resolvedKey) { console.warn(`[BOT] Sin key de OpenAI`); return }
     const openaiKey = resolvedKey.key
 
-    const from        = secret.whatsapp_instance_number as string
-    const reportPhone = secret.report_phone as string
-    const toPhone     = userPhone.replace(/^\+/, '').replace(/\s/g, '')
-
     // Verificar si ya compró o bot desactivado
     const existingConv = await (prisma as any).conversation.findFirst({
       where: { bot_id: botId, user_phone: userPhone },
@@ -359,25 +356,19 @@ export class BotEngine {
 
     // 6. Upsert conversación
     let conversationId: string
-    let welcomeSent = false
-    let resolvedUserName: string
 
     if (existingConv) {
       await (prisma as any).conversation.update({
         where: { id: existingConv.id },
         data: { user_name: norm.userName || existingConv.user_name || undefined, follow_up1_at: null, follow_up1_sent: false, follow_up2_at: null, follow_up2_sent: false },
       })
-      conversationId   = existingConv.id
-      resolvedUserName = norm.userName || existingConv.user_name || ''
-      const bs = await (prisma as any).botState.findUnique({ where: { conversation_id: conversationId }, select: { welcome_sent: true } })
-      welcomeSent = bs?.welcome_sent ?? false
+      conversationId = existingConv.id
     } else {
       const newConv = await (prisma as any).conversation.create({
         data: { bot_id: botId, user_phone: userPhone, user_name: norm.userName || '' },
         select: { id: true },
       })
-      conversationId   = newConv.id
-      resolvedUserName = norm.userName || ''
+      conversationId = newConv.id
       await (prisma as any).botState.create({ data: { conversation_id: conversationId, welcome_sent: false } })
     }
 
@@ -396,111 +387,162 @@ export class BotEngine {
       console.log(`[BOT] Buffer: cedido al más reciente`); return
     }
 
-    // 8. Cargar + combinar buffer
-    const bufferedMsgs = await (prisma as any).message.findMany({
-      where: { conversation_id: conversationId, role: 'user', buffered: true },
-      orderBy: { created_at: 'asc' },
-      select: { id: true, type: true, content: true, created_at: true },
-    })
-    if (!bufferedMsgs?.length) { console.warn(`[BOT] Buffer vacío`); return }
-    console.log(`[BOT] Procesando ${bufferedMsgs.length} mensaje(s) para ${userPhone}`)
+    // 8+. Procesar el buffer (idempotente y con lock). Reutilizado por el worker de rescate.
+    await BotEngine.processBuffered(botId, conversationId)
+  }
 
-    const combinedUserText = combineBufferedMessages(bufferedMsgs as BufferedMsg[])
-    await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
-    await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'user', type: 'text', content: combinedUserText, buffered: false } })
-
-    // 11. Historial reciente
-    const recentRaw = await (prisma as any).message.findMany({
-      where: { conversation_id: conversationId, buffered: false },
-      orderBy: { created_at: 'desc' },
-      take: MAX_HISTORY_MESSAGES,
-      select: { role: true, content: true },
-    })
-    const recentMessages = (recentRaw ?? []).reverse()
-    const chatHistory: ChatMessage[] = recentMessages.map((m: { role: string; content: string }) => {
-      if (m.role === 'assistant') {
-        try { const p = JSON.parse(m.content) as Record<string, unknown>; return { role: 'assistant' as const, content: [p.mensaje1, p.mensaje2, p.mensaje3].filter(Boolean).join('\n') || m.content } }
-        catch { return { role: 'assistant' as const, content: m.content } }
-      }
-      return { role: m.role as 'user', content: m.content }
-    })
-
-    // 12. Cargar productos
-    const rawProducts = await (prisma as any).product.findMany({
-      where: { bot_id: botId, is_active: true },
-      include: { product_images: true, product_testimonials: true },
-    })
-    const products            = normalizeProducts(rawProducts ?? [])
-    const identifiedProductIds = detectIdentifiedProduct(recentMessages, products)
-
-    // 13. URLs ya enviadas
-    const allAssistantMsgs = await (prisma as any).message.findMany({
-      where: { conversation_id: conversationId, role: 'assistant', buffered: false },
-      orderBy: { created_at: 'asc' },
-      select: { role: true, content: true },
-    })
-    const sentUrls = extractSentUrls(allAssistantMsgs ?? [])
-
-    // 14. OpenAI
-    const systemPrompt = buildSystemPrompt(bot, products, resolvedUserName, userPhone, identifiedProductIds, sentUrls, welcomeSent)
-    let response: BotJsonResponse
-    try {
-      const aiModel  = (bot.ai_model as string) || 'gpt-4o-mini'
-      const aiResult = await chatWithUsage(systemPrompt, chatHistory, openaiKey, aiModel)
-      response       = aiResult.response
-      if (resolvedKey.isGlobal) logAiUsage({ userId: resolvedKey.userId, service: 'bot-engine', model: aiModel, promptTokens: aiResult.promptTokens, completionTokens: aiResult.completionTokens }).catch(() => {})
-    } catch (aiErr: unknown) {
-      const msg = aiErr instanceof Error ? aiErr.message : ''
-      console.error(`[BOT] OpenAI error:`, msg)
-      if (msg.includes('insufficient_quota') || msg.includes('429')) {
-        await (prisma as any).bot.update({ where: { id: botId }, data: { status: 'PAUSED' } })
-        createUserNotification({ userId: bot.tenant_id, type: 'bot_paused', title: '⚠️ Bot pausado — Sin saldo en OpenAI', message: `El bot "${bot.name}" fue pausado porque tu API key no tiene saldo.`, link: '/bots' }).catch(() => {})
-      } else {
-        await sendText(from, toPhone, '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊', apiKey).catch(() => {})
-      }
+  /**
+   * Procesa los mensajes en buffer de una conversación y responde al cliente.
+   *
+   * Idempotente y protegido por un lock en memoria: lo invoca tanto el camino
+   * feliz (tras los 15s de buffer) como el worker de rescate (buffer-reclaim)
+   * cuando el proceso reinició y dejó mensajes sin procesar. Recarga todo desde
+   * la base a partir del id, por lo que puede ejecutarse de forma autónoma.
+   */
+  static async processBuffered(botId: string, conversationId: string): Promise<void> {
+    if (!acquireBufferLock(conversationId)) {
+      console.log(`[BOT] processBuffered: conv ${conversationId} ya en proceso, omito`)
       return
     }
+    try {
+      const bot = await (prisma as any).bot.findFirst({ where: { id: botId }, include: { bot_secrets: true } })
+      if (!bot || bot.status !== 'ACTIVE' || !bot.bot_secrets) return
+      const secret = bot.bot_secrets
+      if (!secret.ycloud_api_key_enc) { console.warn(`[BOT] Sin API key de YCloud`); return }
 
-    enforceCharLimits(response, bot)
-    if (sentUrls.length) {
-      const sentSet = new Set(sentUrls)
-      response.fotos_mensaje1   = (response.fotos_mensaje1 ?? []).filter((u: string) => !sentSet.has(u))
-      response.videos_mensaje1  = (response.videos_mensaje1 ?? []).filter((u: string) => !sentSet.has(u))
-    }
-
-    // 16. Enviar
-    console.log(`[BOT] Enviando → from=${from} to=${toPhone}`)
-    if (response.mensaje1) { await sendText(from, toPhone, response.mensaje1, apiKey).catch(e => console.error('[BOT] sendText m1:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
-    for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendImage(from, toPhone, url, apiKey).catch(e => console.error('[BOT] sendImage:', e.message)); await sleep(800) } }
-    const videos = Array.isArray(response.videos_mensaje1) ? (response.videos_mensaje1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('https://')) : []
-    for (const url of videos) { await sendVideo(from, toPhone, url, '', apiKey).catch(e => console.error('[BOT] sendVideo:', e.message)); await sleep(1200) }
-    if (response.mensaje2) { await sendText(from, toPhone, response.mensaje2, apiKey).catch(e => console.error('[BOT] sendText m2:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
-    if (response.mensaje3) { await sendText(from, toPhone, response.mensaje3, apiKey).catch(e => console.error('[BOT] sendText m3:', e.message)) }
-
-    if (response.reporte && reportPhone) {
-      await sendText(from, reportPhone.replace(/^\+/, ''), response.reporte, apiKey).catch(e => console.error('[BOT] sendReport:', e.message))
-      await (prisma as any).conversation.update({ where: { id: conversationId }, data: { sold: true, sold_at: new Date() } })
-      createUserNotification({ userId: bot.tenant_id, type: 'new_sale', title: `🤖 Nueva venta — ${bot.name}`, message: response.reporte.slice(0, 120), link: '/bots' }).catch(() => {})
-      console.log(`[BOT] Venta confirmada para ${userPhone}`)
-    } else {
-      const now = new Date()
-      await (prisma as any).conversation.update({
+      const conv = await (prisma as any).conversation.findUnique({
         where: { id: conversationId },
-        data: { follow_up1_at: new Date(now.getTime() + ((bot.follow_up1_delay as number) || 15) * 60_000), follow_up1_sent: false, follow_up2_at: new Date(now.getTime() + ((bot.follow_up2_delay as number) || 4320) * 60_000), follow_up2_sent: false },
+        select: { user_phone: true, user_name: true, sold: true, bot_disabled: true },
       })
-    }
+      if (!conv) return
+      // Si ya compró o el bot fue desactivado: limpiar el buffer para no reintentar en bucle.
+      if (conv.sold || conv.bot_disabled) {
+        await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
+        return
+      }
 
-    // 17. Guardar respuesta asistente
-    await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'assistant', type: 'text', content: JSON.stringify(response), buffered: false } })
+      const resolvedKey = await resolveOpenAIKey(botId)
+      if (!resolvedKey) { console.warn(`[BOT] Sin key de OpenAI`); return }
+      const openaiKey = resolvedKey.key
 
-    // 18. Actualizar bot state
-    if (!welcomeSent && response.mensaje1 && identifiedProductIds.length > 0) {
-      await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, welcome_sent: true, welcome_sent_at: new Date() }, update: { welcome_sent: true, welcome_sent_at: new Date() } })
-    }
-    if (response.reporte) {
-      await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, last_intent: 'confirmation', welcome_sent: false }, update: { last_intent: 'confirmation' } })
-    }
+      const apiKey           = decrypt(secret.ycloud_api_key_enc as string)
+      const from             = secret.whatsapp_instance_number as string
+      const reportPhone      = secret.report_phone as string
+      const userPhone        = conv.user_phone as string
+      const resolvedUserName = (conv.user_name as string) || ''
+      const toPhone          = userPhone.replace(/^\+/, '').replace(/\s/g, '')
 
-    console.log(`[BOT] ✓ Respuesta enviada bot=${botId} phone=${userPhone} (${bufferedMsgs.length} msgs)`)
+      const bs = await (prisma as any).botState.findUnique({ where: { conversation_id: conversationId }, select: { welcome_sent: true } })
+      const welcomeSent = bs?.welcome_sent ?? false
+
+      // 8. Cargar + combinar buffer
+      const bufferedMsgs = await (prisma as any).message.findMany({
+        where: { conversation_id: conversationId, role: 'user', buffered: true },
+        orderBy: { created_at: 'asc' },
+        select: { id: true, type: true, content: true, created_at: true },
+      })
+      if (!bufferedMsgs?.length) { console.warn(`[BOT] Buffer vacío`); return }
+      console.log(`[BOT] Procesando ${bufferedMsgs.length} mensaje(s) para ${userPhone}`)
+
+      const combinedUserText = combineBufferedMessages(bufferedMsgs as BufferedMsg[])
+      await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
+      await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'user', type: 'text', content: combinedUserText, buffered: false } })
+
+      // 11. Historial reciente
+      const recentRaw = await (prisma as any).message.findMany({
+        where: { conversation_id: conversationId, buffered: false },
+        orderBy: { created_at: 'desc' },
+        take: MAX_HISTORY_MESSAGES,
+        select: { role: true, content: true },
+      })
+      const recentMessages = (recentRaw ?? []).reverse()
+      const chatHistory: ChatMessage[] = recentMessages.map((m: { role: string; content: string }) => {
+        if (m.role === 'assistant') {
+          try { const p = JSON.parse(m.content) as Record<string, unknown>; return { role: 'assistant' as const, content: [p.mensaje1, p.mensaje2, p.mensaje3].filter(Boolean).join('\n') || m.content } }
+          catch { return { role: 'assistant' as const, content: m.content } }
+        }
+        return { role: m.role as 'user', content: m.content }
+      })
+
+      // 12. Cargar productos
+      const rawProducts = await (prisma as any).product.findMany({
+        where: { bot_id: botId, is_active: true },
+        include: { product_images: true, product_testimonials: true },
+      })
+      const products             = normalizeProducts(rawProducts ?? [])
+      const identifiedProductIds = detectIdentifiedProduct(recentMessages, products)
+
+      // 13. URLs ya enviadas
+      const allAssistantMsgs = await (prisma as any).message.findMany({
+        where: { conversation_id: conversationId, role: 'assistant', buffered: false },
+        orderBy: { created_at: 'asc' },
+        select: { role: true, content: true },
+      })
+      const sentUrls = extractSentUrls(allAssistantMsgs ?? [])
+
+      // 14. OpenAI
+      const systemPrompt = buildSystemPrompt(bot, products, resolvedUserName, userPhone, identifiedProductIds, sentUrls, welcomeSent)
+      let response: BotJsonResponse
+      try {
+        const aiModel  = (bot.ai_model as string) || 'gpt-4o-mini'
+        const aiResult = await chatWithUsage(systemPrompt, chatHistory, openaiKey, aiModel)
+        response       = aiResult.response
+        if (resolvedKey.isGlobal) logAiUsage({ userId: resolvedKey.userId, service: 'bot-engine', model: aiModel, promptTokens: aiResult.promptTokens, completionTokens: aiResult.completionTokens }).catch(() => {})
+      } catch (aiErr: unknown) {
+        const msg = aiErr instanceof Error ? aiErr.message : ''
+        console.error(`[BOT] OpenAI error:`, msg)
+        if (msg.includes('insufficient_quota') || msg.includes('429')) {
+          await (prisma as any).bot.update({ where: { id: botId }, data: { status: 'PAUSED' } })
+          createUserNotification({ userId: bot.tenant_id, type: 'bot_paused', title: '⚠️ Bot pausado — Sin saldo en OpenAI', message: `El bot "${bot.name}" fue pausado porque tu API key no tiene saldo.`, link: '/bots' }).catch(() => {})
+        } else {
+          await sendText(from, toPhone, '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊', apiKey).catch(() => {})
+        }
+        return
+      }
+
+      enforceCharLimits(response, bot)
+      if (sentUrls.length) {
+        const sentSet = new Set(sentUrls)
+        response.fotos_mensaje1   = (response.fotos_mensaje1 ?? []).filter((u: string) => !sentSet.has(u))
+        response.videos_mensaje1  = (response.videos_mensaje1 ?? []).filter((u: string) => !sentSet.has(u))
+      }
+
+      // 16. Enviar
+      console.log(`[BOT] Enviando → from=${from} to=${toPhone}`)
+      if (response.mensaje1) { await sendText(from, toPhone, response.mensaje1, apiKey).catch(e => console.error('[BOT] sendText m1:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
+      for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendImage(from, toPhone, url, apiKey).catch(e => console.error('[BOT] sendImage:', e.message)); await sleep(800) } }
+      const videos = Array.isArray(response.videos_mensaje1) ? (response.videos_mensaje1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('https://')) : []
+      for (const url of videos) { await sendVideo(from, toPhone, url, '', apiKey).catch(e => console.error('[BOT] sendVideo:', e.message)); await sleep(1200) }
+      if (response.mensaje2) { await sendText(from, toPhone, response.mensaje2, apiKey).catch(e => console.error('[BOT] sendText m2:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
+      if (response.mensaje3) { await sendText(from, toPhone, response.mensaje3, apiKey).catch(e => console.error('[BOT] sendText m3:', e.message)) }
+
+      if (response.reporte && reportPhone) {
+        await sendText(from, reportPhone.replace(/^\+/, ''), response.reporte, apiKey).catch(e => console.error('[BOT] sendReport:', e.message))
+        await (prisma as any).conversation.update({ where: { id: conversationId }, data: { sold: true, sold_at: new Date() } })
+        createUserNotification({ userId: bot.tenant_id, type: 'new_sale', title: `🤖 Nueva venta — ${bot.name}`, message: response.reporte.slice(0, 120), link: '/bots' }).catch(() => {})
+        console.log(`[BOT] Venta confirmada para ${userPhone}`)
+      } else {
+        const now = new Date()
+        await (prisma as any).conversation.update({
+          where: { id: conversationId },
+          data: { follow_up1_at: new Date(now.getTime() + ((bot.follow_up1_delay as number) || 15) * 60_000), follow_up1_sent: false, follow_up2_at: new Date(now.getTime() + ((bot.follow_up2_delay as number) || 4320) * 60_000), follow_up2_sent: false },
+        })
+      }
+
+      // 17. Guardar respuesta asistente
+      await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'assistant', type: 'text', content: JSON.stringify(response), buffered: false } })
+
+      // 18. Actualizar bot state
+      if (!welcomeSent && response.mensaje1 && identifiedProductIds.length > 0) {
+        await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, welcome_sent: true, welcome_sent_at: new Date() }, update: { welcome_sent: true, welcome_sent_at: new Date() } })
+      }
+      if (response.reporte) {
+        await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, last_intent: 'confirmation', welcome_sent: false }, update: { last_intent: 'confirmation' } })
+      }
+
+      console.log(`[BOT] ✓ Respuesta enviada bot=${botId} phone=${userPhone} (${bufferedMsgs.length} msgs)`)
+    } finally {
+      releaseBufferLock(conversationId)
+    }
   }
 }

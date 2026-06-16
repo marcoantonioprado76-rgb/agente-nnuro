@@ -10,6 +10,7 @@ import { sendMetaText, sendMetaImage, sendMetaVideo, markMetaAsRead } from './me
 import { buildSystemPrompt, detectIdentifiedProduct, enforceCharLimits, extractSentUrls } from './bot-engine'
 import { createUserNotification } from './notifications'
 import { resolveOpenAIKey, logAiUsage } from './ai-credits'
+import { acquireBufferLock, releaseBufferLock } from './buffer-lock'
 
 const BUFFER_DELAY_MS      = 15_000
 const MAX_HISTORY_MESSAGES = 6
@@ -93,13 +94,10 @@ export class MetaBotEngine {
     } catch { userText = norm.text || '[Mensaje]' }
     if (!userText.trim()) return
 
-    let conversationId: string, welcomeSent = false, resolvedUserName = ''
+    let conversationId: string
     if (existingConv) {
       await (prisma as any).conversation.update({ where: { id: existingConv.id }, data: { follow_up1_at: null, follow_up1_sent: false, follow_up2_at: null, follow_up2_sent: false } })
-      conversationId   = existingConv.id
-      resolvedUserName = existingConv.user_name || ''
-      const bs = await (prisma as any).botState.findUnique({ where: { conversation_id: conversationId }, select: { welcome_sent: true } })
-      welcomeSent = bs?.welcome_sent ?? false
+      conversationId = existingConv.id
     } else {
       const nc = await (prisma as any).conversation.create({ data: { bot_id: botId, user_phone: senderId, user_name: '' }, select: { id: true } })
       conversationId = nc.id
@@ -113,59 +111,103 @@ export class MetaBotEngine {
     const freshConv = await (prisma as any).conversation.findUnique({ where: { id: conversationId }, select: { updated_at: true } })
     if (freshConv && new Date(freshConv.updated_at) > arrivedAt) return
 
-    const bufferedMsgs = await (prisma as any).message.findMany({ where: { conversation_id: conversationId, role: 'user', buffered: true }, orderBy: { created_at: 'asc' }, select: { type: true, content: true } })
-    if (!bufferedMsgs?.length) return
+    // Procesar el buffer (idempotente y con lock). Reutilizado por el worker de rescate.
+    await MetaBotEngine.processBuffered(botId, conversationId)
+  }
 
-    const combinedText = bufferedMsgs.map((m: { type: string; content: string }) => {
-      if (m.type === 'audio') return `🎙️ (audio): ${m.content}`
-      if (m.type === 'image') return `📷 (imagen): ${m.content}`
-      return `📝 (texto): ${m.content}`
-    }).join('\n')
-
-    await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
-    await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'user', type: 'text', content: combinedText, buffered: false } })
-
-    const recentRaw = await (prisma as any).message.findMany({ where: { conversation_id: conversationId, buffered: false }, orderBy: { created_at: 'desc' }, take: MAX_HISTORY_MESSAGES, select: { role: true, content: true } })
-    const recentMessages = (recentRaw ?? []).reverse()
-    const chatHistory: ChatMessage[] = recentMessages.map((m: { role: string; content: string }) => {
-      if (m.role === 'assistant') { try { const p = JSON.parse(m.content); return { role: 'assistant' as const, content: [p.mensaje1, p.mensaje2, p.mensaje3].filter(Boolean).join('\n') || m.content } } catch { return { role: 'assistant' as const, content: m.content } } }
-      return { role: m.role as 'user', content: m.content }
-    })
-
-    const rawProds = await (prisma as any).product.findMany({ where: { bot_id: botId, is_active: true }, include: { product_images: true, product_testimonials: true } })
-    const products            = normalizeProducts(rawProds ?? [])
-    const identifiedProductIds = detectIdentifiedProduct(recentMessages, products)
-    const allAsst  = await (prisma as any).message.findMany({ where: { conversation_id: conversationId, role: 'assistant', buffered: false }, orderBy: { created_at: 'asc' }, select: { role: true, content: true } })
-    const sentUrls = extractSentUrls(allAsst ?? [])
-    const systemPrompt = buildSystemPrompt(bot, products, resolvedUserName, senderId, identifiedProductIds, sentUrls, welcomeSent)
-
-    let response: BotJsonResponse
-    try {
-      const aiModel  = (bot.ai_model as string) || 'gpt-4o-mini'
-      const aiResult = await chatWithUsage(systemPrompt, chatHistory, openaiKey, aiModel)
-      response       = aiResult.response
-      if (resolvedKey.isGlobal) logAiUsage({ userId: resolvedKey.userId, service: 'meta-engine', model: aiModel, promptTokens: aiResult.promptTokens, completionTokens: aiResult.completionTokens }).catch(() => {})
-    } catch { await sendMetaText(senderId, '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊', pageToken).catch(() => {}); return }
-
-    enforceCharLimits(response, bot)
-    if (sentUrls.length) { const s = new Set(sentUrls); response.fotos_mensaje1 = (response.fotos_mensaje1 ?? []).filter(u => !s.has(u)); response.videos_mensaje1 = (response.videos_mensaje1 ?? []).filter(u => !s.has(u)) }
-
-    if (response.mensaje1) { await sendMetaText(senderId, response.mensaje1, pageToken).catch(() => {}); await sleep(800) }
-    for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendMetaImage(senderId, url, pageToken).catch(() => {}); await sleep(600) } }
-    for (const url of (response.videos_mensaje1 ?? []) as string[]) { if (url.startsWith('https://')) { await sendMetaVideo(senderId, url, pageToken).catch(() => {}); await sleep(1000) } }
-    if (response.mensaje2) { await sendMetaText(senderId, response.mensaje2, pageToken).catch(() => {}); await sleep(800) }
-    if (response.mensaje3) await sendMetaText(senderId, response.mensaje3, pageToken).catch(() => {})
-
-    if (response.reporte) {
-      await (prisma as any).conversation.update({ where: { id: conversationId }, data: { sold: true, sold_at: new Date() } })
-      createUserNotification({ userId: bot.tenant_id, type: 'new_sale', title: `🤖 Nueva venta — ${bot.name}`, message: response.reporte.slice(0, 120), link: '/bots' }).catch(() => {})
-    } else {
-      const now = new Date()
-      await (prisma as any).conversation.update({ where: { id: conversationId }, data: { follow_up1_at: new Date(now.getTime() + ((bot.follow_up1_delay as number)||15)*60_000), follow_up1_sent: false, follow_up2_at: new Date(now.getTime() + ((bot.follow_up2_delay as number)||4320)*60_000), follow_up2_sent: false } })
+  /**
+   * Procesa los mensajes en buffer de una conversación y responde.
+   * Idempotente y protegido por lock: lo llaman el camino feliz (tras los 15s)
+   * y el worker de rescate (buffer-reclaim) tras un reinicio. Recarga todo por id.
+   */
+  static async processBuffered(botId: string, conversationId: string): Promise<void> {
+    if (!acquireBufferLock(conversationId)) {
+      console.log(`[META] processBuffered: conv ${conversationId} ya en proceso, omito`)
+      return
     }
+    try {
+      const bot = await (prisma as any).bot.findFirst({ where: { id: botId }, include: { bot_secrets: true } })
+      if (!bot || bot.status !== 'ACTIVE' || !bot.bot_secrets) return
+      const secret = bot.bot_secrets
+      if (!secret.meta_page_token_enc) return
 
-    await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'assistant', type: 'text', content: JSON.stringify(response), buffered: false } })
-    if (!welcomeSent && response.mensaje1 && identifiedProductIds.length > 0) await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, welcome_sent: true, welcome_sent_at: new Date() }, update: { welcome_sent: true, welcome_sent_at: new Date() } })
-    if (response.reporte) await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, last_intent: 'confirmation', welcome_sent: false }, update: { last_intent: 'confirmation' } })
+      const conv = await (prisma as any).conversation.findUnique({
+        where: { id: conversationId },
+        select: { user_phone: true, user_name: true, sold: true, bot_disabled: true },
+      })
+      if (!conv) return
+      if (conv.sold || conv.bot_disabled) {
+        await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
+        return
+      }
+
+      const resolvedKey = await resolveOpenAIKey(botId)
+      if (!resolvedKey) return
+      const openaiKey = resolvedKey.key
+
+      const pageToken        = decrypt(secret.meta_page_token_enc as string)
+      const senderId         = conv.user_phone as string
+      const resolvedUserName = (conv.user_name as string) || ''
+
+      const bsState = await (prisma as any).botState.findUnique({ where: { conversation_id: conversationId }, select: { welcome_sent: true } })
+      const welcomeSent = bsState?.welcome_sent ?? false
+
+      const bufferedMsgs = await (prisma as any).message.findMany({ where: { conversation_id: conversationId, role: 'user', buffered: true }, orderBy: { created_at: 'asc' }, select: { type: true, content: true } })
+      if (!bufferedMsgs?.length) return
+
+      const combinedText = bufferedMsgs.map((m: { type: string; content: string }) => {
+        if (m.type === 'audio') return `🎙️ (audio): ${m.content}`
+        if (m.type === 'image') return `📷 (imagen): ${m.content}`
+        return `📝 (texto): ${m.content}`
+      }).join('\n')
+
+      await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
+      await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'user', type: 'text', content: combinedText, buffered: false } })
+
+      const recentRaw = await (prisma as any).message.findMany({ where: { conversation_id: conversationId, buffered: false }, orderBy: { created_at: 'desc' }, take: MAX_HISTORY_MESSAGES, select: { role: true, content: true } })
+      const recentMessages = (recentRaw ?? []).reverse()
+      const chatHistory: ChatMessage[] = recentMessages.map((m: { role: string; content: string }) => {
+        if (m.role === 'assistant') { try { const p = JSON.parse(m.content); return { role: 'assistant' as const, content: [p.mensaje1, p.mensaje2, p.mensaje3].filter(Boolean).join('\n') || m.content } } catch { return { role: 'assistant' as const, content: m.content } } }
+        return { role: m.role as 'user', content: m.content }
+      })
+
+      const rawProds = await (prisma as any).product.findMany({ where: { bot_id: botId, is_active: true }, include: { product_images: true, product_testimonials: true } })
+      const products            = normalizeProducts(rawProds ?? [])
+      const identifiedProductIds = detectIdentifiedProduct(recentMessages, products)
+      const allAsst  = await (prisma as any).message.findMany({ where: { conversation_id: conversationId, role: 'assistant', buffered: false }, orderBy: { created_at: 'asc' }, select: { role: true, content: true } })
+      const sentUrls = extractSentUrls(allAsst ?? [])
+      const systemPrompt = buildSystemPrompt(bot, products, resolvedUserName, senderId, identifiedProductIds, sentUrls, welcomeSent)
+
+      let response: BotJsonResponse
+      try {
+        const aiModel  = (bot.ai_model as string) || 'gpt-4o-mini'
+        const aiResult = await chatWithUsage(systemPrompt, chatHistory, openaiKey, aiModel)
+        response       = aiResult.response
+        if (resolvedKey.isGlobal) logAiUsage({ userId: resolvedKey.userId, service: 'meta-engine', model: aiModel, promptTokens: aiResult.promptTokens, completionTokens: aiResult.completionTokens }).catch(() => {})
+      } catch { await sendMetaText(senderId, '¡Hola! Recibí tu mensaje, en un momento te atiendo 😊', pageToken).catch(() => {}); return }
+
+      enforceCharLimits(response, bot)
+      if (sentUrls.length) { const s = new Set(sentUrls); response.fotos_mensaje1 = (response.fotos_mensaje1 ?? []).filter(u => !s.has(u)); response.videos_mensaje1 = (response.videos_mensaje1 ?? []).filter(u => !s.has(u)) }
+
+      if (response.mensaje1) { await sendMetaText(senderId, response.mensaje1, pageToken).catch(() => {}); await sleep(800) }
+      for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendMetaImage(senderId, url, pageToken).catch(() => {}); await sleep(600) } }
+      for (const url of (response.videos_mensaje1 ?? []) as string[]) { if (url.startsWith('https://')) { await sendMetaVideo(senderId, url, pageToken).catch(() => {}); await sleep(1000) } }
+      if (response.mensaje2) { await sendMetaText(senderId, response.mensaje2, pageToken).catch(() => {}); await sleep(800) }
+      if (response.mensaje3) await sendMetaText(senderId, response.mensaje3, pageToken).catch(() => {})
+
+      if (response.reporte) {
+        await (prisma as any).conversation.update({ where: { id: conversationId }, data: { sold: true, sold_at: new Date() } })
+        createUserNotification({ userId: bot.tenant_id, type: 'new_sale', title: `🤖 Nueva venta — ${bot.name}`, message: response.reporte.slice(0, 120), link: '/bots' }).catch(() => {})
+      } else {
+        const now = new Date()
+        await (prisma as any).conversation.update({ where: { id: conversationId }, data: { follow_up1_at: new Date(now.getTime() + ((bot.follow_up1_delay as number)||15)*60_000), follow_up1_sent: false, follow_up2_at: new Date(now.getTime() + ((bot.follow_up2_delay as number)||4320)*60_000), follow_up2_sent: false } })
+      }
+
+      await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'assistant', type: 'text', content: JSON.stringify(response), buffered: false } })
+      if (!welcomeSent && response.mensaje1 && identifiedProductIds.length > 0) await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, welcome_sent: true, welcome_sent_at: new Date() }, update: { welcome_sent: true, welcome_sent_at: new Date() } })
+      if (response.reporte) await (prisma as any).botState.upsert({ where: { conversation_id: conversationId }, create: { conversation_id: conversationId, last_intent: 'confirmation', welcome_sent: false }, update: { last_intent: 'confirmation' } })
+    } finally {
+      releaseBufferLock(conversationId)
+    }
   }
 }
