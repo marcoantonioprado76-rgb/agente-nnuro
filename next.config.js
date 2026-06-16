@@ -7,6 +7,9 @@ const nextConfig = {
     ],
   },
   experimental: {
+    // Activa el hook de instrumentación (src/instrumentation.ts), que arranca
+    // el worker de rescate del buffer en cualquier modo de despliegue.
+    instrumentationHook: true,
     // Next.js 14: prevent webpack from bundling these packages so native
     // addons (ws mask function, etc.) are preserved at runtime.
     // This fixes "t.mask is not a function" in Baileys WebSocket connections.
