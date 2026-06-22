@@ -21,6 +21,8 @@ import { chatWithUsage, BotJsonResponse } from './openai'
 import { resolveOpenAIKey, logAiUsage } from './ai-credits'
 import { buildSystemPrompt, detectIdentifiedProduct, enforceCharLimits, extractSentUrls } from './bot-engine'
 import { createUserNotification } from './notifications'
+import { synthesizeVoiceNote } from './tts'
+import { shouldSpeak, voiceTextFromResponse } from './voice-reply'
 
 export type BaileysStatus = 'disconnected' | 'connecting' | 'qr_ready' | 'connected'
 
@@ -82,7 +84,7 @@ async function handleMessage(conn: BaileysConnection, msg: proto.IWebMessageInfo
 
   const botStatus = await (prisma as any).bot.findUnique({
     where: { id: conn.botId },
-    select: { status: true, tenant_id: true, ai_model: true, system_prompt_template: true, max_chars_msg1: true, max_chars_msg2: true, max_chars_msg3: true, follow_up1_delay: true, follow_up2_delay: true },
+    select: { status: true, tenant_id: true, ai_model: true, system_prompt_template: true, max_chars_msg1: true, max_chars_msg2: true, max_chars_msg3: true, follow_up1_delay: true, follow_up2_delay: true, voice_enabled: true, voice_id: true, voice_mode: true },
   })
   if (!botStatus || botStatus.status !== 'ACTIVE') return
 
@@ -173,6 +175,8 @@ async function handleMessage(conn: BaileysConnection, msg: proto.IWebMessageInfo
   })
   if (!buffered?.length) return
 
+  const customerSentAudio = buffered.some((m: { type: string }) => m.type === 'audio')
+
   const combinedText = buffered.map((m: { type: string; content: string }) => {
     if (m.type === 'audio') return `🎙️ (audio): ${m.content}`
     if (m.type === 'image') return `📷 (imagen): ${m.content}`
@@ -258,6 +262,17 @@ async function handleMessage(conn: BaileysConnection, msg: proto.IWebMessageInfo
   }
   if (response.mensaje2) await sendText(response.mensaje2)
   if (response.mensaje3) await sendText(response.mensaje3)
+
+  // Nota de voz (opcional, aditivo) — Baileys envía el buffer OGG directo. Si falla, se omite.
+  if (shouldSpeak(botStatus, customerSentAudio)) {
+    try {
+      const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), botStatus.voice_id as string | null)
+      if (ogg) {
+        await sock.sendMessage(jid, { audio: ogg, mimetype: 'audio/ogg; codecs=opus', ptt: true }).catch(() => {})
+        console.log(`[BAILEYS] 🎙️ nota de voz enviada a ${userPhone}`)
+      }
+    } catch (e) { console.error('[BAILEYS] voz (omitida):', e instanceof Error ? e.message : e) }
+  }
 
   if (response.reporte && conn.reportPhone) {
     const rJid = `${conn.reportPhone.replace(/^\+/, '').replace(/\D/g, '')}@s.whatsapp.net`

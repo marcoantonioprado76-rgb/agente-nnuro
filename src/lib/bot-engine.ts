@@ -8,10 +8,12 @@
 import { prisma } from './prisma'
 import { decrypt } from './crypto'
 import { transcribeAudio, analyzeImage, chatWithUsage, ChatMessage, BotJsonResponse } from './openai'
-import { markAsRead, sendText, sendImage, sendVideo } from './ycloud'
+import { markAsRead, sendText, sendImage, sendVideo, sendAudio } from './ycloud'
 import { createUserNotification } from './notifications'
 import { resolveOpenAIKey, logAiUsage } from './ai-credits'
 import { acquireBufferLock, releaseBufferLock } from './buffer-lock'
+import { synthesizeVoiceNote, uploadVoiceNote } from './tts'
+import { shouldSpeak, voiceTextFromResponse } from './voice-reply'
 
 const BUFFER_DELAY_MS = 15_000
 const MAX_HISTORY_MESSAGES = 6
@@ -444,6 +446,9 @@ export class BotEngine {
       if (!bufferedMsgs?.length) { console.warn(`[BOT] Buffer vacío`); return }
       console.log(`[BOT] Procesando ${bufferedMsgs.length} mensaje(s) para ${userPhone}`)
 
+      // ¿El cliente mandó una nota de voz en este turno? (para el modo espejo de voz)
+      const customerSentAudio = (bufferedMsgs as BufferedMsg[]).some(m => m.type === 'audio')
+
       const combinedUserText = combineBufferedMessages(bufferedMsgs as BufferedMsg[])
       await (prisma as any).message.deleteMany({ where: { conversation_id: conversationId, role: 'user', buffered: true } })
       await (prisma as any).message.create({ data: { conversation_id: conversationId, role: 'user', type: 'text', content: combinedUserText, buffered: false } })
@@ -515,6 +520,20 @@ export class BotEngine {
       for (const url of videos) { await sendVideo(from, toPhone, url, '', apiKey).catch(e => console.error('[BOT] sendVideo:', e.message)); await sleep(1200) }
       if (response.mensaje2) { await sendText(from, toPhone, response.mensaje2, apiKey).catch(e => console.error('[BOT] sendText m2:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
       if (response.mensaje3) { await sendText(from, toPhone, response.mensaje3, apiKey).catch(e => console.error('[BOT] sendText m3:', e.message)) }
+
+      // 16b. Nota de voz (opcional, aditivo) — NUNCA rompe el texto: si algo falla, se omite.
+      if (shouldSpeak(bot, customerSentAudio)) {
+        try {
+          const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), bot.voice_id as string | null)
+          if (ogg) {
+            const audioUrl = await uploadVoiceNote(ogg, bot.tenant_id as string)
+            if (audioUrl) {
+              await sendAudio(from, toPhone, audioUrl, apiKey).catch(e => console.error('[BOT] sendAudio:', e.message))
+              console.log(`[BOT] 🎙️ nota de voz enviada a ${userPhone}`)
+            }
+          }
+        } catch (e) { console.error('[BOT] voz (omitida):', e instanceof Error ? e.message : e) }
+      }
 
       if (response.reporte && reportPhone) {
         await sendText(from, reportPhone.replace(/^\+/, ''), response.reporte, apiKey).catch(e => console.error('[BOT] sendReport:', e.message))

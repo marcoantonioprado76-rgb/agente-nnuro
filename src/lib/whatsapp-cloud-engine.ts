@@ -6,11 +6,13 @@
 import { prisma } from './prisma'
 import { decrypt } from './crypto'
 import { transcribeAudio, analyzeImage, chatWithUsage, ChatMessage, BotJsonResponse } from './openai'
-import { sendWaText, sendWaImage, sendWaVideo, markWaAsRead } from './whatsapp-cloud'
+import { sendWaText, sendWaImage, sendWaVideo, sendWaAudio, markWaAsRead } from './whatsapp-cloud'
 import { buildSystemPrompt, detectIdentifiedProduct, enforceCharLimits, extractSentUrls } from './bot-engine'
 import { createUserNotification } from './notifications'
 import { resolveOpenAIKey, logAiUsage } from './ai-credits'
 import { acquireBufferLock, releaseBufferLock } from './buffer-lock'
+import { synthesizeVoiceNote, uploadVoiceNote } from './tts'
+import { shouldSpeak, voiceTextFromResponse } from './voice-reply'
 
 const BUFFER_DELAY_MS   = 15_000
 const MAX_HISTORY_MESSAGES = 6
@@ -194,6 +196,8 @@ export class WhatsAppCloudEngine {
       })
       if (!bufferedMsgs?.length) return
 
+      const customerSentAudio = bufferedMsgs.some((m: { type: string }) => m.type === 'audio')
+
       const combinedText = bufferedMsgs.map((m: { type: string; content: string }) => {
         if (m.type === 'audio') return `🎙️ (audio): ${m.content}`
         if (m.type === 'image') return `📷 (imagen): ${m.content}`
@@ -252,6 +256,20 @@ export class WhatsAppCloudEngine {
       for (const url of (response.videos_mensaje1 ?? []) as string[]) { if (url.startsWith('https://')) { await sendWaVideo(toPhone, url, phoneId, waToken).catch(() => {}); await sleep(1000) } }
       if (response.mensaje2) { await sendWaText(toPhone, response.mensaje2, phoneId, waToken).catch(() => {}); await sleep(800) }
       if (response.mensaje3) await sendWaText(toPhone, response.mensaje3, phoneId, waToken).catch(() => {})
+
+      // Nota de voz (opcional, aditivo) — sube el OGG y lo envía por URL. Si falla, se omite.
+      if (shouldSpeak(bot, customerSentAudio)) {
+        try {
+          const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), bot.voice_id as string | null)
+          if (ogg) {
+            const audioUrl = await uploadVoiceNote(ogg, bot.tenant_id as string)
+            if (audioUrl) {
+              await sendWaAudio(toPhone, audioUrl, phoneId, waToken).catch(() => {})
+              console.log(`[WA_CLOUD] 🎙️ nota de voz enviada a ${userPhone}`)
+            }
+          }
+        } catch (e) { console.error('[WA_CLOUD] voz (omitida):', e instanceof Error ? e.message : e) }
+      }
 
       if (response.reporte && reportPhone) {
         const rPhone = reportPhone.replace(/^\+/, '').replace(/\s/g, '')

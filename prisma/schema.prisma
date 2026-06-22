@@ -150,6 +150,9 @@ model Bot {
   max_chars_msg3         Int?
   follow_up1_delay       Int       @default(15)
   follow_up2_delay       Int       @default(4320)
+  voice_enabled          Boolean   @default(false)
+  voice_id               String?
+  voice_mode             String    @default("off")
   baileys_phone          String?
   openai_api_key         String?
   report_phone           String?

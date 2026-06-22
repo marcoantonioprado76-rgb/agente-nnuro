@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { BOT_VOICES, VOICE_MODES } from '@/lib/voices'
 
 type Ctx = { params: { botId: string } }
 
@@ -21,6 +22,9 @@ function toNexorBot(b: any) {
     followUp1Delay: b.follow_up1_delay,
     followUp2Delay: b.follow_up2_delay,
     aiModel: b.ai_model,
+    voiceEnabled: b.voice_enabled ?? false,
+    voiceId: b.voice_id ?? null,
+    voiceMode: b.voice_mode ?? 'off',
     createdAt: b.created_at,
   }
 }
@@ -67,8 +71,13 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     const followUp1Delay       = body.followUp1Delay       ?? body.follow_up1_delay
     const followUp2Delay       = body.followUp2Delay       ?? body.follow_up2_delay
     const aiModel              = body.aiModel              ?? body.ai_model
+    const voiceEnabled         = body.voiceEnabled         ?? body.voice_enabled
+    const voiceId              = body.voiceId              ?? body.voice_id
+    const voiceMode            = body.voiceMode            ?? body.voice_mode
 
     const VALID_MODELS = ['gpt-5.2', 'gpt-5.1', 'gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo']
+    const VALID_VOICE_IDS = new Set<string>(BOT_VOICES.map(v => v.id))
+    const VALID_VOICE_MODES = new Set<string>(VOICE_MODES.map(m => m.id))
     const updates: Record<string, unknown> = {}
 
     if (typeof name === 'string' && name.trim())                             updates.name = name.trim()
@@ -83,6 +92,10 @@ export async function PATCH(request: NextRequest, { params }: Ctx) {
     if (typeof followUp1Delay === 'number')                                  updates.follow_up1_delay = followUp1Delay
     if (typeof followUp2Delay === 'number')                                  updates.follow_up2_delay = followUp2Delay
     if (typeof aiModel === 'string' && VALID_MODELS.includes(aiModel))      updates.ai_model = aiModel
+    if (typeof voiceEnabled === 'boolean')                                   updates.voice_enabled = voiceEnabled
+    if (voiceId === null)                                                    updates.voice_id = null
+    else if (typeof voiceId === 'string' && VALID_VOICE_IDS.has(voiceId))   updates.voice_id = voiceId
+    if (typeof voiceMode === 'string' && VALID_VOICE_MODES.has(voiceMode))  updates.voice_mode = voiceMode
 
     const updated = await (prisma as any).bot.update({ where: { id: params.botId }, data: updates })
     return NextResponse.json({ bot: toNexorBot(updated) })
