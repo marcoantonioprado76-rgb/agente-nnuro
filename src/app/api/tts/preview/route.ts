@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from '@/lib/auth'
 import { BOT_VOICES } from '@/lib/voices'
-import { synthesizeVoiceNote, ttsConfigured } from '@/lib/tts'
+import { synthesizePreviewMp3, ttsConfigured } from '@/lib/tts'
 
 const SAMPLE = '¡Hola! Qué gusto saludarte. Justo hoy tenemos una promoción especial. ¿Quieres que te cuente los detalles?'
 
@@ -18,14 +18,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Voz no válida' }, { status: 400 })
   }
 
-  const ogg = await synthesizeVoiceNote(SAMPLE, voiceId)
-  if (!ogg) return NextResponse.json({ error: 'No se pudo generar la muestra' }, { status: 502 })
+  const mp3 = await synthesizePreviewMp3(SAMPLE, voiceId)
+  if (!mp3) return NextResponse.json({ error: 'No se pudo generar la muestra' }, { status: 502 })
 
-  return new NextResponse(new Uint8Array(ogg), {
+  return new NextResponse(new Uint8Array(mp3), {
     status: 200,
     headers: {
-      'Content-Type': 'audio/ogg',
-      'Content-Length': String(ogg.length),
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': String(mp3.length),
       'Cache-Control': 'private, max-age=86400',
     },
   })

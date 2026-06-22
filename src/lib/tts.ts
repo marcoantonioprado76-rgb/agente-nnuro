@@ -73,6 +73,46 @@ export async function synthesizeVoiceNote(text: string, voiceId?: string | null)
 }
 
 /**
+ * Muestra MP3 para REPRODUCIR EN EL NAVEGADOR (preview de voces).
+ * Safari no reproduce OGG/Opus, así que el preview usa MP3 (universal). Las notas
+ * de voz reales a WhatsApp siguen en OGG/Opus vía synthesizeVoiceNote().
+ * @returns Buffer MP3 o null si no se pudo (nunca lanza).
+ */
+export async function synthesizePreviewMp3(text: string, voiceId?: string | null): Promise<Buffer | null> {
+  const apiKey = process.env.ELEVENLABS_API_KEY
+  if (!apiKey) return null
+  const clean = cleanForSpeech(text)
+  if (!clean) return null
+
+  const voice = resolveVoice(voiceId)
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 30_000)
+  try {
+    const res = await fetch(
+      `${ELEVEN_BASE}/text-to-speech/${voice.id}?output_format=mp3_44100_128`,
+      {
+        method: 'POST',
+        headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({ text: clean, model_id: ELEVEN_MODEL }),
+      },
+    )
+    if (!res.ok) {
+      console.error(`[TTS preview] ElevenLabs ${res.status}: ${(await res.text()).slice(0, 200)}`)
+      return null
+    }
+    const buf = Buffer.from(await res.arrayBuffer())
+    if (buf.length < 64) return null
+    return buf
+  } catch (err) {
+    console.error('[TTS preview] error:', err instanceof Error ? err.message : err)
+    return null
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+/**
  * Sube la nota de voz a Supabase Storage y devuelve la URL pública.
  * Necesario para los canales que envían audio por URL (YCloud / WhatsApp Cloud / Meta).
  * @returns URL pública o null si falla (nunca lanza).
