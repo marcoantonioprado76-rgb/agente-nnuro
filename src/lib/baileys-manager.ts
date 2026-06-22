@@ -248,7 +248,21 @@ async function handleMessage(conn: BaileysConnection, msg: proto.IWebMessageInfo
     await sock.sendMessage(jid, { text })
   }
 
-  if (response.mensaje1) await sendText(response.mensaje1)
+  // ¿Responder con voz? Si sí y la voz se genera, se manda SOLO la voz (sin el texto).
+  let voiceSent = false
+  if (shouldSpeak(botStatus, customerSentAudio)) {
+    try {
+      const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), botStatus.voice_id as string | null)
+      if (ogg) {
+        await sock.sendMessage(jid, { audio: ogg, mimetype: 'audio/ogg; codecs=opus', ptt: true }).catch(() => {})
+        voiceSent = true
+        console.log(`[BAILEYS] 🎙️ nota de voz enviada a ${userPhone}`)
+      }
+    } catch (e) { console.error('[BAILEYS] voz (omitida):', e instanceof Error ? e.message : e) }
+  }
+
+  // Texto: solo si NO se mandó voz (si la voz falla, cae a texto para no dejar sin respuesta).
+  if (!voiceSent && response.mensaje1) await sendText(response.mensaje1)
   for (const url of response.fotos_mensaje1 ?? []) {
     if (url.startsWith('https://')) { await sock.sendMessage(jid, { image: { url } }).catch(() => {}); await sleep(500) }
   }
@@ -260,19 +274,8 @@ async function handleMessage(conn: BaileysConnection, msg: proto.IWebMessageInfo
     const mime: Record<string, string> = { ogg: 'audio/ogg; codecs=opus', oga: 'audio/ogg; codecs=opus', mp3: 'audio/mpeg', wav: 'audio/wav', webm: 'audio/webm' }
     await sock.sendMessage(jid, { audio: { url: response.audio_url }, mimetype: mime[ext] || 'audio/ogg; codecs=opus', ptt: true }).catch(() => {})
   }
-  if (response.mensaje2) await sendText(response.mensaje2)
-  if (response.mensaje3) await sendText(response.mensaje3)
-
-  // Nota de voz (opcional, aditivo) — Baileys envía el buffer OGG directo. Si falla, se omite.
-  if (shouldSpeak(botStatus, customerSentAudio)) {
-    try {
-      const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), botStatus.voice_id as string | null)
-      if (ogg) {
-        await sock.sendMessage(jid, { audio: ogg, mimetype: 'audio/ogg; codecs=opus', ptt: true }).catch(() => {})
-        console.log(`[BAILEYS] 🎙️ nota de voz enviada a ${userPhone}`)
-      }
-    } catch (e) { console.error('[BAILEYS] voz (omitida):', e instanceof Error ? e.message : e) }
-  }
+  if (!voiceSent && response.mensaje2) await sendText(response.mensaje2)
+  if (!voiceSent && response.mensaje3) await sendText(response.mensaje3)
 
   if (response.reporte && conn.reportPhone) {
     const rJid = `${conn.reportPhone.replace(/^\+/, '').replace(/\D/g, '')}@s.whatsapp.net`

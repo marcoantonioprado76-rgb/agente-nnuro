@@ -514,14 +514,9 @@ export class BotEngine {
 
       // 16. Enviar
       console.log(`[BOT] Enviando → from=${from} to=${toPhone}`)
-      if (response.mensaje1) { await sendText(from, toPhone, response.mensaje1, apiKey).catch(e => console.error('[BOT] sendText m1:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
-      for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendImage(from, toPhone, url, apiKey).catch(e => console.error('[BOT] sendImage:', e.message)); await sleep(800) } }
-      const videos = Array.isArray(response.videos_mensaje1) ? (response.videos_mensaje1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('https://')) : []
-      for (const url of videos) { await sendVideo(from, toPhone, url, '', apiKey).catch(e => console.error('[BOT] sendVideo:', e.message)); await sleep(1200) }
-      if (response.mensaje2) { await sendText(from, toPhone, response.mensaje2, apiKey).catch(e => console.error('[BOT] sendText m2:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
-      if (response.mensaje3) { await sendText(from, toPhone, response.mensaje3, apiKey).catch(e => console.error('[BOT] sendText m3:', e.message)) }
 
-      // 16b. Nota de voz (opcional, aditivo) — NUNCA rompe el texto: si algo falla, se omite.
+      // ¿Responder con voz? Si sí y la voz se genera, se manda SOLO la voz (sin el texto).
+      let voiceSent = false
       if (shouldSpeak(bot, customerSentAudio)) {
         try {
           const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), bot.voice_id as string | null)
@@ -529,11 +524,20 @@ export class BotEngine {
             const audioUrl = await uploadVoiceNote(ogg, bot.tenant_id as string)
             if (audioUrl) {
               await sendAudio(from, toPhone, audioUrl, apiKey).catch(e => console.error('[BOT] sendAudio:', e.message))
+              voiceSent = true
               console.log(`[BOT] 🎙️ nota de voz enviada a ${userPhone}`)
             }
           }
         } catch (e) { console.error('[BOT] voz (omitida):', e instanceof Error ? e.message : e) }
       }
+
+      // Texto: solo si NO se mandó voz (si la voz falla, cae a texto para no dejar sin respuesta).
+      if (!voiceSent && response.mensaje1) { await sendText(from, toPhone, response.mensaje1, apiKey).catch(e => console.error('[BOT] sendText m1:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
+      for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendImage(from, toPhone, url, apiKey).catch(e => console.error('[BOT] sendImage:', e.message)); await sleep(800) } }
+      const videos = Array.isArray(response.videos_mensaje1) ? (response.videos_mensaje1 as unknown[]).filter((v): v is string => typeof v === 'string' && v.startsWith('https://')) : []
+      for (const url of videos) { await sendVideo(from, toPhone, url, '', apiKey).catch(e => console.error('[BOT] sendVideo:', e.message)); await sleep(1200) }
+      if (!voiceSent && response.mensaje2) { await sendText(from, toPhone, response.mensaje2, apiKey).catch(e => console.error('[BOT] sendText m2:', e.message)); await sleep(Math.floor(Math.random() * 1000) + 1000) }
+      if (!voiceSent && response.mensaje3) { await sendText(from, toPhone, response.mensaje3, apiKey).catch(e => console.error('[BOT] sendText m3:', e.message)) }
 
       if (response.reporte && reportPhone) {
         await sendText(from, reportPhone.replace(/^\+/, ''), response.reporte, apiKey).catch(e => console.error('[BOT] sendReport:', e.message))

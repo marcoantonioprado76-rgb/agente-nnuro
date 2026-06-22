@@ -251,13 +251,8 @@ export class WhatsAppCloudEngine {
       enforceCharLimits(response, bot)
       const toPhone = userPhone.replace(/^\+/, '').replace(/\s/g, '')
 
-      if (response.mensaje1) { await sendWaText(toPhone, response.mensaje1, phoneId, waToken).catch(() => {}); await sleep(800) }
-      for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendWaImage(toPhone, url, phoneId, waToken).catch(() => {}); await sleep(600) } }
-      for (const url of (response.videos_mensaje1 ?? []) as string[]) { if (url.startsWith('https://')) { await sendWaVideo(toPhone, url, phoneId, waToken).catch(() => {}); await sleep(1000) } }
-      if (response.mensaje2) { await sendWaText(toPhone, response.mensaje2, phoneId, waToken).catch(() => {}); await sleep(800) }
-      if (response.mensaje3) await sendWaText(toPhone, response.mensaje3, phoneId, waToken).catch(() => {})
-
-      // Nota de voz (opcional, aditivo) — sube el OGG y lo envía por URL. Si falla, se omite.
+      // ¿Responder con voz? Si sí y la voz se genera, se manda SOLO la voz (sin el texto).
+      let voiceSent = false
       if (shouldSpeak(bot, customerSentAudio)) {
         try {
           const ogg = await synthesizeVoiceNote(voiceTextFromResponse(response), bot.voice_id as string | null)
@@ -265,11 +260,19 @@ export class WhatsAppCloudEngine {
             const audioUrl = await uploadVoiceNote(ogg, bot.tenant_id as string)
             if (audioUrl) {
               await sendWaAudio(toPhone, audioUrl, phoneId, waToken).catch(() => {})
+              voiceSent = true
               console.log(`[WA_CLOUD] 🎙️ nota de voz enviada a ${userPhone}`)
             }
           }
         } catch (e) { console.error('[WA_CLOUD] voz (omitida):', e instanceof Error ? e.message : e) }
       }
+
+      // Texto: solo si NO se mandó voz (si la voz falla, cae a texto para no dejar sin respuesta).
+      if (!voiceSent && response.mensaje1) { await sendWaText(toPhone, response.mensaje1, phoneId, waToken).catch(() => {}); await sleep(800) }
+      for (const url of response.fotos_mensaje1 ?? []) { if (url.startsWith('https://')) { await sendWaImage(toPhone, url, phoneId, waToken).catch(() => {}); await sleep(600) } }
+      for (const url of (response.videos_mensaje1 ?? []) as string[]) { if (url.startsWith('https://')) { await sendWaVideo(toPhone, url, phoneId, waToken).catch(() => {}); await sleep(1000) } }
+      if (!voiceSent && response.mensaje2) { await sendWaText(toPhone, response.mensaje2, phoneId, waToken).catch(() => {}); await sleep(800) }
+      if (!voiceSent && response.mensaje3) await sendWaText(toPhone, response.mensaje3, phoneId, waToken).catch(() => {})
 
       if (response.reporte && reportPhone) {
         const rPhone = reportPhone.replace(/^\+/, '').replace(/\s/g, '')
