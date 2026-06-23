@@ -11,6 +11,8 @@ import { resolveVoice } from './voices'
 
 const ELEVEN_BASE = 'https://api.elevenlabs.io/v1'
 const ELEVEN_MODEL = process.env.ELEVENLABS_MODEL || 'eleven_multilingual_v2'
+const FISH_BASE = 'https://api.fish.audio/v1'
+const FISH_MODEL = process.env.FISH_MODEL || 's1'
 // Límite de caracteres por nota de voz — controla costo y duración.
 const MAX_TTS_CHARS = 700
 
@@ -25,9 +27,49 @@ export function cleanForSpeech(text: string): string {
     .slice(0, MAX_TTS_CHARS)
 }
 
-/** ¿Está configurada la voz a nivel plataforma? */
+/** ¿Está configurada la voz a nivel plataforma? (ElevenLabs o Fish Audio) */
 export function ttsConfigured(): boolean {
-  return !!process.env.ELEVENLABS_API_KEY
+  return !!process.env.ELEVENLABS_API_KEY || !!process.env.FISH_API_KEY
+}
+
+/**
+ * Fish Audio TTS — alternativa más barata a ElevenLabs.
+ * `format`: 'opus' (OGG/Opus para WhatsApp) o 'mp3' (preview en navegador).
+ * Devuelve null si falla (nunca lanza) → el bot cae a texto.
+ */
+async function synthesizeFish(text: string, referenceId: string, format: 'opus' | 'mp3'): Promise<Buffer | null> {
+  const apiKey = process.env.FISH_API_KEY
+  if (!apiKey) return null
+  const clean = cleanForSpeech(text)
+  if (!clean) return null
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 30_000)
+  try {
+    const res = await fetch(`${FISH_BASE}/tts`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', model: FISH_MODEL },
+      signal: controller.signal,
+      body: JSON.stringify({ text: clean, reference_id: referenceId, format }),
+    })
+    if (!res.ok) {
+      console.error(`[TTS Fish] ${res.status}: ${(await res.text()).slice(0, 200)}`)
+      return null
+    }
+    const buf = Buffer.from(await res.arrayBuffer())
+    if (buf.length < 64) return null
+    // Para WhatsApp el opus debe venir en contenedor OGG ("OggS"). Si no, se omite.
+    if (format === 'opus' && buf.toString('ascii', 0, 4) !== 'OggS') {
+      console.error('[TTS Fish] el opus no vino como OGG/Opus, se omite la voz')
+      return null
+    }
+    return buf
+  } catch (err) {
+    console.error('[TTS Fish] error:', err instanceof Error ? err.message : err)
+    return null
+  } finally {
+    clearTimeout(timeout)
+  }
 }
 
 /**
@@ -35,12 +77,14 @@ export function ttsConfigured(): boolean {
  * @returns Buffer OGG/Opus listo para WhatsApp, o null si no se pudo (nunca lanza).
  */
 export async function synthesizeVoiceNote(text: string, voiceId?: string | null): Promise<Buffer | null> {
+  const voice = resolveVoice(voiceId)
+  if (voice.provider === 'fish') return synthesizeFish(text, voice.id, 'opus')
+
   const apiKey = process.env.ELEVENLABS_API_KEY
   if (!apiKey) return null
   const clean = cleanForSpeech(text)
   if (!clean) return null
 
-  const voice = resolveVoice(voiceId)
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 30_000)
   try {
@@ -79,12 +123,14 @@ export async function synthesizeVoiceNote(text: string, voiceId?: string | null)
  * @returns Buffer MP3 o null si no se pudo (nunca lanza).
  */
 export async function synthesizePreviewMp3(text: string, voiceId?: string | null): Promise<Buffer | null> {
+  const voice = resolveVoice(voiceId)
+  if (voice.provider === 'fish') return synthesizeFish(text, voice.id, 'mp3')
+
   const apiKey = process.env.ELEVENLABS_API_KEY
   if (!apiKey) return null
   const clean = cleanForSpeech(text)
   if (!clean) return null
 
-  const voice = resolveVoice(voiceId)
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 30_000)
   try {
