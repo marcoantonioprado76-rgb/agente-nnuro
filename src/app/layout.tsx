@@ -1,79 +1,44 @@
-import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
-import { Toaster } from '@/components/ui/sonner';
-import './globals.css';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-  maximumScale: 1,
-};
+import type { Metadata } from 'next'
+import './globals.css'
+import { WalletProvider } from '@/context/WalletProvider'
+import { ConfirmHost } from '@/components/ConfirmDialog'
 
 export const metadata: Metadata = {
-  title: 'Agente de Ventas - Automatiza tus ventas con IA',
-  description: 'Agente de Ventas: automatiza tus ventas por WhatsApp con inteligencia artificial. Responde clientes 24/7 y cierra ventas en automatico.',
-  manifest: '/manifest.json',
-  metadataBase: new URL('https://agentenuro.com'),
-  openGraph: {
-    title: 'Agente de Ventas',
-    description: 'Automatiza tus ventas por WhatsApp con inteligencia artificial',
-    url: 'https://agentenuro.com',
-    siteName: 'Agente de Ventas',
-    images: [
-      {
-        url: 'https://agentenuro.com/api/og-image',
-        width: 1200,
-        height: 630,
-        type: 'image/png',
-        alt: 'Agente de Ventas',
-      },
-    ],
-    type: 'website',
-    locale: 'es_ES',
+  title: 'MY DIAMOND',
+  description: 'Plataforma Oficial - MY DIAMOND',
+  // El favicon/apple-icon los maneja Next.js automáticamente desde
+  // src/app/icon.png y src/app/apple-icon.png (generados del logo oficial).
+  other: {
+    'tiktok-developers-site-verification': 'z09wedDq9xCOj3EGusafCQHO8EtDU10L',
+    'facebook-domain-verification': '4ig9scnmgsrs3tgzm120c0budjwwk4',
+    // Evita que Chrome/Google Translate modifique el DOM y crashee React con
+    // 'NotFoundError: Failed to execute insertBefore on Node'.
+    // https://github.com/facebook/react/issues/11538
+    google: 'notranslate',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Agente de Ventas',
-    description: 'Automatiza tus ventas por WhatsApp con inteligencia artificial',
-    images: [
-      {
-        url: 'https://agentenuro.com/api/og-image',
-        width: 1200,
-        height: 630,
-        alt: 'Agente de Ventas',
-      },
-    ],
-  },
-  applicationName: 'Agente de Ventas',
-  appleWebApp: {
-    capable: true,
-    title: 'Agente de Ventas',
-    statusBarStyle: 'black-translucent',
-  },
-};
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="es" className="dark">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
-        <Toaster richColors position="top-right" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js')})}`,
-          }}
-        />
+    // translate="no" complementa el meta google=notranslate y evita que
+    // extensiones de traducción del navegador (Google Translate, DeepL, etc.)
+    // muten el DOM y rompan el reconciler de React.
+    <html lang="es" translate="no">
+      <head>
+        <meta name="google" content="notranslate" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@100..900&family=JetBrains+Mono:wght@500;700&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+      </head>
+      <body className="min-h-screen notranslate" style={{ fontFamily: "'Archivo', sans-serif" }}>
+        <WalletProvider>{children}</WalletProvider>
+        <ConfirmHost />
       </body>
     </html>
-  );
+  )
 }

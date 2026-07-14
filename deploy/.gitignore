@@ -1,0 +1,2 @@
+# NUNCA commitear secretos, llaves ni el .env de producción.
+.secrets/

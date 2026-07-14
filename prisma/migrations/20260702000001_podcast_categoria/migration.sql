@@ -1,0 +1,1 @@
+ALTER TABLE "podcasts" ADD COLUMN IF NOT EXISTS "categoria" TEXT;

@@ -12,9 +12,9 @@ export interface BotJsonResponse {
   mensaje1: string
   mensaje2: string
   mensaje3: string
+  mensaje4: string
   fotos_mensaje1: string[]
   videos_mensaje1: string[]
-  audio_url: string        // URL de audio PTT (nota de voz) — solo Baileys
   reporte: string
 }
 
@@ -136,6 +136,72 @@ Reglas:
   }
 }
 
+/**
+ * Versión de analyzeImage que también retorna los tokens consumidos.
+ * Usar cuando se cobra al balance USD del usuario por la llamada.
+ */
+export async function analyzeImageWithUsage(
+  imageUrl: string,
+  apiKey: string,
+): Promise<{ text: string; promptTokens: number; completionTokens: number }> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 30000)
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: `Analiza esta imagen de forma completa y universal. Tu tarea:
+
+1. Detecta claramente qué aparece en la imagen.
+2. Describe objetos, personas, texto visible, colores y contexto general.
+3. Identifica posibles usos, problemas, detalles importantes o elementos relevantes.
+4. Explica situaciones, acciones, características visuales y cualquier cosa útil para comprender la imagen.
+5. Si contiene texto, transcríbelo con exactitud.
+6. Si es una imagen técnica (código, interfaz, error, pantalla), analízala técnicamente y explica qué significa o qué puede estar fallando.
+7. Si es un documento (factura, recibo, contrato, formulario), extrae los datos clave.
+
+Reglas:
+- Usa lenguaje claro y preciso.
+- No inventes nada que no se vea claramente.
+- Si falta información, indícalo.
+- Analiza la imagen completa, no solo partes.`,
+              },
+              { type: 'image_url', image_url: { url: imageUrl, detail: 'high' } },
+            ],
+          },
+        ],
+        max_tokens: 800,
+      }),
+    })
+
+    if (!res.ok) {
+      const err = await res.text()
+      throw new Error(`Vision error ${res.status}: ${err}`)
+    }
+
+    const data = await res.json()
+    return {
+      text: (data.choices?.[0]?.message?.content as string) || '',
+      promptTokens: (data.usage?.prompt_tokens as number) ?? 0,
+      completionTokens: (data.usage?.completion_tokens as number) ?? 0,
+    }
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
 // ─── Chat Completion (forces JSON output) ────────────────────────────────────
 
 function normalizeFotos(raw: unknown): string[] {
@@ -160,19 +226,23 @@ export type AiModelId = typeof AI_MODELS[number]['id']
 
 export const FOLLOWUP_MODEL = 'gpt-4o-mini' // Siempre económico para seguimientos
 
-interface ChatCompletionResult {
-  content: string
-  promptTokens: number
-  completionTokens: number
-}
-
 async function callChatCompletion(
   messages: Array<{ role: string; content: string }>,
   apiKey: string,
   model: string = 'gpt-5.1',
-): Promise<ChatCompletionResult> {
+): Promise<string> {
+  const { content } = await callChatCompletionWithUsage(messages, apiKey, model)
+  return content
+}
+
+async function callChatCompletionWithUsage(
+  messages: Array<{ role: string; content: string }>,
+  apiKey: string,
+  model: string = 'gpt-5.1',
+  cacheKey?: string,
+): Promise<{ content: string; promptTokens: number; completionTokens: number; cachedTokens: number }> {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 60000) // 1 min timeout
+  const timeout = setTimeout(() => controller.abort(), 60000)
 
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -187,6 +257,9 @@ async function callChatCompletion(
         response_format: { type: 'json_object' },
         messages,
         temperature: 0.6,
+        // prompt_cache_key agrupa las llamadas del mismo bot para que OpenAI reutilice
+        // el caché del prefijo estable (catálogo + flujo) entre conversaciones.
+        ...(cacheKey ? { prompt_cache_key: cacheKey } : {}),
       }),
     })
 
@@ -200,6 +273,8 @@ async function callChatCompletion(
       content: (data.choices?.[0]?.message?.content as string) || '{}',
       promptTokens: (data.usage?.prompt_tokens as number) ?? 0,
       completionTokens: (data.usage?.completion_tokens as number) ?? 0,
+      // Tokens del prompt que OpenAI sirvió desde caché (se cobran más barato).
+      cachedTokens: (data.usage?.prompt_tokens_details?.cached_tokens as number) ?? 0,
     }
   } finally {
     clearTimeout(timeout)
@@ -210,6 +285,7 @@ export interface ChatWithUsageResult {
   response: BotJsonResponse
   promptTokens: number
   completionTokens: number
+  cachedTokens: number
 }
 
 export async function chatWithUsage(
@@ -217,29 +293,31 @@ export async function chatWithUsage(
   history: ChatMessage[],
   apiKey: string,
   model: string = 'gpt-4o',
+  cacheKey?: string,
 ): Promise<ChatWithUsageResult> {
   const messages: Array<{ role: string; content: string }> = [
     { role: 'system', content: systemPrompt },
     ...history,
   ]
 
-  let result = await callChatCompletion(messages, apiKey, model)
+  let result = await callChatCompletionWithUsage(messages, apiKey, model, cacheKey)
   let totalPrompt = result.promptTokens
   let totalCompletion = result.completionTokens
+  let totalCached = result.cachedTokens
 
   let parsed: Record<string, unknown>
   try {
     parsed = JSON.parse(result.content)
   } catch {
-    // Retry once with explicit instruction
     messages.push(
       { role: 'assistant', content: result.content },
       { role: 'user', content: 'El JSON no es válido. Devuelve SOLO JSON con el schema exacto indicado.' },
     )
-    result = await callChatCompletion(messages, apiKey, model)
+    result = await callChatCompletionWithUsage(messages, apiKey, model, cacheKey)
     totalPrompt += result.promptTokens
     totalCompletion += result.completionTokens
-    parsed = JSON.parse(result.content) // If this throws again, let it propagate
+    totalCached += result.cachedTokens
+    parsed = JSON.parse(result.content)
   }
 
   return {
@@ -247,13 +325,14 @@ export async function chatWithUsage(
       mensaje1: typeof parsed.mensaje1 === 'string' ? parsed.mensaje1 : '',
       mensaje2: typeof parsed.mensaje2 === 'string' ? parsed.mensaje2 : '',
       mensaje3: typeof parsed.mensaje3 === 'string' ? parsed.mensaje3 : '',
+      mensaje4: typeof parsed.mensaje4 === 'string' ? parsed.mensaje4 : '',
       fotos_mensaje1: normalizeFotos(parsed.fotos_mensaje1),
       videos_mensaje1: normalizeFotos(parsed.videos_mensaje1),
-      audio_url: typeof parsed.audio_url === 'string' ? parsed.audio_url : '',
       reporte: typeof parsed.reporte === 'string' ? parsed.reporte : '',
     },
     promptTokens: totalPrompt,
     completionTokens: totalCompletion,
+    cachedTokens: totalCached,
   }
 }
 
@@ -263,6 +342,33 @@ export async function chat(
   apiKey: string,
   model: string = 'gpt-4o',
 ): Promise<BotJsonResponse> {
-  const { response } = await chatWithUsage(systemPrompt, history, apiKey, model)
-  return response
+  const messages: Array<{ role: string; content: string }> = [
+    { role: 'system', content: systemPrompt },
+    ...history,
+  ]
+
+  let raw = await callChatCompletion(messages, apiKey, model)
+
+  let parsed: Record<string, unknown>
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    // Retry once with explicit instruction
+    messages.push(
+      { role: 'assistant', content: raw },
+      { role: 'user', content: 'El JSON no es válido. Devuelve SOLO JSON con el schema exacto indicado.' },
+    )
+    raw = await callChatCompletion(messages, apiKey, model)
+    parsed = JSON.parse(raw) // If this throws again, let it propagate
+  }
+
+  return {
+    mensaje1: typeof parsed.mensaje1 === 'string' ? parsed.mensaje1 : '',
+    mensaje2: typeof parsed.mensaje2 === 'string' ? parsed.mensaje2 : '',
+    mensaje3: typeof parsed.mensaje3 === 'string' ? parsed.mensaje3 : '',
+    mensaje4: typeof parsed.mensaje4 === 'string' ? parsed.mensaje4 : '',
+    fotos_mensaje1: normalizeFotos(parsed.fotos_mensaje1),
+    videos_mensaje1: normalizeFotos(parsed.videos_mensaje1),
+    reporte: typeof parsed.reporte === 'string' ? parsed.reporte : '',
+  }
 }

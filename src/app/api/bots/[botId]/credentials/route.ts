@@ -1,92 +1,159 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
+import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
+import { verifyToken } from '@/lib/auth'
 import { encrypt, decrypt } from '@/lib/crypto'
 
-type Ctx = { params: { botId: string } }
+function getAuth() {
+  const cookieStore = cookies()
+  const token = cookieStore.get('auth_token')?.value
+  if (!token) return null
+  return verifyToken(token)
+}
 
-export async function GET(_req: NextRequest, { params }: Ctx) {
-  const session = await getServerSession()
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+/** GET /api/bots/[botId]/credentials – returns non-sensitive fields only */
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: { botId: string } },
+) {
+  const auth = getAuth()
+  if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-  const bot = await (prisma as any).bot.findFirst({
-    where: { id: params.botId, tenant_id: session.sub },
-    select: { id: true, type: true },
+  const bot = await prisma.bot.findFirst({
+    where: { id: params.botId, userId: auth.userId },
+    include: {
+      secret: {
+        select: {
+          whatsappInstanceNumber: true,
+          reportPhone: true,
+          ycloudApiKeyEnc: true,
+          openaiApiKeyEnc: true,
+          metaPageTokenEnc: true,
+        },
+      },
+    },
   })
+
   if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
 
-  const secret = await (prisma as any).botSecret.findUnique({ where: { bot_id: params.botId } })
-
   return NextResponse.json({
-    whatsappInstanceNumber: secret?.whatsapp_instance_number ?? '',
-    reportPhone:            secret?.report_phone ?? '',
-    hasYcloudKey:           !!secret?.ycloud_api_key_enc,
-    hasOpenAIKey:           !!secret?.openai_api_key_enc,
-    hasMetaToken:           !!secret?.meta_page_token_enc,
-    metaPhoneNumberId:      secret?.meta_phone_number_id ?? '',
-    metaWabaId:             secret?.meta_waba_id ?? '',
+    whatsappInstanceNumber: bot.secret?.whatsappInstanceNumber ?? '',
+    reportPhone: bot.secret?.reportPhone ?? '',
+    hasYcloudKey: !!bot.secret?.ycloudApiKeyEnc,
+    hasOpenAIKey: !!bot.secret?.openaiApiKeyEnc,
+    hasMetaToken: !!bot.secret?.metaPageTokenEnc,
+    // Return masked page token hint for META bots
     metaPageTokenHint: (() => {
-      try { return secret?.meta_page_token_enc ? decrypt(secret.meta_page_token_enc).slice(0, 8) + '...' : '' } catch { return '' }
-    })(),
-    openaiKeyHint: (() => {
-      try { return secret?.openai_api_key_enc ? decrypt(secret.openai_api_key_enc).slice(0, 8) + '...' : '' } catch { return '' }
+      try {
+        return bot.secret?.metaPageTokenEnc
+          ? decrypt(bot.secret.metaPageTokenEnc).slice(0, 8) + '...'
+          : ''
+      } catch { return '' }
     })(),
   })
 }
 
-export async function PUT(request: NextRequest, { params }: Ctx) {
-  const session = await getServerSession()
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+/** PUT /api/bots/[botId]/credentials – upsert bot credentials */
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { botId: string } },
+) {
+  const auth = getAuth()
+  if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-  const bot = await (prisma as any).bot.findFirst({
-    where: { id: params.botId, tenant_id: session.sub },
-    select: { id: true, type: true },
+  const bot = await prisma.bot.findFirst({
+    where: { id: params.botId, userId: auth.userId },
+    include: { secret: { select: { ycloudApiKeyEnc: true, openaiApiKeyEnc: true, metaPageTokenEnc: true } } },
   })
   if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
 
-  const isBaileys       = bot.type === 'BAILEYS'
-  const isMeta          = bot.type === 'META'
-  const isWhatsappCloud = bot.type === 'WHATSAPP_CLOUD'
-  const isMetaFamily    = isMeta || isWhatsappCloud
+  const isBaileys = bot.type === 'BAILEYS'
+  const isMeta    = bot.type === 'META'
 
-  const body = await request.json().catch(() => ({})) as Record<string, string>
-  const { ycloudApiKey, openaiApiKey, whatsappInstanceNumber, reportPhone, metaPageToken, metaPhoneNumberId, metaWabaId } = body
+  const body = await request.json() as Record<string, string>
+  const { ycloudApiKey, openaiApiKey, whatsappInstanceNumber, reportPhone, metaPageToken } = body
 
-  if (!isBaileys && !isMetaFamily && !whatsappInstanceNumber?.trim())
+  // Validaciones según tipo de bot
+  if (!isBaileys && !isMeta && !whatsappInstanceNumber?.trim()) {
     return NextResponse.json({ error: 'El número de WhatsApp es requerido' }, { status: 400 })
+  }
+  if (!isMeta && !reportPhone?.trim()) {
+    return NextResponse.json({ error: 'El número de reporte es requerido' }, { status: 400 })
+  }
+  if (isMeta && !metaPageToken?.trim() && !bot.secret?.metaPageTokenEnc) {
+    return NextResponse.json({ error: 'El Page Access Token de Meta es requerido' }, { status: 400 })
+  }
 
-  const existing = await (prisma as any).botSecret.findUnique({ where: { bot_id: params.botId } })
+  const existingYcloud    = bot.secret?.ycloudApiKeyEnc
+  const existingOpenai    = bot.secret?.openaiApiKeyEnc
+  const existingMetaToken = bot.secret?.metaPageTokenEnc
 
-  const ycloudEnc    = ycloudApiKey?.trim()   ? encrypt(ycloudApiKey.trim())   : existing?.ycloud_api_key_enc   ?? (isBaileys || isMetaFamily ? 'N/A' : '')
-  const openaiEnc    = openaiApiKey?.trim()   ? encrypt(openaiApiKey.trim())   : existing?.openai_api_key_enc   ?? ''
-  const metaTokenEnc = metaPageToken?.trim()  ? encrypt(metaPageToken.trim())  : existing?.meta_page_token_enc  ?? null
+  const ycloudEnc = ycloudApiKey?.trim()
+    ? encrypt(ycloudApiKey.trim())
+    : existingYcloud ?? (isBaileys || isMeta ? 'N/A' : '')
 
-  if (!openaiEnc) return NextResponse.json({ error: 'La API key de OpenAI es requerida la primera vez' }, { status: 400 })
-  if (!isBaileys && !isMetaFamily && !ycloudEnc) return NextResponse.json({ error: 'La API key de YCloud es requerida la primera vez' }, { status: 400 })
+  const openaiEnc = openaiApiKey?.trim()
+    ? encrypt(openaiApiKey.trim())
+    : existingOpenai ?? ''
 
-  await (prisma as any).botSecret.upsert({
-    where: { bot_id: params.botId },
+  const metaTokenEnc = metaPageToken?.trim()
+    ? encrypt(metaPageToken.trim())
+    : existingMetaToken ?? null
+
+  // OpenAI key: si el usuario no pone una propia, permitimos guardar vacío
+  // siempre que exista la key global del admin (en cualquiera de los 2 lugares
+  // legacy: AppSetting o AdminConfig). El bot-engine ya usa chargeUserForAI()
+  // como fallback automático con cobro de saldo USD.
+  if (!openaiEnc) {
+    const [globalKey, adminCfg, userRow] = await Promise.all([
+      (prisma as any).appSetting.findUnique({ where: { key: 'openai_global_key' } }),
+      (prisma as any).adminConfig.findUnique({ where: { id: 'global' } }),
+      prisma.user.findUnique({ where: { id: auth.userId }, select: { aiBalanceUsd: true, preferOwnKey: true } }),
+    ])
+    const hasAdminFallback = !!(globalKey?.value) || !!(adminCfg?.openaiKeyEnc)
+    const userBalance = userRow?.aiBalanceUsd ? Number(userRow.aiBalanceUsd) : 0
+
+    // Sólo bloqueamos si NO hay forma de procesar IA: ni key propia, ni key admin disponible.
+    if (!hasAdminFallback) {
+      return NextResponse.json(
+        { error: 'Configurá tu API key de OpenAI o pedile al admin que active la key global del sistema.' },
+        { status: 400 },
+      )
+    }
+    // Si hay key admin pero el usuario tampoco tiene saldo, avisamos pero NO bloqueamos
+    if (userBalance <= 0) {
+      console.log(`[bot/credentials] Bot ${params.botId} se crea sin key propia. Saldo USD del usuario: ${userBalance}. Necesitará comprar saldo o configurar su key antes de que el bot responda.`)
+    }
+  }
+  if (!isBaileys && !isMeta && !ycloudEnc) {
+    return NextResponse.json(
+      { error: 'La API key de YCloud es requerida la primera vez' },
+      { status: 400 },
+    )
+  }
+
+  await prisma.botSecret.upsert({
+    where: { botId: params.botId },
     create: {
-      bot_id:                   params.botId,
-      ycloud_api_key_enc:       ycloudEnc,
-      openai_api_key_enc:       openaiEnc,
-      whatsapp_instance_number: (!isBaileys && !isMetaFamily) ? (whatsappInstanceNumber?.trim() ?? '') : '',
-      report_phone:             !isMeta ? (reportPhone?.trim() ?? '') : '',
-      meta_page_token_enc:      metaTokenEnc,
-      meta_phone_number_id:     metaPhoneNumberId?.trim() || null,
-      meta_waba_id:             metaWabaId?.trim() || null,
+      botId: params.botId,
+      ycloudApiKeyEnc: ycloudEnc,
+      openaiApiKeyEnc: openaiEnc,
+      whatsappInstanceNumber: (isBaileys || isMeta) ? '' : whatsappInstanceNumber?.trim() ?? '',
+      reportPhone: isMeta ? '' : reportPhone.trim(),
+      ...(metaTokenEnc && { metaPageTokenEnc: metaTokenEnc }),
     },
     update: {
-      ycloud_api_key_enc:       ycloudEnc,
-      openai_api_key_enc:       openaiEnc,
-      whatsapp_instance_number: (!isBaileys && !isMetaFamily) ? (whatsappInstanceNumber?.trim() ?? '') : '',
-      report_phone:             !isMeta ? (reportPhone?.trim() ?? '') : '',
-      ...(metaTokenEnc              && { meta_page_token_enc:    metaTokenEnc }),
-      ...(metaPhoneNumberId?.trim() && { meta_phone_number_id:   metaPhoneNumberId.trim() }),
-      ...(metaWabaId?.trim()        && { meta_waba_id:           metaWabaId.trim() }),
+      ycloudApiKeyEnc: ycloudEnc,
+      openaiApiKeyEnc: openaiEnc,
+      ...(!isBaileys && !isMeta && whatsappInstanceNumber?.trim() && {
+        whatsappInstanceNumber: whatsappInstanceNumber.trim(),
+      }),
+      ...(!isMeta && { reportPhone: reportPhone.trim() }),
+      ...(metaTokenEnc && { metaPageTokenEnc: metaTokenEnc }),
     },
   })
 
   return NextResponse.json({ ok: true })
 }
+

@@ -1,128 +1,71 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createServiceRoleClient } from '@/lib/supabase/server'
-import { getServerSession } from '@/lib/auth'
-import sharp from 'sharp'
+export const dynamic = 'force-dynamic'
+import { NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
+import { supabaseAdmin } from '@/lib/supabase'
+import { getAuthUser } from '@/lib/auth'
 
-const ALLOWED_BUCKETS = ['store-products', 'store-qr', 'product-images', 'product-testimonials', 'avatars', 'payment-proofs', 'store-covers', 'store-favicons']
-const MAX_IMAGE_DIMENSION = 1080
-const IMAGE_QUALITY = 80
-const MAX_VIDEO_SIZE_MB = 50
 
-export async function POST(request: NextRequest) {
-  const startTime = Date.now()
+const ALLOWED_TYPES: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/heic': 'heic',
+  'video/mp4': 'mp4',
+  'video/quicktime': 'mov',
+  'video/3gpp': '3gp',
+  'audio/mpeg': 'mp3',
+  'audio/mp3': 'mp3',
+  'audio/wav': 'wav',
+  'audio/ogg': 'ogg',
+  'audio/aac': 'aac',
+  'audio/x-m4a': 'm4a',
+  'audio/mp4': 'm4a',
+}
 
+export async function POST(request: Request) {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const user = { id: session.sub }
+    const user = await getAuthUser()
+    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const formData = await request.formData()
-    const file = formData.get('file') as File | null
-    const bucket = (formData.get('bucket') as string | null) ?? 'media'
+    const file = formData.get('file') as File
 
-    if (!file) {
-      return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 })
-    }
+    if (!file) return NextResponse.json({ error: 'No se subió ningún archivo' }, { status: 400 })
 
-    if (!bucket || !ALLOWED_BUCKETS.includes(bucket)) {
-      // Allow 'media' as default bucket for bot product uploads
-      if (bucket !== 'media') return NextResponse.json({ error: 'Bucket no válido' }, { status: 400 })
-    }
+    const ext = ALLOWED_TYPES[file.type]
+    if (!ext) return NextResponse.json({ error: 'Tipo de archivo no permitido' }, { status: 400 })
 
-    const isImage = file.type.startsWith('image/')
     const isVideo = file.type.startsWith('video/')
-    if (!isImage && !isVideo) {
-      return NextResponse.json({ error: 'Solo se permiten archivos de imagen o video' }, { status: 400 })
-    }
+    const isAudio = file.type.startsWith('audio/')
 
-    const originalSize = file.size
-    let finalBuffer: Buffer
-    let finalContentType: string
-    let finalExt: string
+    // Subcarpeta opcional (ej. el builder de landing sube con folder='landing' → ${userId}/landing/...
+    // para poder limpiar solo esos archivos al borrar la página). Sanitizada; default sin subcarpeta.
+    const rawFolder = (formData.get('folder') as string | null)?.replace(/[^a-z0-9_-]/gi, '') || ''
+    const prefix = rawFolder ? `${user.id}/${rawFolder}` : `${user.id}`
+    const fileName = `${prefix}/${randomUUID()}.${ext}`
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
 
-    if (isImage) {
-      // ══════════════════════════════════════
-      // OPTIMIZACIÓN DE IMÁGENES CON SHARP
-      // ══════════════════════════════════════
-      const rawBuffer = Buffer.from(await file.arrayBuffer())
-
-      // Obtener metadata para log
-      const metadata = await sharp(rawBuffer).metadata()
-      const originalW = metadata.width || 0
-      const originalH = metadata.height || 0
-
-      // Redimensionar a max 1080px y convertir a webp
-      finalBuffer = await sharp(rawBuffer)
-        .resize(MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION, {
-          fit: 'inside',        // Mantiene aspect ratio
-          withoutEnlargement: true, // No agranda imágenes pequeñas
-        })
-        .webp({ quality: IMAGE_QUALITY })
-        .toBuffer()
-
-      finalContentType = 'image/webp'
-      finalExt = 'webp'
-
-      const newMetadata = await sharp(finalBuffer).metadata()
-      const savings = ((1 - finalBuffer.length / rawBuffer.length) * 100).toFixed(1)
-
-      console.log(`[Upload] 🖼️ Imagen optimizada: ${originalW}x${originalH} → ${newMetadata.width}x${newMetadata.height}, ${formatBytes(rawBuffer.length)} → ${formatBytes(finalBuffer.length)} (-${savings}%), formato: webp`)
-
-    } else {
-      // ══════════════════════════════════════
-      // VIDEOS: validar tamaño, subir directo
-      // ══════════════════════════════════════
-      if (file.size > MAX_VIDEO_SIZE_MB * 1024 * 1024) {
-        return NextResponse.json(
-          { error: `Video demasiado grande. Máximo ${MAX_VIDEO_SIZE_MB}MB.` },
-          { status: 400 }
-        )
-      }
-
-      finalBuffer = Buffer.from(await file.arrayBuffer())
-      finalContentType = file.type
-      finalExt = file.name.split('.').pop()?.toLowerCase() || 'mp4'
-
-      console.log(`[Upload] 🎬 Video: ${formatBytes(finalBuffer.length)}, tipo: ${file.type}`)
-    }
-
-    // ══════════════════════════════════════
-    // SUBIR A SUPABASE STORAGE
-    // ══════════════════════════════════════
-    const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${finalExt}`
-    const service = await createServiceRoleClient()
-
-    const { error: uploadError } = await service.storage
-      .from(bucket)
-      .upload(fileName, finalBuffer, {
-        contentType: finalContentType,
+    const { error } = await supabaseAdmin.storage
+      .from('uploads')
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        cacheControl: '31536000',
         upsert: false,
       })
 
-    if (uploadError) {
-      console.error('[Upload] ❌ Error Supabase:', uploadError)
-      return NextResponse.json({ error: 'Error al subir archivo' }, { status: 500 })
+    if (error) {
+      console.error('[SUPABASE STORAGE ERROR]', error)
+      return NextResponse.json({ error: error.message || 'Error al subir archivo' }, { status: 500 })
     }
 
-    const { data: urlData } = service.storage.from(bucket).getPublicUrl(fileName)
-    const elapsed = Date.now() - startTime
+    const { data: { publicUrl } } = supabaseAdmin.storage
+      .from('uploads')
+      .getPublicUrl(fileName)
 
-    console.log(`[Upload] ✅ Subido: bucket=${bucket}, ${formatBytes(originalSize)} → ${formatBytes(finalBuffer.length)}, tiempo=${elapsed}ms, url=${urlData.publicUrl.substring(0, 80)}...`)
-
-    return NextResponse.json({
-      url: urlData.publicUrl,
-      optimized: isImage,
-      originalSize,
-      finalSize: finalBuffer.length,
-    })
-  } catch (error) {
-    console.error('[Upload] ❌ Error:', error)
-    return NextResponse.json({ error: 'Error interno al procesar archivo' }, { status: 500 })
+    return NextResponse.json({ url: publicUrl })
+  } catch (err: any) {
+    console.error('[POST /api/upload]', err)
+    return NextResponse.json({ error: err?.message || 'Error al subir archivo' }, { status: 500 })
   }
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`
-  return `${(bytes / (1024 * 1024)).toFixed(2)}MB`
 }

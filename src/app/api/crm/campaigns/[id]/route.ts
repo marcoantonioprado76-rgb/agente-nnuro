@@ -1,0 +1,94 @@
+export const dynamic = 'force-dynamic'
+import { NextRequest, NextResponse } from 'next/server'
+import { getAuthUser } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+    const user = await getAuthUser()
+    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    const campaign = await (prisma as any).broadcastCampaign.findFirst({
+        where: { id: params.id, userId: user.id },
+        include: {
+            bot: { select: { id: true, name: true, baileysPhone: true, status: true, type: true } },
+            images: { orderBy: { order: 'asc' } },
+            contacts: { orderBy: { createdAt: 'asc' } },
+            logs: { orderBy: { sentAt: 'desc' }, take: 100 },
+        },
+    })
+
+    if (!campaign) return NextResponse.json({ error: 'Campaña no encontrada' }, { status: 404 })
+    return NextResponse.json({ campaign })
+}
+
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+    const user = await getAuthUser()
+    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    const campaign = await (prisma as any).broadcastCampaign.findFirst({
+        where: { id: params.id, userId: user.id },
+    })
+    if (!campaign) return NextResponse.json({ error: 'Campaña no encontrada' }, { status: 404 })
+    if (campaign.status === 'RUNNING') {
+        return NextResponse.json({ error: 'No se puede editar una campaña mientras está enviando' }, { status: 400 })
+    }
+
+    const body = await req.json()
+    const { name, prompt, messageExample, delayValue, delayUnit, scheduledAt } = body
+
+    // Validar delayValue
+    const parsedDelay = parseInt(delayValue)
+    if (delayValue !== undefined && (isNaN(parsedDelay) || parsedDelay < 1)) {
+        return NextResponse.json({ error: 'El delay debe ser un número mayor a 0' }, { status: 400 })
+    }
+
+    // Solo cambiar status en campañas DRAFT/SCHEDULED — preservar PAUSED/FAILED/COMPLETED
+    const newStatus = ['DRAFT', 'SCHEDULED'].includes(campaign.status)
+        ? (scheduledAt ? 'SCHEDULED' : 'DRAFT')
+        : campaign.status
+
+    const updated = await (prisma as any).broadcastCampaign.update({
+        where: { id: params.id },
+        data: {
+            ...(name?.trim() && { name: name.trim() }),
+            ...(prompt !== undefined && prompt !== null && { prompt: prompt.trim() }),
+            ...(messageExample !== undefined && { messageExample: messageExample?.trim() || null }),
+            ...(delayValue !== undefined && { delayValue: parsedDelay }),
+            ...(delayUnit && { delayUnit }),
+            scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+            status: newStatus,
+        },
+    })
+
+    return NextResponse.json({ campaign: updated })
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+    const user = await getAuthUser()
+    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    const campaign = await (prisma as any).broadcastCampaign.findFirst({
+        where: { id: params.id, userId: user.id },
+        include: { bot: { select: { id: true, name: true } } },
+    })
+    if (!campaign) return NextResponse.json({ error: 'Campaña no encontrada' }, { status: 404 })
+    if (campaign.status === 'RUNNING') {
+        return NextResponse.json({ error: 'No se puede eliminar una campaña en ejecución' }, { status: 400 })
+    }
+
+    // Si la campaña usa un bot DEDICADO oculto (__crm__...), lo borramos también para no
+    // dejar bots + sesiones huérfanas en disco (cada uno consume inodos del disco de Render).
+    // NUNCA tocamos un bot real que el usuario haya asignado — solo los con prefijo __crm__.
+    const crmBot = campaign.bot?.name?.startsWith('__crm__') ? campaign.bot : null
+    if (crmBot) {
+        try {
+            const { BaileysManager } = await import('@/lib/baileys-manager')
+            BaileysManager.disconnect(crmBot.id) // cierra el socket + borra la sesión del disco
+        } catch { /* noop */ }
+        // Borrar el bot cascadea la campaña + contactos + logs + imágenes.
+        await prisma.bot.delete({ where: { id: crmBot.id } }).catch(() => {})
+    }
+    // Red de seguridad: si no era __crm__ (o el cascade no aplicó), borrar la campaña igual.
+    await (prisma as any).broadcastCampaign.delete({ where: { id: params.id } }).catch(() => {})
+    return NextResponse.json({ ok: true })
+}

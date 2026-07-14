@@ -1,69 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
-import { createServiceRoleClient } from '@/lib/supabase/server'
-
 export const dynamic = 'force-dynamic'
+import { NextRequest, NextResponse } from 'next/server'
+import { getAdminUser, unauthorizedAdmin } from '@/lib/admin-auth'
+import { prisma } from '@/lib/prisma'
 
-// Defaults en caso de que la tabla no tenga el registro
-const DEFAULTS: Record<string, unknown> = {
-  payment_methods: { stripe: true, transfer: true },
-}
-
-async function verifyAdmin() {
-  const { getServerSession } = await import('@/lib/auth')
-  const s = await getServerSession()
-  if (!s || s.role !== 'admin') return null
-  return { id: s.sub }
-}
-
-// GET /api/admin/settings — retorna todos los settings
 export async function GET() {
-  try {
-    const user = await verifyAdmin()
-    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const admin = await getAdminUser()
+  if (!admin) return unauthorizedAdmin()
 
-    const service = await createServiceRoleClient()
-    const { data, error } = await service.from('system_settings').select('key, value')
-
-    if (error) {
-      // Tabla no existe aún — retornar defaults
-      return NextResponse.json(DEFAULTS)
-    }
-
-    const settings: Record<string, unknown> = { ...DEFAULTS }
-    for (const row of data || []) {
-      settings[row.key] = row.value
-    }
-
-    return NextResponse.json(settings)
-  } catch {
-    return NextResponse.json(DEFAULTS)
-  }
+  const settings = await prisma.appSetting.findMany()
+  return NextResponse.json({ settings })
 }
 
-// PUT /api/admin/settings — actualiza un setting específico
-export async function PUT(request: NextRequest) {
-  try {
-    const user = await verifyAdmin()
-    if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+export async function PATCH(request: NextRequest) {
+  const admin = await getAdminUser()
+  if (!admin) return unauthorizedAdmin()
 
-    const body = await request.json()
-    const { key, value } = body
+  const body = await request.json()
+  const { key, value } = body
 
-    if (!key) return NextResponse.json({ error: 'key es requerido' }, { status: 400 })
-
-    const service = await createServiceRoleClient()
-    const { error } = await service.from('system_settings').upsert({
-      key,
-      value,
-      updated_at: new Date().toISOString(),
-      updated_by: user.id,
-    }, { onConflict: 'key' })
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-    return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
+  if (!key || value === undefined) {
+    return NextResponse.json({ error: 'key y value son requeridos' }, { status: 400 })
   }
+
+  await prisma.appSetting.upsert({
+    where: { key },
+    create: { key, value: String(value) },
+    update: { value: String(value) },
+  })
+
+  return NextResponse.json({ success: true })
 }

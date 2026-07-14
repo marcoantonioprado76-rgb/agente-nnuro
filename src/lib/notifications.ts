@@ -1,47 +1,73 @@
-import { prisma } from '@/lib/prisma'
+/**
+ * Notification system: in-app (DB) + Web Push.
+ * Called by bot-engine and meta-engine when a sale is confirmed.
+ */
 
-export async function createUserNotification(params: {
-  userId: string
-  type: string
-  title: string
-  message: string
-  link?: string
-  metadata?: Record<string, unknown>
-}) {
-  try {
-    await (prisma as any).userNotification.create({
-      data: {
-        user_id:  params.userId,
-        type:     params.type,
-        title:    params.title,
-        message:  params.message,
-        link:     params.link || null,
-        metadata: params.metadata || {},
-      },
-    })
-  } catch (error) {
-    console.error('Error creating user notification:', error)
-  }
-}
+import { prisma } from './prisma'
+import webpush from 'web-push'
 
-export async function createAdminNotification(params: {
-  type: string
-  title: string
-  message: string
-  relatedUserId?: string
-  metadata?: Record<string, unknown>
-}) {
+/**
+ * Creates an in-app notification and sends Web Push to all active
+ * subscriptions of the user.
+ */
+export async function createNotification(
+  userId: string,
+  title: string,
+  body: string,
+  link?: string,
+): Promise<void> {
   try {
-    await (prisma as any).adminNotification.create({
-      data: {
-        type:              params.type,
-        title:             params.title,
-        message:           params.message,
-        target_user_id:    params.relatedUserId || null,
-        related_user_id:   params.relatedUserId || null,
-      },
+    // 1. Save in DB (in-app bell)
+    await prisma.notification.create({
+      data: { userId, title, body, link: link ?? null },
     })
-  } catch (error) {
-    console.error('Error creating admin notification:', error)
+
+    // 2. Send Web Push (only if VAPID is configured)
+    const vapidEmail = process.env.VAPID_EMAIL
+    const vapidPublicKey = process.env.VAPID_PUBLIC_KEY
+    const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY
+    if (!vapidEmail || !vapidPublicKey || !vapidPrivateKey) {
+      console.warn('[PUSH] VAPID env vars not set — skipping web push')
+      return
+    }
+    webpush.setVapidDetails(
+      vapidEmail.startsWith('mailto:') ? vapidEmail : `mailto:${vapidEmail}`,
+      vapidPublicKey,
+      vapidPrivateKey,
+    )
+
+    const subs = await prisma.pushSubscription.findMany({ where: { userId } })
+    if (!subs.length) return
+
+    const payload = JSON.stringify({ title, body, link: link ?? '/dashboard/services/whatsapp' })
+
+    // Collect expired subscription IDs then delete in bulk (avoids concurrent deletes)
+    const expiredIds: string[] = []
+
+    await Promise.allSettled(
+      subs.map(async (sub: { id: string; endpoint: string; p256dh: string; auth: string }) => {
+        try {
+          await webpush.sendNotification(
+            { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+            payload,
+          )
+        } catch (err: unknown) {
+          const statusCode = (err as Record<string, unknown>)?.statusCode
+          if (statusCode === 410 || statusCode === 404) {
+            expiredIds.push(sub.id)
+          } else {
+            console.error('[PUSH] Send error:', err)
+          }
+        }
+      }),
+    )
+
+    if (expiredIds.length > 0) {
+      await prisma.pushSubscription
+        .deleteMany({ where: { id: { in: expiredIds } } })
+        .catch((e: unknown) => console.warn('[PUSH] Failed to delete expired subscriptions:', e))
+    }
+  } catch (err) {
+    console.error('[NOTIFICATIONS] createNotification error:', err)
   }
 }

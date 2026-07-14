@@ -62,6 +62,7 @@ export async function sendImage(
   to: string,
   imageUrl: string,
   apiKey: string,
+  caption: string = '',
 ): Promise<void> {
   await ycloudRequest(
     '/whatsapp/messages',
@@ -69,7 +70,7 @@ export async function sendImage(
       from,
       to,
       type: 'image',
-      image: { link: imageUrl },
+      image: { link: imageUrl, ...(caption ? { caption } : {}) },
     },
     apiKey,
   )
@@ -100,9 +101,8 @@ export async function sendVideo(
 }
 
 /**
- * Sends an audio message (voice note) using a public HTTPS URL.
- * Para que WhatsApp lo muestre como NOTA DE VOZ, el audio debe ser OGG/Opus.
- * WhatsApp/YCloud servers must be able to fetch the URL directly.
+ * Sends a voice note (audio) using a public HTTPS URL (OGG/Opus).
+ * WhatsApp renderiza el OGG/Opus como nota de voz automáticamente.
  */
 export async function sendAudio(
   from: string,
@@ -117,6 +117,116 @@ export async function sendAudio(
       to,
       type: 'audio',
       audio: { link: audioUrl },
+    },
+    apiKey,
+  )
+}
+
+/**
+ * Sends a DOCUMENT (PDF u otro archivo) usando una URL pública.
+ * Llega como archivo adjunto real en WhatsApp (no como link de texto).
+ */
+export async function sendDocument(
+  from: string,
+  to: string,
+  documentUrl: string,
+  filename: string,
+  caption: string,
+  apiKey: string,
+): Promise<void> {
+  await ycloudRequest(
+    '/whatsapp/messages',
+    {
+      from,
+      to,
+      type: 'document',
+      document: {
+        link: documentUrl,
+        ...(filename ? { filename } : {}),
+        ...(caption ? { caption } : {}),
+      },
+    },
+    apiKey,
+  )
+}
+
+/**
+ * Envía una PLANTILLA aprobada de WhatsApp (HSM). Es la ÚNICA forma de escribirle
+ * a alguien FUERA de la ventana de 24h (o de iniciar una conversación).
+ * `bodyParams` rellena las variables del cuerpo. Si la variable es NOMBRADA
+ * (ej. {{__1___}}), pasar `name`; si es posicional ({{1}}), omitir `name`.
+ */
+/**
+ * Envía una PLANTILLA aprobada con una IMAGEN en el ENCABEZADO.
+ *
+ * Es la ÚNICA forma OFICIAL (sin riesgo de baneo) de mandarle una imagen a alguien
+ * que NO nos escribió en las últimas 24h — se usa para entregar el QR de la entrada.
+ * La plantilla debe estar aprobada con `HEADER format = IMAGE`.
+ */
+export async function sendTemplateWithImage(
+  from: string,
+  to: string,
+  apiKey: string,
+  templateName: string,
+  languageCode: string,
+  imageUrl: string,
+  bodyParams: Array<{ name?: string; text: string }> = [],
+): Promise<void> {
+  const components: unknown[] = [
+    { type: 'header', parameters: [{ type: 'image', image: { link: imageUrl } }] },
+  ]
+  if (bodyParams.length) {
+    components.push({
+      type: 'body',
+      parameters: bodyParams.map((p) => ({
+        type: 'text',
+        ...(p.name ? { parameter_name: p.name } : {}),
+        text: p.text,
+      })),
+    })
+  }
+
+  await ycloudRequest(
+    '/whatsapp/messages',
+    {
+      from,
+      to,
+      type: 'template',
+      template: { name: templateName, language: { code: languageCode }, components },
+    },
+    apiKey,
+  )
+}
+
+export async function sendTemplate(
+  from: string,
+  to: string,
+  apiKey: string,
+  templateName: string,
+  languageCode: string,
+  bodyParams: Array<{ name?: string; text: string }> = [],
+): Promise<void> {
+  const components = bodyParams.length
+    ? [{
+        type: 'body',
+        parameters: bodyParams.map((p) => ({
+          type: 'text',
+          ...(p.name ? { parameter_name: p.name } : {}),
+          text: p.text,
+        })),
+      }]
+    : []
+  await ycloudRequest(
+    '/whatsapp/messages',
+    {
+      from,
+      to,
+      type: 'template',
+      template: {
+        name: templateName,
+        language: { code: languageCode },
+        ...(components.length ? { components } : {}),
+      },
     },
     apiKey,
   )

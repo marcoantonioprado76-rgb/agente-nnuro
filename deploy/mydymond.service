@@ -1,0 +1,22 @@
+[Unit]
+Description=my-dymond (Next.js + WhatsApp Baileys)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/mydymond
+EnvironmentFile=/opt/mydymond/.env
+# PORT lo lee package.json (next start -p ${PORT:-3000})
+Environment=NODE_ENV=production
+Environment=PORT=3000
+ExecStart=/usr/bin/npm run start
+Restart=always
+RestartSec=5
+# Baileys + Next pueden usar bastante RAM; sin límite duro para no matar sesiones.
+# Logs a journald: journalctl -u mydymond -f
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

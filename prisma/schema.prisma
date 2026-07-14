@@ -8,485 +8,2287 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─────────────────────────────────────────────
-// PROFILES (users)
-// ─────────────────────────────────────────────
-model Profile {
-  id                        String    @id @default(uuid())
-  email                     String    @unique
-  full_name                 String    @default("")
-  avatar_url                String?
-  role                      String    @default("user")
-  tenant_id                 String?
-  is_active                 Boolean   @default(true)
-  password_hash             String?
-  country                   String    @default("")
-  city                      String    @default("")
-  phone_number              String    @default("")
-  country_code              String    @default("")
-  phone_with_code           String    @default("")
-  transaction_password_hash String?
-  login_provider            String    @default("email")
-  status                    String    @default("active")
-  ai_credits_usd            Decimal   @default(0) @db.Decimal(10, 6)
-  last_login_at             DateTime?
-  onboarding_completed      Boolean   @default(false)
-  suspended_at              DateTime?
-  suspended_by              String?
-  blocked_at                DateTime?
-  blocked_by                String?
-  created_at                DateTime  @default(now())
-  updated_at                DateTime  @updatedAt
+model User {
+  id                  String               @id @default(uuid()) @db.Uuid
+  username            String               @unique
+  email               String               @unique
+  passwordHash        String               @map("password_hash")
+  fullName            String               @map("full_name")
+  country             String
+  city                String
+  identityDocument    String               @unique @map("identity_document")
+  dateOfBirth         DateTime             @map("date_of_birth") @db.Date
+  phone               String?
+  avatarUrl           String?              @map("avatar_url")
+  isActive            Boolean              @default(true) @map("is_active")
+  plan                UserPlan             @default(NONE)
+  isAdmin             Boolean              @default(false) @map("is_admin")
+  planExpiresAt       DateTime?            @map("plan_expires_at")
+  extraBots           Int                  @default(0) @map("extra_bots")
+  /// Servicios extra otorgados manualmente por el admin (sobre el límite del plan).
+  extraStores         Int                  @default(0) @map("extra_stores")
+  extraProducts       Int                  @default(0) @map("extra_products")
+  extraLandingPages   Int                  @default(0) @map("extra_landing_pages")
+  extraAdsPerMonth    Int                  @default(0) @map("extra_ads_per_month")
+  /// El admin le dio acceso manual a Academy/Recursos/Shop (lo que se oculta a los
+  /// usuarios de pago). Equivale a tratarlo como Fase Global para el menú.
+  accessExtras        Boolean              @default(false) @map("access_extras")
+  /// Pack Empresarial (multi-empresa). organizationId = empresa a la que pertenece
+  /// (null = usuario de plataforma / MY DIAMOND directo). orgRole = su rol dentro de la empresa.
+  organizationId      String?              @map("organization_id") @db.Uuid
+  orgRole             OrgRole              @default(NONE) @map("org_role")
+  organization        Organization?        @relation("OrgMembers", fields: [organizationId], references: [id], onDelete: SetNull)
+  aiCredits           Int                  @default(0) @map("ai_credits")
+  /// Balance de IA en USD con 4 decimales (ej: 12.3456). Reemplaza progresivamente a aiCredits.
+  aiBalanceUsd        Decimal              @default(0) @db.Decimal(10, 4) @map("ai_balance_usd")
+  preferOwnKey        Boolean              @default(false) @map("prefer_own_key")
+  /// Última vez que se envió email "saldo bajo". Throttle para no spamear (24h).
+  lowBalanceWarnedAt  DateTime?            @map("low_balance_warned_at")
+  /// Toggle global del usuario: si está en false, NO se procesan followups de ninguno
+  /// de sus bots (evita consumo automático no deseado). NULL = activado (default).
+  followupsEnabled    Boolean?             @map("followups_enabled")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  bots                Bot[]
+  products            Product[]
+  passwordResetTokens PasswordResetToken[]
+  stores              Store[]
+  builderPages        BuilderPage[]
+  landingPages        LandingPage[]
+  adIntegrations      AdIntegration[]
+  adDrafts            AdDraft[]
+  adAssets            AdAsset[]
+  adJobs              AdJob[]
+  auditLogs           AuditLog[]
+  openaiConfig        OpenAIConfig?
+  businessBriefs      BusinessBrief[]
+  adCampaignsV2       AdCampaignV2[]
+  packPurchaseRequests PackPurchaseRequest[]
+  withdrawalRequests   WithdrawalRequest[]
+  clippingAccounts     ClippingAccount[]
+  clippingSubmissions  ClippingSubmission[]
+  clippingPayouts      ClippingPayout[]
+  courseEnrollments    CourseEnrollment[]
+  videoProgress        VideoProgress[]
+  marketplaceCourses   MarketplaceCourse[]   @relation("MarketplaceSeller")
+  marketplacePurchases MarketplacePurchase[] @relation("MarketplaceBuyer")
+  storeOrders          StoreOrder[]
+  notifications        Notification[]
+  pushSubscriptions    PushSubscription[]
+  socialConnections    SocialConnection[]
+  socialPosts          SocialPost[]
+  socialContentProfiles SocialContentProfile[]
+  trustedDevices       TrustedDevice[]
+  deviceVerifyCodes    DeviceVerifyCode[]
+  adminOtpCodes        AdminOtpCode[]
+  broadcastCampaigns   BroadcastCampaign[]
+  creditPurchaseRequests CreditPurchaseRequest[]
+  aiUsageLogs          AIUsageLog[]
 
-  stores        Store[]
-  subscriptions Subscription[]
-  payments      Payment[]
-
-  @@map("profiles")
+  @@map("users")
 }
 
-// ─────────────────────────────────────────────
-// PLANS
-// ─────────────────────────────────────────────
-model Plan {
-  id                   String   @id @default(uuid())
-  name                 String
-  slug                 String   @unique
-  price                Decimal  @db.Decimal(10, 2)
-  currency             String   @default("USD")
-  max_bots             Int      @default(1)
-  max_products         Int      @default(5)
-  max_conversations    Int      @default(1000)
-  max_whatsapp_numbers Int      @default(1)
-  features             String[]
-  is_active            Boolean  @default(true)
-  sort_order           Int      @default(0)
-  stripe_price_id      String?
-  created_at           DateTime @default(now())
 
-  subscriptions Subscription[]
 
-  @@map("plans")
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("password_reset_tokens")
 }
 
-// ─────────────────────────────────────────────
-// SUBSCRIPTIONS
-// ─────────────────────────────────────────────
-model Subscription {
-  id                         String    @id @default(uuid())
-  user_id                    String
-  plan_id                    String
-  status                     String    @default("pending")
-  approval_status            String    @default("pending_review")
-  start_date                 DateTime?
-  end_date                   DateTime?
-  payment_provider           String?   @default("manual")
-  payment_id                 String?
-  admin_notes                String?
-  approved_by                String?
-  approved_at                DateTime?
-  cancelled_at               DateTime?
-  cancelled_by               String?
-  extended_at                DateTime?
-  extended_by                String?
-  plan_changed_at            DateTime?
-  previous_plan_id           String?
-  stripe_customer_id         String?
-  stripe_checkout_session_id String?
-  created_at                 DateTime  @default(now())
-  updated_at                 DateTime  @updatedAt
-
-  user     Profile   @relation(fields: [user_id], references: [id])
-  plan     Plan      @relation(fields: [plan_id], references: [id])
-  payments Payment[]
-
-  @@map("subscriptions")
-}
-
-// ─────────────────────────────────────────────
-// PAYMENTS
-// ─────────────────────────────────────────────
-model Payment {
-  id                         String    @id @default(uuid())
-  user_id                    String
-  subscription_id            String?
-  amount                     Decimal   @db.Decimal(10, 2)
-  currency                   String    @default("USD")
-  payment_method             String?
-  payment_status             String    @default("pending")
-  transaction_id             String?
-  payment_proof_url          String?
-  notes                      String?
-  admin_notes                String?
-  reviewed_by                String?
-  reviewed_at                DateTime?
-  stripe_payment_intent_id   String?
-  stripe_checkout_session_id String?
-  stripe_customer_id         String?
-  created_at                 DateTime  @default(now())
-
-  user         Profile       @relation(fields: [user_id], references: [id])
-  subscription Subscription? @relation(fields: [subscription_id], references: [id])
-
-  @@map("payments")
-}
-
-// ─────────────────────────────────────────────
-// BOTS
-// ─────────────────────────────────────────────
 model Bot {
-  id                     String    @id @default(uuid())
-  tenant_id              String
-  name                   String
-  description            String?
-  type                   String    @default("BAILEYS")
-  status                 String    @default("ACTIVE")
-  is_active              Boolean   @default(false)
-  webhook_token          String    @default("")
-  system_prompt_template String?
-  ai_model               String    @default("gpt-4o-mini")
-  max_chars_msg1         Int?
-  max_chars_msg2         Int?
-  max_chars_msg3         Int?
-  follow_up1_delay       Int       @default(15)
-  follow_up2_delay       Int       @default(4320)
-  voice_enabled          Boolean   @default(false)
-  voice_id               String?
-  voice_mode             String    @default("off")
-  baileys_phone          String?
-  openai_api_key         String?
-  report_phone           String?
-  gpt_model              String?
-  paused_at              DateTime?
-  paused_by              String?
-  created_at             DateTime  @default(now())
-  updated_at             DateTime  @updatedAt
+  id                   String         @id @default(uuid()) @db.Uuid
+  userId               String         @map("user_id") @db.Uuid
+  name                 String
+  type                 BotType        @default(YCLOUD)
+  status               BotStatus      @default(ACTIVE)
+  webhookToken         String         @unique @map("webhook_token")
+  systemPromptTemplate String?        @map("system_prompt_template")
+  maxCharsMensaje1     Int?           @map("max_chars_mensaje1")
+  maxCharsMensaje2     Int?           @map("max_chars_mensaje2")
+  maxCharsMensaje3     Int?           @map("max_chars_mensaje3")
+  baileysPhone         String?        @map("baileys_phone")
+  followUp1Delay       Int            @default(15) @map("follow_up_1_delay")
+  followUp2Delay       Int            @default(4320) @map("follow_up_2_delay")
+  followUpPrompt       String?        @map("follow_up_prompt") @db.Text   // instrucciones del dueño para redactar los seguimientos
+  aiModel              String         @default("gpt-5.1") @map("ai_model")
+  // Nota de voz (TTS) — aditivo, default OFF: los bots actuales no cambian
+  voiceEnabled         Boolean        @default(false) @map("voice_enabled")
+  voiceMode            String         @default("off") @map("voice_mode")
+  voiceId              String?        @map("voice_id")
+  // Bot DEDICADO del Reto 90D: número aparte, se excluye del panel/límites de bots de venta.
+  isReto               Boolean        @default(false) @map("is_reto")
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
+  secret               BotSecret?
+  user                 User               @relation(fields: [userId], references: [id])
+  conversations        Conversation[]
+  assignedProducts     BotProduct[]
+  stores               Store[]
+  broadcastCampaigns   BroadcastCampaign[]
 
-  bot_secrets       BotSecret?
-  bot_prompts       BotPrompt?
-  followup_settings FollowupSettings?
-  products          Product[]
-  conversations     Conversation[]
-
-  @@index([tenant_id])
+  @@index([userId])
   @@map("bots")
 }
 
-// ─────────────────────────────────────────────
-// BOT SECRETS
-// ─────────────────────────────────────────────
 model BotSecret {
-  id                       String   @id @default(uuid())
-  bot_id                   String   @unique
-  ycloud_api_key_enc       String?
-  openai_api_key_enc       String?
-  meta_page_token_enc      String?
-  meta_phone_number_id     String?
-  meta_waba_id             String?
-  whatsapp_instance_number String   @default("")
-  report_phone             String   @default("")
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
-
-  bot Bot @relation(fields: [bot_id], references: [id], onDelete: Cascade)
+  id                     String  @id @default(uuid()) @db.Uuid
+  botId                  String  @unique @map("bot_id") @db.Uuid
+  ycloudApiKeyEnc        String  @map("ycloud_api_key_enc")
+  openaiApiKeyEnc        String  @map("openai_api_key_enc")
+  whatsappInstanceNumber String  @map("whatsapp_instance_number")
+  reportPhone            String  @map("report_phone")
+  metaPageTokenEnc       String? @map("meta_page_token_enc")
+  bot                    Bot     @relation(fields: [botId], references: [id], onDelete: Cascade)
 
   @@map("bot_secrets")
 }
 
-// ─────────────────────────────────────────────
-// BOT STATE
-// ─────────────────────────────────────────────
+model Product {
+  id                    String       @id @default(uuid()) @db.Uuid
+  userId                String       @map("user_id") @db.Uuid
+  name                  String
+  category              String?
+  benefits              String?
+  usage                 String?
+  warnings              String?
+  priceUnit             Decimal?     @map("price_unit") @db.Decimal(10, 2)
+  pricePromo2           Decimal?     @map("price_promo2") @db.Decimal(10, 2)
+  priceSuper6           Decimal?     @map("price_super6") @db.Decimal(10, 2)
+  currency              String       @default("USD")
+  welcomeMessage        String?      @map("welcome_message")
+  firstMessage          String?      @map("first_message")
+  hooks                 Json         @default("[]")
+  imageMainUrls         Json         @default("[]") @map("image_main_urls")
+  imagePriceUnitUrl     String?      @map("image_price_unit_url")
+  imagePricePromoUrl    String?      @map("image_price_promo_url")
+  imagePriceSuperUrl    String?      @map("image_price_super_url")
+  productVideoUrls      Json         @default("[]") @map("product_video_urls")
+  testimonialsVideoUrls Json         @default("[]") @map("testimonials_video_urls")
+  followUpMediaUrl      String?      @map("follow_up_media_url")   // (legacy) imagen/video único del seguimiento — se conserva por compatibilidad
+  followUpMediaType     String?      @map("follow_up_media_type")  // (legacy) 'image' | 'video'
+  followUpMedia         Json         @default("[]") @map("follow_up_media")  // [{ url, type }] varias imágenes/videos del seguimiento
+  shippingInfo          String?      @map("shipping_info")
+  coverage              String?
+  tags                  Json         @default("[]")
+  active                Boolean      @default(true)
+  clonedFromId          String?      @map("cloned_from_id") @db.Uuid
+  sharedByUsername      String?      @map("shared_by_username")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+  user                  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bots                  BotProduct[]
+
+  @@index([userId, active])
+  @@map("products")
+}
+
+model BotProduct {
+  botId     String  @map("bot_id") @db.Uuid
+  productId String  @map("product_id") @db.Uuid
+  bot       Bot     @relation(fields: [botId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([botId, productId])
+  @@map("bot_products")
+}
+
+model Conversation {
+  id            String    @id @default(uuid()) @db.Uuid
+  botId         String    @map("bot_id") @db.Uuid
+  userPhone     String    @map("user_phone")
+  userName      String?   @map("user_name")
+  sold          Boolean   @default(false)
+  soldAt        DateTime? @map("sold_at")
+  followUp1At   DateTime? @map("follow_up_1_at")
+  followUp1Sent Boolean   @default(false) @map("follow_up_1_sent")
+  followUp2At   DateTime? @map("follow_up_2_at")
+  followUp2Sent Boolean   @default(false) @map("follow_up_2_sent")
+  botDisabled   Boolean   @default(false) @map("bot_disabled")
+  sentFollowUpMedia Json  @default("[]") @map("sent_follow_up_media")  // URLs de media de seguimiento ya enviadas (para no repetir)
+  orderReport   String?   @map("order_report")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  botState      BotState?
+  bot           Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
+  messages      Message[]
+
+  @@unique([botId, userPhone])
+  @@index([botId, userPhone, sold, followUp1At, followUp1Sent])
+  @@index([botId, userPhone, sold, followUp2At, followUp2Sent])
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(uuid()) @db.Uuid
+  conversationId String       @map("conversation_id") @db.Uuid
+  role           MessageRole
+  type           MessageType  @default(text)
+  content        String
+  buffered       Boolean      @default(false)
+  messageId      String?      @unique @map("message_id")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([conversationId, buffered])
+  @@map("messages")
+}
+
 model BotState {
-  id              String    @id @default(uuid())
-  conversation_id String    @unique
-  welcome_sent    Boolean   @default(false)
-  welcome_sent_at DateTime?
-  last_intent     String?
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
+  id                String       @id @default(uuid()) @db.Uuid
+  conversationId    String       @unique @map("conversation_id") @db.Uuid
+  welcomeSent       Boolean      @default(false) @map("welcome_sent")
+  welcomeSentAt     DateTime?    @map("welcome_sent_at")
+  selectedProductId String?      @map("selected_product_id") @db.Uuid
+  lastIntent        String?      @map("last_intent")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+  conversation      Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@map("bot_states")
 }
 
-// ─────────────────────────────────────────────
-// BOT PROMPTS
-// ─────────────────────────────────────────────
-model BotPrompt {
-  id                    String   @id @default(uuid())
-  bot_id                String   @unique
-  system_prompt         String   @default("")
-  personality           String   @default("Vendedor profesional, amable y persuasivo")
-  sales_rules           String   @default("")
-  tone                  String   @default("profesional y cálido")
-  max_chars_per_message Int      @default(500)
-  max_chars_message1    Int      @default(200)
-  max_chars_message2    Int      @default(200)
-  max_chars_message3    Int      @default(200)
-  strict_json_output    Boolean  @default(false)
-  created_at            DateTime @default(now())
-  updated_at            DateTime @updatedAt
+model BotTemplate {
+  id                   String   @id @default(uuid()) @db.Uuid
+  name                 String
+  description          String?
+  category             String?
+  systemPromptTemplate String   @map("system_prompt_template")
+  aiModel              String   @default("gpt-4o") @map("ai_model")
+  maxCharsMensaje1     Int?     @map("max_chars_mensaje1")
+  maxCharsMensaje2     Int?     @map("max_chars_mensaje2")
+  maxCharsMensaje3     Int?     @map("max_chars_mensaje3")
+  followUp1Delay       Int      @default(15) @map("follow_up_1_delay")
+  followUp2Delay       Int      @default(4320) @map("follow_up_2_delay")
+  active               Boolean  @default(true)
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
-  bot Bot @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-
-  @@map("bot_prompts")
+  @@map("bot_templates")
 }
 
-// ─────────────────────────────────────────────
-// FOLLOWUP SETTINGS
-// ─────────────────────────────────────────────
-model FollowupSettings {
-  id                      String   @id @default(uuid())
-  bot_id                  String   @unique
-  first_followup_minutes  Int      @default(30)
-  second_followup_minutes Int      @default(1440)
-  is_active               Boolean  @default(true)
-  created_at              DateTime @default(now())
-  updated_at              DateTime @updatedAt
-
-  bot Bot @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-
-  @@map("followup_settings")
-}
-
-// ─────────────────────────────────────────────
-// PRODUCTS
-// ─────────────────────────────────────────────
-model Product {
-  id                      String   @id @default(uuid())
-  bot_id                  String?
-  tenant_id               String
-  name                    String
-  category                String   @default("General")
-  description             String   @default("")
-  benefits                String   @default("")
-  usage_instructions      String   @default("")
-  warnings                String   @default("")
-  currency                String   @default("USD")
-  price_unit              Decimal? @db.Decimal(10, 2)
-  offer_price             Decimal? @db.Decimal(10, 2)
-  price_promo_x2          Decimal? @db.Decimal(10, 2)
-  price_super_x6          Decimal? @db.Decimal(10, 2)
-  shipping_info           String   @default("")
-  coverage                String   @default("")
-  sell_zones              String   @default("")
-  delivery_zones          String   @default("")
-  hooks                   String[]
-  first_message           String?
-  first_message_audio_url String?
-  is_active               Boolean  @default(true)
-  created_at              DateTime @default(now())
-  updated_at              DateTime @updatedAt
-
-  bot                  Bot?                 @relation(fields: [bot_id], references: [id], onDelete: SetNull)
-  product_images       ProductImage[]
-  product_testimonials ProductTestimonial[]
-
-  @@index([bot_id])
-  @@index([tenant_id])
-  @@map("products")
-}
-
-// ─────────────────────────────────────────────
-// PRODUCT IMAGES
-// ─────────────────────────────────────────────
-model ProductImage {
-  id         String   @id @default(uuid())
-  product_id String
-  url        String
-  is_primary Boolean  @default(false)
-  sort_order Int      @default(0)
-  image_type String   @default("product")
-  created_at DateTime @default(now())
-
-  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
-
-  @@index([product_id])
-  @@map("product_images")
-}
-
-// ─────────────────────────────────────────────
-// PRODUCT TESTIMONIALS
-// ─────────────────────────────────────────────
-model ProductTestimonial {
-  id          String   @id @default(uuid())
-  product_id  String
-  type        String
-  url         String   @default("")
-  content     String?
-  description String?
-  created_at  DateTime @default(now())
-
-  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
-
-  @@index([product_id])
-  @@map("product_testimonials")
-}
-
-// ─────────────────────────────────────────────
-// CONVERSATIONS
-// ─────────────────────────────────────────────
-model Conversation {
-  id                  String    @id @default(uuid())
-  bot_id              String
-  user_phone          String    @default("")
-  user_name           String?
-  status              String    @default("active")
-  product_interest    String?
-  last_message_at     DateTime  @default(now())
-  last_bot_message_at DateTime?
-  follow_up1_at       DateTime?
-  follow_up1_sent     Boolean   @default(false)
-  follow_up2_at       DateTime?
-  follow_up2_sent     Boolean   @default(false)
-  sold                Boolean   @default(false)
-  sold_at             DateTime?
-  bot_disabled        Boolean   @default(false)
-  updated_at          DateTime  @default(now()) @updatedAt
-  created_at          DateTime  @default(now())
-
-  bot      Bot       @relation(fields: [bot_id], references: [id], onDelete: Cascade)
-  messages Message[]
-
-  @@unique([bot_id, user_phone])
-  @@index([bot_id])
-  @@index([user_phone])
-  @@map("conversations")
-}
-
-// ─────────────────────────────────────────────
-// MESSAGES
-// ─────────────────────────────────────────────
-model Message {
-  id              String   @id @default(uuid())
-  conversation_id String
-  role            String   @default("user")
-  sender          String?
-  type            String   @default("text")
-  content         String
-  buffered        Boolean  @default(false)
-  message_id      String?
-  metadata        Json?
-  created_at      DateTime @default(now())
-
-  conversation Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
-
-  @@index([conversation_id])
-  @@index([created_at])
-  @@map("messages")
-}
-
-// ─────────────────────────────────────────────
-// STORES
-// ─────────────────────────────────────────────
 model Store {
-  id               String   @id @default(uuid())
-  user_id          String
-  tenant_id        String
-  bot_id           String?
-  name             String
-  slug             String   @unique
-  description      String?
-  store_type       String   @default("business")
-  status           String   @default("active")
-  whatsapp_number  String?
-  payment_qr_url   String?
-  visibility       String   @default("public")
-  is_active        Boolean  @default(true)
-  font_family      String?
-  font_weight      String?
-  font_spacing     String?
-  font_style       String?
-  background_type  String?
-  background_value String?
-  font_config      Json?
-  bg_config        Json?
-  cover_image_url  String?
-  cover_images     Json?
-  favicon_url      String?
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  id             String         @id @default(uuid()) @db.Uuid
+  userId         String         @map("user_id") @db.Uuid
+  botId          String?        @map("bot_id") @db.Uuid
+  name           String
+  slug           String         @unique
+  type           StoreType      @default(CATALOG)
+  whatsappNumber String?        @map("whatsapp_number")
+  paymentQrUrl   String?        @map("payment_qr_url")
+  description    String?
+  logoUrl        String?        @map("logo_url")
+  bannerUrl      String?        @map("banner_url")
+  themeConfig    Json           @default("{}") @map("theme_config")
+  active           Boolean        @default(true)
+  clonedFromId     String?        @map("cloned_from_id") @db.Uuid
+  sharedByUsername String?        @map("shared_by_username")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  products         StoreProduct[]
+  bot              Bot?           @relation(fields: [botId], references: [id])
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user         Profile      @relation(fields: [user_id], references: [id])
-  store_orders StoreOrder[]
-
-  @@index([user_id])
-  @@index([tenant_id])
   @@map("stores")
 }
 
-// ─────────────────────────────────────────────
-// STORE ORDERS
-// ─────────────────────────────────────────────
+model StoreProduct {
+  id          String   @id @default(uuid()) @db.Uuid
+  storeId     String   @map("store_id") @db.Uuid
+  name        String
+  description String?
+  category    String?  @default("General")
+  price       Decimal  @db.Decimal(10, 2)
+  pricePromo  Decimal? @map("price_promo") @db.Decimal(10, 2)
+  currency    String   @default("USD") @db.VarChar(5)
+  points      Decimal? @default(0) @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  images      Json     @default("[]")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("store_products")
+}
+
+enum UserPlan {
+  NONE
+  BASIC
+  PRO
+  ELITE
+}
+
+
+enum BotStatus {
+  ACTIVE
+  PAUSED
+}
+
+enum BotType {
+  YCLOUD
+  BAILEYS
+  META
+}
+
+enum MessageRole {
+  user
+  assistant
+}
+
+enum MessageType {
+  text
+  audio
+  image
+  location
+}
+
+enum StoreType {
+  CATALOG
+  LANDING
+  NETWORK_MARKETING
+  GENERAL_BUSINESS
+}
+
+model BuilderPage {
+  id          String        @id @default(uuid()) @db.Uuid
+  userId      String        @map("user_id") @db.Uuid
+  name        String        @default("Mi página")
+  slug        String        @unique
+  html        String        @default("") @db.Text
+  css         String        @default("") @db.Text
+  projectData Json?         @map("project_data") // JSON del proyecto GrapesJS (para re-editar)
+  published   Boolean       @default(false)
+  views       Int           @default(0)   // visitas públicas (el preview del panel NO cuenta)
+  shareToken  String?       @unique @map("share_token") // token para compartir/importar copia a otra cuenta
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leads       BuilderLead[]
+
+  @@index([userId])
+  @@map("builder_pages")
+}
+
+model BuilderLead {
+  id            String      @id @default(uuid()) @db.Uuid
+  builderPageId String      @map("builder_page_id") @db.Uuid
+  name          String?
+  phone         String?
+  email         String?
+  data          Json?       // campos extra del formulario
+  createdAt     DateTime    @default(now()) @map("created_at")
+  page          BuilderPage @relation(fields: [builderPageId], references: [id], onDelete: Cascade)
+
+  @@index([builderPageId])
+  @@map("builder_leads")
+}
+
+// Sistema de landing pages LEGACY (por bloques). El servicio principal es el builder GrapesJS
+// (BuilderPage). Se conserva solo para servir las páginas viejas ya publicadas en /lp/[slug].
+model LandingPage {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  name         String
+  slug         String   @unique
+  templateId   String   @default("default") @map("template_id")
+  sections     Json     @default("[]")
+  globalStyles Json     @default("{}") @map("global_styles")
+  active       Boolean  @default(true)
+  views        Int      @default(0)   // visitas públicas (el preview del panel NO cuenta)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leads        Lead[]
+
+  @@map("landing_pages")
+}
+
+model Lead {
+  id            String      @id @default(uuid()) @db.Uuid
+  landingPageId String      @map("landing_page_id") @db.Uuid
+  name          String?
+  email         String?
+  phone         String?
+  data          Json        @default("{}")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@map("leads")
+}
+
+// --- Ads Service PRO Models ---
+
+enum AdPlatform {
+  META
+  GOOGLE_ADS
+  TIKTOK
+}
+
+enum IntegrationStatus {
+  CONNECTED
+  NEEDS_RECONNECT
+  DISCONNECTED
+  ERROR
+}
+
+enum DraftStatus {
+  DRAFT
+  VALIDATED
+  PUBLISHING
+  PUBLISHED
+  FAILED
+}
+
+enum RemoteStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+  UNKNOWN
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  RETRYING
+}
+
+enum AdJobType {
+  PUBLISH
+  SYNC_METRICS
+  HEALTH
+  REFRESH_TOKEN
+}
+
+model AdIntegration {
+  id               String               @id @default(uuid()) @db.Uuid
+  orgId            String?              @map("org_id") @db.Uuid
+  businessId       String?              @map("business_id") @db.Uuid
+  userId           String               @map("user_id") @db.Uuid
+  platform         AdPlatform
+  status           IntegrationStatus    @default(DISCONNECTED)
+  scopes           Json?                @default("[]")
+  lastHealthAt     DateTime?            @map("last_health_at")
+  lastError        String?              @map("last_error")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token            AdOAuthToken?
+  connectedAccount AdConnectedAccount?
+
+  @@unique([userId, platform])
+  @@index([userId, status])
+  @@map("ad_integrations")
+}
+
+model AdConnectedAccount {
+  id                String         @id @default(uuid()) @db.Uuid
+  integrationId     String         @unique @map("integration_id") @db.Uuid
+  providerAccountId String         @map("provider_account_id")
+  displayName       String?        @map("display_name")
+  currency          String?        @default("USD")
+  timezone          String?
+  isDefault         Boolean        @default(false) @map("is_default")
+  status            RemoteStatus   @default(ACTIVE)
+  lastSyncAt        DateTime?      @map("last_sync_at")
+  integration       AdIntegration  @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  drafts            AdDraft[]
+  campaignsV2       AdCampaignV2[]
+
+  @@map("ad_connected_accounts")
+}
+
+model AdOAuthToken {
+  id                     String        @id @default(uuid()) @db.Uuid
+  integrationId          String        @unique @map("integration_id") @db.Uuid
+  accessTokenEncrypted   String        @map("access_token_encrypted")
+  refreshTokenEncrypted  String?       @map("refresh_token_encrypted")
+  expiresAt              DateTime?     @map("expires_at")
+  tokenType              String?       @map("token_type")
+  createdAt              DateTime      @default(now()) @map("created_at")
+  rotatedAt              DateTime?     @map("rotated_at")
+  integration            AdIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+
+  @@map("ad_oauth_tokens")
+}
+
+model AdAsset {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  type        AssetType @default(IMAGE)
+  storageUrl  String    @map("storage_url")
+  mimeType    String?   @map("mime_type")
+  width       Int?
+  height      Int?
+  durationSec Int?      @map("duration_sec")
+  hash        String?
+  sizeBytes   Int?      @map("size_bytes")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  drafts      AdDraft[] @relation("AdDraftToAsset")
+
+  @@map("ad_assets")
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+}
+
+model AdDraft {
+  id                 String              @id @default(uuid()) @db.Uuid
+  userId             String              @map("user_id") @db.Uuid
+  platform           AdPlatform
+  connectedAccountId String?             @map("connected_account_id") @db.Uuid
+  name               String
+  objective          String?
+  budgetType         BudgetType          @default(DAILY) @map("budget_type")
+  budgetAmount       Decimal             @default(0) @map("budget_amount") @db.Decimal(12, 2)
+  geoJson            Json?               @map("geo_json")
+  ageMin             Int?                @map("age_min")
+  ageMax             Int?                @map("age_max")
+  gender             String?
+  placementsJson     Json?               @map("placements_json")
+  destinationUrl     String?             @map("destination_url")
+  utmJson            Json?               @map("utm_json")
+  primaryText        String?             @map("primary_text")
+  headline           String?
+  description        String?
+  cta                String?
+  providerPageId     String?             @map("provider_page_id")
+  providerWhatsAppNumber String?         @map("provider_whatsapp_number")
+  pixelId            String?             @map("pixel_id")
+  welcomeMessage     String?             @map("welcome_message")
+  providerPostId     String?             @map("provider_post_id")
+  status             DraftStatus         @default(DRAFT)
+  validationErrors   Json?               @map("validation_errors_json")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connectedAccount   AdConnectedAccount? @relation(fields: [connectedAccountId], references: [id])
+  remoteMapping      AdRemoteMapping?
+  assets             AdAsset[]           @relation("AdDraftToAsset")
+
+  @@map("ad_drafts")
+}
+
+enum BudgetType {
+  DAILY
+  LIFETIME
+}
+
+model AdRemoteMapping {
+  id                 String       @id @default(uuid()) @db.Uuid
+  draftId            String       @unique @map("draft_id") @db.Uuid
+  providerCampaignId String?      @map("provider_campaign_id")
+  providerGroupId    String?      @map("provider_group_id")
+  providerAdId       String?      @map("provider_ad_id")
+  remoteStatus       RemoteStatus @default(UNKNOWN) @map("remote_status")
+  publishedAt        DateTime?    @map("published_at")
+  draft              AdDraft      @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@map("ad_remote_mappings")
+}
+
+model AdMetricsDaily {
+  id                 String     @id @default(uuid()) @db.Uuid
+  date               DateTime   @db.Date
+  userId             String?    @map("user_id") @db.Uuid
+  platform           AdPlatform
+  providerCampaignId String     @map("provider_campaign_id")
+  spend              Decimal    @default(0) @db.Decimal(12, 2)
+  impressions        Int        @default(0)
+  clicks             Int        @default(0)
+  ctr                Decimal?   @db.Decimal(10, 4)
+  cpc                Decimal?   @db.Decimal(12, 2)
+  conversions        Int        @default(0)
+  cpa                Decimal?   @db.Decimal(12, 2)
+  roas               Decimal?   @db.Decimal(10, 4)
+
+  @@unique([date, platform, providerCampaignId])
+  @@map("ad_metrics_daily")
+}
+
+model AdJob {
+  id             String     @id @default(uuid()) @db.Uuid
+  userId         String?    @map("user_id") @db.Uuid
+  platform       AdPlatform
+  type           AdJobType
+  status         JobStatus  @default(QUEUED)
+  attempts       Int        @default(0)
+  nextRunAt      DateTime?  @map("next_run_at")
+  payload        Json?      @map("payload_json")
+  lastError      String?    @map("last_error")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  idempotencyKey String?    @unique @map("idempotency_key")
+  lockedAt       DateTime?  @map("locked_at")
+  user           User?      @relation(fields: [userId], references: [id])
+
+  @@map("ad_jobs")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String?  @map("user_id") @db.Uuid
+  actorUserId  String?  @map("actor_user_id") @db.Uuid
+  action       String
+  entityType   String?  @map("entity_type")
+  entityId     String?  @map("entity_id")
+  payload      Json?    @map("payload_json")
+  createdAt    DateTime @default(now()) @map("created_at")
+  user         User?    @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// ─── Ads AI System ───────────────────────────────────────────────────────────
+
+enum CampaignStatus {
+  DRAFT
+  READY
+  PUBLISHING
+  PUBLISHED
+  FAILED
+  PAUSED
+}
+
+model OpenAIConfig {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @unique @map("user_id") @db.Uuid
+  apiKeyEnc   String    @map("api_key_enc")
+  model       String    @default("gpt-4o")
+  isValid     Boolean   @default(false) @map("is_valid")
+  validatedAt DateTime? @map("validated_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("openai_configs")
+}
+
+model BusinessBrief {
+  id                String         @id @default(uuid()) @db.Uuid
+  userId            String         @map("user_id") @db.Uuid
+  name              String
+  industry          String
+  description       String         @db.Text
+  valueProposition  String         @map("value_proposition") @db.Text
+  painPoints        String[]       @map("pain_points")
+  interests         String[]
+  brandVoice        String         @map("brand_voice")
+  brandColors       String[]       @map("brand_colors")
+  visualStyle       String[]       @map("visual_style")
+  primaryObjective  String         @map("primary_objective")
+  mainCTA           String         @map("main_cta")
+  targetLocations   String[]       @map("target_locations")
+  keyMessages       String[]       @map("key_messages")
+  personalityTraits String[]       @map("personality_traits")
+  contentThemes     String[]       @map("content_themes")
+  engagementLevel   String?        @map("engagement_level")
+  rawAudioUrl       String?        @map("raw_audio_url")
+  isActive          Boolean        @default(true) @map("is_active")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaigns         AdCampaignV2[]
+
+  @@index([userId, isActive])
+  @@map("business_briefs")
+}
+
+model AdStrategy {
+  id            String         @id @default(uuid()) @db.Uuid
+  name          String
+  description   String?        @db.Text
+  platform      AdPlatform
+  objective     String
+  destination   String
+  mediaType     String         @map("media_type")
+  mediaCount    Int            @map("media_count")
+  minBudgetUSD  Float          @map("min_budget_usd")
+  advantageType String         @map("advantage_type")
+  isGlobal      Boolean        @default(true) @map("is_global")
+  savedByUser   Boolean        @default(false) @map("saved_by_user")
+  userId        String?        @map("user_id") @db.Uuid
+  briefId       String?        @map("brief_id") @db.Uuid
+  sortOrder     Int            @default(0) @map("sort_order")
+  isActive      Boolean        @default(true) @map("is_active")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  campaigns     AdCampaignV2[]
+
+  @@index([platform, isActive])
+  @@index([userId, briefId])
+  @@map("ad_strategies")
+}
+
+model AdCampaignV2 {
+  id                 String              @id @default(uuid()) @db.Uuid
+  userId             String              @map("user_id") @db.Uuid
+  briefId            String              @map("brief_id") @db.Uuid
+  strategyId         String?             @map("strategy_id") @db.Uuid
+  connectedAccountId String?             @map("connected_account_id") @db.Uuid
+  platform           AdPlatform
+  name               String
+  // Snapshot de la estrategia (la campaña es autónoma desde que se crea)
+  objective          String?
+  destination        String?
+  mediaType          String?             @map("media_type")
+  mediaCount         Int?                @map("media_count")
+  strategyName       String?             @map("strategy_name")
+  status             CampaignStatus      @default(DRAFT)
+  dailyBudgetUSD     Float               @default(0) @map("daily_budget_usd")
+  locations          String[]
+  pageId             String?             @map("page_id")
+  whatsappNumber     String?             @map("whatsapp_number")
+  welcomeMessage     String?             @map("welcome_message") @db.Text
+  pixelId            String?             @map("pixel_id")
+  destinationUrl     String?             @map("destination_url")
+  providerCampaignId String?             @map("provider_campaign_id")
+  providerGroupId    String?             @map("provider_group_id")
+  providerAdId       String?             @map("provider_ad_id")
+  failureReason      String?             @map("failure_reason") @db.Text
+  publishedAt        DateTime?           @map("published_at")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brief              BusinessBrief       @relation(fields: [briefId], references: [id])
+  strategy           AdStrategy?         @relation(fields: [strategyId], references: [id], onDelete: SetNull)
+  connectedAccount   AdConnectedAccount? @relation(fields: [connectedAccountId], references: [id])
+  creatives          AdCreative[]
+
+  @@index([userId, status])
+  @@map("ad_campaigns_v2")
+}
+
+model AdCreative {
+  id          String       @id @default(uuid()) @db.Uuid
+  campaignId  String       @map("campaign_id") @db.Uuid
+  slotIndex   Int          @map("slot_index")
+  primaryText String       @map("primary_text") @db.Text
+  headline    String
+  description String?      @db.Text
+  hook        String?      @db.Text
+  hashtags    String?      @db.Text
+  mediaUrl    String?      @map("media_url")
+  mediaType   String?      @map("media_type")
+  // Pre-subida a Meta (para publicar rápido): el video se sube a Meta al cargar el
+  // archivo y se procesa en background; al publicar ya está listo (sin esperar).
+  metaVideoId      String? @map("meta_video_id")
+  metaImageHash    String? @map("meta_image_hash")
+  metaThumbnailUrl String? @map("meta_thumbnail_url")
+  metaMediaStatus  String? @map("meta_media_status") // processing | ready | error
+  aiGenerated Boolean      @default(false) @map("ai_generated")
+  isApproved  Boolean      @default(false) @map("is_approved")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  campaign    AdCampaignV2 @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@map("ad_creatives")
+}
+
+// ─── Admin & Commerce Models ──────────────────────────────────────────────────
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+  PENDING_VERIFICATION
+}
+
+enum PaymentMethod {
+  MANUAL
+  CRYPTO
+  FASE_GLOBAL
+}
+
+model PackPurchaseRequest {
+  id              String        @id @default(uuid()) @db.Uuid
+  userId          String        @map("user_id") @db.Uuid
+  plan            UserPlan
+  price           Decimal       @db.Decimal(10, 2)
+  paymentProofUrl String?       @map("payment_proof_url")
+  paymentMethod   PaymentMethod @default(MANUAL) @map("payment_method")
+  txHash          String?       @unique @map("tx_hash")
+  blockNumber     BigInt?       @map("block_number")
+  // Pago cripto "monto único" (crypto-B): monto exacto USDT a enviar (4 decimales únicos)
+  // + vencimiento del pendiente. Habilitan la auto-detección on-chain sin pegar hash.
+  expectedAmount  Decimal?      @map("expected_amount") @db.Decimal(14, 4)
+  expiresAt       DateTime?     @map("expires_at")
+  faseGlobalCode  String?       @map("fase_global_code")
+  faseGlobalNote  String?       @map("fase_global_note")
+  status          RequestStatus @default(PENDING)
+  notes           String?
+  // Pack Empresarial: si la solicitud es de un usuario de empresa, la revisa/aprueba
+  // el admin de ESA empresa (no el super-admin). null = solicitud normal de MY DIAMOND.
+  organizationId  String?       @map("organization_id") @db.Uuid
+  reviewedBy      String?       @map("reviewed_by") @db.Uuid
+  reviewedAt      DateTime?     @map("reviewed_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@index([organizationId, status])
+  @@map("pack_purchase_requests")
+}
+
+/// Solicitud de compra de créditos AI (saldo USD). El admin la aprueba y suma al balance.
+model CreditPurchaseRequest {
+  id              String        @id @default(uuid()) @db.Uuid
+  userId          String        @map("user_id") @db.Uuid
+  /// Monto en USD que el usuario solicita cargar a su balance de IA (ej: 5, 10, 20, 50).
+  amountUsd       Decimal       @db.Decimal(10, 2) @map("amount_usd")
+  paymentProofUrl String?       @map("payment_proof_url")
+  /// MANUAL (transferencia con comprobante) o CRYPTO (USDT-BEP20 verificado on-chain).
+  paymentMethod   PaymentMethod @default(MANUAL) @map("payment_method")
+  txHash          String?       @unique @map("tx_hash")
+  /// Número de bloque en BSC cuando el pago CRYPTO fue verificado on-chain.
+  blockNumber     BigInt?       @map("block_number")
+  status          RequestStatus @default(PENDING)
+  notes           String?
+  reviewedBy      String?       @map("reviewed_by") @db.Uuid
+  reviewedAt      DateTime?     @map("reviewed_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@map("credit_purchase_requests")
+}
+
+/// Log de cada uso de IA con la key del admin (consumo de balance USD).
+/// Si el usuario usa su propia API key, no se crea ningún registro acá.
+model AIUsageLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  model     String   /// "gpt-4o", "gpt-4o-mini", "whisper-1", "dall-e-3", etc.
+  reason    String   /// "ads.copies", "ads.images", "whatsapp.chat", etc.
+  costUsd   Decimal  @db.Decimal(10, 4) @map("cost_usd")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@map("ai_usage_logs")
+}
+
+model WithdrawalRequest {
+  id            String        @id @default(uuid()) @db.Uuid
+  userId        String        @map("user_id") @db.Uuid
+  amount        Decimal       @db.Decimal(12, 2)
+  walletQrUrl   String?       @map("wallet_qr_url")
+  walletAddress String?       @map("wallet_address")
+  proofUrl      String?       @map("proof_url")
+  status        RequestStatus @default(PENDING)
+  notes         String?
+  reviewedBy    String?       @map("reviewed_by") @db.Uuid
+  reviewedAt    DateTime?     @map("reviewed_at")
+  paidAt        DateTime?     @map("paid_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  user          User          @relation(fields: [userId], references: [id])
+
+  @@map("withdrawal_requests")
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
+}
+
+// ─── Clipping Service Models ──────────────────────────────────────────────────
+
+enum ClippingPlatform {
+  YOUTUBE
+  TIKTOK
+  FACEBOOK
+}
+
+enum ClippingAccountStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum SubmissionStatus {
+  HOLD
+  APPROVED
+  REJECTED
+}
+
+model ClippingCampaign {
+  id          String             @id @default(uuid()) @db.Uuid
+  title       String
+  description String?            @db.Text
+  platform    ClippingPlatform
+  cpmUSD      Decimal            @map("cpm_usd") @db.Decimal(10, 4)
+  holdHours   Int                @default(48) @map("hold_hours")
+  minViews    Int                @default(0) @map("min_views")
+  isActive    Boolean            @default(true) @map("is_active")
+  imageUrls   String[]           @default([]) @map("image_urls")
+  endsAt      DateTime?          @map("ends_at")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  submissions ClippingSubmission[]
+
+  @@map("clipping_campaigns")
+}
+
+model ClippingAccount {
+  id                String                @id @default(uuid()) @db.Uuid
+  userId            String                @map("user_id") @db.Uuid
+  platform          ClippingPlatform
+  providerAccountId String                @map("provider_account_id")
+  displayName       String?               @map("display_name")
+  accessTokenEnc    String                @map("access_token_enc")
+  refreshTokenEnc   String?               @map("refresh_token_enc")
+  expiresAt         DateTime?             @map("expires_at")
+  status            ClippingAccountStatus @default(ACTIVE)
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submissions       ClippingSubmission[]
+
+  @@unique([userId, platform])
+  @@map("clipping_accounts")
+}
+
+model ClippingSubmission {
+  id              String           @id @default(uuid()) @db.Uuid
+  userId          String           @map("user_id") @db.Uuid
+  campaignId      String           @map("campaign_id") @db.Uuid
+  accountId       String?          @map("account_id") @db.Uuid
+  platform        ClippingPlatform
+  videoId         String           @map("video_id")
+  videoUrl        String           @map("video_url")
+  videoTitle      String?          @map("video_title")
+  baseViews       Int              @default(0) @map("base_views")
+  currentViews    Int              @default(0) @map("current_views")
+  deltaViews      Int              @default(0) @map("delta_views")
+  likes           Int              @default(0)
+  comments        Int              @default(0)
+  earningsUSD     Decimal          @default(0) @map("earnings_usd") @db.Decimal(12, 4)
+  status          SubmissionStatus @default(HOLD)
+  holdUntil       DateTime         @map("hold_until")
+  approvedAt      DateTime?        @map("approved_at")
+  rejectedAt      DateTime?        @map("rejected_at")
+  rejectionReason String?          @map("rejection_reason")
+  lastSyncAt      DateTime?        @map("last_sync_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  user            User             @relation(fields: [userId], references: [id])
+  campaign        ClippingCampaign @relation(fields: [campaignId], references: [id])
+  account         ClippingAccount? @relation(fields: [accountId], references: [id])
+  snapshots       ClippingSnapshot[]
+
+  @@unique([campaignId, videoId])
+  @@index([userId, status])
+  @@map("clipping_submissions")
+}
+
+model ClippingSnapshot {
+  id           String             @id @default(uuid()) @db.Uuid
+  submissionId String             @map("submission_id") @db.Uuid
+  views        Int
+  takenAt      DateTime           @default(now()) @map("taken_at")
+  submission   ClippingSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId, takenAt])
+  @@map("clipping_snapshots")
+}
+
+// ─── Courses Models ───────────────────────────────────────────────────────────
+
+model Course {
+  id            String             @id @default(uuid()) @db.Uuid
+  organizationId String?           @map("organization_id") @db.Uuid
+  title         String
+  description   String             @db.Text
+  coverUrl      String?            @map("cover_url")
+  price         Decimal            @db.Decimal(10, 2)
+  freeForPlan   Boolean            @default(false) @map("free_for_plan")
+  categoria     String?            // tema del curso (para filtrar)
+  nivel         String?            // principiante | intermedio | avanzado
+  active        Boolean            @default(true)
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  videos      CourseVideo[]
+  enrollments CourseEnrollment[]
+
+  @@map("courses")
+}
+
+model CourseVideo {
+  id         String          @id @default(uuid()) @db.Uuid
+  courseId   String          @map("course_id") @db.Uuid
+  title      String
+  youtubeUrl String          @map("youtube_url")
+  // Video propio en Supabase Storage (path en el bucket course-videos). Si está, se usa en vez de Vimeo.
+  videoUrl   String?         @map("video_url")
+  // Lección de muestra: se puede ver gratis sin estar inscrito (anzuelo de conversión)
+  preview    Boolean         @default(false)
+  descripcion String?        @db.Text          // notas de la lección
+  duracionSegundos Int?      @map("duracion_segundos")
+  moduloTitulo String?       @map("modulo_titulo")  // sección/módulo (las que comparten nombre se agrupan)
+  order      Int             @default(0)
+  course     Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress   VideoProgress[]
+  recursos   LessonResource[]
+
+  @@index([courseId, order])
+  @@map("course_videos")
+}
+
+// Recursos descargables por lección (PDF, plantillas, etc.)
+model LessonResource {
+  id        String      @id @default(uuid()) @db.Uuid
+  videoId   String      @map("video_id") @db.Uuid
+  titulo    String
+  archivoUrl String     @map("archivo_url")
+  orden     Int         @default(0)
+  video     CourseVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([videoId, orden])
+  @@map("lesson_resources")
+}
+
+model VideoProgress {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @map("user_id") @db.Uuid
+  videoId   String      @map("video_id") @db.Uuid
+  courseId  String      @map("course_id") @db.Uuid
+  completed Boolean     @default(false)
+  percent   Int         @default(0)
+  // Segundo exacto donde quedó el usuario (para "continuar donde quedaste")
+  posicionSegundos Int   @default(0) @map("posicion_segundos")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     CourseVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@index([userId, courseId])
+  @@map("video_progress")
+}
+
+enum CourseEnrollmentStatus {
+  PENDING
+  PENDING_VERIFICATION
+  APPROVED
+  REJECTED
+}
+
+model CourseEnrollment {
+  id            String                 @id @default(uuid()) @db.Uuid
+  userId        String                 @map("user_id") @db.Uuid
+  courseId      String                 @map("course_id") @db.Uuid
+  status        CourseEnrollmentStatus @default(PENDING)
+  paymentMethod String                 @default("MANUAL") @map("payment_method")
+  proofUrl      String?                @map("proof_url")
+  txHash        String?                @map("tx_hash")
+  blockNumber   BigInt?                @map("block_number")
+  notes         String?
+  createdAt     DateTime               @default(now()) @map("created_at")
+  updatedAt     DateTime               @updatedAt @map("updated_at")
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course        Course                 @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([status])
+  @@map("course_enrollments")
+}
+
+// ─── Marketplace de Cursos de Usuarios ───────────────────────────────────────
+
+enum MarketplaceCourseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MarketplacePurchaseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PENDING_VERIFICATION
+}
+
+model MarketplaceCategory {
+  id      String              @id @default(uuid()) @db.Uuid
+  name    String              @unique
+  courses MarketplaceCourse[]
+
+  @@map("marketplace_categories")
+}
+
+model MarketplaceCourse {
+  id         String                  @id @default(uuid()) @db.Uuid
+  sellerId   String                  @map("seller_id") @db.Uuid
+  categoryId String?                 @map("category_id") @db.Uuid
+  title      String
+  description String                 @db.Text
+  coverUrl    String?                 @map("cover_url")
+  qrImageUrl  String?                 @map("qr_image_url")
+  price       Decimal                 @db.Decimal(10, 2)
+  whatsapp    String?
+  status      MarketplaceCourseStatus @default(PENDING)
+  adminNotes String?                 @map("admin_notes")
+  createdAt  DateTime                @default(now()) @map("created_at")
+  updatedAt  DateTime                @updatedAt @map("updated_at")
+
+  seller    User                    @relation("MarketplaceSeller", fields: [sellerId], references: [id], onDelete: Cascade)
+  category  MarketplaceCategory?    @relation(fields: [categoryId], references: [id])
+  files     MarketplaceCourseFile[]
+  purchases MarketplacePurchase[]
+
+  @@index([status, categoryId])
+  @@map("marketplace_courses")
+}
+
+model MarketplaceCourseFile {
+  id       String            @id @default(uuid()) @db.Uuid
+  courseId String            @map("course_id") @db.Uuid
+  title    String
+  driveUrl String            @map("drive_url")
+  order    Int               @default(0)
+  course   MarketplaceCourse @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId, order])
+  @@map("marketplace_course_files")
+}
+
+model MarketplacePurchase {
+  id            String                   @id @default(uuid()) @db.Uuid
+  buyerId       String                   @map("buyer_id") @db.Uuid
+  courseId      String                   @map("course_id") @db.Uuid
+  status        MarketplacePurchaseStatus @default(PENDING)
+  proofUrl      String?                  @map("proof_url")
+  paymentMethod PaymentMethod            @default(MANUAL) @map("payment_method")
+  txHash        String?                  @unique @map("tx_hash")
+  notes         String?
+  createdAt     DateTime                 @default(now()) @map("created_at")
+  updatedAt     DateTime                 @updatedAt @map("updated_at")
+
+  buyer  User              @relation("MarketplaceBuyer", fields: [buyerId], references: [id], onDelete: Cascade)
+  course MarketplaceCourse @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([buyerId, courseId])
+  @@index([status])
+  @@map("marketplace_purchases")
+}
+
+model ClippingPayout {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  submissionId String?  @map("submission_id") @db.Uuid
+  amountUSD    Decimal  @map("amount_usd") @db.Decimal(12, 4)
+  description  String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("clipping_payouts")
+}
+
+// ── TIENDA ADMIN ────────────────────────────────────────────────────────────
+
+model StoreItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  organizationId String? @map("organization_id") @db.Uuid
+  title       String
+  description String
+  category    String   @default("General")
+  price       Decimal  @db.Decimal(10, 2)
+  memberPrice Decimal? @map("member_price") @db.Decimal(10, 2)
+  pv          Decimal  @default(0) @db.Decimal(10, 2)
+  images      Json     @default("[]")
+  stock       Int      @default(0)
+  variants    Json     @default("[]")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  orderItems StoreOrderItem[]
+
+  @@map("store_items")
+}
+
+enum StoreOrderStatus {
+  PENDING
+  PENDING_VERIFICATION
+  APPROVED
+  REJECTED
+  SHIPPED
+  DELIVERED
+}
+
 model StoreOrder {
-  id               String   @id @default(uuid())
-  store_id         String
-  user_id          String
-  tenant_id        String
-  customer_name    String
-  customer_phone   String
-  customer_city    String?
-  customer_address String?
-  reference        String?
-  payment_method   String   @default("whatsapp")
-  items            Json
-  subtotal         Decimal  @db.Decimal(10, 2) @default(0)
-  total            Decimal  @db.Decimal(10, 2)
-  currency         String   @default("USD")
-  status           String   @default("pending")
-  notes            String?
-  created_at       DateTime @default(now())
-  updated_at       DateTime @updatedAt
+  id            String           @id @default(uuid()) @db.Uuid
+  userId        String           @map("user_id") @db.Uuid
+  totalPrice    Decimal          @map("total_price") @db.Decimal(10, 2)
+  totalPv       Decimal          @default(0) @map("total_pv") @db.Decimal(10, 2)
+  status        StoreOrderStatus @default(PENDING)
+  paymentMethod String           @default("MANUAL") @map("payment_method")
+  proofUrl      String?          @map("proof_url")
+  txHash        String?          @map("tx_hash")
+  blockNumber   BigInt?          @map("block_number")
+  recipientName String           @map("recipient_name")
+  phone         String
+  address       String
+  city          String
+  state         String
+  country       String
+  zipCode       String?          @map("zip_code")
+  deliveryNotes String?          @map("delivery_notes")
+  notes         String?
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
 
-  store Store @relation(fields: [store_id], references: [id])
+  user  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items StoreOrderItem[]
 
-  @@index([store_id])
+  @@index([status])
   @@map("store_orders")
 }
 
-// ─────────────────────────────────────────────
-// USER NOTIFICATIONS
-// ─────────────────────────────────────────────
-model UserNotification {
-  id        String   @id @default(uuid())
-  user_id   String
-  type      String
+model StoreOrderItem {
+  id               String  @id @default(uuid()) @db.Uuid
+  orderId          String  @map("order_id") @db.Uuid
+  itemId           String  @map("item_id") @db.Uuid
+  quantity         Int     @default(1)
+  priceSnapshot    Decimal @map("price_snapshot") @db.Decimal(10, 2)
+  pvSnapshot       Decimal @default(0) @map("pv_snapshot") @db.Decimal(10, 2)
+  selectedVariants Json    @default("{}") @map("selected_variants")
+
+  order StoreOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  item  StoreItem  @relation(fields: [itemId], references: [id])
+
+  @@map("store_order_items")
+}
+
+// ─── Ticket / Entradas ──────────────────────────────────────────────────────
+
+model Event {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  image       String?
+  date        DateTime?
+  location    String?
+  active      Boolean      @default(true)
+  /// QR bancario (imagen) para que el comprador pague por transferencia/QR.
+  paymentQrUrl String?     @map("payment_qr_url")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  ticketTypes TicketType[]
+  tickets     TicketOrder[]
+
+  @@map("events")
+}
+
+model TicketType {
+  id               String   @id @default(uuid()) @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  name             String
+  description      String?
+  image            String?
+  price            Decimal  @db.Decimal(10, 2)
+  /// INVITADO: entrada GRATIS. No se paga: solo se registra y se emite el QR.
+  /// Estos se listan aparte (sección "Invitados"), separados de las ventas.
+  isGuest          Boolean  @default(false) @map("is_guest")
+  capacity         Int?
+  bulkMinQty       Int?     @map("bulk_min_qty")
+  bulkDiscountPct  Decimal? @db.Decimal(5, 2) @map("bulk_discount_pct")
+  active           Boolean  @default(true)
+  sortOrder        Int      @default(0) @map("sort_order")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  event   Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tickets TicketOrder[]
+
+  @@map("ticket_types")
+}
+
+enum TicketStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model TicketOrder {
+  id               String       @id @default(uuid()) @db.Uuid
+  eventId          String       @map("event_id") @db.Uuid
+  ticketTypeId     String       @map("ticket_type_id") @db.Uuid
+  ticketTypeName   String       @map("ticket_type_name")
+  customerName     String       @map("customer_name")
+  customerEmail    String       @map("customer_email")
+  customerPhone    String       @map("customer_phone")
+  ticketCode       String       @unique @map("ticket_code")
+  quantity         Int          @default(1)
+  unitPrice        Decimal      @map("unit_price") @db.Decimal(10, 2)
+  totalPrice       Decimal      @map("total_price") @db.Decimal(10, 2)
+  paymentMethod    String       @default("MANUAL") @map("payment_method")
+  proofUrl         String?      @map("proof_url")
+  txHash           String?      @unique @map("tx_hash")
+  blockNumber      BigInt?      @map("block_number")
+  status           TicketStatus @default(PENDING)
+  notes            String?
+  purchaseGroupId  String?      @db.Uuid @map("purchase_group_id")
+  checkedIn        Boolean      @default(false) @map("checked_in")
+  checkedInAt      DateTime?    @map("checked_in_at")
+  /// Tipo de cambio de BINANCE usado al momento de la compra (1 USDT = X Bs) y el
+  /// total en bolivianos. Queda CONGELADO: aunque el cambio suba o baje después, el
+  /// precio de esa compra siempre se lee con esta referencia.
+  bsRate           Decimal?     @map("bs_rate") @db.Decimal(10, 2)
+  totalBs          Decimal?     @map("total_bs") @db.Decimal(10, 2)
+  /// La entrada (con QR) ya se envió por WhatsApp.
+  waSentAt         DateTime?    @map("wa_sent_at")
+  /// Recordatorios ya enviados (evita repetirlos en cada tick del worker).
+  reminder1dAt     DateTime?    @map("reminder_1d_at")
+  reminder2hAt     DateTime?    @map("reminder_2h_at")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ticketType TicketType @relation(fields: [ticketTypeId], references: [id], onDelete: Cascade)
+
+  @@index([ticketCode])
+  @@index([status])
+  @@index([eventId, status])
+  @@index([ticketTypeId, status])
+  @@index([purchaseGroupId])
+  @@map("ticket_orders")
+}
+
+// ─── Social Media Publisher ─────────────────────────────────────────────────
+
+model SocialConnection {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  network      String    // FACEBOOK | INSTAGRAM | TIKTOK | YOUTUBE
+  accessToken  String    @map("access_token")
+  refreshToken String?   @map("refresh_token")
+  accountId    String    @map("account_id")
+  accountName  String    @map("account_name")
+  accountAvatar String?  @map("account_avatar")
+  pageId       String?   @map("page_id")
+  pageName     String?   @map("page_name")
+  expiresAt    DateTime? @map("expires_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts SocialPostNetwork[]
+
+  @@unique([userId, network])
+  @@map("social_connections")
+}
+
+// Perfil de CONTENIDO de una página (equivalente del brief, pero para contenido orgánico,
+// NO publicidad). Uno por página/negocio. Alimenta la generación de imágenes y texto del
+// Publicador Social para que el contenido sea real y on-brand.
+model SocialContentProfile {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  pageName      String   @map("page_name")                // nombre de la página/negocio
+  about         String   @default("") @db.Text            // de qué trata la página
+  audience      String   @default("") @db.Text            // a quién le habla
+  tone          String[] @default([])                     // tono / personalidad
+  contentThemes String[] @default([]) @map("content_themes") // pilares / temas de contenido
+  brandColors   String[] @default([]) @map("brand_colors")
+  visualStyle   String[] @default([]) @map("visual_style")
+  contentGoal   String   @default("") @map("content_goal")  // objetivo del contenido
+  language      String   @default("es")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+  @@map("social_content_profiles")
+}
+
+model SocialPost {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  content     String
+  mediaUrl    String?   @map("media_url")
+  mediaType   String?   @map("media_type")
+  postType    String    @default("feed") @map("post_type")
+  status      String    @default("DRAFT")
+  scheduledAt DateTime? @map("scheduled_at")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  networks SocialPostNetwork[]
+
+  @@map("social_posts")
+}
+
+model SocialPostNetwork {
+  id             String    @id @default(uuid()) @db.Uuid
+  postId         String    @map("post_id") @db.Uuid
+  connectionId   String    @map("connection_id") @db.Uuid
+  network        String
+  status         String    @default("PENDING")
+  providerPostId String?   @map("provider_post_id")
+  error          String?
+  publishedAt    DateTime? @map("published_at")
+
+  post       SocialPost       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  connection SocialConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@map("social_post_networks")
+}
+
+// ─── Notifications ─────────────────────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
   title     String
-  message   String
+  body      String
   link      String?
   read      Boolean  @default(false)
-  read_at   DateTime?
-  created_at DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@index([user_id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
   @@map("notifications")
 }
 
-// ─────────────────────────────────────────────
-// SYSTEM SETTINGS
-// ─────────────────────────────────────────────
-model SystemSetting {
-  id         String   @id @default(uuid())
-  key        String   @unique
-  value      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model PushSubscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@map("system_settings")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("push_subscriptions")
 }
 
-// ─────────────────────────────────────────────
-// AI USAGE LOGS
-// ─────────────────────────────────────────────
-model AiUsageLog {
-  id                String   @id @default(uuid())
-  user_id           String
-  service           String
-  model             String
-  prompt_tokens     Int      @default(0)
-  completion_tokens Int      @default(0)
-  cost_usd          Decimal  @default(0) @db.Decimal(10, 6)
-  created_at        DateTime @default(now())
+model TrustedDevice {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  deviceId       String   @map("device_id")
+  label          String?
+  ip             String?
+  city           String?
+  country        String?
+  lat            Float?
+  lng            Float?
+  browser        String?
+  os             String?
+  deviceType     String?  @map("device_type")
+  prevIp         String?  @map("prev_ip")
+  prevCity       String?  @map("prev_city")
+  address         String?
+  locationChanged Boolean @default(false) @map("location_changed")
+  lastSeen       DateTime @default(now()) @map("last_seen")
+  createdAt      DateTime @default(now()) @map("created_at")
 
-  @@index([user_id])
-  @@map("ai_usage_logs")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId])
+  @@index([userId])
+  @@map("trusted_devices")
+}
+
+model AdminOtpCode {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  code      String
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("admin_otp_codes")
+}
+
+model Podcast {
+  id          String   @id @default(uuid()) @db.Uuid
+  organizationId String? @map("organization_id") @db.Uuid
+  title       String
+  description String?
+  coverUrl    String?  @map("cover_url")
+  embedUrl    String   @map("embed_url")
+  categoria   String?
+  active      Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("podcasts")
+}
+
+model DeviceVerifyCode {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  deviceId  String   @map("device_id")
+  code      String
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, deviceId])
+  @@map("device_verify_codes")
+}
+
+model AdminConfig {
+  id           String   @id @default("global")
+  openaiKeyEnc String?  @map("openai_key_enc")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_configs")
+}
+
+// ─── CRM Broadcast ────────────────────────────────────────────────────────────
+
+enum BroadcastStatus {
+  DRAFT
+  SCHEDULED
+  RUNNING
+  COMPLETED
+  PAUSED
+  FAILED
+}
+
+enum BroadcastLogStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model BroadcastCampaign {
+  id             String          @id @default(uuid()) @db.Uuid
+  userId         String          @map("user_id") @db.Uuid
+  botId          String          @map("bot_id") @db.Uuid
+  name           String
+  prompt         String          @db.Text
+  messageExample String?         @db.Text @map("message_example")
+  status         BroadcastStatus @default(DRAFT)
+  delayValue     Int             @default(30) @map("delay_value")
+  delayUnit      String          @default("seconds") @map("delay_unit")
+  scheduledAt    DateTime?       @map("scheduled_at")
+  startedAt      DateTime?       @map("started_at")
+  completedAt    DateTime?       @map("completed_at")
+  imageIndex     Int             @default(0) @map("image_index")
+  totalContacts  Int             @default(0) @map("total_contacts")
+  sentCount      Int             @default(0) @map("sent_count")
+  failedCount    Int             @default(0) @map("failed_count")
+  // Fase 3 — remarketing recurrente
+  recurring         Boolean   @default(false)
+  recurrenceDays    String?   @map("recurrence_days")        // CSV de días 0-6 (0=domingo), hora Bolivia
+  recurrenceTime    String?   @map("recurrence_time")        // "HH:mm" hora Bolivia
+  recurrenceImageId String?   @map("recurrence_image_id") @db.Uuid
+  nextRunAt         DateTime? @map("next_run_at")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bot      Bot                @relation(fields: [botId], references: [id], onDelete: Cascade)
+  images   BroadcastImage[]
+  contacts BroadcastContact[]
+  logs     BroadcastLog[]
+
+  @@index([userId, status])
+  @@map("broadcast_campaigns")
+}
+
+model BroadcastImage {
+  id         String   @id @default(uuid()) @db.Uuid
+  campaignId String   @map("campaign_id") @db.Uuid
+  url        String
+  type       String   @default("IMAGE")
+  order      Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  campaign BroadcastCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@map("broadcast_images")
+}
+
+model BroadcastContact {
+  id         String             @id @default(uuid()) @db.Uuid
+  campaignId String             @map("campaign_id") @db.Uuid
+  name       String?
+  phone      String
+  status     BroadcastLogStatus @default(PENDING)
+  sentAt     DateTime?          @map("sent_at")
+  error      String?
+  // Fase 4 — opt-out (BAJA)
+  optedOut   Boolean            @default(false) @map("opted_out")
+  optedOutAt DateTime?          @map("opted_out_at")
+  createdAt  DateTime           @default(now()) @map("created_at")
+
+  campaign BroadcastCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId, status])
+  @@map("broadcast_contacts")
+}
+
+model BroadcastLog {
+  id         String             @id @default(uuid()) @db.Uuid
+  campaignId String             @map("campaign_id") @db.Uuid
+  phone      String
+  name       String?
+  message    String             @db.Text
+  imageUrl   String?            @map("image_url")
+  status     BroadcastLogStatus @default(SENT)
+  error      String?
+  sentAt     DateTime           @default(now()) @map("sent_at")
+
+  campaign BroadcastCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@map("broadcast_logs")
+}
+
+// ─── Recursos: plantillas editables (editor tipo Fancy Product Designer) ──────────
+// Sección AISLADA. No tiene relaciones con otros modelos para no afectar nada.
+// `creadoPor` guarda el userId del admin que la creó (sin FK, a propósito).
+model Template {
+  id        String   @id @default(uuid()) @db.Uuid
+  organizationId String? @map("organization_id") @db.Uuid
+  nombre    String
+  categoria String
+  ancho     Int
+  alto      Int
+  fondoUrl  String   @map("fondo_url")
+  thumbUrl  String?  @map("thumb_url")
+  zonas     Json     @db.JsonB
+  activo    Boolean  @default(true)
+  creadoPor String   @map("creado_por") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([activo, categoria])
+  @@map("templates")
+}
+
+// ─── Recursos: presentaciones y libros (PDF: ver / descargar / flipbook) ──────────
+// Sección AISLADA, sin relaciones. tipo = 'presentacion' | 'libro'.
+model Resource {
+  id         String   @id @default(uuid()) @db.Uuid
+  organizationId String? @map("organization_id") @db.Uuid
+  tipo       String
+  titulo     String
+  categoria  String
+  archivoUrl String   @map("archivo_url")
+  portadaUrl String?  @map("portada_url")
+  paginas    Int?
+  activo     Boolean  @default(true)
+  creadoPor  String   @map("creado_por") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([tipo, activo, categoria])
+  @@map("resources")
+}
+
+// Áreas (categorías) de los flyers — el admin elige cuáles aparecen en el menú "Filtrar flyers".
+model FlyerArea {
+  id        String   @id @default(uuid()) @db.Uuid
+  nombre    String   @unique
+  orden     Int      @default(0)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([activo, orden])
+  @@map("flyer_areas")
+}
+
+// ── Pack Empresarial (multi-empresa / white-label) ──
+enum OrgRole {
+  NONE
+  ORG_ADMIN
+  ORG_USER
+}
+
+/// Una empresa Pack Empresarial. Tiene su admin, su cupo de usuarios y su contenido.
+model Organization {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  maxUsers    Int      @default(0) @map("max_users")
+  active      Boolean  @default(true)
+  billingNote String?  @map("billing_note")
+  logoUrl     String?  @map("logo_url")
+  // Cobro propio de la empresa (transferencia / USDT) — lo configura su admin.
+  payUsdtWallet   String? @map("pay_usdt_wallet")
+  payUsdtNetwork  String? @map("pay_usdt_network")
+  payBankInfo     String? @map("pay_bank_info")     @db.Text
+  payQrUrl        String? @map("pay_qr_url")
+  payInstructions String? @map("pay_instructions")  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  members     User[]   @relation("OrgMembers")
+
+  @@map("organizations")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Reto 90D WhatsApp — módulo de retos de 90 días vía WhatsApp (Baileys).
+// ADITIVO: no modifica ningún modelo existente. `userId` es columna suelta
+// (sin relación Prisma) para NO tocar el modelo User. Tablas: reto90d_*.
+// ═══════════════════════════════════════════════════════════════════════════
+
+model Challenge {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  description      String?  @db.Text
+  startDate        DateTime @map("start_date")
+  endDate          DateTime @map("end_date")
+  isActive         Boolean  @default(true) @map("is_active")
+  publicSlug       String?  @unique @map("public_slug")        // código del link público de registro
+  registrationOpen Boolean  @default(false) @map("registration_open") // el link acepta registros
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  tasks   DailyTask[]
+  members ChallengeMember[]
+  reports DailyReport[]
+
+  @@map("reto90d_challenges")
+}
+
+model DailyTask {
+  id               String   @id @default(uuid()) @db.Uuid
+  challengeId      String   @map("challenge_id") @db.Uuid
+  title            String
+  description      String   @db.Text
+  evidenceType     String   @map("evidence_type")      // IMAGE | TEXT | NUMBER | LINK | DOCUMENT
+  expectedKeywords String[] @map("expected_keywords")
+  points           Int      @default(10)
+  deadlineTime     String   @map("deadline_time")      // "HH:mm"
+  autoApproveMin   Float    @default(0.85) @map("auto_approve_min")
+  requiresReview   Boolean  @default(false) @map("requires_review")
+  validExamples    String[] @map("valid_examples")     // URLs de evidencia válida (ejemplos)
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  challenge   Challenge        @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  submissions TaskSubmission[]
+
+  @@index([challengeId])
+  @@map("reto90d_tasks")
+}
+
+model ChallengeMember {
+  id          String   @id @default(uuid()) @db.Uuid
+  challengeId String   @map("challenge_id") @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid       // enlaza con User (columna suelta, sin relación)
+  fullName    String   @map("full_name")
+  phone       String
+  email       String?
+  country     String?
+  city        String?
+  status      String   @default("ACTIVE")             // ACTIVE | PAUSED | REMOVED
+  joinedAt    DateTime @default(now()) @map("joined_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, phone])
+  @@index([phone])
+  @@map("reto90d_members")
+}
+
+model TaskSubmission {
+  id             String    @id @default(uuid()) @db.Uuid
+  taskId         String?   @map("task_id") @db.Uuid
+  challengeId    String?   @map("challenge_id") @db.Uuid
+  userId         String?   @map("user_id") @db.Uuid
+  fullName       String?   @map("full_name")
+  phone          String
+  whatsappMsgId  String    @unique @map("whatsapp_msg_id")   // anti-dup nivel 1
+  mediaUrl       String?   @map("media_url")
+  mediaHash      String?   @map("media_hash")                // anti-dup nivel 2
+  textContent    String?   @map("text_content") @db.Text
+  aiTaskDetected String?   @map("ai_task_detected")
+  aiConfidence   Float?    @map("ai_confidence")
+  aiExplanation  String?   @map("ai_explanation") @db.Text
+  status         String    @default("PENDING")   // PENDING|APPROVED|REJECTED|REVIEW|DUPLICATED|NEEDS_CLARIFICATION
+  pointsEarned   Int       @default(0) @map("points_earned")
+  reviewedBy     String?   @map("reviewed_by")
+  reviewedAt     DateTime? @map("reviewed_at")
+  submittedAt    DateTime  @default(now()) @map("submitted_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  task       DailyTask?            @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  reviewLogs SubmissionReviewLog[]
+
+  @@index([phone])
+  @@index([challengeId])
+  @@index([status])
+  @@index([mediaHash])
+  @@index([challengeId, phone, submittedAt])
+  @@map("reto90d_submissions")
+}
+
+model DailyReport {
+  id          String   @id @default(uuid()) @db.Uuid
+  challengeId String   @map("challenge_id") @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid
+  fullName    String?  @map("full_name")
+  phone       String
+  reportDate  DateTime @map("report_date")
+  totalTasks  Int      @map("total_tasks")
+  completed   Int
+  pending     Int
+  rejected    Int
+  review      Int
+  points      Int
+  summary     String   @db.Text
+  sentToUser  Boolean  @default(false) @map("sent_to_user")
+  sentToAdmin Boolean  @default(false) @map("sent_to_admin")
+  sentToGroup Boolean  @default(false) @map("sent_to_group")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([challengeId, phone, reportDate])
+  @@index([reportDate])
+  @@map("reto90d_reports")
+}
+
+model SubmissionReviewLog {
+  id             String   @id @default(uuid()) @db.Uuid
+  submissionId   String   @map("submission_id") @db.Uuid
+  reviewedBy     String   @map("reviewed_by")
+  previousStatus String   @map("previous_status")
+  newStatus      String   @map("new_status")
+  reason         String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  submission TaskSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
+  @@map("reto90d_review_logs")
+}
+
+model WhatsAppConfig {
+  id                    String   @id @default(uuid()) @db.Uuid
+  challengeId           String?  @map("challenge_id") @db.Uuid
+  botId                 String?  @map("bot_id") @db.Uuid   // bot Baileys dedicado del reto
+  adminPhone            String?  @map("admin_phone")
+  groupId               String?  @map("group_id")          // JID del grupo (...@g.us)
+  isActive              Boolean  @default(true) @map("is_active")
+  sendGroupReports      Boolean  @default(false) @map("send_group_reports")
+  morningReminderTime   String   @default("09:00") @map("morning_reminder_time")
+  middayReminderTime    String   @default("12:30") @map("midday_reminder_time")
+  afternoonReminderTime String   @default("17:30") @map("afternoon_reminder_time")
+  nightReminderTime     String   @default("21:30") @map("night_reminder_time")
+  finalReportTime       String   @default("23:50") @map("final_report_time")
+  timezone              String   @default("America/La_Paz")
+  botInstructions       String?  @db.Text @map("bot_instructions")   // system prompt: tono, trato y contexto del plan
+  welcomeMessage        String?  @db.Text @map("welcome_message")    // bienvenida al registrarse ({nombre}, {reto})
+  openaiApiKeyEnc       String?  @db.Text @map("openai_api_key_enc") // API key de OpenAI del reto (cifrada)
+  elevenLabsApiKeyEnc   String?  @db.Text @map("elevenlabs_api_key_enc") // API key de ElevenLabs (cifrada)
+  voiceId               String?  @map("voice_id")                    // voz elegida para las notas de voz
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@map("reto90d_whatsapp_config")
+}
+
+// Memoria de conversación del bot con cada participante (para recordar el hilo
+// y responder "¿qué tarea me falta?" con contexto).
+model RetoMessage {
+  id          String   @id @default(uuid()) @db.Uuid
+  challengeId String   @map("challenge_id") @db.Uuid
+  phone       String
+  role        String   // 'user' | 'bot'
+  content     String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([challengeId, phone, createdAt])
+  @@map("reto90d_messages")
+}
+
+// Idempotencia PERSISTENTE de envíos programados (recordatorios y resúmenes).
+// Antes de enviar cada tipo por día, el scheduler intenta INSERTAR la fila única
+// (challengeId, kind, date); si ya existe, no reenvía. Si el envío falla por
+// completo (bot caído), la fila se borra para reintentar en el próximo tick.
+model RetoSendLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  challengeId String   @map("challenge_id") @db.Uuid
+  kind        String   // morning | midday | afternoon | night | resumen_semana | resumen_mes
+  date        String   // 'YYYY-MM-DD' en la zona del reto (America/La_Paz)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([challengeId, kind, date])
+  @@map("reto90d_send_log")
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  DIAMOND ASSISTANT — FASE 0 (fundación)
+//  Centro de comunicación WhatsApp con agentes IA para equipos.
+//
+//  Sección AISLADA (igual que el modelo `Template`): los modelos diamond_*
+//  NO tienen FK hacia User / Bot / Organization. Las referencias externas
+//  (botId, createdBy=userId, organizationId) son columnas UUID PLANAS sin
+//  @relation, para no tener que tocar esos modelos ni afectar nada existente.
+//  Las relaciones INTERNAS entre modelos diamond_* sí llevan FK (cascade).
+//  Multi-equipo: casi todo lleva organizationId (nullable).
+// ════════════════════════════════════════════════════════════════════════════
+
+enum DiamondProvider {
+  BAILEYS
+  YCLOUD
+  META
+}
+
+enum DiamondMediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  PDF
+  LINK
+  TEXT
+}
+
+enum DiamondCampaignStatus {
+  DRAFT
+  PENDING_APPROVAL
+  SCHEDULED
+  SENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum DiamondMsgStatus {
+  PENDING
+  SENT
+  DELIVERED
+  FAILED
+  ERROR
+}
+
+enum DiamondContactStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum DiamondRuleType {
+  FORBID
+  ESCALATE
+  REQUIRE_APPROVAL
+}
+
+/// El agente IA: personalidad, modelo, proveedor y config del asistente.
+/// botId y createdBy son UUID planos (sin FK, a propósito).
+model AssistantAgent {
+  id                String          @id @default(uuid()) @db.Uuid
+  organizationId    String?         @map("organization_id") @db.Uuid
+  createdBy         String?         @map("created_by") @db.Uuid
+  name              String
+  avatarUrl         String?         @map("avatar_url")
+  personalityPrompt String          @map("personality_prompt") @db.Text
+  model             String          @default("gpt-4o")
+  temperature       Float           @default(0.4)
+  provider          DiamondProvider @default(BAILEYS)
+  botId             String?         @map("bot_id") @db.Uuid
+  openaiKeyEnc      String?         @map("openai_key_enc") @db.Text
+  providerApiKeyEnc String?         @map("provider_api_key_enc") @db.Text
+  providerSender    String?         @map("provider_sender")
+  webhookToken      String?         @map("webhook_token")
+  timezone          String          @default("America/La_Paz")
+  allowedHours      Json?           @map("allowed_hours")
+  // Voz: responder con nota de voz (ElevenLabs). Modo: off | audio_in | always.
+  voiceEnabled      Boolean         @default(false) @map("voice_enabled")
+  voiceMode         String          @default("off") @map("voice_mode")
+  voiceId           String?         @map("voice_id")
+  isActive          Boolean         @default(true) @map("is_active")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+
+  // Relaciones internas (1-N) hacia los demás modelos diamond_*.
+  groups           AssistantGroup[]
+  knowledge        KnowledgeItem[]
+  rules            SafetyRule[]
+  campaigns        AssistantCampaign[]
+  welcomeTemplates WelcomeTemplate[]
+  memory           AssistantMemory[]
+  scheduledPosts   AssistantScheduledPost[]
+  ownerActions     DiamondOwnerAction[]
+
+  @@map("diamond_agents")
+}
+
+/// Grupo de WhatsApp gestionado por un agente. Único por (agente, groupJid).
+model AssistantGroup {
+  id                String   @id @default(uuid()) @db.Uuid
+  agentId           String   @map("agent_id") @db.Uuid
+  groupJid          String   @map("group_jid")
+  name              String?
+  automationEnabled Boolean  @default(true) @map("automation_enabled")
+  aiEnabled         Boolean  @default(true) @map("ai_enabled")
+  welcomeEnabled    Boolean  @default(false) @map("welcome_enabled")
+  welcomeTemplateId String?  @map("welcome_template_id") @db.Uuid
+  // Bienvenida al PRIVADO (1:1) de quien entra al grupo. Apagada por defecto.
+  privateWelcomeEnabled Boolean @default(false) @map("private_welcome_enabled")
+  allowedHours      Json?    @map("allowed_hours")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, groupJid])
+  @@map("diamond_groups")
+}
+
+/// Plantilla de bienvenida. body soporta variables:
+/// {{nombre}} {{grupo}} {{ciudad}} {{sponsor}} {{fecha}} {{link_reto}} {{nombre_lider}}
+model WelcomeTemplate {
+  id           String   @id @default(uuid()) @db.Uuid
+  agentId      String   @map("agent_id") @db.Uuid
+  name         String
+  body         String   @db.Text
+  mediaAssetId String?  @map("media_asset_id") @db.Uuid
+  // Varias imágenes/recursos adjuntos (además del legacy `mediaAssetId`).
+  mediaAssetIds String[] @default([]) @map("media_asset_ids") @db.Uuid
+  // Tipo de bienvenida: GROUP (al grupo) o PRIVATE (al privado 1:1).
+  kind         String   @default("GROUP")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("diamond_welcome_templates")
+}
+
+/// Publicación PROGRAMADA a un grupo: texto + varias imágenes/videos/flyer/pdf,
+/// enviada automáticamente en `scheduledAt`. Puede repetirse (NONE/DAILY/WEEKLY).
+model AssistantScheduledPost {
+  id            String    @id @default(uuid()) @db.Uuid
+  agentId       String    @map("agent_id") @db.Uuid
+  groupJid      String    @map("group_jid")
+  groupName     String?   @map("group_name")
+  body          String?   @db.Text
+  mediaAssetIds String[]  @default([]) @map("media_asset_ids") @db.Uuid
+  scheduledAt   DateTime  @map("scheduled_at")
+  repeat        String    @default("NONE") // NONE | INTERVAL | DAILY | WEEKLY | WEEKDAYS
+  // Además del grupo, reenviar el mismo contenido al PRIVADO de quienes ya
+  // escribieron al agente (contactos tibios). Seguro (no a desconocidos).
+  alsoToPrivate Boolean   @default(false) @map("also_to_private")
+  // Para repeat=INTERVAL: cada cuántos minutos se repite ("de cada rato").
+  intervalMinutes Int?    @map("interval_minutes")
+  // Para repeat=WEEKDAYS: días de la semana en que se lanza (0=domingo … 6=sábado).
+  weekdays      Int[]     @default([]) @map("weekdays")
+  // Fin de la recurrencia (opcional): deja de enviarse después de esta fecha/hora.
+  repeatUntil   DateTime? @map("repeat_until")
+  status        String    @default("PENDING") // PENDING | SENT | CANCELLED | FAILED
+  lastSentAt    DateTime? @map("last_sent_at")
+  sentCount     Int       @default(0) @map("sent_count")
+  createdBy     String?   @map("created_by") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
+  @@index([agentId, groupJid])
+  @@map("diamond_scheduled_posts")
+}
+
+/// "Modo Dueño": acción pendiente de APROBACIÓN pedida por el dueño vía WhatsApp.
+/// El cerebro admin propone una acción delicada (programar, campaña, borrar), la
+/// guarda acá con status=PENDING y un resumen; cuando el dueño responde "aprobado"
+/// se ejecuta el `payload` y pasa a DONE. Así la confirmación es determinista.
+model DiamondOwnerAction {
+  id         String   @id @default(uuid()) @db.Uuid
+  agentId    String   @map("agent_id") @db.Uuid
+  ownerPhone String   @map("owner_phone")
+  actionType String   @map("action_type") // SCHEDULE_POST | SEND_NOW | LAUNCH_CAMPAIGN | DELETE_KNOWLEDGE | DELETE_MEDIA | ...
+  payload    Json // datos estructurados para ejecutar SIN depender del modelo
+  summary    String   @db.Text // lo que se le mostró al dueño para aprobar
+  status     String   @default("PENDING") // PENDING | DONE | CANCELLED | EXPIRED
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, ownerPhone, status])
+  @@map("diamond_owner_actions")
+}
+
+/// Contacto / prospecto. Único por (organización, teléfono).
+model Contact {
+  id                String               @id @default(uuid()) @db.Uuid
+  organizationId    String?              @map("organization_id") @db.Uuid
+  createdBy         String?              @map("created_by") @db.Uuid
+  name              String?
+  phone             String
+  country           String?
+  city              String?
+  sponsor           String?
+  tag               String?
+  status            DiamondContactStatus @default(ACTIVE)
+  optIn             Boolean              @default(true) @map("opt_in")
+  optInAt           DateTime?            @map("opt_in_at")
+  joinedAt          DateTime             @default(now()) @map("joined_at")
+  lastInteractionAt DateTime?            @map("last_interaction_at")
+  notes             String?              @db.Text
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  @@unique([organizationId, phone])
+  @@index([organizationId, status])
+  @@map("diamond_contacts")
+}
+
+/// Recurso multimedia reutilizable (imagen/video/audio/pdf/link/texto).
+model MediaAsset {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String?          @map("organization_id") @db.Uuid
+  createdBy      String?          @map("created_by") @db.Uuid
+  type           DiamondMediaType
+  title          String
+  caption        String?          @db.Text  // descripción que se MANDA junto con la imagen/video (el title es interno)
+  url            String?
+  linkUrl        String?          @map("link_url")
+  textContent    String?          @map("text_content") @db.Text
+  mimeType       String?          @map("mime_type")
+  sizeBytes      Int?             @map("size_bytes")
+  tags           Json             @default("[]")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  @@index([organizationId, type])
+  @@map("diamond_media")
+}
+
+/// Base de conocimiento del agente (FAQ / info que puede usar la IA).
+model KnowledgeItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  agentId   String   @map("agent_id") @db.Uuid
+  title     String
+  content   String   @db.Text
+  category  String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, isActive])
+  @@map("diamond_knowledge")
+}
+
+/// Regla de seguridad / guardarraíl del agente.
+model SafetyRule {
+  id          String          @id @default(uuid()) @db.Uuid
+  agentId     String          @map("agent_id") @db.Uuid
+  description String          @db.Text
+  type        DiamondRuleType @default(FORBID)
+  isActive    Boolean         @default(true) @map("is_active")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("diamond_safety_rules")
+}
+
+/// Campaña de envío (grupo / contacto / segmento), con aprobación y throttling.
+/// targetType: GROUP | CONTACT | SEGMENT.
+model AssistantCampaign {
+  id             String                @id @default(uuid()) @db.Uuid
+  agentId        String                @map("agent_id") @db.Uuid
+  organizationId String?               @map("organization_id") @db.Uuid
+  createdBy      String?               @map("created_by") @db.Uuid
+  name           String
+  messageBody    String                @map("message_body") @db.Text
+  mediaAssetId   String?               @map("media_asset_id") @db.Uuid
+  targetType     String                @map("target_type")
+  targetJson     Json                  @map("target_json")
+  status         DiamondCampaignStatus @default(DRAFT)
+  templateJson   Json?                 @map("template_json")  // { name, language, params } → enviar por plantilla aprobada (fuera de 24h)
+  scheduledAt    DateTime?             @map("scheduled_at")
+  recurring      Boolean               @default(false)
+  recurrenceJson Json?                 @map("recurrence_json")
+  throttleMs     Int                   @default(1000) @map("throttle_ms")
+  totalTargets   Int                   @default(0) @map("total_targets")
+  sentCount      Int                   @default(0) @map("sent_count")
+  failedCount    Int                   @default(0) @map("failed_count")
+  approvedBy     String?               @map("approved_by") @db.Uuid
+  approvedAt     DateTime?             @map("approved_at")
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, status])
+  @@map("diamond_campaigns")
+}
+
+/// Log de mensajes IN/OUT. agentId sin FK (para no forzar la relación).
+/// direction: IN | OUT.
+model AssistantMessageLog {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String?          @map("organization_id") @db.Uuid
+  agentId        String?          @map("agent_id") @db.Uuid
+  campaignId     String?          @map("campaign_id") @db.Uuid
+  contactPhone   String           @map("contact_phone")
+  direction      String
+  messageType    DiamondMediaType @default(TEXT) @map("message_type")
+  content        String?          @db.Text
+  mediaAssetId   String?          @map("media_asset_id") @db.Uuid
+  status         DiamondMsgStatus @default(PENDING)
+  error          String?          @db.Text
+  /// ID del mensaje del proveedor (wamid de WhatsApp) — dedup de entrantes.
+  providerMsgId  String?          @map("provider_msg_id")
+  createdAt      DateTime         @default(now()) @map("created_at")
+
+  @@unique([providerMsgId])
+  @@index([organizationId, createdAt])
+  @@index([campaignId])
+  @@map("diamond_message_logs")
+}
+
+/// Memoria de conversación agente ↔ contacto. role: user | bot.
+model AssistantMemory {
+  id           String   @id @default(uuid()) @db.Uuid
+  agentId      String   @map("agent_id") @db.Uuid
+  contactPhone String   @map("contact_phone")
+  role         String
+  content      String   @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  agent AssistantAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, contactPhone, createdAt])
+  @@map("diamond_memory")
 }

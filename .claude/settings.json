@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "C:\\Users\\quisp\\Desktop\\RUBEN\\src\\app\\api\\ads\\campaign\\[id]"
+    ],
+    "allow": [
+      "Bash(git add LICENSE .env.example src/app/dashboard/page.tsx src/app/login/page.tsx src/app/page.tsx src/app/register/page.tsx src/middleware.ts)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

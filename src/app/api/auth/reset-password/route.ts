@@ -1,52 +1,48 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
-import bcrypt from 'bcryptjs';
-import { db } from '@/lib/db';
-import { signToken, setAuthCookie } from '@/lib/auth';
+export const dynamic = 'force-dynamic'
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { hashPassword } from '@/lib/auth'
 
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? 'fallback-secret-change-in-production'
-);
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { token, password } = await req.json();
+    const { token, password, confirmPassword } = await request.json()
 
-    if (!token || !password)
-      return NextResponse.json({ error: 'Token y contraseña requeridos' }, { status: 400 });
-    if (password.length < 6)
-      return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres' }, { status: 400 });
-
-    let payload: { sub: string; purpose: string };
-    try {
-      const result = await jwtVerify(token, SECRET);
-      payload = result.payload as unknown as { sub: string; purpose: string };
-    } catch {
-      return NextResponse.json({ error: 'El enlace es inválido o ha expirado' }, { status: 400 });
+    if (!token || !password || !confirmPassword) {
+      return NextResponse.json({ error: 'Todos los campos son obligatorios' }, { status: 400 })
     }
 
-    if (payload.purpose !== 'password_reset')
-      return NextResponse.json({ error: 'Token inválido' }, { status: 400 });
+    if (password !== confirmPassword) {
+      return NextResponse.json({ error: 'Las contrasenas no coinciden' }, { status: 400 })
+    }
 
-    const { data: profile } = await db
-      .from('profiles').select('id, email, role, tenant_id').eq('id', payload.sub).maybeSingle();
+    if (password.length < 8) {
+      return NextResponse.json({ error: 'La contrasena debe tener al menos 8 caracteres' }, { status: 400 })
+    }
 
-    if (!profile)
-      return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
+    const resetToken = await prisma.passwordResetToken.findUnique({
+      where: { token },
+      include: { user: true }
+    })
 
-    const password_hash = await bcrypt.hash(password, 12);
-    await db.from('profiles').update({ password_hash }).eq('id', profile.id);
+    if (!resetToken || resetToken.used || resetToken.expiresAt < new Date()) {
+      return NextResponse.json({ error: 'El enlace es invalido o ha expirado' }, { status: 400 })
+    }
 
-    // Auto-login after reset
-    const authToken = await signToken({
-      sub: profile.id, email: profile.email,
-      role: profile.role, tenant_id: profile.tenant_id,
-    });
-    await setAuthCookie(authToken);
+    const passwordHash = await hashPassword(password)
 
-    return NextResponse.json({ message: 'Contraseña actualizada correctamente' });
-  } catch (err) {
-    console.error('[auth/reset-password]', err);
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+    await prisma.user.update({
+      where: { id: resetToken.userId },
+      data: { passwordHash }
+    })
+
+    await prisma.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: { used: true }
+    })
+
+    return NextResponse.json({ message: 'Contrasena actualizada exitosamente' })
+  } catch (error) {
+    console.error('Reset password error:', error)
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }
 }

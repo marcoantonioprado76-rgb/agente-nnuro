@@ -1,123 +1,139 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
+import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
-import { BOT_VOICES, VOICE_MODES } from '@/lib/voices'
+import { verifyToken } from '@/lib/auth'
+import { BOT_VOICES } from '@/lib/voices'
 
-type Ctx = { params: { botId: string } }
+const VALID_VOICE_IDS = new Set(BOT_VOICES.map(v => v.id))
+const VALID_VOICE_MODES = new Set(['off', 'audio_in', 'always'])
 
-async function getOwnedBot(botId: string, userId: string) {
-  return (prisma as any).bot.findFirst({ where: { id: botId, tenant_id: userId } })
+function getAuth() {
+  const cookieStore = cookies()
+  const token = cookieStore.get('auth_token')?.value
+  if (!token) return null
+  return verifyToken(token)
 }
 
-function toNexorBot(b: any) {
-  return {
-    id: b.id, name: b.name, type: b.type, status: b.status,
-    webhookToken: b.webhook_token,
-    systemPromptTemplate: b.system_prompt_template,
-    maxCharsMensaje1: b.max_chars_msg1,
-    maxCharsMensaje2: b.max_chars_msg2,
-    maxCharsMensaje3: b.max_chars_msg3,
-    baileysPhone: b.baileys_phone,
-    followUp1Delay: b.follow_up1_delay,
-    followUp2Delay: b.follow_up2_delay,
-    aiModel: b.ai_model,
-    voiceEnabled: b.voice_enabled ?? false,
-    voiceId: b.voice_id ?? null,
-    voiceMode: b.voice_mode ?? 'off',
-    createdAt: b.created_at,
-  }
+/** GET /api/bots/[botId] – fetch single bot with webhook info */
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: { botId: string } },
+) {
+  const auth = getAuth()
+  if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  const bot = await prisma.bot.findFirst({
+    where: { id: params.botId, userId: auth.userId },
+    include: {
+      secret: {
+        select: { whatsappInstanceNumber: true, reportPhone: true },
+      },
+      _count: { select: { assignedProducts: true, conversations: true } },
+    },
+  })
+
+  if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://tu-dominio.com'
+  const webhookUrl = `${appUrl}/api/webhooks/ycloud/whatsapp/${bot.id}?token=${bot.webhookToken}`
+
+  return NextResponse.json({ bot, webhookUrl })
 }
 
-/** GET /api/bots/[botId] */
-export async function GET(_req: NextRequest, { params }: Ctx) {
+/** PATCH /api/bots/[botId] – update bot settings */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { botId: string } },
+) {
   try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const auth = getAuth()
+    if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const bot = await getOwnedBot(params.botId, session.sub)
+    const bot = await prisma.bot.findFirst({
+      where: { id: params.botId, userId: auth.userId },
+    })
     if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://tu-dominio.com'
-    const webhookUrl = bot.type === 'META'
-      ? `${appUrl}/api/webhooks/meta/${bot.id}`
-      : bot.type === 'WHATSAPP_CLOUD'
-        ? `${appUrl}/api/webhooks/whatsapp-cloud/${bot.id}`
-        : `${appUrl}/api/webhooks/ycloud/whatsapp/${bot.id}?token=${bot.webhook_token}`
+    const body = await request.json().catch(() => ({}))
+    const { name, status, systemPromptTemplate, maxCharsMensaje1, maxCharsMensaje2, maxCharsMensaje3, followUp1Delay, followUp2Delay, followUpPrompt, aiModel,
+      voiceEnabled, voiceMode, voiceId } =
+      body as Record<string, unknown>
 
-    return NextResponse.json({ bot: toNexorBot(bot), webhookUrl })
-  } catch (err) {
-    console.error('[GET /api/bots/[botId]]', err)
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
-  }
-}
+    const VALID_MODELS = ['gpt-5.2', 'gpt-5.1', 'gpt-4o', 'gpt-4o-mini']
 
-/** PATCH /api/bots/[botId] — actualizar configuración */
-export async function PATCH(request: NextRequest, { params }: Ctx) {
-  try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const updated = await prisma.bot.update({
+      where: { id: params.botId },
+      data: {
+        ...(typeof name === 'string' && name.trim() ? { name: name.trim() } : {}),
+        ...(status === 'ACTIVE' || status === 'PAUSED' ? { status } : {}),
+        ...(typeof systemPromptTemplate === 'string' ? { systemPromptTemplate } : {}),
+        ...(maxCharsMensaje1 === null ? { maxCharsMensaje1: null }
+          : typeof maxCharsMensaje1 === 'number' && maxCharsMensaje1 > 0 ? { maxCharsMensaje1: Math.floor(maxCharsMensaje1) }
+          : {}),
+        ...(maxCharsMensaje2 === null ? { maxCharsMensaje2: null }
+          : typeof maxCharsMensaje2 === 'number' && maxCharsMensaje2 > 0 ? { maxCharsMensaje2: Math.floor(maxCharsMensaje2) }
+          : {}),
+        ...(maxCharsMensaje3 === null ? { maxCharsMensaje3: null }
+          : typeof maxCharsMensaje3 === 'number' && maxCharsMensaje3 > 0 ? { maxCharsMensaje3: Math.floor(maxCharsMensaje3) }
+          : {}),
+        ...(typeof followUp1Delay === 'number' ? { followUp1Delay } : {}),
+        ...(typeof followUp2Delay === 'number' ? { followUp2Delay } : {}),
+        ...(followUpPrompt === null ? { followUpPrompt: null }
+          : typeof followUpPrompt === 'string' ? { followUpPrompt: followUpPrompt.trim() || null }
+          : {}),
+        ...(typeof aiModel === 'string' && VALID_MODELS.includes(aiModel) ? { aiModel } : {}),
+        // Nota de voz (TTS)
+        ...(typeof voiceEnabled === 'boolean' ? { voiceEnabled } : {}),
+        ...(typeof voiceMode === 'string' && VALID_VOICE_MODES.has(voiceMode) ? { voiceMode } : {}),
+        ...(voiceId === null ? { voiceId: null }
+          : typeof voiceId === 'string' && VALID_VOICE_IDS.has(voiceId) ? { voiceId }
+          : {}),
+      },
+    })
 
-    const bot = await getOwnedBot(params.botId, session.sub)
-    if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
+    // Al REACTIVAR un bot Baileys, revivir su conexión YA — sin esperar al
+    // healthcheck de 5 min de instrumentation.ts (evita la ventana "ACTIVE pero mudo").
+    if (status === 'ACTIVE' && updated.type === 'BAILEYS' && updated.baileysPhone) {
+      ;(async () => {
+        try {
+          const { BaileysManager } = await import('@/lib/baileys-manager')
+          const cur = BaileysManager.getStatus(params.botId)
+          if (cur.status === 'connected' || cur.status === 'connecting' || cur.status === 'qr_ready') return
+          const secret = await prisma.botSecret.findUnique({ where: { botId: params.botId } })
+          if (!secret) return
+          const { decrypt } = await import('@/lib/crypto')
+          let key = ''
+          if (secret.openaiApiKeyEnc) { try { key = decrypt(secret.openaiApiKeyEnc) } catch { key = '' } }
+          BaileysManager.connect(params.botId, updated.name, key, secret.reportPhone ?? '')
+            .catch((e: unknown) => console.error('[PATCH bot] reconnect error:', e))
+        } catch (e) {
+          console.error('[PATCH bot] reactivate reconnect error:', e)
+        }
+      })()
+    }
 
-    const body = await request.json().catch(() => ({})) as Record<string, unknown>
-    const name                 = body.name
-    const status               = body.status
-    const systemPromptTemplate = body.systemPromptTemplate ?? body.system_prompt_template
-    const maxCharsMensaje1     = body.maxCharsMensaje1     ?? body.max_chars_msg1
-    const maxCharsMensaje2     = body.maxCharsMensaje2     ?? body.max_chars_msg2
-    const maxCharsMensaje3     = body.maxCharsMensaje3     ?? body.max_chars_msg3
-    const followUp1Delay       = body.followUp1Delay       ?? body.follow_up1_delay
-    const followUp2Delay       = body.followUp2Delay       ?? body.follow_up2_delay
-    const aiModel              = body.aiModel              ?? body.ai_model
-    const voiceEnabled         = body.voiceEnabled         ?? body.voice_enabled
-    const voiceId              = body.voiceId              ?? body.voice_id
-    const voiceMode            = body.voiceMode            ?? body.voice_mode
-
-    const VALID_MODELS = ['gpt-5.2', 'gpt-5.1', 'gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo']
-    const VALID_VOICE_IDS = new Set<string>(BOT_VOICES.map(v => v.id))
-    const VALID_VOICE_MODES = new Set<string>(VOICE_MODES.map(m => m.id))
-    const updates: Record<string, unknown> = {}
-
-    if (typeof name === 'string' && name.trim())                             updates.name = name.trim()
-    if (status === 'ACTIVE' || status === 'PAUSED')                          updates.status = status
-    if (typeof systemPromptTemplate === 'string')                            updates.system_prompt_template = systemPromptTemplate
-    if (maxCharsMensaje1 === null)                                           updates.max_chars_msg1 = null
-    else if (typeof maxCharsMensaje1 === 'number' && maxCharsMensaje1 > 0)  updates.max_chars_msg1 = Math.floor(maxCharsMensaje1)
-    if (maxCharsMensaje2 === null)                                           updates.max_chars_msg2 = null
-    else if (typeof maxCharsMensaje2 === 'number' && maxCharsMensaje2 > 0)  updates.max_chars_msg2 = Math.floor(maxCharsMensaje2)
-    if (maxCharsMensaje3 === null)                                           updates.max_chars_msg3 = null
-    else if (typeof maxCharsMensaje3 === 'number' && maxCharsMensaje3 > 0)  updates.max_chars_msg3 = Math.floor(maxCharsMensaje3)
-    if (typeof followUp1Delay === 'number')                                  updates.follow_up1_delay = followUp1Delay
-    if (typeof followUp2Delay === 'number')                                  updates.follow_up2_delay = followUp2Delay
-    if (typeof aiModel === 'string' && VALID_MODELS.includes(aiModel))      updates.ai_model = aiModel
-    if (typeof voiceEnabled === 'boolean')                                   updates.voice_enabled = voiceEnabled
-    if (voiceId === null)                                                    updates.voice_id = null
-    else if (typeof voiceId === 'string' && VALID_VOICE_IDS.has(voiceId))   updates.voice_id = voiceId
-    if (typeof voiceMode === 'string' && VALID_VOICE_MODES.has(voiceMode))  updates.voice_mode = voiceMode
-
-    const updated = await (prisma as any).bot.update({ where: { id: params.botId }, data: updates })
-    return NextResponse.json({ bot: toNexorBot(updated) })
-  } catch (err) {
+    return NextResponse.json({ bot: updated })
+  } catch (err: any) {
     console.error('[PATCH /api/bots/[botId]]', err)
-    return NextResponse.json({ error: 'Error al actualizar bot' }, { status: 500 })
+    return NextResponse.json({ error: err?.message || 'Error al actualizar el bot' }, { status: 500 })
   }
 }
 
-/** DELETE /api/bots/[botId] */
-export async function DELETE(_req: NextRequest, { params }: Ctx) {
-  try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+/** DELETE /api/bots/[botId] – remove bot and all related data */
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: { botId: string } },
+) {
+  const auth = getAuth()
+  if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const bot = await getOwnedBot(params.botId, session.sub)
-    if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
+  const bot = await prisma.bot.findFirst({
+    where: { id: params.botId, userId: auth.userId },
+  })
+  if (!bot) return NextResponse.json({ error: 'Bot no encontrado' }, { status: 404 })
 
-    await (prisma as any).bot.delete({ where: { id: params.botId } })
-    return NextResponse.json({ ok: true })
-  } catch (err) {
-    console.error('[DELETE /api/bots/[botId]]', err)
-    return NextResponse.json({ error: 'Error al eliminar bot' }, { status: 500 })
-  }
+  await prisma.bot.delete({ where: { id: params.botId } })
+
+  return NextResponse.json({ ok: true })
 }

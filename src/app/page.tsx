@@ -1,2012 +1,699 @@
 'use client'
 
-/**
- * Landing NÜRO · narrativa comercial · estructura inspirada en referencia
- *
- *   PROTEGIDO (no se toca lógica visual):
- *   - Fondo animado completo (.bg-gradient, .bg-grid, .bg-glow, .bg-glow-warm, partículas)
- *   - Escena Three.js + GSAP ScrollTrigger (robot con rotación/escala con scroll)
- *   - Lógica de navbar scroll-aware
- *
- *   CONTENIDO editable: ver `nuroConfig` debajo.
- */
+import { useEffect } from 'react'
 
-import { useEffect, useRef, useState } from 'react'
-import { Manrope } from 'next/font/google'
-import {
-  ArrowRight, Bot, Store, MessageCircle, Smartphone,
-  CheckCircle, Sparkles, Send, Boxes, ChevronUp,
-} from 'lucide-react'
-import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+// ─────────────────────────────────────────────────────────────────────────────
+// CSS de la landing MY DIAMOND (integrado tal cual desde index.html)
+// ─────────────────────────────────────────────────────────────────────────────
+const CSS = `
+  :root{
+    --bg:#08060f;--bg-2:#0c0a18;--ink:#ffffff;--muted:#9498ad;--muted-2:#6f7286;
+    --magenta:#ff20d6;--fuchsia:#e60ac0;--purple:#a425ff;--violet:#c026d3;--cyan:#22d3ee;--green:#1fd884;
+    --card:rgba(10,8,19,.93);--card-brd:rgba(255,255,255,.085);
+    --pill:linear-gradient(135deg,#ff1fd0 0%,#a425ff 100%);
+    --radius:18px;--maxw:1180px;
+  }
+  .md-landing *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;line-height:1.55;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .md-landing h1,.md-landing h2,.md-landing h3,.md-landing .font-display{font-family:"Archivo",sans-serif;letter-spacing:-.02em}
+  .md-landing a{color:inherit;text-decoration:none}
+  .md-landing .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
-const manrope = Manrope({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-manrope',
-})
+  /* ====== FONDO ====== */
+  .md-landing .bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 600px at 80% -5%, rgba(164,37,255,.18), transparent 60%),
+      radial-gradient(800px 600px at 12% 8%, rgba(255,32,214,.10), transparent 55%),
+      radial-gradient(1000px 800px at 50% 110%, rgba(34,211,238,.10), transparent 60%),
+      var(--bg);}
+  .md-landing .bg::after{content:"";position:absolute;inset:0;opacity:.5;
+    background-image:radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px);background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(circle at 50% 30%, #000 0%, transparent 75%);
+            mask-image:radial-gradient(circle at 50% 30%, #000 0%, transparent 75%);}
 
-const ROBOT_GLB_PATH = '/landing/nuro-robot.glb'
-const ROBOT_IMAGE    = '/landing/robot.png'
+  /* ====== GALAXIA EN MOVIMIENTO (detrás del diamante) ====== */
+  #galaxy{position:fixed;inset:0;z-index:0;pointer-events:none;display:block}
 
-/* ════════════════════════════════════════════════════════════════
-   CONFIGURACIÓN CENTRALIZADA · edita aquí textos, imágenes y enlaces
-   ════════════════════════════════════════════════════════════════ */
-const nuroConfig = {
-  brand: 'NÜRO',
-  registerUrl: '/register',
-  loginUrl: '/login',
+  /* ====== DIAMANTE (video) + HALO ====== */
+  #diamondGlow{position:fixed;top:46%;left:50%;width:62vmax;height:62vmax;transform:translate(-50%,-50%);
+    z-index:1;pointer-events:none;border-radius:50%;
+    background:radial-gradient(circle, rgba(205,222,255,.40), rgba(170,90,255,.12) 38%, transparent 70%);
+    filter:blur(48px);opacity:.34;will-change:opacity,transform}
+  #gem{position:fixed;top:50%;left:50%;z-index:2;pointer-events:none;display:block;
+    width:clamp(360px,62vmin,760px);height:auto;mix-blend-mode:screen;
+    transform:translate(-50%,-50%) scale(.7);will-change:transform;
+    filter:drop-shadow(0 18px 55px rgba(150,180,255,.18));
+    -webkit-mask-image:radial-gradient(ellipse 92% 86% at 50% 48%, #000 72%, transparent 100%);
+            mask-image:radial-gradient(ellipse 92% 86% at 50% 48%, #000 72%, transparent 100%)}
 
-  hero: {
-    label: 'EL FUTURO DE LAS VENTAS YA COMENZÓ',
-    description:
-      'Con NÜRO, tus clientes pueden recibir atención, seguimiento y una experiencia comercial más organizada durante todo el día.',
-    primaryCta: 'QUIERO CONOCER NÜRO',
-    micro: 'Agentes IA 24/7 · Seguimiento inteligente · Tiendas virtuales',
-    chipLabel: 'NÜRO ONLINE',
-    chipSub: 'Activo 24/7',
-  },
+  /* ====== PROGRESO ====== */
+  .md-landing .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:var(--pill);
+    box-shadow:0 0 12px rgba(255,32,214,.7);transition:width .08s linear}
 
-  ticker: [
-    'AGENTES IA 24/7',
-    'RESPUESTAS AUTOMÁTICAS',
-    'SEGUIMIENTO INTELIGENTE',
-    'TIENDAS VIRTUALES',
-    'ATENCIÓN SIN PAUSAS',
-    'MENOS PROSPECTOS PERDIDOS',
-    'VENTAS MÁS ORGANIZADAS',
-    'TU NEGOCIO SIEMPRE ACTIVO',
-  ],
+  /* ====== NAV ====== */
+  .md-landing header.nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,backdrop-filter .3s,border-color .3s;
+    border-bottom:1px solid transparent}
+  .md-landing header.nav.scrolled{background:rgba(8,6,15,.72);backdrop-filter:blur(14px);border-color:rgba(255,255,255,.06)}
+  .md-landing .nav-in{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .md-landing .brand{display:flex;align-items:center;gap:12px;font-family:"Archivo";font-weight:800;
+    letter-spacing:.12em;font-size:15px;white-space:nowrap}
+  .md-landing .brand .wordmark{height:48px;width:auto;display:block;
+    filter:drop-shadow(0 0 10px rgba(164,37,255,.35))}
+  .md-landing .foot-in .brand .wordmark{height:38px}
+  .md-landing .brand .logo{width:auto;height:auto;display:grid;place-items:center;
+    background:none;border:none;box-shadow:none;border-radius:0;animation:none}
+  @keyframes logopulse{0%,100%{box-shadow:0 0 18px rgba(164,37,255,.35)}50%{box-shadow:0 0 30px rgba(196,38,211,.7)}}
+  .md-landing .nav-actions{display:flex;align-items:center;gap:14px}
+  .md-landing .btn{font-family:"Archivo";font-weight:700;letter-spacing:.12em;font-size:12.5px;text-transform:uppercase;
+    border-radius:12px;padding:13px 22px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;
+    gap:9px;transition:transform .18s,box-shadow .25s,background .25s;white-space:nowrap}
+  .md-landing .btn-ghost{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.12);color:#d8dae6}
+  .md-landing .btn-ghost:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+  .md-landing .btn-primary{background:var(--pill);color:#fff;box-shadow:0 8px 26px rgba(196,38,211,.45)}
+  .md-landing .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(196,38,211,.65)}
+  .md-landing .btn-lg{padding:18px 30px;font-size:13.5px}
 
-  numbered: {
-    title: 'No pierdas ventas por responder demasiado tarde.',
-    items: [
-      'Un cliente pregunta por tu producto, pero nadie responde a tiempo.',
-      'Llegan nuevos prospectos, pero el seguimiento se queda pendiente.',
-      'Tu negocio depende de que estés conectado todo el día.',
-      'Cada conversación olvidada puede convertirse en una oportunidad perdida.',
-    ],
-    closingTop: 'No necesitas trabajar más horas.',
-    closingBottom: 'Necesitas un sistema que trabaje contigo.',
-  },
+  /* ====== CONTENIDO ====== */
+  .md-landing main{position:relative;z-index:3}
+  .md-landing section{position:relative}
+  .md-landing .eyebrow{font-family:"Archivo";font-weight:700;letter-spacing:.28em;font-size:12px;text-transform:uppercase}
 
-  phone: {
-    /** Ruta editable para sustituir la imagen interna del celular */
-    image: '/landing/nuro-mobile-preview.webp',
-    bubbleTitle: 'NÜRO está disponible para atender nuevas oportunidades.',
-    bubbleBody:
-      'Puede responder consultas, presentar información y ayudarte a mantener activa la conversación con cada prospecto.',
-    title: '¿Tu negocio está preparado para responder a todos?',
-    problems: [
-      'Los mensajes llegan mientras estás ocupado atendiendo otras tareas.',
-      'Algunos clientes esperan demasiado tiempo para recibir una respuesta.',
-      'No siempre recuerdas volver a escribir a cada prospecto.',
-      'Presentar tus productos manualmente consume tiempo.',
-      'Muchas oportunidades se enfrían antes de llegar al cierre.',
-    ],
-    closing:
-      'NÜRO te ayuda a construir una experiencia comercial más organizada, disponible y preparada para crecer contigo.',
-  },
+  /* ====== HERO ====== */
+  .md-landing .hero{padding:150px 0 90px}
+  .md-landing .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+  .md-landing .badge{display:inline-flex;align-items:center;gap:9px;padding:8px 16px;border-radius:999px;
+    background:rgba(164,37,255,.10);border:1px solid rgba(164,37,255,.28);
+    font-family:"Archivo";font-weight:700;letter-spacing:.18em;font-size:11px;text-transform:uppercase;color:#cdb9ff}
+  .md-landing .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .md-landing .hero h1{font-size:clamp(40px,6vw,78px);font-weight:800;line-height:1.02;margin:26px 0 24px}
+  .md-landing .g-magenta{background:linear-gradient(100deg,#ff2bd6,#b026ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .md-landing .g-cyan{background:linear-gradient(100deg,#a425ff,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .md-landing .hero p.lead{color:var(--muted);font-size:18px;max-width:520px;margin-bottom:34px}
+  .md-landing .hero-cta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:34px}
+  .md-landing .trust{display:flex;gap:26px;flex-wrap:wrap;color:var(--muted-2);font-size:14px}
+  .md-landing .trust span{display:inline-flex;align-items:center;gap:8px}
 
-  invitation: {
-    upper: 'No se trata solamente de responder mensajes.',
-    titleTop: 'Es el momento de construir',
-    titleBottom: 'una nueva forma de vender.',
-    sub: 'Con NÜRO, puedes transformar la atención de tus clientes en una experiencia más rápida, organizada y preparada para crecer.',
-  },
+  /* ====== CHAT MOCKUP ====== */
+  .md-landing .phone{background:#0b0f12;border:1px solid rgba(255,255,255,.09);border-radius:24px;overflow:hidden;
+    box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(196,38,211,.10);max-width:430px;margin-left:auto}
+  .md-landing .chat-head{display:flex;align-items:center;gap:12px;padding:16px 18px;background:#11161a;border-bottom:1px solid rgba(255,255,255,.05)}
+  .md-landing .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;
+    font-family:"Archivo";flex-shrink:0}
+  .md-landing .av-cm{background:linear-gradient(145deg,#0f3d2e,#0b2a20);color:#3ee29a;border:1.5px solid #1fd884}
+  .md-landing .av-md{background:var(--green);color:#06291c}
+  .md-landing .chat-head .name{font-weight:700;font-size:15px;font-family:"Archivo"}
+  .md-landing .chat-head .status{color:var(--green);font-size:12px}
+  .md-landing .chat-head .meta-dots{margin-left:auto;display:flex;gap:5px}
+  .md-landing .chat-head .meta-dots i{width:7px;height:7px;border-radius:50%;background:#2a3138}
+  .md-landing .chat-head .meta-dots i:first-child{background:var(--green)}
+  .md-landing .chat-body{padding:18px;background:#0a0e10;min-height:300px;display:flex;flex-direction:column;gap:14px}
+  .md-landing .day{align-self:center;font-size:11px;color:#5d646c;background:rgba(255,255,255,.04);padding:4px 12px;border-radius:8px;letter-spacing:.1em}
+  .md-landing .msg-row{display:flex;gap:9px;align-items:flex-end;max-width:88%}
+  .md-landing .msg-row .avatar{width:30px;height:30px;font-size:11px}
+  .md-landing .msg-row.out{align-self:flex-end;flex-direction:row-reverse}
+  .md-landing .bubble{padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.4;position:relative}
+  .md-landing .bubble .t{display:block;font-size:10.5px;color:rgba(255,255,255,.45);margin-top:4px;text-align:right}
+  .md-landing .in .bubble{background:#1b2227;border-bottom-left-radius:5px}
+  .md-landing .out .bubble{background:#0c5e45;border-bottom-right-radius:5px}
+  .md-landing .out .bubble .t{color:rgba(220,255,240,.6)}
+  .md-landing .typing{display:inline-flex;gap:4px;padding:13px}
+  .md-landing .typing i{width:7px;height:7px;border-radius:50%;background:#5d646c;animation:bounce 1.3s infinite}
+  .md-landing .typing i:nth-child(2){animation-delay:.2s}.md-landing .typing i:nth-child(3){animation-delay:.4s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+  .md-landing .chat-input{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#11161a;border-top:1px solid rgba(255,255,255,.05)}
+  .md-landing .chat-input .field{flex:1;background:#0a0e10;border-radius:999px;padding:12px 18px;color:#5d646c;font-size:14px}
+  .md-landing .send{width:46px;height:46px;border-radius:50%;background:var(--green);display:grid;place-items:center;color:#06291c;flex-shrink:0}
 
-  capsules: {
-    items: [
-      { icon: 'bot',   text: 'Agentes IA disponibles 24/7' },
-      { icon: 'send',  text: 'Seguimiento de prospectos' },
-      { icon: 'box',   text: 'Presentación de productos y servicios' },
-      { icon: 'check', text: 'Confirmación de información comercial' },
-      { icon: 'store', text: 'Tiendas virtuales para distintos negocios' },
-      { icon: 'phone', text: 'Experiencia adaptable a celular y computadora' },
-    ] as Array<{ icon: keyof typeof capsuleIcons; text: string }>,
-    textBefore: 'Tu negocio',
-    accent: 'no necesita detenerse',
-    textAfter: 'cuando termina tu jornada.',
-    cta: 'QUIERO DAR EL SIGUIENTE PASO',
-    micro: ['Atención continua', 'Tienda virtual profesional', 'Sistema preparado para crecer'],
-  },
+  /* ====== STATS ====== */
+  .md-landing .stats{border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:54px 0}
+  .md-landing .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+  .md-landing .stat .ic{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;margin:0 auto 16px}
+  .md-landing .stat .num{font-family:"Archivo";font-weight:800;font-size:clamp(30px,3.6vw,44px);line-height:1}
+  .md-landing .stat .lbl{color:var(--muted-2);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin-top:10px}
+  .md-landing .ic-purple{background:rgba(164,37,255,.12);color:#c79bff;border:1px solid rgba(164,37,255,.3)}
+  .md-landing .ic-green{background:rgba(31,216,132,.12);color:#4fe6a3;border:1px solid rgba(31,216,132,.3)}
+  .md-landing .ic-cyan{background:rgba(34,211,238,.12);color:#6ee5f5;border:1px solid rgba(34,211,238,.3)}
 
-  video: {
-    eyebrow: 'DEMO EN VIDEO',
-    title: 'Descubre cómo trabaja NÜRO por tu negocio.',
-    sub: 'Mira en menos de dos minutos cómo una experiencia automatizada puede ayudarte a atender mejor.',
-    vimeoId: '1197763990',
-    linkLabel: 'Ver en Vimeo',
-  },
+  /* ====== TÍTULOS ====== */
+  .md-landing .sec-head{text-align:center;max-width:760px;margin:0 auto 60px}
+  .md-landing .sec-head .eyebrow{color:var(--magenta)}
+  .md-landing .sec-head h2{font-size:clamp(34px,5vw,58px);font-weight:800;line-height:1.05;margin-top:18px}
+  .md-landing .g-purple{background:linear-gradient(100deg,#c026d3,#a425ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .md-landing .g-green{background:linear-gradient(100deg,#1fd884,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
 
-  testimonials: {
-    eyebrow: 'PRUEBA SOCIAL',
-    title: 'Negocios que ya crecen con NÜRO.',
-    items: [
-      { foto: 'https://randomuser.me/api/portraits/women/68.jpg', nombre: 'María González',   tipo: 'Boutique de moda',        tag: 'Agente IA' as const,      texto: 'El agente atiende a toda hora. Cerré más ventas en un mes que en todo el trimestre.' },
-      { foto: 'https://randomuser.me/api/portraits/men/32.jpg',   nombre: 'Carlos Méndez',    tipo: 'Distribuidora',           tag: 'Tienda virtual' as const, texto: 'Mi tienda quedó impecable y profesional. Mis productos ahora se venden solos.' },
-      { foto: 'https://randomuser.me/api/portraits/women/44.jpg', nombre: 'Lucía Fernández',  tipo: 'Centro estético',         tag: 'Agente IA' as const,      texto: 'Respondo al instante aunque esté durmiendo. Se nota en los resultados.' },
-      { foto: 'https://randomuser.me/api/portraits/men/75.jpg',   nombre: 'Andrés Rojas',     tipo: 'Inmobiliaria',            tag: 'Agente IA' as const,      texto: 'El seguimiento automático recuperó clientes que daba por perdidos.' },
-      { foto: 'https://randomuser.me/api/portraits/women/65.jpg', nombre: 'Valentina Torres', tipo: 'Pastelería artesanal',    tag: 'Agente IA' as const,      texto: 'Pasé de responder tarde a atender 24/7. Mis clientes aman la rapidez.' },
-      { foto: 'https://randomuser.me/api/portraits/men/11.jpg',   nombre: 'Diego Ramírez',    tipo: 'E-commerce',              tag: 'Tienda virtual' as const, texto: 'Monté mi tienda online en días, no en meses. Moderna y muy fácil de usar.' },
-      { foto: 'https://randomuser.me/api/portraits/women/90.jpg', nombre: 'Camila Herrera',   tipo: 'Servicios profesionales', tag: 'Agente IA' as const,      texto: 'El agente presenta mi oferta mejor que yo. Profesional y siempre disponible.' },
-      { foto: 'https://randomuser.me/api/portraits/men/4.jpg',    nombre: 'Jorge Castillo',   tipo: 'Marketing digital',       tag: 'Agente IA' as const,      texto: 'Más prospectos atendidos y más ventas confirmadas. Transformó mi negocio.' },
-      { foto: 'https://randomuser.me/api/portraits/women/12.jpg', nombre: 'Paola Núñez',      tipo: 'Spa & wellness',          tag: 'Tienda virtual' as const, texto: 'Una imagen profesional las 24 horas. Mis clientes confían más en mi marca.' },
-      { foto: 'https://randomuser.me/api/portraits/men/47.jpg',   nombre: 'Sebastián Vargas', tipo: 'Academia online',         tag: 'Agente IA' as const,      texto: 'La IA cierra ventas mientras yo me enfoco en crecer. Resultados increíbles.' },
-    ],
-  },
+  .md-landing .features{padding:100px 0}
+  .md-landing .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .md-landing .card{background:var(--card);border:1px solid var(--card-brd);border-radius:var(--radius);padding:32px;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    transition:transform .3s,border-color .3s,background .3s;position:relative;overflow:hidden}
+  .md-landing .card .inner{position:relative;z-index:1}
+  .md-landing .card::before{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;transition:opacity .35s;
+    background:radial-gradient(420px 200px at 50% -20%, rgba(164,37,255,.16), transparent 70%)}
+  .md-landing .card:hover{transform:translateY(-6px);border-color:rgba(196,38,211,.35);background:rgba(22,17,38,.82)}
+  .md-landing .card:hover::before{opacity:1}
+  .md-landing .card .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:22px}
+  .md-landing .card .ic.sm{width:38px;height:38px;border-radius:11px;margin-bottom:0}
+  .md-landing .card-h{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+  .md-landing .card-h h3{margin:0}
+  .md-landing .card h3{font-size:20px;font-weight:700;margin-bottom:12px}
+  .md-landing .card p{color:var(--muted);font-size:14.5px}
+  .md-landing .card-foot{display:inline-flex;align-items:center;gap:7px;margin-top:16px;font-family:"Archivo";
+    font-weight:700;font-size:12.5px;letter-spacing:.03em;color:#c79bff;transition:gap .2s,color .2s}
+  .md-landing .card:hover .card-foot{gap:11px;color:#e6ccff}
 
-  banner: {
-    title: 'Tu próximo cliente podría estar escribiendo ahora mismo.',
-    sub: 'NÜRO te ayuda a construir una experiencia de atención y ventas disponible incluso cuando tú no estás conectado.',
-    cta: 'CREAR MI CUENTA',
-    altCta: 'YA TENGO UNA CUENTA · INICIAR SESIÓN',
-  },
+  /* ===== Mini-visuales dentro de las tarjetas ===== */
+  .md-landing .thumb{height:132px;border-radius:14px;margin-bottom:20px;position:relative;overflow:hidden;display:flex;padding:14px;
+    background:linear-gradient(155deg,rgba(255,255,255,.07),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.07)}
+  .md-landing .thumb::after{content:"";position:absolute;inset:0;background:radial-gradient(240px 120px at 18% -10%,rgba(164,37,255,.20),transparent 70%);pointer-events:none}
+  .md-landing .thumb .badge-sm{position:absolute;top:11px;right:11px;font-family:"Archivo";font-weight:800;font-size:10px;
+    padding:4px 9px;border-radius:999px;background:rgba(31,216,132,.16);color:#5ef0ac;border:1px solid rgba(31,216,132,.35);z-index:2}
+  /* chat */
+  .md-landing .tb-chat{display:flex;flex-direction:column;gap:7px;justify-content:center;width:100%}
+  .md-landing .tb-bub{max-width:80%;padding:8px 11px;border-radius:11px;font-size:11.5px;color:#dfe3ee;line-height:1.3}
+  .md-landing .tb-bub.in{background:#1b2227;border-bottom-left-radius:4px;align-self:flex-start}
+  .md-landing .tb-bub.out{background:#0c5e45;border-bottom-right-radius:4px;align-self:flex-end;color:#eafff5}
+  .md-landing .tb-typing{align-self:flex-start;display:inline-flex;gap:3px;background:#1b2227;padding:9px 11px;border-radius:11px}
+  .md-landing .tb-typing i{width:5px;height:5px;border-radius:50%;background:#5d646c;animation:bounce 1.3s infinite}
+  .md-landing .tb-typing i:nth-child(2){animation-delay:.2s}.md-landing .tb-typing i:nth-child(3){animation-delay:.4s}
+  /* ads */
+  .md-landing .tb-col{display:flex;flex-direction:column;gap:10px;width:100%;justify-content:center}
+  .md-landing .tb-chips{display:flex;gap:6px}
+  .md-landing .tb-chip{font-family:"Archivo";font-size:10px;font-weight:700;padding:4px 9px;border-radius:999px;color:#fff}
+  .md-landing .tb-bars{display:flex;align-items:flex-end;gap:8px;height:50px}
+  .md-landing .tb-bars span{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#d646ea,#7a1fd6)}
+  /* store */
+  .md-landing .tb-store{display:flex;gap:13px;align-items:center;width:100%}
+  .md-landing .tb-prod{width:72px;height:92px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;
+    background:linear-gradient(150deg,#a425ff,#22d3ee)}
+  .md-landing .tb-prod::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 25%,rgba(255,255,255,.5),transparent 45%)}
+  .md-landing .tb-meta{display:flex;flex-direction:column;gap:8px;flex:1}
+  .md-landing .tb-line{height:8px;border-radius:5px;background:rgba(255,255,255,.16)}
+  .md-landing .tb-line.s{width:60%}
+  .md-landing .tb-price{font-family:"Archivo";font-weight:800;color:#fff;font-size:17px}
+  .md-landing .tb-add{align-self:flex-start;font-family:"Archivo";font-size:10.5px;font-weight:700;color:#06291c;
+    background:#1fd884;padding:6px 12px;border-radius:8px}
+  /* lecciones */
+  .md-landing .tb-les{display:flex;flex-direction:column;gap:9px;width:100%;justify-content:center}
+  .md-landing .tb-row{display:flex;align-items:center;gap:10px}
+  .md-landing .tb-play{width:26px;height:26px;border-radius:8px;background:rgba(196,38,211,.18);display:grid;place-items:center;color:#e29bff;flex-shrink:0}
+  .md-landing .tb-prog{height:7px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;flex:1}
+  .md-landing .tb-prog i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#c026d3,#a425ff)}
+  /* red / chart */
+  .md-landing .tb-svg{width:100%;height:100%}
+  .md-landing .thumb svg{display:block}
 
-  footer: {
-    desc: 'Agentes IA y tiendas virtuales para negocios que quieren avanzar.',
-    links: [
-      { href: '#hero',       label: 'Inicio' },
-      { href: '#capsulas',   label: 'Agentes IA' },
-      { href: '#solucion',   label: 'Tiendas virtuales' },
-      { href: '#problemas',  label: 'Cómo funciona' },
-      { href: '/login',      label: 'Iniciar sesión' },
-      { href: '/register',   label: 'Registrarse' },
-    ],
-    copyright: '© 2026 NÜRO. Todos los derechos reservados.',
-  },
-}
+  /* ====== TESTIMONIOS ====== */
+  .md-landing .testi{padding:90px 0 110px;overflow:hidden}
+  .md-landing .marquee{display:flex;gap:22px;width:max-content;animation:scrollX 46s linear infinite}
+  .md-landing .marquee.rev{animation-direction:reverse;margin-top:22px}
+  .md-landing .marquee-mask{-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+                        mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .md-landing .testi:hover .marquee{animation-play-state:paused}
+  @keyframes scrollX{to{transform:translateX(-50%)}}
+  .md-landing .tcard{width:360px;flex-shrink:0;background:var(--card);border:1px solid var(--card-brd);border-radius:var(--radius);padding:26px;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .md-landing .stars{color:#ffc83d;letter-spacing:2px;font-size:15px;margin-bottom:14px}
+  .md-landing .tcard p{color:#c8cbda;font-size:15px;min-height:84px}
+  .md-landing .tperson{display:flex;align-items:center;gap:13px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}
+  .md-landing .tperson .avatar{width:42px;height:42px}
+  .md-landing .tperson .pn{font-family:"Archivo";font-weight:700;font-size:15px}
+  .md-landing .tperson .pr{color:var(--muted-2);font-size:12.5px}
+  .md-landing .av-1{background:linear-gradient(145deg,#3a1d52,#1e1030);color:#c79bff;border:1px solid rgba(164,37,255,.4)}
+  .md-landing .av-2{background:linear-gradient(145deg,#0f3d2e,#0b2a20);color:#4fe6a3;border:1px solid rgba(31,216,132,.4)}
+  .md-landing .av-3{background:linear-gradient(145deg,#0e3640,#0a2630);color:#6ee5f5;border:1px solid rgba(34,211,238,.4)}
 
-const capsuleIcons = {
-  bot:   Bot,
-  send:  Send,
-  box:   Boxes,
-  check: CheckCircle,
-  store: Store,
-  phone: Smartphone,
-} as const
+  /* ====== CTA FINAL ====== */
+  .md-landing .cta{padding:110px 0;text-align:center}
+  .md-landing .cta .wrap{position:relative}
+  .md-landing .cta .wrap::before{content:"";position:absolute;inset:-8% -6%;z-index:-1;pointer-events:none;
+    background:radial-gradient(ellipse 60% 60% at center, rgba(6,4,12,.7), rgba(6,4,12,.32) 55%, transparent 78%);
+    filter:blur(14px)}
+  .md-landing .cta .ic-zap{width:74px;height:74px;border-radius:20px;display:grid;place-items:center;margin:0 auto 30px;
+    background:var(--pill);box-shadow:0 16px 44px rgba(196,38,211,.5)}
+  .md-landing .cta h2{font-size:clamp(36px,5.5vw,66px);font-weight:800;line-height:1.04}
+  .md-landing .cta p{color:var(--muted);font-size:18px;max-width:620px;margin:22px auto 38px}
+  .md-landing .cta .fine{color:var(--muted-2);font-size:13.5px;margin-top:24px;letter-spacing:.04em}
 
-// Split de testimonios en 2 filas para el carrusel infinito
-type Testimonio = (typeof nuroConfig.testimonials.items)[number]
-const _mitad     = Math.ceil(nuroConfig.testimonials.items.length / 2)
-const testiLeft  = nuroConfig.testimonials.items.slice(0, _mitad)
-const testiRight = nuroConfig.testimonials.items.slice(_mitad)
+  /* ====== FOOTER ====== */
+  .md-landing footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 0}
+  .md-landing .foot-in{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .md-landing .foot-in .brand .logo{width:auto;height:auto;border-radius:0;animation:none}
+  .md-landing .foot-links{display:flex;gap:26px;color:var(--muted);font-size:14px}
+  .md-landing .foot-links a:hover{color:#fff}
+  .md-landing .copy{color:var(--muted-2);font-size:13.5px}
 
-function Tcard({ t }: { t: Testimonio }) {
+  /* ====== REVEAL (la info aparece al bajar) ====== */
+  .md-landing .reveal{opacity:0;transform:translateY(42px);filter:blur(7px);
+    transition:opacity .9s cubic-bezier(.16,.8,.3,1),transform .9s cubic-bezier(.16,.8,.3,1),filter .9s ease;
+    will-change:opacity,transform,filter}
+  .md-landing .reveal[data-anim="left"]{transform:translateX(-52px)}
+  .md-landing .reveal[data-anim="right"]{transform:translateX(52px)}
+  .md-landing .reveal[data-anim="scale"]{transform:scale(.9) translateY(26px)}
+  .md-landing .reveal.in{opacity:1;transform:none;filter:none}
+
+  /* ====== RESPONSIVE ====== */
+  @media(max-width:920px){
+    .md-landing .hero-grid{grid-template-columns:1fr;gap:48px}
+    .md-landing .hero-grid > .reveal:first-child{position:relative}
+    .md-landing .hero-grid > .reveal:first-child::before{content:"";position:absolute;inset:-12% -8%;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 75% 65% at 38% 42%, rgba(7,5,14,.66), rgba(7,5,14,.25) 58%, transparent 80%);
+      filter:blur(16px)}
+    .md-landing .phone{margin:0 auto}
+    .md-landing .stats-grid{grid-template-columns:repeat(2,1fr);gap:38px 20px}
+    .md-landing .feat-grid{grid-template-columns:1fr 1fr}
+    #diamondGlow{width:64vmax;height:64vmax}
+  }
+  @media(max-width:620px){
+    .md-landing .hero{padding:120px 0 60px}
+    .md-landing .nav-actions .btn-ghost{display:none}
+    .md-landing .feat-grid{grid-template-columns:1fr}
+    .md-landing .trust{gap:16px}
+    .md-landing .tcard{width:300px}
+    .md-landing .foot-in{flex-direction:column;text-align:center}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .md-landing .marquee{animation:none}.md-landing .logo,.md-landing .spark{animation:none}html{scroll-behavior:auto}
+    .md-landing .reveal{transition-duration:.4s}
+  }
+`
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Testimonios (se duplican en JSX para el marquee infinito, en vez de innerHTML)
+// ─────────────────────────────────────────────────────────────────────────────
+type Testi = { ini: string; av: string; name: string; flag: string; role: string; text: string }
+
+const ROW1: Testi[] = [
+  { ini: 'AP', av: 'av-1', name: 'Ana Paula Silva', flag: '🇧🇷', role: 'Empresária · Brasil', text: 'Automatizei meu negócio completo: bot, loja e anúncios. Hoje ganho enquanto viajo. MY DIAMOND mudou minha vida!' },
+  { ini: 'JR', av: 'av-2', name: 'James Rivera', flag: '🇺🇸', role: 'Online Business Owner · USA', text: 'The AI bots are incredible. My store sells automatically while I sleep. Best investment I made for my business this year.' },
+  { ini: 'LF', av: 'av-3', name: 'Luisa Fernández', flag: '🇻🇪', role: 'Vendedora online · Venezuela', text: 'Configuré mi tienda en una tarde. Al día siguiente ya tenía mis primeras ventas. Simple, potente y rentable.' },
+  { ini: 'DS', av: 'av-1', name: 'Diego Sánchez', flag: '🇦🇷', role: 'Empresario · Argentina', text: 'Lo que más me sorprendió fue la velocidad. En 2 días tenía bot, landing y campaña activos. Resultados desde el primer mes.' },
+  { ini: 'MG', av: 'av-2', name: 'María González', flag: '🇨🇴', role: 'Emprendedora digital · Colombia', text: 'Antes perdía clientes por no tener tiempo. Ahora mi bot atiende y mis ventas crecieron un 280% en pocos meses.' },
+]
+
+const ROW2: Testi[] = [
+  { ini: 'IC', av: 'av-3', name: 'Isabella Costa', flag: '🇧🇷', role: 'Influencer de negócios · Brasil', text: 'Em 3 meses recuperei o investimento e hoje lucro consistentemente. As ferramentas de IA são de outro nível mesmo.' },
+  { ini: 'AT', av: 'av-1', name: 'Andrés Torres', flag: '🇧🇴', role: 'Comerciante · Bolivia', text: 'Tenía miedo de la tecnología pero MY DIAMOND es muy intuitivo. Ahora mi negocio opera solo mientras yo construyo mi equipo.' },
+  { ini: 'SL', av: 'av-2', name: 'Sofía Lagos', flag: '🇨🇱', role: 'Emprendedora · Chile', text: 'Sin experiencia técnica armé todo en un fin de semana. El soporte siempre responde y las herramientas son realmente buenas.' },
+  { ini: 'RC', av: 'av-3', name: 'Roberto Castillo', flag: '🇵🇪', role: 'Networker · Perú', text: 'Mis referidos crecen solos gracias al sistema. Los retiros llegan puntuales y el panel de comisiones es muy transparente.' },
+  { ini: 'VM', av: 'av-1', name: 'Valentina Moreno', flag: '🇲🇽', role: 'Coach de negocios · México', text: 'Mi landing page convierte como nunca antes. Los textos los genera la IA y se ven profesionales desde el primer intento.' },
+]
+
+function TCard({ t }: { t: Testi }) {
   return (
     <div className="tcard">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={t.foto}
-        alt={t.nombre}
-        loading="lazy"
-        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/landing/robot.png' }}
-      />
-      <div className="tcard-body">
-        <div className="tcard-head">
-          <div className="tn">{t.nombre}</div>
-          <span className={`tcard-tag ${t.tag === 'Tienda virtual' ? 'is-tienda' : 'is-agente'}`}>
-            {t.tag}
-          </span>
+      <div className="stars">★★★★★</div>
+      <p>&quot;{t.text}&quot;</p>
+      <div className="tperson">
+        <span className={`avatar ${t.av}`}>{t.ini}</span>
+        <div>
+          <div className="pn">{t.name} {t.flag}</div>
+          <div className="pr">{t.role}</div>
         </div>
-        <div className="tcard-tipo">{t.tipo}</div>
-        <div className="tt">{t.texto}</div>
       </div>
     </div>
   )
 }
 
-export default function LandingPage() {
-  const sceneRef     = useRef<HTMLDivElement>(null)
-  const particlesRef = useRef<HTMLDivElement>(null)
-  const [scrolled, setScrolled] = useState(false)
-
-  // ──────────────────────────────────────────────
-  // ▼  PROTEGIDO · navbar scroll-aware  ▼
-  // ──────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// PÁGINA
+// ─────────────────────────────────────────────────────────────────────────────
+export default function HomePage() {
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    // ===== Scroll / diamante / nav / contador =====
+    const nav = document.getElementById('nav')
+    const bar = document.getElementById('progress')
+    const gemVid = document.getElementById('gem') as HTMLVideoElement | null
+    const glow = document.getElementById('diamondGlow')
 
-  // ──────────────────────────────────────────────
-  // ▼  Reveal editorial · IntersectionObserver  ▼
-  // Aparece eyebrow → título → lead → CTA con stagger suave
-  // (transform + opacity solamente · respeta prefers-reduced-motion)
-  // ──────────────────────────────────────────────
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    // Si el usuario prefiere menos movimiento, marcamos todo como visible directamente
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll<HTMLElement>('[data-reveal]')
-        .forEach((el) => el.classList.add('is-visible'))
-      return
+    const scrollProgress = () => {
+      const d = document.documentElement
+      const max = (d.scrollHeight - d.clientHeight) || 1
+      return Math.min(1, Math.max(0, (window.scrollY || d.scrollTop) / max))
     }
-    const targets = document.querySelectorAll<HTMLElement>('[data-reveal]')
-    if (!targets.length) return
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            io.unobserve(entry.target) // anima una sola vez
-          }
-        })
-      },
-      {
-        threshold: 0.15,
-        // Dispara un poco antes de que el elemento esté totalmente visible
-        rootMargin: '0px 0px -80px 0px',
+    // El diamante (video) gira acoplado al scroll: mapeo LINEAL del progreso al
+    // tiempo del video — al BAJAR avanza (gira hacia adelante), al SUBIR retrocede
+    // (gira al revés). Un loop continuo (rAF) + suavizado lo hace fluido y direccional,
+    // sin el salto que causaba TURNS=2.5 con módulo (reiniciaba el giro a media página).
+    if (gemVid) { gemVid.muted = true; gemVid.pause() }
+    let curT = 0
+    let uiRaf = 0
+    const uiTick = () => {
+      uiRaf = requestAnimationFrame(uiTick)
+      if (document.hidden) return
+      const p = scrollProgress()
+      if (bar) bar.style.width = (p * 100).toFixed(2) + '%'
+      if (nav) nav.classList.toggle('scrolled', (window.scrollY || 0) > 24)
+      const mob = window.innerWidth < 720
+      const s = (mob ? 0.46 : 0.7) + Math.pow(p, 1.5) * (mob ? 1.05 : 1.6)
+      if (gemVid) gemVid.style.transform = `translate(-50%,-50%) scale(${s.toFixed(3)})`
+      if (glow) {
+        glow.style.opacity = (0.16 + p * 0.40).toFixed(3)
+        glow.style.transform = `translate(-50%,-50%) scale(${(0.8 + s * 0.5).toFixed(2)})`
       }
-    )
-    targets.forEach((t) => io.observe(t))
-    return () => io.disconnect()
-  }, [])
-
-  // ──────────────────────────────────────────────
-  // ▼  PROTEGIDO · partículas flotantes  ▼
-  // ──────────────────────────────────────────────
-  useEffect(() => {
-    const box = particlesRef.current
-    if (!box) return
-    const n = window.innerWidth < 820 ? 16 : 34
-    const els: HTMLSpanElement[] = []
-    for (let i = 0; i < n; i++) {
-      const p = document.createElement('span')
-      p.className = 'particle'
-      const size = 1 + Math.random() * 3
-      p.style.width = p.style.height = size + 'px'
-      p.style.left = Math.random() * 100 + 'vw'
-      p.style.top  = (100 + Math.random() * 20) + 'vh'
-      p.style.animationDuration = (10 + Math.random() * 16) + 's'
-      p.style.animationDelay = (-Math.random() * 20) + 's'
-      box.appendChild(p)
-      els.push(p)
+      if (gemVid && gemVid.readyState >= 2 && gemVid.duration) {
+        const target = p * (gemVid.duration - 0.05) // lineal: 1 pasada del video en todo el scroll
+        curT += (target - curT) * 0.2               // suavizado hacia el objetivo
+        if (Math.abs(gemVid.currentTime - curT) > 0.01) { try { gemVid.currentTime = curT } catch { /* noop */ } }
+      }
     }
-    return () => { els.forEach((e) => e.remove()) }
-  }, [])
+    uiRaf = requestAnimationFrame(uiTick)
 
-  // ──────────────────────────────────────────────
-  // ▼  PROTEGIDO · ESCENA THREE.JS + GSAP  ▼
-  // ──────────────────────────────────────────────
-  useEffect(() => {
-    const container = sceneRef.current
-    if (!container) return
-
-    gsap.registerPlugin(ScrollTrigger)
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    const scene  = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100)
-    camera.position.set(0, 0.9, 2.3)
-
-    const isPhone = innerWidth < 820
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isPhone })
-    renderer.setSize(innerWidth, innerHeight)
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))
-    renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.1
-    container.appendChild(renderer.domElement)
-
-    // Luces
-    scene.add(new THREE.AmbientLight(0x3a2a66, 0.6))
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2)
-    keyLight.position.set(2, 4, 3)
-    scene.add(keyLight)
-    const neonFront = new THREE.PointLight(0x9b5cff, 14, 18)
-    neonFront.position.set(-2.4, 1.2, 2.2)
-    scene.add(neonFront)
-    const backLight = new THREE.PointLight(0xc850ff, 10, 18)
-    backLight.position.set(0, 1.6, -3)
-    scene.add(backLight)
-    const warm = new THREE.PointLight(0xe0219a, 5, 14)
-    warm.position.set(2.6, -0.6, 1.8)
-    scene.add(warm)
-
-    const robot = new THREE.Group()
-    scene.add(robot)
-
-    // Plataforma circular
-    const cv = document.createElement('canvas')
-    cv.width = cv.height = 256
-    const ctx = cv.getContext('2d')!
-    const g = ctx.createRadialGradient(128, 128, 8, 128, 128, 128)
-    g.addColorStop(0,    'rgba(190,150,255,0.95)')
-    g.addColorStop(0.35, 'rgba(155,92,255,0.45)')
-    g.addColorStop(1,    'rgba(155,92,255,0)')
-    ctx.fillStyle = g
-    ctx.fillRect(0, 0, 256, 256)
-    const tex = new THREE.CanvasTexture(cv)
-    const platform = new THREE.Mesh(
-      new THREE.CircleGeometry(1.7, 64),
-      new THREE.MeshBasicMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })
-    )
-    platform.rotation.x = -Math.PI / 2
-    platform.position.y = -1.28
-    robot.add(platform)
-
-    // Anillos
-    const ringsGroup = new THREE.Group()
-    for (let i = 0; i < 3; i++) {
-      const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(1.5 + i * 0.28, 0.006, 12, 120),
-        new THREE.MeshBasicMaterial({ color: 0x9b5cff, transparent: true, opacity: 0.22 - i * 0.05 })
-      )
-      ring.position.z = -1.4
-      ring.rotation.x = Math.PI / 2.2
-      ringsGroup.add(ring)
-    }
-    robot.add(ringsGroup)
-
-    // Modelo robot · GLB con fallback PNG
-    let model: THREE.Object3D | null = null
-    let usingFallback = false
-
-    function centerAndScale(obj: THREE.Object3D, targetHeight: number) {
-      const box = new THREE.Box3().setFromObject(obj)
-      const size = new THREE.Vector3()
-      box.getSize(size)
-      const center = new THREE.Vector3()
-      box.getCenter(center)
-      const s = targetHeight / (size.y || 1)
-      obj.scale.setScalar(s)
-      obj.position.sub(center.multiplyScalar(s))
-    }
-
-    function buildFallback() {
-      usingFallback = true
-      new THREE.TextureLoader().load(ROBOT_IMAGE, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace
-        const ar = (tex.image.width || 408) / (tex.image.height || 612)
-        const h = 2.5, w = h * ar
-        const plane = new THREE.Mesh(
-          new THREE.PlaneGeometry(w, h),
-          new THREE.MeshBasicMaterial({ map: tex, transparent: true })
-        )
-        model = plane
-        robot.add(model)
-      })
-    }
-
-    function loadRobot() {
-      const gltfLoader = new GLTFLoader()
-      gltfLoader.load(
-        ROBOT_GLB_PATH,
-        (gltf) => {
-          model = gltf.scene
-          model.traverse((o) => {
-            if ((o as THREE.Mesh).isMesh) {
-              o.castShadow = true
-              o.receiveShadow = true
-            }
-          })
-          centerAndScale(model, 2.5)
-          robot.add(model)
-        },
-        undefined,
-        () => {
-          console.info('[NÜRO] No hay GLB · usando imagen plana del robot.')
-          buildFallback()
-        }
-      )
-    }
-
-    // Estado animado + ScrollTrigger
-    const target  = { rotY: 0, camZ: 2.3, camY: 0.9, lookY: 0.95, posY: 0 }
-    const current = { ...target }
-    let isMobile = innerWidth < 820
-
-    function applyProgress(p: number) {
-      const ease = gsap.parseEase('power2.inOut')(p)
-      const nearZ   = isMobile ? 2.50 : 1.90
-      const farZ    = isMobile ? 6.30 : 4.85
-      const endPosY = isMobile ? 0.85 : 0.30
-
-      target.camZ  = THREE.MathUtils.lerp(nearZ, farZ, ease)
-      target.camY  = THREE.MathUtils.lerp(0.60, 0.06, ease)
-      target.lookY = THREE.MathUtils.lerp(0.60, 0.00, ease)
-      target.posY  = p > 0.85 ? THREE.MathUtils.lerp(0, endPosY, (p - 0.85) / 0.15) : 0
-      target.rotY  = usingFallback
-        ? THREE.MathUtils.degToRad(15) * Math.sin(p * Math.PI * 2)
-        : p * Math.PI * 2
-    }
-
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: '.content',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.4,
-      onUpdate: (self) => applyProgress(self.progress),
+    // ===== Reveal escalonado =====
+    document.querySelectorAll<HTMLElement>('[data-stagger]').forEach(g => {
+      Array.from(g.children).forEach((c, i) => { (c as HTMLElement).style.transitionDelay = Math.min(i, 6) * 85 + 'ms' })
     })
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } })
+    }, { threshold: .16, rootMargin: '0px 0px -8% 0px' })
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el))
 
-    const clock = new THREE.Clock()
-    let visible = true
-    const onVisibility = () => { visible = !document.hidden }
-    document.addEventListener('visibilitychange', onVisibility)
-
-    let rafId = 0
-    function animate() {
-      rafId = requestAnimationFrame(animate)
-      if (!visible) return
-      const t = clock.getElapsedTime()
-      const k = reduceMotion ? 1 : 0.07
-
-      current.rotY  += (target.rotY  - current.rotY)  * k
-      current.camZ  += (target.camZ  - current.camZ)  * k
-      current.camY  += (target.camY  - current.camY)  * k
-      current.lookY += (target.lookY - current.lookY) * k
-      current.posY  += (target.posY  - current.posY)  * k
-
-      robot.rotation.y = current.rotY
-      robot.position.y = current.posY + (reduceMotion ? 0 : Math.sin(t * 1.1) * 0.05)
-
-      if (usingFallback && model) (model as THREE.Mesh).rotation.y = 0
-
-      ringsGroup.rotation.z = t * 0.15
-      ;(platform.material as THREE.MeshBasicMaterial).opacity = 0.75 + Math.sin(t * 1.6) * 0.18
-
-      camera.position.z = current.camZ
-      camera.position.y = current.camY
-      camera.lookAt(0, current.lookY, 0)
-      renderer.render(scene, camera)
+    // ===== Conteo animado de stats =====
+    const countUp = (el: HTMLElement) => {
+      const to = +(el.dataset.to || 0), dur = 1600, start = performance.now()
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / dur)
+        const e = 1 - Math.pow(1 - t, 3)
+        el.textContent = Math.round(to * e).toLocaleString('en-US')
+        if (t < 1) requestAnimationFrame(step)
+      }
+      requestAnimationFrame(step)
     }
+    const cio = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) { countUp(e.target as HTMLElement); cio.unobserve(e.target) } })
+    }, { threshold: .6 })
+    document.querySelectorAll<HTMLElement>('.count').forEach(el => cio.observe(el))
 
-    function onResize() {
-      isMobile = innerWidth < 820
-      camera.aspect = innerWidth / innerHeight
-      camera.updateProjectionMatrix()
-      renderer.setSize(innerWidth, innerHeight)
-      ScrollTrigger.refresh()
-    }
-    window.addEventListener('resize', onResize)
-
-    applyProgress(0)
-    animate()
-
-    type IdleWin = Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number
-    }
-    const w = window as IdleWin
-    if (typeof w.requestIdleCallback === 'function') {
-      w.requestIdleCallback(loadRobot, { timeout: 600 })
-    } else {
-      setTimeout(loadRobot, 100)
+    // ===== Galaxia (estrellas + nebulosas) =====
+    let galaxyRaf = 0
+    let onGalaxyResize: (() => void) | null = null
+    let onGalaxyScroll: (() => void) | null = null
+    const cv = document.getElementById('galaxy') as HTMLCanvasElement | null
+    if (cv) {
+      const ctx = cv.getContext('2d')
+      if (ctx) {
+        const DPR = Math.min(window.devicePixelRatio || 1, 1.5)
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+        let W = 0, H = 0, cx = 0, cy = 0, maxR = 0, scrollY = 0
+        const N = window.innerWidth < 720 ? 240 : 520
+        const PAL = ['#ffffff', '#ffffff', '#ffffff', '#cdb9ff', '#9fe9ff', '#ff9be8']
+        type Star = { r: number; a: number; z: number; size: number; col: string; tw: number; tws: number }
+        const stars: Star[] = []
+        const nebs = [
+          { a: 0.0, r: 0.22, col: 'rgba(150,40,220,0.22)', size: 0.62, sp: 0.05 },
+          { a: 2.1, r: 0.36, col: 'rgba(255,40,200,0.15)', size: 0.50, sp: 0.04 },
+          { a: 4.2, r: 0.30, col: 'rgba(40,150,255,0.16)', size: 0.56, sp: 0.06 },
+        ]
+        const resize = () => {
+          W = cv.width = Math.floor(window.innerWidth * DPR)
+          H = cv.height = Math.floor(window.innerHeight * DPR)
+          cv.style.width = window.innerWidth + 'px'; cv.style.height = window.innerHeight + 'px'
+          cx = W / 2; cy = H * 0.42; maxR = Math.hypot(W, H) * 0.62
+        }
+        resize(); onGalaxyResize = resize; window.addEventListener('resize', resize)
+        for (let i = 0; i < N; i++) {
+          stars.push({
+            r: Math.pow(Math.random(), 0.7),
+            a: Math.random() * Math.PI * 2,
+            z: 0.3 + Math.random() * 0.7,
+            size: Math.random() * 1.3 + 0.4,
+            col: PAL[(Math.random() * PAL.length) | 0],
+            tw: Math.random() * Math.PI * 2,
+            tws: 0.5 + Math.random() * 1.6,
+          })
+        }
+        onGalaxyScroll = () => { scrollY = window.scrollY || 0 }
+        window.addEventListener('scroll', onGalaxyScroll, { passive: true })
+        let t0 = performance.now()
+        const frame = (now: number) => {
+          galaxyRaf = requestAnimationFrame(frame)
+          if (document.hidden) { t0 = now; return }
+          const dt = Math.min((now - t0) / 1000, 0.05); t0 = now
+          const t = now / 1000
+          const par = scrollY * 0.05 * DPR
+          ctx.clearRect(0, 0, W, H)
+          ctx.globalCompositeOperation = 'lighter'
+          for (const n of nebs) {
+            if (!reduce) n.a += n.sp * dt
+            const R = n.r * maxR, S = n.size * maxR
+            const x = cx + Math.cos(n.a) * R, y = cy + Math.sin(n.a) * R * 0.7 + par * 0.4
+            const g = ctx.createRadialGradient(x, y, 0, x, y, S)
+            g.addColorStop(0, n.col); g.addColorStop(1, 'rgba(0,0,0,0)')
+            ctx.fillStyle = g; ctx.fillRect(x - S, y - S, S * 2, S * 2)
+          }
+          for (const s of stars) {
+            const rr = s.r * maxR
+            if (!reduce) s.a += (0.015 + (1 - s.r) * 0.05) * dt * s.z
+            const x = cx + Math.cos(s.a) * rr
+            const y = cy + Math.sin(s.a) * rr * 0.6 + par * s.z
+            const tw = 0.55 + 0.45 * Math.sin(t * s.tws + s.tw)
+            ctx.globalAlpha = tw * s.z
+            ctx.fillStyle = s.col
+            ctx.beginPath(); ctx.arc(x, y, s.size * DPR, 0, 6.283); ctx.fill()
+          }
+          ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'
+        }
+        galaxyRaf = requestAnimationFrame(frame)
+      }
     }
 
     return () => {
-      cancelAnimationFrame(rafId)
-      document.removeEventListener('visibilitychange', onVisibility)
-      window.removeEventListener('resize', onResize)
-      scrollTrigger.kill()
-      renderer.dispose()
-      tex.dispose()
-      platform.geometry.dispose()
-      ;(platform.material as THREE.MeshBasicMaterial).dispose()
-      ringsGroup.children.forEach((m) => {
-        const mesh = m as THREE.Mesh
-        mesh.geometry?.dispose()
-        ;(mesh.material as THREE.Material)?.dispose()
-      })
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement)
-      }
+      if (uiRaf) cancelAnimationFrame(uiRaf)
+      io.disconnect(); cio.disconnect()
+      if (galaxyRaf) cancelAnimationFrame(galaxyRaf)
+      if (onGalaxyResize) window.removeEventListener('resize', onGalaxyResize)
+      if (onGalaxyScroll) window.removeEventListener('scroll', onGalaxyScroll)
     }
   }, [])
-  // ──────────────────────────────────────────────
-  // ▲  FIN ZONA PROTEGIDA  ▲
-  // ──────────────────────────────────────────────
-
-  const handleScrollTop = () => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
 
   return (
-    <div className={manrope.variable}>
-      {/* ▼ CAPAS DE FONDO INTOCABLES ▼ */}
-      <div className="bg-gradient" />
-      <div className="bg-grid" />
-      <div className="bg-glow" />
-      <div className="bg-glow-warm" />
-      <div id="particles" ref={particlesRef} />
-      <div id="scene" ref={sceneRef} />
-      {/* ▲ FIN CAPAS DE FONDO ▲ */}
+    <div className="md-landing" style={{ fontFamily: "'Archivo', system-ui, sans-serif" }}>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@100..900&display=swap" rel="stylesheet" />
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
-      {/* ─── NAVBAR ─── */}
-      <header className={`topbar ${scrolled ? 'is-scrolled' : ''}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/landing/logo-blanco.png" className="logo-nuro" alt="NÜRO" />
-        <nav className="menu">
-          <a href="#problemas">Problema</a>
-          <a href="#solucion">Solución</a>
-          <a href="#demo">Demo</a>
-          <a href="#testimonios">Clientes</a>
-        </nav>
-        <div className="auth-btns">
-          <a href={nuroConfig.loginUrl}    className="btn btn-ghost btn-nav">Iniciar sesión</a>
-          <a href={nuroConfig.registerUrl} className="btn btn-primary btn-nav">Registrarse</a>
+      <div className="bg" />
+      <canvas id="galaxy" aria-hidden="true" />
+
+      {/* HALO + DIAMANTE (video real que gira al bajar) */}
+      <div id="diamondGlow" />
+      <video id="gem" aria-hidden="true" src="/diamond-scrub.mp4" muted playsInline preload="auto" />
+
+      <div className="progress" id="progress" />
+
+      {/* NAV */}
+      <header className="nav" id="nav">
+        <div className="wrap nav-in">
+          <div className="brand">
+            <img className="wordmark" src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" />
+          </div>
+          <nav className="nav-actions">
+            <a className="btn btn-ghost" href="/login">Iniciar sesión</a>
+            <a className="btn btn-primary" href="/register">Empezar gratis</a>
+          </nav>
         </div>
       </header>
 
-      <main className="content">
-        {/* ═══════════════════════════════════════════════════
-            1 · HERO PRINCIPAL · texto izquierda · chip discreto
-            ═══════════════════════════════════════════════════ */}
-        <section id="hero">
-          <div className="hero-grid">
-            <div className="hero-text">
-              <span className="eyebrow" data-reveal>
-                <span className="eyebrow-dot" /> {nuroConfig.hero.label}
-              </span>
-              <h1 className="hero-title" data-reveal data-delay="1">
-                <span className="hero-line">Tu negocio puede seguir</span>
-                <span className="hero-line hero-accent">vendiendo 24/7</span>
-                <span className="hero-line">incluso cuando tú no estás conectado.</span>
-              </h1>
-              <p className="lead" data-reveal data-delay="2">{nuroConfig.hero.description}</p>
-              <div className="cta-row" data-reveal data-delay="3">
-                <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
-                  {nuroConfig.hero.primaryCta} <ArrowRight size={16} strokeWidth={2.4} />
-                </a>
+      <main>
+        {/* HERO */}
+        <section className="hero">
+          <div className="wrap hero-grid">
+            <div className="reveal" data-anim="left">
+              <span className="badge"><span className="dot" /> Plataforma de negocios digitales</span>
+              <h1>Tu negocio vende<br /><span className="g-magenta">mientras tú</span><br /><span className="g-cyan">descansas</span></h1>
+              <p className="lead">Bots de WhatsApp con IA, tiendas virtuales, campañas publicitarias y más — todo en una sola plataforma. Automatiza, vende y escala sin límites desde cualquier parte del mundo.</p>
+              <div className="hero-cta">
+                <a className="btn btn-primary btn-lg" href="/register">Comenzar ahora
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+                <a className="btn btn-ghost btn-lg" href="/login">Iniciar sesión</a>
               </div>
-              <p className="micro-text" data-reveal data-delay="4">{nuroConfig.hero.micro}</p>
+              <div className="trust"><span>🌎 18 países</span><span>🤖 IA integrada</span><span>💳 Sin tarjeta</span></div>
             </div>
 
-            {/* Chip discreto · "NÜRO ONLINE" · no compite con el robot del fondo */}
-            <div className="online-chip" aria-hidden="false" data-reveal data-delay="3">
-              <span className="online-pulse" />
-              <div>
-                <div className="online-label">{nuroConfig.hero.chipLabel}</div>
-                <div className="online-sub">{nuroConfig.hero.chipSub}</div>
+            <div className="reveal" data-anim="right">
+              <div className="phone">
+                <div className="chat-head">
+                  <span className="avatar av-cm">CM</span>
+                  <div><div className="name">Carlos M.</div><div className="status">Carlos M. escribiendo…</div></div>
+                  <div className="meta-dots"><i /><i /><i /></div>
+                </div>
+                <div className="chat-body">
+                  <span className="day">HOY</span>
+                  <div className="msg-row in"><span className="avatar av-cm">CM</span><div className="bubble">Hola! me interesa el plan básico 🙌<span className="t">10:41</span></div></div>
+                  <div className="msg-row out"><span className="avatar av-md">MD</span><div className="bubble">Hola Carlos! 👋 El Pack Básico es $49 USD: bot IA de ventas, tienda virtual y landing page.<span className="t">10:41 ✓✓</span></div></div>
+                  <div className="msg-row in"><span className="avatar av-cm">CM</span><div className="bubble"><span className="typing"><i /><i /><i /></span></div></div>
+                </div>
+                <div className="chat-input">
+                  <div className="field">Mensaje</div>
+                  <span className="send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#06291c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
-            1.5 · VIDEO DEMO (Vimeo) · debajo del hero
-            ═══════════════════════════════════════════════════ */}
-        <section id="demo">
-          <div className="demo-wrap">
-            <div className="demo-head">
-              <span className="eyebrow" data-reveal>
-                <span className="eyebrow-dot" /> {nuroConfig.video.eyebrow}
-              </span>
-              <h2 className="h-2" data-reveal data-delay="1">{nuroConfig.video.title}</h2>
-              <p className="lead lead-sm" data-reveal data-delay="2">{nuroConfig.video.sub}</p>
+        {/* STATS */}
+        <section className="stats">
+          <div className="wrap stats-grid" data-stagger>
+            <div className="stat reveal" data-anim="scale">
+              <div className="ic ic-purple"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
+              <div className="num"><span className="count" data-to="5000">0</span>+</div><div className="lbl">Miembros activos</div>
             </div>
-            <div className="video-frame" data-reveal data-delay="3">
-              <iframe
-                src={`https://player.vimeo.com/video/${nuroConfig.video.vimeoId}?title=0&byline=0&portrait=0&dnt=1`}
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-                allowFullScreen
-                loading="lazy"
-                title="NÜRO en acción"
-              />
+            <div className="stat reveal" data-anim="scale">
+              <div className="ic ic-green"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
+              <div className="num"><span className="count" data-to="2000000">0</span>+</div><div className="lbl">Mensajes enviados</div>
             </div>
-            <a
-              className="video-link"
-              href={`https://vimeo.com/${nuroConfig.video.vimeoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              data-reveal data-delay="4"
-            >
-              <Sparkles size={12} strokeWidth={2.4} /> {nuroConfig.video.linkLabel}
-            </a>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════
-            2 · TICKER FRANJA INFINITA · 2 filas en sentidos opuestos
-            ═══════════════════════════════════════════════════ */}
-        <section id="ticker" aria-label="Características NÜRO">
-          <div className="ticker-row">
-            <div className="ticker-track ticker-left">
-              {[...nuroConfig.ticker, ...nuroConfig.ticker].map((t, i) => (
-                <span key={`t1-${i}`} className="ticker-item">
-                  <span className="ticker-dot" /> {t}
-                </span>
-              ))}
+            <div className="stat reveal" data-anim="scale">
+              <div className="ic ic-purple"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" /><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
+              <div className="num"><span className="count" data-to="18">0</span> países</div><div className="lbl">Presencia global</div>
             </div>
-          </div>
-          <div className="ticker-row ticker-row-soft">
-            <div className="ticker-track ticker-right">
-              {[...nuroConfig.ticker, ...nuroConfig.ticker].map((t, i) => (
-                <span key={`t2-${i}`} className="ticker-item">
-                  <span className="ticker-dot" /> {t}
-                </span>
-              ))}
+            <div className="stat reveal" data-anim="scale">
+              <div className="ic ic-cyan"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M18 20V10M12 20V4M6 20v-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
+              <div className="num"><span className="count" data-to="3">0</span> plataformas</div><div className="lbl">Publicidad digital</div>
             </div>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
-            3 · TARJETA NUMERADA · 4 problemas (01–04)
-            ═══════════════════════════════════════════════════ */}
-        <section id="problemas">
-          <div className="numbered-card" data-reveal>
-            <h2 className="numbered-title" data-reveal data-delay="1">{nuroConfig.numbered.title}</h2>
-            <ol className="numbered-list">
-              {nuroConfig.numbered.items.map((t, i) => (
-                <li key={i} className="numbered-row" data-reveal data-delay={String(Math.min(i + 2, 5))}>
-                  <span className="num">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="num-text">{t}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <p className="numbered-closing" data-reveal data-delay="2">
-            <span>{nuroConfig.numbered.closingTop}</span>
-            <strong className="accent-soft">{nuroConfig.numbered.closingBottom}</strong>
-          </p>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════
-            4 · CELULAR + LISTA DE PROBLEMAS
-            ═══════════════════════════════════════════════════ */}
-        <section id="solucion">
-          <div className="phone-grid">
-            {/* Mockup · imagen editable en /landing/nuro-mobile-preview.webp */}
-            <figure className="phone-mockup" data-reveal>
-              <div className="phone-shadow" aria-hidden />
-              <div className="phone-frame">
-                <div className="phone-notch" aria-hidden />
-                <div className="phone-screen">
-                  {/* Si existe la imagen real, se muestra; si no, queda el SVG mockup */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={nuroConfig.phone.image}
-                    alt="Vista móvil del ecosistema NÜRO"
-                    className="phone-img"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = 'none'
-                    }}
-                  />
-                  {/* Mockup fallback (siempre visible debajo) · tarjeta tipo mensaje */}
-                  <div className="phone-fallback">
-                    <div className="phone-status">
-                      <span>9:41</span>
-                      <span className="phone-status-dots">●●●●</span>
+        {/* FEATURES */}
+        <section className="features">
+          <div className="wrap">
+            <div className="sec-head reveal">
+              <span className="eyebrow">Herramientas que generan resultados</span>
+              <h2>Todo lo que necesitas<br /><span className="g-purple">en un solo lugar</span></h2>
+            </div>
+            <div className="feat-grid" data-stagger>
+              {/* 1 Bot */}
+              <div className="card reveal" data-anim="scale"><div className="inner">
+                <div className="thumb"><span className="badge-sm">24/7</span>
+                  <div className="tb-chat">
+                    <div className="tb-bub in">¿Tienen envíos a todo el país? 🚚</div>
+                    <div className="tb-bub out">¡Sí! Envío gratis desde $50. ¿Te ayudo a comprar ahora? 😊</div>
+                    <div className="tb-typing"><i /><i /><i /></div>
+                  </div>
+                </div>
+                <div className="card-h"><span className="ic ic-green sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="3" stroke="currentColor" strokeWidth="2" /><path d="M12 8V4M8 2h8M9 14h.01M15 14h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></span><h3>Bot de Ventas IA</h3></div>
+                <p>Responde, asesora y cierra ventas en WhatsApp las 24 horas. Personalizado con tu marca, tono y productos. Nunca pierdas un cliente.</p>
+                <a className="card-foot" href="/register">Conocer más <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+              </div></div>
+              {/* 2 Campañas */}
+              <div className="card reveal" data-anim="scale"><div className="inner">
+                <div className="thumb"><span className="badge-sm">ROAS x4.2</span>
+                  <div className="tb-col">
+                    <div className="tb-chips">
+                      <span className="tb-chip" style={{ background: '#2d6cf6' }}>Meta</span>
+                      <span className="tb-chip" style={{ background: '#e84436' }}>Google</span>
+                      <span className="tb-chip" style={{ background: '#111', border: '1px solid #2a2a2a' }}>TikTok</span>
                     </div>
-                    <div className="phone-msg-card">
-                      <div className="phone-msg-head">
-                        <div className="phone-avatar">
-                          <Bot size={16} strokeWidth={1.8} />
-                        </div>
-                        <div className="phone-msg-meta">
-                          <div className="phone-msg-name">NÜRO</div>
-                          <div className="phone-msg-time">ahora</div>
-                        </div>
-                      </div>
-                      <p className="phone-msg-title">{nuroConfig.phone.bubbleTitle}</p>
-                      <p className="phone-msg-body">{nuroConfig.phone.bubbleBody}</p>
-                    </div>
-                    <div className="phone-input">
-                      <MessageCircle size={14} strokeWidth={1.8} />
-                      <span>Responder…</span>
+                    <div className="tb-bars"><span style={{ height: '42%' }} /><span style={{ height: '66%' }} /><span style={{ height: '54%' }} /><span style={{ height: '88%' }} /><span style={{ height: '72%' }} /><span style={{ height: '100%' }} /></div>
+                  </div>
+                </div>
+                <div className="card-h"><span className="ic ic-purple sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11l16-7v16L3 13v-2zM3 11v2a3 3 0 003 3" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg></span><h3>Campañas con IA</h3></div>
+                <p>Crea anuncios en Meta, Google y TikTok en minutos. La IA genera los textos, imágenes y segmentación. Tú solo defines el presupuesto.</p>
+                <a className="card-foot" href="/register">Conocer más <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+              </div></div>
+              {/* 3 Tienda */}
+              <div className="card reveal" data-anim="scale"><div className="inner">
+                <div className="thumb"><span className="badge-sm" style={{ background: 'rgba(34,211,238,.16)', color: '#7eeaf7', borderColor: 'rgba(34,211,238,.35)' }}>0% comisión</span>
+                  <div className="tb-store">
+                    <div className="tb-prod" />
+                    <div className="tb-meta">
+                      <div className="tb-line" /><div className="tb-line s" />
+                      <div className="tb-price">$49<span style={{ fontSize: '11px', color: '#9aa0b5' }}> USD</span></div>
+                      <span className="tb-add">Agregar al carrito</span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </figure>
-
-            <div className="phone-text">
-              <span className="eyebrow" data-reveal data-delay="1">
-                <span className="eyebrow-dot" /> Una experiencia comercial activa
-              </span>
-              <h2 className="h-2" data-reveal data-delay="2">{nuroConfig.phone.title}</h2>
-              <ul className="problems-list">
-                {nuroConfig.phone.problems.map((p, i) => (
-                  <li key={i} data-reveal data-delay={String(Math.min(i + 3, 6))}>
-                    <Sparkles size={14} strokeWidth={1.8} />
-                    <span>{p}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="lead lead-sm" data-reveal data-delay="5">{nuroConfig.phone.closing}</p>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════
-            5 · DIVISOR DECORATIVO
-            ═══════════════════════════════════════════════════ */}
-        <div className="divider" role="presentation" aria-hidden data-reveal>
-          <svg viewBox="0 0 320 36" width="320" height="36" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <linearGradient id="divLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="rgba(168,85,247,0)" />
-                <stop offset="50%" stopColor="rgba(168,85,247,.55)" />
-                <stop offset="100%" stopColor="rgba(168,85,247,0)" />
-              </linearGradient>
-            </defs>
-            <line x1="0" y1="18" x2="135" y2="18" stroke="url(#divLine)" strokeWidth="1" />
-            <line x1="185" y1="18" x2="320" y2="18" stroke="url(#divLine)" strokeWidth="1" />
-            <circle cx="160" cy="18" r="11" fill="none" stroke="rgba(168,85,247,.35)" strokeWidth="1" />
-            <circle cx="160" cy="18" r="5"  fill="#A855F7" />
-            <circle cx="160" cy="18" r="2.4" fill="#F5F3FF" />
-          </svg>
-        </div>
-
-        {/* ═══════════════════════════════════════════════════
-            6 · INVITACIÓN AL CAMBIO
-            ═══════════════════════════════════════════════════ */}
-        <section id="invitacion">
-          <div className="invitation-wrap">
-            <span className="upper-line" data-reveal>{nuroConfig.invitation.upper}</span>
-            <h2 className="h-display" data-reveal data-delay="1">
-              {nuroConfig.invitation.titleTop}<br />
-              <span className="accent">{nuroConfig.invitation.titleBottom}</span>
-            </h2>
-            <p className="lead" data-reveal data-delay="2">{nuroConfig.invitation.sub}</p>
-          </div>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════
-            7 · CÁPSULAS INFORMATIVAS
-            ═══════════════════════════════════════════════════ */}
-        <section id="capsulas">
-          <ul className="caps-grid">
-            {nuroConfig.capsules.items.map((c, i) => {
-              const Icon = capsuleIcons[c.icon]
-              return (
-                <li key={i} className="cap" data-reveal data-delay={String(Math.min(Math.floor(i / 2) + 1, 4))}>
-                  <Icon size={15} strokeWidth={1.8} />
-                  <span>{c.text}</span>
-                </li>
-              )
-            })}
-          </ul>
-
-          <p className="caps-text" data-reveal data-delay="2">
-            {nuroConfig.capsules.textBefore}{' '}
-            <span className="accent">{nuroConfig.capsules.accent}</span>{' '}
-            {nuroConfig.capsules.textAfter}
-          </p>
-
-          <div className="cta-row" data-reveal data-delay="3">
-            <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg">
-              {nuroConfig.capsules.cta} <ArrowRight size={18} strokeWidth={2.4} />
-            </a>
-          </div>
-
-          <ul className="micro-list" data-reveal data-delay="4">
-            {nuroConfig.capsules.micro.map((m, i) => (
-              <li key={i}>
-                <CheckCircle size={12} strokeWidth={2.4} />
-                {m}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* ═══════════════════════════════════════════════════
-            7.6 · TESTIMONIOS (carrusel infinito)
-            ═══════════════════════════════════════════════════ */}
-        <section id="testimonios">
-          <div className="testi-content">
-            <div className="testi-head">
-              <span className="eyebrow" data-reveal>
-                <span className="eyebrow-dot" /> {nuroConfig.testimonials.eyebrow}
-              </span>
-              <h2 className="h-2" data-reveal data-delay="1">
-                Negocios que ya crecen con{' '}
-                <span className="testi-accent">NÜRO</span>.
-              </h2>
-            </div>
-            <div className="testi-carousel" data-reveal data-delay="2">
-              <div className="marquee"><div className="mtrack to-right">
-                {[...testiLeft, ...testiLeft].map((t, i) => (
-                  <Tcard key={`L${i}`} t={t} />
-                ))}
+                <div className="card-h"><span className="ic ic-purple sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M4 9a2 2 0 004 0 2 2 0 004 0 2 2 0 004 0 2 2 0 004 0" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg></span><h3>Tienda Virtual Propia</h3></div>
+                <p>Tu catálogo online con tu branding. Conectada a WhatsApp para cerrar ventas al instante. Sin comisiones, todo tuyo.</p>
+                <a className="card-foot" href="/register">Conocer más <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
               </div></div>
-              <div className="marquee"><div className="mtrack to-left">
-                {[...testiRight, ...testiRight].map((t, i) => (
-                  <Tcard key={`R${i}`} t={t} />
-                ))}
+              {/* 4 Referidos */}
+              <div className="card reveal" data-anim="scale"><div className="inner">
+                <div className="thumb"><span className="badge-sm">+$1,240</span>
+                  <svg className="tb-svg" viewBox="0 0 240 110" preserveAspectRatio="xMidYMid meet">
+                    <line x1="120" y1="30" x2="50" y2="80" stroke="#a425ff" strokeWidth="2" opacity=".5" />
+                    <line x1="120" y1="30" x2="120" y2="80" stroke="#a425ff" strokeWidth="2" opacity=".5" />
+                    <line x1="120" y1="30" x2="190" y2="80" stroke="#a425ff" strokeWidth="2" opacity=".5" />
+                    <circle cx="120" cy="30" r="15" fill="#a425ff" /><text x="120" y="35" textAnchor="middle" fontSize="13" fill="#fff" fontFamily="Archivo" fontWeight="700">Tú</text>
+                    <circle cx="50" cy="82" r="12" fill="#1e1233" stroke="#c026d3" strokeWidth="2" />
+                    <circle cx="120" cy="82" r="12" fill="#1e1233" stroke="#c026d3" strokeWidth="2" />
+                    <circle cx="190" cy="82" r="12" fill="#1e1233" stroke="#c026d3" strokeWidth="2" />
+                  </svg>
+                </div>
+                <div className="card-h"><span className="ic ic-green sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg></span><h3>Sistema de Referidos</h3></div>
+                <p>Haz crecer tu red y gana comisiones automáticas. Panel transparente, retiros puntuales y seguimiento de tu equipo en tiempo real.</p>
+                <a className="card-foot" href="/register">Conocer más <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+              </div></div>
+              {/* 5 Academia */}
+              <div className="card reveal" data-anim="scale"><div className="inner">
+                <div className="thumb">
+                  <div className="tb-les">
+                    <div className="tb-row"><span className="tb-play"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg></span><div className="tb-line" style={{ flex: 1 }} /></div>
+                    <div className="tb-row"><span className="tb-play"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg></span><div className="tb-line s" style={{ flex: 1 }} /></div>
+                    <div className="tb-row"><span className="tb-prog"><i /></span><span style={{ fontSize: '11px', fontWeight: 700, color: '#c79bff', fontFamily: "'Archivo'" }}>62%</span></div>
+                  </div>
+                </div>
+                <div className="card-h"><span className="ic ic-purple sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg></span><h3>Academia de Negocios</h3></div>
+                <p>Formación paso a paso para vender más: marketing, ventas y automatización. Aprende mientras tu negocio crece contigo.</p>
+                <a className="card-foot" href="/register">Conocer más <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+              </div></div>
+              {/* 6 Analítica */}
+              <div className="card reveal" data-anim="scale"><div className="inner">
+                <div className="thumb"><span className="badge-sm">+38% ventas</span>
+                  <svg className="tb-svg" viewBox="0 0 240 110" preserveAspectRatio="none">
+                    <defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#22d3ee" stopOpacity=".55" /><stop offset="1" stopColor="#22d3ee" stopOpacity="0" /></linearGradient></defs>
+                    <path d="M8 86 L48 70 L88 76 L128 48 L168 54 L208 22 L232 30 L232 104 L8 104 Z" fill="url(#ar)" />
+                    <path d="M8 86 L48 70 L88 76 L128 48 L168 54 L208 22 L232 30" fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="card-h"><span className="ic ic-cyan sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 7-7M14 7h6v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></span><h3>Analítica en Tiempo Real</h3></div>
+                <p>Mide ventas, leads y campañas en un panel claro. Toma decisiones con datos reales, no con suposiciones.</p>
+                <a className="card-foot" href="/register">Conocer más <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
               </div></div>
             </div>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
-            8 · BANNER FINAL DE CONVERSIÓN
-            ═══════════════════════════════════════════════════ */}
-        <section id="banner">
-          <div className="banner-card" data-reveal>
-            <h2 className="h-2" data-reveal data-delay="1">{nuroConfig.banner.title}</h2>
-            <p className="lead" data-reveal data-delay="2">{nuroConfig.banner.sub}</p>
-            <a href={nuroConfig.registerUrl} className="btn btn-primary btn-lg" data-reveal data-delay="3">
-              {nuroConfig.banner.cta} <ArrowRight size={18} strokeWidth={2.4} />
-            </a>
-            <a href={nuroConfig.loginUrl} className="alt-link" data-reveal data-delay="4">
-              {nuroConfig.banner.altCta}
-            </a>
+        {/* TESTIMONIOS */}
+        <section className="testi">
+          <div className="wrap">
+            <div className="sec-head reveal">
+              <span className="eyebrow" style={{ color: 'var(--green)' }}>Lo que dicen nuestros miembros</span>
+              <h2>Resultados reales de <span className="g-green">personas reales</span></h2>
+            </div>
+          </div>
+          <div className="marquee-mask">
+            <div className="marquee" id="row1">
+              {[...ROW1, ...ROW1].map((t, i) => <TCard key={`r1-${i}`} t={t} />)}
+            </div>
+            <div className="marquee rev" id="row2">
+              {[...ROW2, ...ROW2].map((t, i) => <TCard key={`r2-${i}`} t={t} />)}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA FINAL */}
+        <section className="cta">
+          <div className="wrap reveal" data-anim="scale">
+            <div className="ic-zap"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="#fff" /></svg></div>
+            <h2>Tu momento es <span className="g-magenta">ahora</span></h2>
+            <p>Miles de emprendedores en Latinoamérica ya automatizaron sus negocios con MY DIAMOND. Únete hoy y empieza a generar ingresos desde el primer día.</p>
+            <a className="btn btn-primary btn-lg" href="/register">Unirme a MY DIAMOND
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+            <div className="fine">Sin tarjeta de crédito · Acceso inmediato · Cancela cuando quieras</div>
           </div>
         </section>
       </main>
 
-      {/* ═══════════════════════════════════════════════════
-          9 · FOOTER MINIMALISTA
-          ═══════════════════════════════════════════════════ */}
-      <footer className="footer">
-        <div className="footer-grid">
-          <div className="footer-brand">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/landing/logo-blanco.png" className="logo-nuro" alt="NÜRO" />
-            <p>{nuroConfig.footer.desc}</p>
-          </div>
-          <ul className="footer-links">
-            {nuroConfig.footer.links.map((l) => (
-              <li key={`${l.href}-${l.label}`}>
-                <a href={l.href}>{l.label}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="footer-line" />
-        <div className="footer-bottom">
-          <span>{nuroConfig.footer.copyright}</span>
-          <button type="button" className="back-top" onClick={handleScrollTop} aria-label="Volver arriba">
-            <ChevronUp size={14} strokeWidth={2.4} />
-          </button>
+      <footer>
+        <div className="wrap foot-in">
+          <div className="brand"><img className="wordmark" src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" /></div>
+          <div className="copy">© 2026 MY DIAMOND · Todos los derechos reservados</div>
+          <div className="foot-links"><a href="/login">Iniciar sesión</a><a href="/register">Registrarse</a></div>
         </div>
       </footer>
-
-      <style jsx global>{`
-        /* ═══════════════════════════════════════════════════════════════
-           TOKENS · paleta
-           ═══════════════════════════════════════════════════════════════ */
-        :root {
-          --naranja:#e0219a;
-          --naranja-claro:#b16cff;
-          --azul-neon:#9b5cff;
-          --azul-glow:rgba(155,92,255,.55);
-          --negro:#0a0714;
-          --azul-oscuro:#150f2c;
-          --text-1:#F5F3FF;
-          --text-2:#B8B2C8;
-          --text-3:#8E879F;
-          --acc-violet:#A855F7;
-          --acc-fuchsia:#D946EF;
-        }
-        html { scroll-behavior: smooth; }
-        body {
-          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
-          color: var(--text-1);
-          background: var(--negro);
-          overflow-x: hidden;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* ▼▼▼ INTOCABLE · fondo animado y escena 3D ▼▼▼ */
-        .bg-gradient {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none;
-          background: radial-gradient(120% 90% at 50% 8%, #241a45 0%, var(--azul-oscuro) 38%, var(--negro) 72%);
-        }
-        .bg-grid {
-          position: fixed; inset: 0; z-index: 1; pointer-events: none;
-          background-image:
-            linear-gradient(rgba(155,92,255,.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(155,92,255,.06) 1px, transparent 1px);
-          background-size: 60px 60px;
-          mask-image: radial-gradient(75% 70% at 50% 45%, #000 0%, transparent 85%);
-          -webkit-mask-image: radial-gradient(75% 70% at 50% 45%, #000 0%, transparent 85%);
-        }
-        .bg-glow {
-          position: fixed; top: 42%; left: 50%; z-index: 2; pointer-events: none;
-          width: min(820px, 90vw); height: min(820px, 90vw);
-          transform: translate(-50%, -50%);
-          background: radial-gradient(circle, var(--azul-glow) 0%, rgba(155,92,255,.12) 38%, transparent 68%);
-          filter: blur(10px);
-          animation: glowPulse 6s ease-in-out infinite;
-        }
-        @keyframes glowPulse {
-          0%, 100% { opacity: .8; transform: translate(-50%, -50%) scale(1); }
-          50%      { opacity: 1;  transform: translate(-50%, -50%) scale(1.07); }
-        }
-        .bg-glow-warm {
-          position: fixed; bottom: -10%; left: 50%; z-index: 2; pointer-events: none;
-          width: min(700px, 80vw); height: min(420px, 50vw);
-          transform: translateX(-50%);
-          background: radial-gradient(ellipse at center, rgba(224,33,154,.14) 0%, transparent 70%);
-          filter: blur(20px);
-        }
-        #particles { position: fixed; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
-        .particle {
-          position: absolute; border-radius: 50%;
-          background: var(--azul-neon);
-          box-shadow: 0 0 6px var(--azul-glow);
-          opacity: .5;
-          animation: floatUp linear infinite;
-        }
-        @keyframes floatUp {
-          0%   { transform: translateY(0)    scale(1);   opacity: 0; }
-          10%  { opacity: .6; }
-          90%  { opacity: .5; }
-          100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
-        }
-        #scene { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-        #scene canvas { display: block; width: 100%; height: 100%; }
-        /* ▲▲▲ FIN INTOCABLE ▲▲▲ */
-
-        /* ═══════════════════════════════════════════════════════════════
-           LAYOUT GLOBAL
-           ═══════════════════════════════════════════════════════════════ */
-        .content { position: relative; z-index: 3; }
-        section {
-          display: flex; flex-direction: column;
-          padding-block: clamp(72px, 9vw, 132px);
-          padding-inline: 6vw;
-          position: relative;
-          overflow-x: clip;
-        }
-
-        /* ─── NAVBAR ─── */
-        .topbar {
-          position: fixed; top: 0; left: 0; width: 100%; z-index: 10;
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 18px 6vw;
-          background: transparent;
-          border-bottom: 1px solid transparent;
-          transition: background .35s ease, border-color .35s ease, backdrop-filter .35s ease, padding .25s ease;
-          will-change: background, backdrop-filter;
-        }
-        .topbar.is-scrolled {
-          background: rgba(10,7,20,.62);
-          border-bottom-color: rgba(168,85,247,.10);
-          backdrop-filter: blur(14px) saturate(140%);
-          -webkit-backdrop-filter: blur(14px) saturate(140%);
-          padding: 14px 6vw;
-        }
-        .topbar .logo-nuro { height: 28px; filter: drop-shadow(0 2px 10px rgba(168,85,247,.32)); }
-        .topbar .menu { display: flex; gap: 28px; align-items: center; }
-        .topbar .menu a {
-          color: #B8B2C8; text-decoration: none;
-          font-size: 14px; font-weight: 600;
-          transition: color .2s;
-        }
-        .topbar .menu a:hover { color: #F5F3FF; }
-        .topbar .auth-btns { display: flex; gap: 10px; align-items: center; }
-
-        /* ─── BOTONES ─── */
-        .btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          border: 0; cursor: pointer;
-          font-size: 15px; font-weight: 650;
-          padding: 14px 26px; border-radius: 12px;
-          transition: transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease;
-          text-decoration: none; white-space: nowrap;
-          letter-spacing: -.005em;
-        }
-        .btn-primary {
-          background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
-          color: #fff;
-          box-shadow:
-            0 14px 32px -12px rgba(168,85,247,.55),
-            0 4px 12px -2px rgba(0,0,0,.4),
-            inset 0 1px 0 rgba(255,255,255,.18);
-        }
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow:
-            0 20px 42px -12px rgba(168,85,247,.65),
-            0 6px 16px -2px rgba(0,0,0,.45),
-            inset 0 1px 0 rgba(255,255,255,.22);
-        }
-        .btn-ghost {
-          background: rgba(12,7,31,.55); color: #F5F3FF;
-          border: 1px solid rgba(168,85,247,.32);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-        }
-        .btn-ghost:hover {
-          background: rgba(168,85,247,.12);
-          border-color: rgba(168,85,247,.55);
-        }
-        .btn-nav { font-size: 13.5px; padding: 10px 18px; border-radius: 999px; }
-        .btn-lg  { font-size: 16px; padding: 16px 30px; border-radius: 14px; font-weight: 700; }
-
-        /* ─── EYEBROW + TIPOGRAFÍA ─── */
-        .eyebrow {
-          display: inline-flex; align-items: center; gap: 9px;
-          font-size: 11.5px; font-weight: 700;
-          color: #C8C2D8;
-          letter-spacing: .22em; text-transform: uppercase;
-          padding: 8px 14px; border-radius: 999px;
-          background: rgba(168,85,247,.08);
-          border: 1px solid rgba(168,85,247,.22);
-          backdrop-filter: blur(6px);
-          -webkit-backdrop-filter: blur(6px);
-          align-self: flex-start;
-        }
-        .eyebrow-dot {
-          width: 6px; height: 6px; border-radius: 50%;
-          background: #A855F7; box-shadow: 0 0 8px rgba(168,85,247,.7);
-        }
-        h1, h2, h3 {
-          color: #F5F3FF; font-weight: 800;
-          letter-spacing: -.03em; line-height: 1.06;
-          text-shadow:
-            0 3px 12px rgba(0,0,0,.75),
-            0 8px 30px rgba(0,0,0,.45);
-        }
-        .h-display {
-          font-size: clamp(2.3rem, 5vw, 4.8rem);
-          font-weight: 800;
-          letter-spacing: -.055em; line-height: 1.02;
-          max-width: 18ch;
-        }
-        .h-2 {
-          font-size: clamp(2rem, 4vw, 3.6rem);
-          font-weight: 800;
-          letter-spacing: -.045em; line-height: 1.05;
-          max-width: 22ch;
-        }
-        .accent {
-          background: linear-gradient(95deg, #A855F7 0%, #D946EF 100%);
-          -webkit-background-clip: text; background-clip: text;
-          color: transparent;
-          filter: drop-shadow(0 3px 12px rgba(0,0,0,.55));
-        }
-        .accent-soft {
-          color: #C084FC; font-weight: 700;
-          text-shadow: 0 2px 10px rgba(0,0,0,.80);
-        }
-        .lead {
-          color: #C0BAD0;
-          font-size: clamp(1rem, 1.4vw, 1.2rem);
-          font-weight: 500; line-height: 1.7;
-          letter-spacing: -.005em;
-          max-width: 680px;
-          text-shadow: 0 2px 8px rgba(0,0,0,.70);
-        }
-        .lead-sm { font-size: clamp(.95rem, 1.2vw, 1.05rem); max-width: 56ch; }
-
-        .cta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-        .micro-text {
-          color: #8E879F; font-size: 12px; font-weight: 500;
-          letter-spacing: .04em; margin: 0;
-          text-shadow: 0 1px 6px rgba(0,0,0,.6);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           1 · HERO · premium editorial · texto izquierda · chip lateral
-           ═══════════════════════════════════════════════════════════════ */
-        #hero {
-          min-height: 100vh;
-          justify-content: center;
-          padding-top: 120px;
-          padding-bottom: 80px;
-        }
-        .hero-grid {
-          position: relative;
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) min(380px, 36%);
-          gap: 48px;
-          align-items: center;
-          max-width: 1200px; width: 100%;
-          margin: 0 auto;
-        }
-        .hero-text {
-          position: relative;
-          display: flex; flex-direction: column;
-          gap: 26px;             /* aire entre etiqueta · título · lead · CTA */
-          max-width: 640px;
-        }
-        /* Capa oscura local detrás del bloque de texto (no global) */
-        .hero-text::before {
-          content: '';
-          position: absolute;
-          inset: -48px -80px -32px -48px;
-          z-index: -1;
-          pointer-events: none;
-          background: linear-gradient(
-            90deg,
-            rgba(5,3,18,.82) 0%,
-            rgba(5,3,18,.55) 55%,
-            rgba(5,3,18,.10) 92%,
-            rgba(5,3,18,0)  100%
-          );
-          filter: blur(14px);
-        }
-
-        /* ─── Etiqueta superior · compacta · spacing reducido ─── */
-        .hero-text .eyebrow {
-          font-size: 11px;
-          letter-spacing: .18em;  /* menor que el .22 global · más compacta */
-          padding: 7px 13px;
-          color: #DCD3F0;
-          background: rgba(168,85,247,.10);
-          border-color: rgba(168,85,247,.24);
-        }
-
-        /* ─── Título principal · 3 líneas con jerarquía clara ─── */
-        .hero-title {
-          margin: 0;
-          display: flex; flex-direction: column;
-          font-family: var(--font-manrope), 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
-          font-weight: 800;
-          font-size: clamp(3.3rem, 5vw, 5.4rem);
-          line-height: 0.98;
-          letter-spacing: -.055em;
-          max-width: 630px;
-        }
-        .hero-line {
-          display: block;
-          color: #FFFFFF;
-          /* Sombra discreta (NO fuerte) — mejora lectura sobre el robot */
-          text-shadow:
-            0 2px 8px rgba(0,0,0,.55),
-            0 6px 22px rgba(0,0,0,.38);
-        }
-
-        /* ─── Frase destacada "vendiendo 24/7" · lila luminoso ─── */
-        .hero-accent {
-          background: linear-gradient(90deg, #C084FC 0%, #A855F7 45%, #E879F9 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          -webkit-text-fill-color: transparent;
-          /* Glow controlado para legibilidad sin exagerar */
-          text-shadow:
-            0 0 18px rgba(168,85,247,.28),
-            0 4px 14px rgba(0,0,0,.22);
-        }
-
-        /* ─── Párrafo descriptivo · más contraste ─── */
-        .hero-text .lead {
-          margin: 0;
-          max-width: 620px;
-          font-size: clamp(1.05rem, 1.25vw, 1.20rem);   /* 17–20px desktop */
-          font-weight: 500;
-          line-height: 1.65;
-          color: rgba(255,255,255,.82);
-          text-shadow: 0 2px 8px rgba(0,0,0,.55);
-        }
-
-        /* ─── Botón principal del hero · degradado premium · flecha hover ─── */
-        #hero .btn-primary {
-          background: linear-gradient(90deg, #A855F7 0%, #D946EF 100%);
-          box-shadow:
-            0 10px 28px rgba(168,85,247,.25),
-            0 0 18px rgba(217,70,239,.18),
-            inset 0 1px 0 rgba(255,255,255,.20);
-          transition:
-            transform .35s cubic-bezier(.2,.7,.2,1),
-            box-shadow .35s cubic-bezier(.2,.7,.2,1);
-        }
-        #hero .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow:
-            0 14px 36px rgba(168,85,247,.32),
-            0 0 24px rgba(217,70,239,.24),
-            inset 0 1px 0 rgba(255,255,255,.24);
-        }
-        /* Flecha lucide se desliza ligeramente a la derecha en hover */
-        #hero .btn-primary :global(svg) {
-          transition: transform .35s cubic-bezier(.2,.7,.2,1);
-        }
-        #hero .btn-primary:hover :global(svg) {
-          transform: translateX(4px);
-        }
-
-        /* ─── Microtexto debajo del botón ─── */
-        .hero-text .micro-text {
-          margin: 0;
-          font-size: 13px;
-          font-weight: 500;
-          color: rgba(255,255,255,.58);
-          letter-spacing: .04em;
-          text-shadow: 0 1px 4px rgba(0,0,0,.45);
-        }
-
-        /* ─── Microtarjeta "NÜRO ONLINE" · compacta, no tapa al robot ─── */
-        .online-chip {
-          position: relative;
-          z-index: 3;
-          align-self: end;
-          justify-self: end;
-          display: inline-flex; align-items: center; gap: 12px;
-          padding: 13px 16px;
-          background: rgba(12,7,31,.78);
-          border: 1px solid rgba(168,85,247,.26);
-          border-radius: 14px;
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
-          box-shadow: 0 18px 48px rgba(0,0,0,.34);
-          max-width: 200px;
-        }
-        .online-pulse {
-          width: 10px; height: 10px; border-radius: 50%;
-          background: #10B981;
-          box-shadow: 0 0 12px rgba(16,185,129,.85);
-          flex-shrink: 0;
-          animation: pulseDot 2.4s ease-in-out infinite;
-        }
-        @keyframes pulseDot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50%      { opacity: .55; transform: scale(.85); }
-        }
-        .online-label {
-          font-size: 11px; font-weight: 700;
-          letter-spacing: .22em; color: #F5F3FF;
-          text-transform: uppercase;
-        }
-        .online-sub {
-          font-size: 11.5px; font-weight: 500;
-          color: #B8B2C8; margin-top: 2px;
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           2 · TICKER
-           ═══════════════════════════════════════════════════════════════ */
-        #ticker {
-          padding-block: clamp(28px, 4vw, 56px);
-          padding-inline: 0;
-          gap: 12px;
-        }
-        .ticker-row {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-                  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-        }
-        .ticker-row-soft { opacity: .5; filter: blur(.3px); }
-        .ticker-track {
-          display: flex; gap: 28px;
-          width: max-content;
-          will-change: transform;
-          padding: 6px 0;
-        }
-        .ticker-left  { animation: tkLeft  56s linear infinite; }
-        .ticker-right { animation: tkRight 70s linear infinite; }
-        @keyframes tkLeft  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
-        @keyframes tkRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
-        .ticker-item {
-          display: inline-flex; align-items: center; gap: 10px;
-          flex-shrink: 0;
-          font-size: 12.5px; font-weight: 700;
-          letter-spacing: .26em; text-transform: uppercase;
-          color: #C0BAD0;
-          padding: 10px 18px; border-radius: 999px;
-          background: rgba(12,7,31,.55);
-          border: 1px solid rgba(168,85,247,.20);
-        }
-        .ticker-dot {
-          width: 5px; height: 5px; border-radius: 50%;
-          background: #A855F7; flex-shrink: 0;
-          box-shadow: 0 0 6px rgba(168,85,247,.7);
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           3 · TARJETA NUMERADA
-           ═══════════════════════════════════════════════════════════════ */
-        #problemas {
-          align-items: center; text-align: center;
-          gap: 32px;
-        }
-        .numbered-card {
-          width: 100%; max-width: 720px;
-          background: rgba(20,14,42,.85);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          border: 1px solid rgba(168,85,247,.22);
-          border-radius: 18px;
-          padding: 38px 32px;
-          display: flex; flex-direction: column; gap: 20px;
-          box-shadow: 0 24px 60px rgba(0,0,0,.36);
-        }
-        .numbered-title {
-          color: #F5F3FF; text-align: center;
-          font-size: clamp(1.4rem, 2.4vw, 1.85rem);
-          font-weight: 700; letter-spacing: -.025em; line-height: 1.2;
-          margin: 0 auto;
-          max-width: 28ch;
-          text-shadow: 0 2px 10px rgba(0,0,0,.65);
-        }
-        .numbered-list {
-          list-style: none; padding: 0; margin: 0;
-          display: flex; flex-direction: column; gap: 10px;
-        }
-        .numbered-row {
-          display: flex; align-items: center; gap: 16px;
-          padding: 14px 18px;
-          background: rgba(5,3,18,.78);
-          border: 1px solid rgba(168,85,247,.18);
-          border-radius: 12px;
-          text-align: left;
-        }
-        .numbered-row .num {
-          color: #C084FC; font-weight: 800;
-          font-size: 16px; letter-spacing: -.02em;
-          font-style: italic; min-width: 28px;
-          flex-shrink: 0;
-        }
-        .numbered-row .num-text {
-          color: #C0BAD0; font-size: 14.5px; line-height: 1.55;
-        }
-        .numbered-closing {
-          text-align: center;
-          color: #C0BAD0; font-size: 15px;
-          font-weight: 500; line-height: 1.55;
-          max-width: 36ch; margin: 0 auto;
-          display: flex; flex-direction: column; gap: 6px;
-          text-shadow: 0 2px 8px rgba(0,0,0,.7);
-        }
-        .numbered-closing strong {
-          font-size: 17px;
-          font-weight: 700;
-          font-style: normal;
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           4 · CELULAR + LISTA
-           ═══════════════════════════════════════════════════════════════ */
-        #solucion { justify-content: center; }
-        .phone-grid {
-          display: grid;
-          grid-template-columns: minmax(260px, 320px) 1fr;
-          gap: 60px;
-          align-items: center;
-          max-width: 1100px;
-          width: 100%;
-          margin: 0 auto;
-        }
-        .phone-mockup {
-          position: relative;
-          width: 100%;
-          max-width: 280px;
-          margin: 0 auto;
-          transform: rotate(-3deg);
-          animation: phoneFloat 6s ease-in-out infinite;
-        }
-        @keyframes phoneFloat {
-          0%, 100% { transform: rotate(-3deg) translateY(0); }
-          50%      { transform: rotate(-3deg) translateY(-8px); }
-        }
-        .phone-shadow {
-          position: absolute;
-          left: 8%; right: 8%; bottom: -28px;
-          height: 28px;
-          background: radial-gradient(ellipse at center, rgba(168,85,247,.32) 0%, rgba(0,0,0,0) 70%);
-          filter: blur(14px);
-          z-index: -1;
-        }
-        .phone-frame {
-          position: relative;
-          aspect-ratio: 9 / 19.5;
-          border-radius: 38px;
-          background: linear-gradient(180deg, #1a1133, #0a0714);
-          border: 2px solid rgba(168,85,247,.30);
-          padding: 8px;
-          box-shadow:
-            0 24px 60px rgba(0,0,0,.55),
-            inset 0 1px 0 rgba(255,255,255,.06);
-        }
-        .phone-notch {
-          position: absolute; top: 14px; left: 50%;
-          transform: translateX(-50%);
-          width: 90px; height: 22px;
-          background: #050316;
-          border-radius: 12px;
-          z-index: 2;
-        }
-        .phone-screen {
-          position: relative;
-          width: 100%; height: 100%;
-          border-radius: 32px;
-          background: linear-gradient(180deg, #1a1033 0%, #050316 100%);
-          overflow: hidden;
-        }
-        .phone-img {
-          position: absolute; inset: 0;
-          width: 100%; height: 100%;
-          object-fit: cover;
-          z-index: 1;
-        }
-        .phone-fallback {
-          position: absolute; inset: 0;
-          display: flex; flex-direction: column;
-          padding: 48px 16px 18px;
-          gap: 14px;
-        }
-        .phone-status {
-          display: flex; justify-content: space-between;
-          font-size: 10.5px; font-weight: 600;
-          color: #B8B2C8;
-          margin-top: 4px;
-        }
-        .phone-status-dots { letter-spacing: 1px; }
-        .phone-msg-card {
-          background: rgba(168,85,247,.10);
-          border: 1px solid rgba(168,85,247,.30);
-          border-radius: 14px;
-          padding: 14px;
-          display: flex; flex-direction: column; gap: 8px;
-          backdrop-filter: blur(6px);
-        }
-        .phone-msg-head {
-          display: flex; align-items: center; gap: 10px;
-        }
-        .phone-avatar {
-          width: 32px; height: 32px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #A855F7, #D946EF);
-          display: grid; place-items: center;
-          color: #fff;
-        }
-        .phone-msg-meta { display: flex; flex-direction: column; gap: 2px; }
-        .phone-msg-name { font-size: 12px; font-weight: 700; color: #F5F3FF; }
-        .phone-msg-time { font-size: 10px; color: #8E879F; }
-        .phone-msg-title {
-          font-size: 11.5px; font-weight: 700;
-          color: #F5F3FF; line-height: 1.4;
-          margin: 0;
-        }
-        .phone-msg-body {
-          font-size: 10.5px; color: #B8B2C8; line-height: 1.5;
-          margin: 0;
-        }
-        .phone-input {
-          margin-top: auto;
-          display: flex; align-items: center; gap: 8px;
-          padding: 9px 12px;
-          background: rgba(255,255,255,.05);
-          border: 1px solid rgba(168,85,247,.18);
-          border-radius: 999px;
-          color: #8E879F; font-size: 10.5px;
-        }
-
-        .phone-text {
-          position: relative;
-          display: flex; flex-direction: column; gap: 20px;
-          max-width: 540px;
-        }
-        .phone-text::before {
-          content: '';
-          position: absolute;
-          inset: -40px -60px;
-          z-index: -1;
-          pointer-events: none;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(5,3,18,.72) 0%,
-            rgba(5,3,18,.40) 48%,
-            rgba(5,3,18,0)  78%
-          );
-          filter: blur(12px);
-        }
-        .problems-list {
-          list-style: none; padding: 0; margin: 0;
-          display: flex; flex-direction: column; gap: 12px;
-        }
-        .problems-list li {
-          display: flex; align-items: flex-start; gap: 12px;
-          color: #C0BAD0; font-size: 14.5px;
-          line-height: 1.55;
-          text-shadow: 0 1px 6px rgba(0,0,0,.55);
-        }
-        .problems-list :global(svg) {
-          color: #C084FC; flex-shrink: 0;
-          margin-top: 4px;
-          filter: drop-shadow(0 0 4px rgba(168,85,247,.4));
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           5 · DIVISOR
-           ═══════════════════════════════════════════════════════════════ */
-        .divider {
-          padding-block: clamp(48px, 6vw, 84px);
-          display: flex; justify-content: center;
-          position: relative; z-index: 3;
-        }
-        .divider svg { filter: drop-shadow(0 0 12px rgba(168,85,247,.4)); }
-
-        /* ═══════════════════════════════════════════════════════════════
-           6 · INVITACIÓN
-           ═══════════════════════════════════════════════════════════════ */
-        #invitacion {
-          align-items: center; text-align: center;
-        }
-        .invitation-wrap {
-          position: relative;
-          max-width: 880px;
-          display: flex; flex-direction: column; align-items: center; gap: 20px;
-        }
-        .invitation-wrap::before {
-          content: '';
-          position: absolute;
-          inset: -50px -100px;
-          z-index: -1;
-          pointer-events: none;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(5,3,18,.82) 0%,
-            rgba(5,3,18,.50) 48%,
-            rgba(5,3,18,0)  78%
-          );
-          filter: blur(14px);
-        }
-        .upper-line {
-          color: #B8B2C8; font-size: 14px;
-          font-weight: 500; letter-spacing: -.005em;
-          font-style: italic;
-          text-shadow: 0 2px 8px rgba(0,0,0,.7);
-        }
-        .invitation-wrap .h-display {
-          text-align: center; margin: 0;
-          max-width: 22ch;
-        }
-        .invitation-wrap .lead {
-          text-align: center; margin: 0 auto;
-          max-width: 56ch;
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           7 · CÁPSULAS
-           ═══════════════════════════════════════════════════════════════ */
-        #capsulas {
-          align-items: center; text-align: center;
-          gap: 32px;
-        }
-        .caps-grid {
-          list-style: none; padding: 0; margin: 0;
-          display: flex; flex-wrap: wrap; justify-content: center;
-          gap: 10px;
-          max-width: 840px;
-        }
-        .cap {
-          display: inline-flex; align-items: center; gap: 8px;
-          font-size: 13px; font-weight: 600;
-          color: #C0BAD0;
-          padding: 10px 16px; border-radius: 999px;
-          background: rgba(12,7,31,.55);
-          border: 1px solid rgba(168,85,247,.20);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          text-shadow: 0 1px 4px rgba(0,0,0,.5);
-        }
-        .cap :global(svg) {
-          color: #A855F7; flex-shrink: 0;
-        }
-        .caps-text {
-          color: #F5F3FF; font-size: clamp(1.05rem, 1.8vw, 1.35rem);
-          font-weight: 600; line-height: 1.4;
-          letter-spacing: -.01em;
-          max-width: 36ch; margin: 0;
-          text-shadow: 0 2px 10px rgba(0,0,0,.7);
-        }
-        .micro-list {
-          list-style: none; padding: 0; margin: 0;
-          display: flex; flex-wrap: wrap; justify-content: center;
-          gap: 16px 22px;
-        }
-        .micro-list li {
-          display: inline-flex; align-items: center; gap: 6px;
-          color: #8E879F; font-size: 12px; font-weight: 500;
-          letter-spacing: .02em;
-          text-shadow: 0 1px 6px rgba(0,0,0,.55);
-        }
-        .micro-list :global(svg) { color: #A855F7; }
-
-        /* ═══════════════════════════════════════════════════════════════
-           7.5 · VIDEO DEMO (Vimeo) · marco premium
-           ═══════════════════════════════════════════════════════════════ */
-        #demo {
-          justify-content: center; align-items: center; text-align: center;
-        }
-        #demo .demo-wrap {
-          position: relative;
-          z-index: 3;
-          width: 100%; max-width: 960px; margin: 0 auto;
-          display: flex; flex-direction: column; align-items: center;
-        }
-        .demo-head {
-          position: relative;
-          display: flex; flex-direction: column; align-items: center;
-          gap: 18px;
-          margin-bottom: 38px;
-          max-width: 720px;
-          padding-inline: 24px;
-        }
-        /* Capa oscura LOCAL detrás del encabezado · z-index -1 */
-        .demo-head::before {
-          content: '';
-          position: absolute;
-          inset: -50px -90px;
-          z-index: -1;
-          pointer-events: none;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(5,3,18,.74) 0%,
-            rgba(5,3,18,.42) 48%,
-            rgba(5,3,18,0)  78%
-          );
-          filter: blur(12px);
-        }
-        .demo-head .h-2 { text-align: center; }
-        .demo-head .lead { text-align: center; margin: 0; }
-
-        .video-frame {
-          position: relative; width: 100%; aspect-ratio: 16/9; margin: 0 auto;
-          border-radius: 18px; overflow: hidden; background: #0a0714;
-          border: 1px solid rgba(168,85,247,.22);
-          box-shadow:
-            0 30px 70px -28px rgba(0,0,0,.75),
-            0 0 0 1px rgba(255,255,255,.04) inset;
-        }
-        .video-frame iframe {
-          position: absolute; inset: 0; width: 100%; height: 100%;
-          border: 0; display: block;
-        }
-        .video-link {
-          display: inline-flex; align-items: center; gap: 7px;
-          margin-top: 20px;
-          color: #B8B2C8; text-decoration: none;
-          font-weight: 600; font-size: 13.5px;
-          letter-spacing: -.005em;
-          transition: color .2s;
-          text-shadow: 0 2px 8px rgba(0,0,0,.70);
-        }
-        .video-link :global(svg) { color: #A855F7; }
-        .video-link:hover { color: #F5F3FF; }
-
-        /* ═══════════════════════════════════════════════════════════════
-           7.6 · TESTIMONIOS · carrusel infinito 2 filas
-           Capa oscura LOCAL solo detrás del encabezado (no global)
-           ═══════════════════════════════════════════════════════════════ */
-        #testimonios {
-          padding-block: clamp(72px, 9vw, 132px);
-          padding-inline: 6vw;
-          display: block; /* el content interno maneja layout */
-          overflow: hidden;
-        }
-        .testi-content {
-          position: relative;
-          z-index: 3;
-          display: flex; flex-direction: column; align-items: center;
-        }
-        .testi-head {
-          position: relative;
-          z-index: 5;
-          display: flex; flex-direction: column; align-items: center;
-          gap: 18px;
-          text-align: center;
-          max-width: 900px;
-          margin: 0 auto 54px;
-          padding-inline: 24px;
-        }
-        .testi-head::before {
-          content: '';
-          position: absolute;
-          inset: -60px -100px;
-          z-index: -1;
-          pointer-events: none;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(5,3,18,.78) 0%,
-            rgba(5,3,18,.44) 45%,
-            rgba(5,3,18,0)   76%
-          );
-          filter: blur(12px);
-        }
-        .testi-head .h-2 {
-          margin: 0;
-          max-width: 860px;
-          color: #F7F5FF;
-          font-size: clamp(2rem, 3.6vw, 3.4rem);
-          font-weight: 800;
-          line-height: 1.04;
-          letter-spacing: -.055em;
-          text-align: center;
-          text-shadow:
-            0 4px 10px rgba(0,0,0,.92),
-            0 10px 34px rgba(0,0,0,.76);
-        }
-        .testi-head .testi-accent {
-          color: #C084FC;
-          background: none;
-          -webkit-text-fill-color: #C084FC;
-          filter: none;
-          text-shadow:
-            0 4px 10px rgba(0,0,0,.92),
-            0 10px 34px rgba(0,0,0,.72);
-        }
-
-        .testi-carousel {
-          position: relative;
-          z-index: 4;
-          width: 100%;
-          margin-top: 12px;
-          display: flex; flex-direction: column; gap: 20px;
-        }
-        .marquee {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-                  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-        }
-        .mtrack { display: flex; gap: 14px; width: max-content; will-change: transform; padding: 6px 0; }
-        .mtrack.to-left  { animation: marqueeLeft  60s linear infinite; }
-        .mtrack.to-right { animation: marqueeRight 60s linear infinite; }
-        @keyframes marqueeLeft  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
-        @keyframes marqueeRight { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
-        .marquee:hover .mtrack { animation-play-state: paused; }
-
-        .tcard {
-          position: relative;
-          z-index: 4;
-          display: flex; align-items: flex-start; gap: 14px; flex: 0 0 auto;
-          width: 320px;
-          background: rgba(14,8,34,.86);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(168,85,247,.26);
-          border-radius: 18px;
-          padding: 22px;
-          text-align: left;
-          box-shadow:
-            0 18px 46px rgba(0,0,0,.34),
-            inset 0 1px 0 rgba(255,255,255,.03);
-        }
-        .tcard img {
-          width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex: 0 0 auto;
-          border: 1.5px solid rgba(168,85,247,.32); background: #1a1330;
-        }
-        .tcard-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .tcard-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .tcard .tn  { font-weight: 700; font-size: 1rem; color: #F5F2FF; letter-spacing: -.01em; }
-        .tcard-tag {
-          display: inline-block;
-          font-size: 9.5px; font-weight: 600;
-          letter-spacing: .12em; text-transform: uppercase;
-          padding: 3px 9px; border-radius: 999px;
-          color: #C0BAD0;
-          background: rgba(168,85,247,.12);
-          border: 1px solid rgba(168,85,247,.26);
-          white-space: nowrap;
-        }
-        .tcard-tag.is-tienda { color: #D946EF; border-color: rgba(217,70,239,.34); background: rgba(217,70,239,.10); }
-        .tcard-tipo { font-size: 11.5px; color: #9892AB; }
-        .tcard .tt  {
-          font-size: .94rem; color: #B8B2C8; line-height: 1.55; margin-top: 8px;
-          display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           8 · BANNER FINAL
-           ═══════════════════════════════════════════════════════════════ */
-        #banner { align-items: center; }
-        .banner-card {
-          width: 100%; max-width: 760px;
-          margin: 0 auto;
-          padding: 40px 36px;
-          border-radius: 22px;
-          background:
-            linear-gradient(135deg, rgba(168,85,247,.10) 0%, rgba(217,70,239,.06) 100%),
-            rgba(12,7,31,.78);
-          border: 1px solid rgba(168,85,247,.28);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          box-shadow:
-            0 30px 70px -28px rgba(0,0,0,.65),
-            0 0 60px -28px rgba(168,85,247,.45);
-          display: flex; flex-direction: column; align-items: center;
-          text-align: center; gap: 22px;
-        }
-        .banner-card .h-2 {
-          font-size: clamp(1.6rem, 3.4vw, 2.4rem);
-          max-width: 20ch;
-        }
-        .banner-card .lead {
-          margin: 0 auto; max-width: 52ch;
-        }
-        .alt-link {
-          color: #B8B2C8; text-decoration: none;
-          font-size: 12.5px; font-weight: 600;
-          letter-spacing: .14em; text-transform: uppercase;
-          padding: 6px 12px; border-radius: 8px;
-          transition: color .2s;
-          text-shadow: 0 1px 6px rgba(0,0,0,.6);
-        }
-        .alt-link:hover { color: #F5F3FF; }
-
-        /* ═══════════════════════════════════════════════════════════════
-           9 · FOOTER
-           ═══════════════════════════════════════════════════════════════ */
-        .footer {
-          position: relative;
-          z-index: 3;
-          padding: 56px 6vw 32px;
-          background: rgba(5,3,18,.55);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-        }
-        .footer-grid {
-          max-width: 1100px; margin: 0 auto;
-          display: grid;
-          grid-template-columns: minmax(220px, 1fr) auto;
-          gap: 40px; align-items: start;
-        }
-        .footer-brand {
-          display: flex; flex-direction: column; gap: 14px;
-          max-width: 360px;
-        }
-        .footer-brand .logo-nuro { height: 26px; align-self: flex-start; }
-        .footer-brand p {
-          color: #8E879F; font-size: 13px;
-          line-height: 1.6; margin: 0;
-        }
-        .footer-links {
-          list-style: none; padding: 0; margin: 0;
-          display: grid;
-          grid-template-columns: repeat(2, auto);
-          gap: 12px 36px;
-        }
-        .footer-links a {
-          color: #B8B2C8; text-decoration: none;
-          font-size: 13.5px; font-weight: 500;
-          transition: color .2s;
-        }
-        .footer-links a:hover { color: #F5F3FF; }
-        .footer-line {
-          max-width: 1100px; margin: 32px auto 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(168,85,247,.22), transparent);
-        }
-        .footer-bottom {
-          max-width: 1100px; margin: 18px auto 0;
-          display: flex; align-items: center; justify-content: space-between;
-          color: #8E879F; font-size: 11.5px; font-weight: 500;
-          letter-spacing: .04em;
-        }
-        .back-top {
-          width: 32px; height: 32px;
-          border-radius: 50%;
-          background: rgba(168,85,247,.08);
-          border: 1px solid rgba(168,85,247,.22);
-          color: #B8B2C8;
-          cursor: pointer;
-          display: grid; place-items: center;
-          transition: background .2s, color .2s;
-        }
-        .back-top:hover { background: rgba(168,85,247,.16); color: #F5F3FF; }
-
-        /* ═══════════════════════════════════════════════════════════════
-           RESPONSIVE
-           ═══════════════════════════════════════════════════════════════ */
-        @media (max-width: 1024px) {
-          section { padding-block: 72px; padding-inline: 5vw; }
-          .topbar { padding: 16px 5vw; }
-          .topbar.is-scrolled { padding: 12px 5vw; }
-          .hero-grid { grid-template-columns: 1fr; gap: 36px; }
-          .online-chip { justify-self: start; }
-          .phone-grid { grid-template-columns: 1fr; gap: 40px; }
-          .phone-mockup { order: 2; }
-          .phone-text { order: 1; }
-          .footer-grid { grid-template-columns: 1fr; gap: 28px; }
-        }
-
-        @media (max-width: 820px) {
-          .topbar .menu { display: none; }
-          .topbar { padding: 14px 20px; }
-          .topbar.is-scrolled { padding: 12px 20px; }
-          .topbar .logo-nuro { height: 24px; }
-          .topbar .auth-btns { gap: 8px; }
-          .topbar .auth-btns .btn { padding: 8px 12px; font-size: 12.5px; border-radius: 9px; }
-
-          section { padding-block: 56px; padding-inline: 20px; }
-
-          #hero { min-height: 100vh; padding-top: 96px; padding-bottom: 40px; }
-          .hero-text { gap: 22px; max-width: 100%; }
-          .hero-text::before { inset: -28px -28px -20px -20px; }
-          .hero-title {
-            font-size: clamp(2.4rem, 11vw, 3.6rem);
-            line-height: 1;
-            max-width: 100%;
-          }
-          .hero-text .lead {
-            font-size: 14.5px;
-            line-height: 1.6;
-            max-width: 100%;
-          }
-          .hero-text .micro-text { font-size: 12px; }
-          .online-chip { padding: 12px 14px; max-width: 100%; }
-
-          .ticker-item { font-size: 11px; padding: 8px 14px; }
-          .ticker-track { gap: 20px; }
-
-          .numbered-card { padding: 28px 22px; border-radius: 16px; }
-          .numbered-title { font-size: 1.25rem; }
-          .numbered-row { padding: 12px 14px; gap: 12px; }
-          .numbered-row .num-text { font-size: 13.5px; }
-
-          .phone-grid { gap: 32px; }
-          .phone-text::before { inset: -28px -28px; }
-          .problems-list li { font-size: 13.5px; }
-
-          .invitation-wrap::before { inset: -32px -40px; }
-          .invitation-wrap .h-display { font-size: clamp(2rem, 9vw, 2.6rem); }
-          .invitation-wrap .lead { font-size: 14px; }
-
-          .caps-text { font-size: 17px; }
-          .cap { font-size: 12.5px; padding: 9px 14px; }
-
-          .banner-card { padding: 28px 22px; border-radius: 18px; }
-          .banner-card .h-2 { font-size: clamp(1.4rem, 6.5vw, 1.85rem); }
-          .banner-card .lead { font-size: 13.5px; }
-          .btn-lg { font-size: 14px; padding: 13px 22px; }
-
-          .footer { padding: 40px 20px 24px; }
-          .footer-links { grid-template-columns: 1fr 1fr; gap: 10px 28px; }
-          .footer-bottom { flex-direction: column; gap: 16px; }
-
-          /* Video mobile */
-          .demo-head { margin-bottom: 30px; gap: 14px; padding-inline: 20px; }
-          .demo-head::before { inset: -30px -50px; }
-          .video-frame { border-radius: 14px; }
-          .video-link { font-size: 12.5px; }
-
-          /* Testimonios mobile */
-          #testimonios { padding-block: 72px; padding-inline: 20px; }
-          .testi-head { gap: 14px; margin: 0 auto 38px; padding-inline: 20px; max-width: 100%; }
-          .testi-head::before { inset: -40px -60px; }
-          .testi-head .h-2 { font-size: clamp(1.8rem, 9vw, 2.6rem); line-height: 1.05; }
-          .testi-carousel { gap: 16px; margin-top: 0; }
-          .tcard { width: min(300px, 86vw); padding: 18px; border-radius: 16px; }
-        }
-
-        /* ═══════════════════════════════════════════════════════════════
-           REVEAL · entrada editorial suave al hacer scroll
-           Elementos marcados con [data-reveal] parten invisibles + 18px
-           hacia abajo y aparecen cuando entran al viewport.
-           Stagger opcional con [data-delay="1..6"] (50ms por nivel).
-           Solo transform + opacity · sin layout reflow.
-           ═══════════════════════════════════════════════════════════════ */
-        [data-reveal] {
-          opacity: 0;
-          transform: translate3d(0, 18px, 0);
-          transition:
-            opacity .75s cubic-bezier(.22, 1, .36, 1),
-            transform .75s cubic-bezier(.22, 1, .36, 1);
-          will-change: opacity, transform;
-        }
-        [data-reveal].is-visible {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-        }
-        [data-reveal][data-delay="1"] { transition-delay: .05s; }
-        [data-reveal][data-delay="2"] { transition-delay: .12s; }
-        [data-reveal][data-delay="3"] { transition-delay: .20s; }
-        [data-reveal][data-delay="4"] { transition-delay: .28s; }
-        [data-reveal][data-delay="5"] { transition-delay: .36s; }
-        [data-reveal][data-delay="6"] { transition-delay: .44s; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .particle, .bg-glow, .ticker-left, .ticker-right, .online-pulse, .phone-mockup,
-          .mtrack {
-            animation: none !important;
-          }
-          .topbar { transition: none; }
-          [data-reveal] {
-            opacity: 1 !important;
-            transform: none !important;
-            transition: none !important;
-          }
-        }
-      `}</style>
     </div>
   )
 }

@@ -1,188 +1,115 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { randomUUID } from 'crypto'
-import { requireActiveSubscription } from '@/lib/subscription-guard'
-import { db } from '@/lib/db'
-import { createServiceRoleClient } from '@/lib/supabase/server'
-import { createUserNotification } from '@/lib/notifications'
+import { cookies } from 'next/headers'
+import { prisma } from '@/lib/prisma'
+import { verifyToken } from '@/lib/auth'
+import { getPlanLimits, PLAN_NAMES, type UserPlan } from '@/lib/plan-limits'
 
-/* ── Font option map (mirrors dashboard FONT_OPTIONS) ── */
-const FONT_MAP: Record<string, string> = {
-  default: 'Inter, sans-serif',
-  inter: 'Inter',
-  sora: 'Sora',
-  poppins: 'Poppins',
-  outfit: 'Outfit',
-  manrope: 'Manrope',
-  'plus-jakarta': 'Plus Jakarta Sans',
-  'dm-sans': 'DM Sans',
-  montserrat: 'Montserrat',
-  raleway: 'Raleway',
-  cormorant: 'Cormorant Garamond',
-  playfair: 'Playfair Display',
-  'eb-garamond': 'EB Garamond',
-  'space-grotesk': 'Space Grotesk',
-  'bebas-neue': 'Bebas Neue',
-  oswald: 'Oswald',
-  anton: 'Anton',
-  'work-sans': 'Work Sans',
-  karla: 'Karla',
-  nunito: 'Nunito',
-  orbitron: 'Orbitron',
-  rajdhani: 'Rajdhani',
+function getAuth() {
+    const cookieStore = cookies()
+    const token = cookieStore.get('auth_token')?.value
+    if (!token) return null
+    return verifyToken(token)
 }
 
-/* Extract flat visual fields from font_config/bg_config objects */
-function extractVisualFields(fontConfig: Record<string, unknown> | null, bgConfig: Record<string, unknown> | null) {
-  const visual: Record<string, string | null> = {}
-
-  if (fontConfig) {
-    const fontKey = (fontConfig.font as string) || 'default'
-    visual.font_family = FONT_MAP[fontKey] || fontKey
-    visual.font_weight = (fontConfig.weight as string) || '700'
-    visual.font_spacing = (fontConfig.letterSpacing as string) || 'normal'
-    visual.font_style = fontConfig.uppercase ? 'uppercase' : null
-  }
-
-  if (bgConfig) {
-    const bgType = (bgConfig.type as string) || 'solid'
-    visual.background_type = bgType
-    visual.background_value = bgType === 'gradient'
-      ? (bgConfig.gradient as string) || '#0F172A'
-      : (bgConfig.color as string) || '#0F172A'
-  }
-
-  return visual
-}
-
+/** GET /api/stores – list all stores for the authenticated user */
 export async function GET() {
-  try {
-    const guard = await requireActiveSubscription()
-    if (!guard.ok) return guard.response
-    const session = guard.session
+    try {
+        const auth = getAuth()
+        if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const service = await createServiceRoleClient()
-    const { data: stores, error } = await service
-      .from('stores')
-      .select('*')
-      .eq('user_id', session.sub)
-      .order('created_at', { ascending: false })
+        const stores = await prisma.store.findMany({
+            where: { userId: auth.userId },
+            include: {
+                bot: {
+                    select: { name: true }
+                },
+                _count: {
+                    select: { products: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' },
+        })
 
-    if (error) {
-      console.error('Error fetching stores:', error)
-      return NextResponse.json({ error: 'Error al obtener tiendas' }, { status: 500 })
+        return NextResponse.json({ stores })
+    } catch (err) {
+        console.error('[GET /api/stores]', err)
+        return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
     }
-
-    const storesWithCounts = await Promise.all(
-      (stores || []).map(async (store) => {
-        const { count } = await service
-          .from('store_products')
-          .select('id', { count: 'exact', head: true })
-          .eq('store_id', store.id)
-        return { ...store, product_count: count || 0 }
-      })
-    )
-
-    return NextResponse.json(storesWithCounts)
-  } catch (error) {
-    console.error('Error en GET /api/stores:', error)
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
-  }
 }
 
+/** POST /api/stores – create a new store */
 export async function POST(request: NextRequest) {
-  try {
-    const guard = await requireActiveSubscription()
-    if (!guard.ok) return guard.response
-    const session = guard.session
+    try {
+        const auth = getAuth()
+        if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-    const { data: profile } = await db
-      .from('profiles')
-      .select('tenant_id')
-      .eq('id', session.sub)
-      .single()
+        const body = await request.json()
+        const { name, slug, type, botId, description } = body
 
-    if (!profile) {
-      return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
+        if (!name || !slug || !type) {
+            return NextResponse.json({ error: 'Faltan campos obligatorios (nombre, slug, tipo)' }, { status: 400 })
+        }
+
+        // Plan limit check (plan base + tiendas extra otorgadas por admin)
+        const user = await prisma.user.findUnique({ where: { id: auth.userId }, select: { plan: true, extraStores: true } })
+        const plan = (user?.plan ?? 'NONE') as UserPlan
+        const extraStores = user?.extraStores ?? 0
+        const limits = getPlanLimits(plan)
+
+        if (limits.stores === 0 && extraStores === 0) {
+            return NextResponse.json({
+                error: 'Necesitas un plan activo para crear tiendas.',
+                limitReached: true,
+                plan,
+            }, { status: 403 })
+        }
+
+        if (limits.stores !== Infinity) {
+            const effectiveLimit = limits.stores + extraStores
+            const storeCount = await prisma.store.count({ where: { userId: auth.userId } })
+            if (storeCount >= effectiveLimit) {
+                return NextResponse.json({
+                    error: `Tu ${PLAN_NAMES[plan]} permite hasta ${effectiveLimit} tienda(s). Actualiza al Pack Pro para crear más.`,
+                    limitReached: true,
+                    plan,
+                }, { status: 403 })
+            }
+        }
+
+        // Verificar si el slug ya existe
+        const exists = await prisma.store.findUnique({ where: { slug } })
+        if (exists) {
+            return NextResponse.json({ error: 'El nombre de usuario/slug de la tienda ya está en uso' }, { status: 400 })
+        }
+
+        let store
+        try {
+            store = await prisma.store.create({
+                data: {
+                    userId: auth.userId,
+                    botId: botId || null,
+                    name,
+                    slug: slug.toLowerCase().trim(),
+                    type: type as any,
+                    whatsappNumber: body.whatsappNumber || null,
+                    paymentQrUrl: body.paymentQrUrl || null,
+                    bannerUrl: body.bannerUrl || null,
+                    themeConfig: (body.themeConfig && typeof body.themeConfig === 'object') ? body.themeConfig : undefined,
+                    description: description || '',
+                }
+            })
+        } catch (e: any) {
+            // Carrera de slug único: dos requests pasan el check y chocan en el @unique
+            if (e?.code === 'P2002') {
+                return NextResponse.json({ error: 'El nombre de usuario/slug de la tienda ya está en uso' }, { status: 409 })
+            }
+            throw e
+        }
+
+        return NextResponse.json({ store }, { status: 201 })
+    } catch (err: any) {
+        console.error('[POST /api/stores] Error completo:', err)
+        return NextResponse.json({ error: 'Error al crear la tienda' }, { status: 500 })
     }
-
-    // Fallback: si el perfil no tiene tenant_id (cuentas OAuth o antiguas),
-    // usamos el propio user_id como tenant — single-tenant por usuario.
-    const tenantId = profile.tenant_id || session.tenant_id || session.sub
-    if (!profile.tenant_id) {
-      // Backfill silencioso para que futuras inserciones encuentren el tenant
-      await db.from('profiles').update({ tenant_id: tenantId }).eq('id', session.sub)
-    }
-
-    const body = await request.json()
-    const { name, slug, store_type, whatsapp_number, payment_qr_url, visibility, font_config, bg_config } = body
-
-    if (!name || !slug) {
-      return NextResponse.json({ error: 'Nombre y slug son requeridos' }, { status: 400 })
-    }
-
-    const slugClean = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
-    if (!slugClean || slugClean.length < 2) {
-      return NextResponse.json({ error: 'El slug debe tener al menos 2 caracteres' }, { status: 400 })
-    }
-
-    const service = await createServiceRoleClient()
-
-    const { data: existing } = await service
-      .from('stores')
-      .select('id')
-      .eq('slug', slugClean)
-      .single()
-
-    if (existing) {
-      return NextResponse.json({ error: 'Este slug ya está en uso. Elige otro.' }, { status: 409 })
-    }
-
-    // Extract flat visual fields from config objects
-    const visual = extractVisualFields(font_config, bg_config)
-    const nowIso = new Date().toISOString()
-
-    // Pasamos TODOS los defaults explícitos porque la DB se creó vía
-    // Prisma db push y los @default(...) sólo se aplican al pasar por
-    // el cliente Prisma, no en inserts directos via Supabase.
-    const { data: store, error } = await service
-      .from('stores')
-      .insert({
-        id: randomUUID(),
-        user_id: session.sub,
-        tenant_id: tenantId,
-        name: name.trim(),
-        slug: slugClean,
-        store_type: store_type || 'business',
-        status: 'active',
-        is_active: true,
-        whatsapp_number: whatsapp_number || null,
-        payment_qr_url: payment_qr_url || null,
-        visibility: visibility || 'public',
-        font_config: font_config || null,
-        bg_config: bg_config || null,
-        ...visual,
-        created_at: nowIso,
-        updated_at: nowIso,
-      })
-      .select()
-      .single()
-
-    if (error || !store) {
-      console.error('Error creating store:', error)
-      return NextResponse.json({ error: error?.message || 'Error al crear la tienda' }, { status: 500 })
-    }
-
-    createUserNotification({
-      userId: session.sub,
-      type: 'tienda_creada',
-      title: 'Tienda virtual creada',
-      message: `Tu tienda "${name.trim()}" está lista. Agrega productos para empezar a vender.`,
-      link: `/stores/${store.id}`,
-    }).catch(() => {})
-
-    return NextResponse.json({ ...store, product_count: 0 }, { status: 201 })
-  } catch (error) {
-    console.error('Error en POST /api/stores:', error)
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
-  }
 }

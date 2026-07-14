@@ -1,0 +1,19 @@
+# Caddy: HTTPS automático (Let's Encrypt) para my-dymond.
+# Reverse proxy 443 -> Next.js en localhost:3000.
+# Requiere que el DNS de mydiamondapp.com ya apunte a la IP del EC2.
+
+mydiamondapp.com, www.mydiamondapp.com {
+	encode zstd gzip
+
+	# Subidas grandes (videos de cursos van directo a S3, pero dejamos margen)
+	request_body {
+		max_size 100MB
+	}
+
+	reverse_proxy localhost:3000
+
+	log {
+		output file /var/log/caddy/mydymond.log
+		format json
+	}
+}

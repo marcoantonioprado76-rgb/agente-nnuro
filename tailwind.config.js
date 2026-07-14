@@ -1,84 +1,179 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/features/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+        // Design tokens del Constructor Visual (solo se usan ahí). Ink oscuro para
+        // el tema CLARO del dashboard: text-app = texto oscuro legible; con /opacidad
+        // (text-app/40, bg-surface/5, border-line/10) da grises suaves y bordes finos.
+        app: '#111827',
+        surface: '#111827',
+        line: '#111827',
+        jd: {
+          cyan: {
+            50: '#9EE7EC',
+            100: '#8ADDED',
+            200: '#74D1E9',
+            300: '#60C6E5',
+            400: '#4FBCE1',
+          },
+          blue: {
+            50: '#44AFDA',
+            100: '#3EA2D2',
+            200: '#4C97D8',
+            300: '#5C9FE0',
+            400: '#6DAAE8',
+            500: '#3A63CC',
+            600: '#345CC6',
+            700: '#3056C0',
+            800: '#3F59C4',
+            900: '#545ECB',
+          },
+          violet: {
+            50: '#6662D1',
+            100: '#7766D8',
+            200: '#896BE0',
+            300: '#9B70E7',
+            400: '#C7B2F3',
+          },
+          magenta: {
+            50: '#F3F4F9', // Lightest / Highlight
+            100: '#5D4BCD',
+            200: '#6E51DE',
+            300: '#7F56EF',
+            400: '#8F5AF8',
+            500: '#9C5CFB',
+            600: '#AF5DF6',
+            700: '#C561EF',
+            800: '#DA6CE9',
+            900: '#F39AF2',
+          }
         },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+        ai: {
+          blue: '#00E0FF',
+          violet: '#9B00FF',
+          magenta: '#D203DD',
+          purple: '#0D1E79',
+          dark: '#0A0030',
         },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+        premium: {
+          bg: '#0A0030',
+          sidebar: '#12003D',
+          purple: '#D203DD',
+          glow: '#FF2DF7',
+          glass: 'rgba(13, 30, 121, 0.4)',
         },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+        action: {
+          start: '#FF5E1A',
+          end: '#FF006B',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+        vibrant: {
+          cyan: '#00D1FF',
+          blue: '#1A4FFF',
+          purple: '#7B2CFF',
+          magenta: '#FF00E5',
+          pink: '#FF4DFF',
         },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        // Neon palette
         neon: {
-          purple: '#8B5CF6',
-          pink:   '#EC4899',
-          cyan:   '#06B6D4',
-          green:  '#10B981',
-          amber:  '#F59E0B',
+          blue: '#00F3FF',
+          purple: '#BC13FE',
+          pink: '#FF00FF',
+          green: '#00FF9D',
         },
+        dark: {
+          50: '#EDE8FF',
+          100: '#D4C5FF',
+          200: '#B09AEE',
+          300: '#8B70CC',
+          400: '#6B52A8',
+          500: '#4A3480',
+          600: '#2E1A68',
+          700: '#1E0D50',
+          800: '#130840',
+          900: '#0A0030',
+          950: '#050018',
+        },
+        // ── Sistema visual MY DIAMOND (premium light + dark sidebar) ──
+        diamond: {
+          bg: '#F5F7FA',
+          card: '#FFFFFF',
+          soft: '#F0F3F7',
+          border: '#E4E9F0',
+          dark: '#071522',
+          dark2: '#0B1B2B',
+          hero: '#081624',
+          hero2: '#111A2E',
+          darkest: '#050B14',
+          text: '#111827',
+          muted: '#6B7280',
+          faint: '#9CA3AF',
+          pink: '#FF096C',
+          pink2: '#E7358C',
+          purple: '#6A35D9',
+          purple2: '#B735B8',
+          blue: '#233B8F',
+          blue2: '#102A55',
+        },
+      },
+      fontFamily: {
+        sans: ['Archivo', 'system-ui', 'sans-serif'],
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        ui: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      backgroundImage: {
+        'gradient-liquid': 'linear-gradient(135deg, #0D1E79 0%, #D203DD 50%, #e855f0 100%)',
+        'gradient-ai-mesh': 'radial-gradient(circle at 20% 30%, rgba(210, 3, 221, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(13, 30, 121, 0.20) 0%, transparent 50%)',
+        'gradient-premium': 'radial-gradient(circle at center, #0D1E79 0%, #0A0030 100%)',
+        'gradient-glow': 'radial-gradient(circle at center, rgba(210, 3, 221, 0.3) 0%, rgba(0, 0, 0, 0) 70%)',
+        'diamond-gradient': 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+        'silver-gradient': 'linear-gradient(135deg, #FFFFFF 0%, #E8EDF5 22%, #B8C0CC 45%, #F8FAFC 62%, #8F98A8 100%)',
+        'diamond-hero': 'radial-gradient(circle at 80% 40%, rgba(255,9,108,0.28), transparent 30%), linear-gradient(135deg, #081624 0%, #111A2E 52%, #070D17 100%)',
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        card: '22px',
+        panel: '24px',
+        hero: '28px',
       },
-      keyframes: {
-        'fade-in-up': {
-          '0%':   { opacity: '0', transform: 'translateY(16px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        'fade-in': {
-          '0%':   { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        'slide-in': {
-          '0%':   { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(0)' },
-        },
+      boxShadow: {
+        'liquid-glass': '0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08)',
+        'ai-glow': '0 0 30px rgba(210, 3, 221, 0.45)',
+        'premium-purple': '0 0 20px rgba(210, 3, 221, 0.40)',
+        'card': '0 12px 48px 0 rgba(0, 0, 0, 0.6)',
+        'water-shadow': '0 25px 60px rgba(0,0,0,0.5)',
+        'water-glow': '0 45px 100px rgba(210, 3, 221, 0.25)',
+        'btn-liquid': '0 0 60px rgba(210, 3, 221, 0.55)',
+        'btn-outline': '0 0 30px rgba(210, 3, 221, 0.30)',
+        'd-card': '0 18px 40px rgba(15,23,42,0.07)',
+        'd-hover': '0 24px 54px rgba(15,23,42,0.11)',
+        'd-dark': '0 24px 56px rgba(8,22,36,0.30)',
+        'd-glow': '0 14px 32px rgba(255,9,108,0.28)',
       },
       animation: {
-        'fade-in-up':          'fade-in-up 0.4s ease-out forwards',
-        'fade-in-up-delay-1':  'fade-in-up 0.4s ease-out 0.1s forwards',
-        'fade-in-up-delay-2':  'fade-in-up 0.4s ease-out 0.2s forwards',
-        'fade-in':             'fade-in 0.3s ease-out forwards',
-        'slide-in':            'slide-in 0.3s ease-out forwards',
+        'carousel': 'carousel 16s infinite steps(5, end)',
+        'mesh-flow': 'mesh 15s ease infinite alternate',
+        'liquid-float': 'float 8s ease-in-out infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        carousel: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-80%)' },
+        },
+        mesh: {
+          '0%': { 'background-position': '0% 0%' },
+          '100%': { 'background-position': '100% 100%' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-15px)' },
+        },
       },
     },
   },
   plugins: [],
-};
+}

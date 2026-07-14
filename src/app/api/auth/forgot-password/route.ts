@@ -1,37 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { SignJWT } from 'jose';
-import { db } from '@/lib/db';
-import { sendPasswordRecoveryEmail } from '@/lib/email';
+export const dynamic = 'force-dynamic'
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { sendPasswordResetEmail } from '@/lib/email'
+import crypto from 'crypto'
 
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? 'fallback-secret-change-in-production'
-);
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { email } = await req.json();
-    if (!email) return NextResponse.json({ error: 'El email es requerido' }, { status: 400 });
+    const { email } = await request.json()
 
-    const { data: profile } = await db
-      .from('profiles').select('id, full_name').eq('email', email.toLowerCase()).maybeSingle();
+    if (!email) {
+      return NextResponse.json({ error: 'El correo es obligatorio' }, { status: 400 })
+    }
 
-    if (!profile)
-      return NextResponse.json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' });
+    const user = await prisma.user.findUnique({ where: { email } })
 
-    const token = await new SignJWT({ sub: profile.id, purpose: 'password_reset' })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setIssuedAt()
-      .setExpirationTime('1h')
-      .sign(SECRET);
+    // Siempre respondemos con exito para no revelar si el email existe
+    if (!user) {
+      return NextResponse.json({
+        message: 'Si el correo existe, recibiras un enlace de recuperacion'
+      })
+    }
 
-    const appUrl   = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const resetUrl = `${appUrl}/reset-password?token=${token}`;
+    // Invalidar tokens anteriores
+    await prisma.passwordResetToken.updateMany({
+      where: { userId: user.id, used: false },
+      data: { used: true }
+    })
 
-    await sendPasswordRecoveryEmail(email, profile.full_name || 'Usuario', resetUrl).catch(() => {});
+    // Crear nuevo token
+    const token = crypto.randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000) // 1 hora
 
-    return NextResponse.json({ message: 'Si el correo existe, recibirás un enlace de recuperación.' });
-  } catch (err) {
-    console.error('[auth/forgot-password]', err);
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+    await prisma.passwordResetToken.create({
+      data: {
+        userId: user.id,
+        token,
+        expiresAt,
+      }
+    })
+
+    await sendPasswordResetEmail(email, token)
+
+    return NextResponse.json({
+      message: 'Si el correo existe, recibiras un enlace de recuperacion'
+    })
+  } catch (error) {
+    console.error('Forgot password error:', error)
+    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
   }
 }

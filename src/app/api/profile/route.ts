@@ -1,49 +1,79 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
-import { createServiceRoleClient } from '@/lib/supabase/server'
-import bcrypt from 'bcryptjs'
+import { getAuthUser } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 
+/**
+ * GET /api/profile  — devuelve datos del usuario autenticado
+ * PATCH /api/profile — actualiza campos editables por el propio usuario
+ *
+ * Campo editable hoy: fullName (3-80 chars, sin caracteres raros).
+ * Username, email, identityDocument, dateOfBirth → NO editables desde acá
+ * (son identidad y requieren validación/admin).
+ */
 export async function GET() {
-  try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const service = await createServiceRoleClient()
-    const { data, error } = await service.from('profiles').select('id,email,full_name,avatar_url,role,tenant_id,country,city,phone_number,country_code,phone_with_code,status,is_active,ai_credits_usd,created_at,updated_at').eq('id', session.sub).single()
-    if (error || !data) return NextResponse.json({ error: 'Perfil no encontrado' }, { status: 404 })
-    return NextResponse.json(data)
-  } catch {
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
-  }
+    const user = await getAuthUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    const u = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: {
+            id: true, username: true, email: true, fullName: true, avatarUrl: true,
+            country: true, city: true, identityDocument: true, dateOfBirth: true,
+            isActive: true, plan: true, createdAt: true,
+        },
+    })
+    if (!u) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
+
+    return NextResponse.json({ user: u })
 }
 
-export async function PUT(request: NextRequest) {
-  try {
-    const session = await getServerSession()
-    if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const body = await request.json()
-    const { full_name, avatar_url, country, city, phone_number, current_password, new_password } = body
-    const service = await createServiceRoleClient()
+export async function PATCH(req: NextRequest) {
+    const user = await getAuthUser()
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const updateData: Record<string, unknown> = { updated_at: new Date().toISOString() }
-    if (full_name !== undefined) updateData.full_name = full_name
-    if (avatar_url !== undefined) updateData.avatar_url = avatar_url
-    if (country !== undefined) updateData.country = country
-    if (city !== undefined) updateData.city = city
-    if (phone_number !== undefined) updateData.phone_number = phone_number
+    let body: any
+    try { body = await req.json() } catch { return NextResponse.json({ error: 'Body inválido' }, { status: 400 }) }
 
-    if (new_password && current_password) {
-      const { data: profile } = await service.from('profiles').select('password_hash').eq('id', session.sub).single()
-      const valid = profile?.password_hash ? await bcrypt.compare(current_password, profile.password_hash) : false
-      if (!valid) return NextResponse.json({ error: 'La contraseña actual es incorrecta' }, { status: 400 })
-      updateData.password_hash = await bcrypt.hash(new_password, 12)
+    const data: Record<string, any> = {}
+
+    // fullName: 3-80 chars, sin saltos de línea, sin emojis raros
+    if (typeof body.fullName === 'string') {
+        const name = body.fullName.trim()
+        if (name.length < 3) {
+            return NextResponse.json({ error: 'El nombre debe tener al menos 3 caracteres' }, { status: 400 })
+        }
+        if (name.length > 80) {
+            return NextResponse.json({ error: 'El nombre no puede superar 80 caracteres' }, { status: 400 })
+        }
+        if (/[\r\n\t]/.test(name)) {
+            return NextResponse.json({ error: 'El nombre contiene caracteres no permitidos' }, { status: 400 })
+        }
+        data.fullName = name
     }
 
-    await service.from('profiles').update(updateData).eq('id', session.sub)
-    const { data } = await service.from('profiles').select('*').eq('id', session.sub).single()
-    return NextResponse.json(data)
-  } catch {
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 })
-  }
-}
+    // avatarUrl: URL de la foto subida (acepta null para borrar). Validamos que
+    // sea una URL de nuestro propio Supabase Storage (evita injection de URLs
+    // arbitrarias del cliente).
+    if (body.avatarUrl === null) {
+        data.avatarUrl = null
+    } else if (typeof body.avatarUrl === 'string') {
+        const url = body.avatarUrl.trim()
+        if (url && !/^https:\/\/[a-z0-9-]+\.supabase\.co\/storage\/v1\/object\/public\//i.test(url)) {
+            return NextResponse.json({ error: 'URL de avatar inválida' }, { status: 400 })
+        }
+        data.avatarUrl = url || null
+    }
 
-export const PATCH = PUT
+    if (Object.keys(data).length === 0) {
+        return NextResponse.json({ error: 'Nada que actualizar' }, { status: 400 })
+    }
+
+    const updated = await prisma.user.update({
+        where: { id: user.id },
+        data,
+        select: { id: true, username: true, email: true, fullName: true, avatarUrl: true },
+    })
+
+    return NextResponse.json({ success: true, user: updated })
+}

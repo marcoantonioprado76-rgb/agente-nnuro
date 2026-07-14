@@ -1,0 +1,164 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   TiltCard — holographic tilt card effect
+   Adapted from react-bits ProfileCard
+───────────────────────────────────────────────────────────────────────────── */
+
+.tc-wrapper {
+  perspective: 600px;
+  transform: translate3d(0, 0, 0.1px);
+  position: relative;
+  touch-action: pan-y;
+
+  /* CSS variable defaults */
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --pointer-from-center: 0;
+  --pointer-from-top: 0.5;
+  --pointer-from-left: 0.5;
+  --card-opacity: 0;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --background-x: 50%;
+  --background-y: 50%;
+  --behind-glow-color: rgba(210, 3, 221, 0.55);
+  --shine-opacity: 0.35;
+  --card-radius: 22px;
+
+  /* Sunpillar rainbow colors for the shine */
+  --sp1: hsl(2,   100%, 73%);
+  --sp2: hsl(53,  100%, 69%);
+  --sp3: hsl(93,  100%, 69%);
+  --sp4: hsl(176, 100%, 76%);
+  --sp5: hsl(228, 100%, 74%);
+  --sp6: hsl(283, 100%, 73%);
+}
+
+/* ── BEHIND GLOW — disabled ──────────────────────────────────────────────── */
+.tc-behind {
+  display: none;
+}
+
+/* ── SHELL ───────────────────────────────────────────────────────────────── */
+.tc-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── CARD — the 3D-transforming surface ─────────────────────────────────── */
+.tc-card {
+  border-radius: var(--card-radius);
+  position: relative;
+  transform: translateZ(0) rotateX(0deg) rotateY(0deg);
+  transition: transform 0.9s ease, box-shadow 0.3s ease;
+  box-shadow:
+    rgba(0, 0, 0, 0.55) calc((var(--pointer-from-left) * 14px) - 4px)
+    calc((var(--pointer-from-top) * 22px) - 7px) 28px -4px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.tc-shell.tc-active .tc-card {
+  transition: none;
+  transform: translateZ(0) rotateX(var(--rotate-y)) rotateY(var(--rotate-x));
+}
+
+.tc-shell.tc-entering .tc-card {
+  transition: transform 180ms ease-out;
+}
+
+/* ── SHINE — holographic rainbow layer ──────────────────────────────────── */
+.tc-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  transition: opacity 0.5s ease, filter 0.5s ease;
+
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      var(--sp1) 0%,
+      var(--sp2) 16.7%,
+      var(--sp3) 33.3%,
+      var(--sp4) 50.0%,
+      var(--sp5) 66.7%,
+      var(--sp6) 83.3%,
+      var(--sp1) 100%
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      #0e152e 0%,
+      hsl(180, 10%, 60%) 3.8%,
+      hsl(180, 29%, 66%) 4.5%,
+      hsl(180, 10%, 60%) 5.2%,
+      #0e152e 10%,
+      #0e152e 12%
+    ),
+    radial-gradient(
+      farthest-corner circle at var(--pointer-x) var(--pointer-y),
+      hsla(0, 0%, 0%, 0.1) 12%,
+      hsla(0, 0%, 0%, 0.25) 120%
+    );
+
+  background-position:
+    0 var(--background-y),
+    var(--background-x) var(--background-y),
+    center;
+
+  background-size:
+    500% 500%,
+    300% 300%,
+    200% 200%;
+
+  background-blend-mode: color, hard-light;
+  filter: brightness(0.5) contrast(1.4) saturate(0.35) opacity(0.5);
+  animation: tc-holo-bg 18s linear infinite;
+}
+
+.tc-shell.tc-active .tc-shine {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
+@keyframes tc-holo-bg {
+  0%   { background-position: 0 var(--background-y), 0%  0%,  center; }
+  100% { background-position: 0 var(--background-y), 90% 90%, center; }
+}
+
+/* ── GLARE — spotlight highlight ────────────────────────────────────────── */
+.tc-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  pointer-events: none;
+  z-index: 3;
+  background-image: radial-gradient(
+    farthest-corner circle at var(--pointer-x) var(--pointer-y),
+    hsl(248, 20%, 85%) 10%,
+    hsla(207, 35%, 30%, 0.5) 90%
+  );
+  mix-blend-mode: overlay;
+  filter: brightness(0.75) contrast(1.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tc-shell.tc-active .tc-glare {
+  opacity: 0;
+}
+
+/* ── CONTENT — children, floating slightly on hover ─────────────────────── */
+.tc-content {
+  position: relative;
+  z-index: 4;
+  transform: translate3d(
+    calc(var(--pointer-from-left) * -3px + 1.5px),
+    calc(var(--pointer-from-top)  * -3px + 1.5px),
+    0.1px
+  );
+  transition: transform 60ms linear;
+}

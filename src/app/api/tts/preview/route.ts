@@ -1,15 +1,15 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from '@/lib/auth'
+import { getAuthUser } from '@/lib/auth'
 import { BOT_VOICES } from '@/lib/voices'
 import { synthesizePreviewMp3, ttsConfigured } from '@/lib/tts'
 
 const SAMPLE = '¡Hola! Qué gusto saludarte. Justo hoy tenemos una promoción especial. ¿Quieres que te cuente los detalles?'
 
-/** GET /api/tts/preview?voice=<voiceId> → muestra de audio (OGG) de esa voz. */
+/** GET /api/tts/preview?voice=<voiceId> → muestra de audio (MP3) de esa voz. */
 export async function GET(request: NextRequest) {
-  const session = await getServerSession()
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const user = await getAuthUser()
+  if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
   if (!ttsConfigured()) return NextResponse.json({ error: 'Voz no configurada en el servidor' }, { status: 503 })
 
