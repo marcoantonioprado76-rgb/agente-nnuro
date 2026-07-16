@@ -126,7 +126,7 @@ export default function StorePage() {
         <div>
           <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">🎟 Eventos</h1>
           <div className="h-px w-24 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, #1fb8bb, #147e95, #233B8F, transparent)' }} />
-          <p className="text-xs text-[#6B7280] mt-2">Conseguí tu entrada para los eventos presenciales de MY DIAMOND.</p>
+          <p className="text-xs text-[#6B7280] mt-2">Conseguí tu entrada para los eventos presenciales de NÜRO.</p>
         </div>
         {/* El carrito/pedidos son de la TIENDA: solo se muestran si hay productos. */}
         {!loading && items.length > 0 && (
@@ -137,7 +137,7 @@ export default function StorePage() {
             <Link href="/dashboard/store/cart" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#111827', background: '#F0F3F7', border: '1px solid #E4E9F0', borderRadius: 8, padding: '7px 14px', textDecoration: 'none' }}>
               🛒 Carrito
               {cartCount > 0 && (
-                <span style={{ position: 'absolute', top: -7, right: -7, background: '#FF2DF7', color: '#fff', fontSize: 10, fontWeight: 800, borderRadius: 99, minWidth: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px' }}>
+                <span style={{ position: 'absolute', top: -7, right: -7, background: '#0a95a8', color: '#fff', fontSize: 10, fontWeight: 800, borderRadius: 99, minWidth: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px' }}>
                   {cartCount}
                 </span>
               )}
@@ -197,7 +197,7 @@ export default function StorePage() {
                 <div style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
                   <div>
                     <p style={{ fontWeight: 700, color: '#fff', marginBottom: 2, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="text-[11px] sm:text-sm">{item.title}</p>
-                    <span style={{ fontWeight: 800, color: '#F5A623' }} className="text-[11px] sm:text-sm">{item.price.toFixed(2)} USDT</span>
+                    <span style={{ fontWeight: 800, color: '#35d0c8' }} className="text-[11px] sm:text-sm">{item.price.toFixed(2)} USDT</span>
                   </div>
 
                   {/* Action buttons */}
@@ -297,22 +297,22 @@ export default function StorePage() {
                         )}
 
                         {/* Degradado inferior: funde el flyer con el cuerpo del ticket */}
-                        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #1a262f 100%)', pointerEvents: 'none' }} />
+                        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(26,38,47,0) 0%, rgba(26,38,47,0.75) 60%, #1a262f 100%)', pointerEvents: 'none' }} />
 
                         {/* Chip PRESENCIAL (NO es virtual) */}
-                        <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(0,229,208,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
+                        <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(9,15,22,0.68)', border: '1px solid rgba(0,229,208,0.55)', backdropFilter: 'blur(6px)', color: '#35d0c8', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
                           📍 PRESENCIAL
                         </span>
 
                         {allSoldOut && (
-                          <span style={{ position: 'absolute', top: 12, left: 12, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.78)', border: '1px solid rgba(248,113,113,0.6)', color: '#fca5a5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
+                          <span style={{ position: 'absolute', top: 12, left: 12, padding: '6px 11px', borderRadius: 999, background: 'rgba(9,15,22,0.78)', border: '1px solid rgba(248,113,113,0.6)', color: '#fca5a5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
                             AGOTADO
                           </span>
                         )}
                       </div>
 
                       {/* ── Cuerpo del ticket (debajo del flyer) ────────────────── */}
-                      <div style={{ position: 'relative', borderRadius: '0 0 22.5px 22.5px', background: 'linear-gradient(180deg, #1a262f 0%, #1a262f 58%, #070412 100%)' }}>
+                      <div style={{ position: 'relative', borderRadius: '0 0 22.5px 22.5px', background: 'linear-gradient(180deg, #1a262f 0%, #1a262f 58%, #0f1720 100%)' }}>
 
                         {/* Muescas laterales: se ubican solas en la unión flyer/cuerpo */}
                         <div style={{ position: 'absolute', top: -NOTCH / 2, left: -NOTCH / 2 - PAD, width: NOTCH, height: NOTCH, borderRadius: '50%', background: '#EEF2F7', pointerEvents: 'none', zIndex: 2 }} />
@@ -326,7 +326,7 @@ export default function StorePage() {
                           <div>
                             <p style={{ fontWeight: 900, color: '#fff', fontSize: 20, margin: 0, lineHeight: 1.2, letterSpacing: '-0.01em' }}>{ev.title}</p>
                             {ev.location && (
-                              <p style={{ fontSize: 12.5, color: '#C99BFF', fontWeight: 700, margin: '4px 0 0', textTransform: 'capitalize' }}>{ev.location}</p>
+                              <p style={{ fontSize: 12.5, color: '#35d0c8', fontWeight: 700, margin: '4px 0 0', textTransform: 'capitalize' }}>{ev.location}</p>
                             )}
                           </div>
 
@@ -350,7 +350,7 @@ export default function StorePage() {
                             </p>
                             {/* Si además hay entradas de invitado, lo avisamos. */}
                             {!isFreeEvent && hasGuest && (
-                              <p style={{ fontSize: 11, margin: '4px 0 0', fontWeight: 800, color: '#F5D77A' }}>✦ También hay entradas de invitado (gratis)</p>
+                              <p style={{ fontSize: 11, margin: '4px 0 0', fontWeight: 800, color: '#35d0c8' }}>✦ También hay entradas de invitado (gratis)</p>
                             )}
                             {!allSoldOut && hasCapacity && left > 0 && (
                               <p style={{ fontSize: 11.5, margin: '6px 0 0', fontWeight: 800, color: left <= 10 ? '#FDBA74' : 'rgba(255,255,255,0.55)' }}>
@@ -406,7 +406,7 @@ export default function StorePage() {
               )}
               <div>
                 <p style={{ fontWeight: 700, color: '#fff', fontSize: 14, lineHeight: 1.3 }}>{quickItem.title}</p>
-                <p style={{ fontWeight: 800, color: '#F5A623', fontSize: 15, marginTop: 4 }}>{quickItem.price.toFixed(2)} USDT</p>
+                <p style={{ fontWeight: 800, color: '#35d0c8', fontSize: 15, marginTop: 4 }}>{quickItem.price.toFixed(2)} USDT</p>
               </div>
             </div>
 
@@ -417,8 +417,8 @@ export default function StorePage() {
                   {v.options.map(opt => (
                     <button key={opt} onClick={() => setSelectedVariants(p => ({ ...p, [v.name]: opt }))}
                       style={{ padding: '6px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: 'transparent',
-                        borderColor: selectedVariants[v.name] === opt ? '#FF2DF7' : 'rgba(255,255,255,0.1)',
-                        color: selectedVariants[v.name] === opt ? '#FF2DF7' : 'rgba(255,255,255,0.55)' }}>
+                        borderColor: selectedVariants[v.name] === opt ? '#00E5D0' : 'rgba(255,255,255,0.1)',
+                        color: selectedVariants[v.name] === opt ? '#00E5D0' : 'rgba(255,255,255,0.55)' }}>
                       {opt}
                     </button>
                   ))}

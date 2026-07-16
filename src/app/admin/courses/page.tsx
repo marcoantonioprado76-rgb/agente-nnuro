@@ -290,7 +290,7 @@ export default function AdminCoursesPage() {
     <div>
       <div style={{ marginBottom: 24 }}>
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">JD Academy</h1>
-        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
+        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #233B8F, transparent)' }} />
       </div>
 
       {/* Tabs */}

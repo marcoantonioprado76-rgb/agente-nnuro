@@ -45,7 +45,7 @@ function CommissionsContent() {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="w-10 h-10 border-2 rounded-full animate-spin"
-          style={{ borderColor: 'rgba(0,255,136,0.2)', borderTopColor: '#00FF88' }} />
+          style={{ borderColor: 'rgba(0,229,208,0.2)', borderTopColor: '#00E5D0' }} />
       </div>
     )
   }
@@ -69,7 +69,7 @@ function CommissionsContent() {
       </div>
 
       {/* Línea decorativa */}
-      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(0,255,136,0.3), #E4E9F0, transparent)' }} />
+      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(0,229,208,0.3), #E4E9F0, transparent)' }} />
 
       {/* Cards resumen */}
       <div className="grid md:grid-cols-3 gap-4">
@@ -79,21 +79,21 @@ function CommissionsContent() {
           style={{
             background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
             border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 0 30px rgba(0,255,136,0.06)'
+            boxShadow: '0 0 30px rgba(0,229,208,0.06)'
           }}>
           <div className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, #00FF8870, transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, #00E5D070, transparent)' }} />
           <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20"
-            style={{ background: '#00FF88' }} />
+            style={{ background: '#00E5D0' }} />
           <p className="text-[9px] font-black uppercase tracking-widest mb-3 text-white/55">Total Acumulado</p>
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-3xl font-black tracking-tighter" style={{ color: '#00FF88' }}>${summary.total.toFixed(2)}</span>
-            <span className="text-xs font-black flex items-center" style={{ color: '#00FF88' }}>
+            <span className="text-3xl font-black tracking-tighter" style={{ color: '#00E5D0' }}>${summary.total.toFixed(2)}</span>
+            <span className="text-xs font-black flex items-center" style={{ color: '#00E5D0' }}>
               <ArrowUpRight className="w-3 h-3" />100%
             </span>
           </div>
           <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-            <div className="h-full w-full rounded-full" style={{ background: 'linear-gradient(90deg, #00FF88, #00C2FF)' }} />
+            <div className="h-full w-full rounded-full" style={{ background: 'linear-gradient(90deg, #00E5D0, #1fb8bb)' }} />
           </div>
         </div>
 
@@ -109,7 +109,7 @@ function CommissionsContent() {
             style={{ background: 'linear-gradient(90deg, transparent, #4dfae850, transparent)' }} />
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(201,167,255,0.12)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              style={{ background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <Gift className="w-4 h-4" style={{ color: '#4dfae8' }} />
             </div>
             <span className="text-xs font-light text-white/75">Bono de Patrocinio</span>
@@ -128,7 +128,7 @@ function CommissionsContent() {
             style={{ background: 'linear-gradient(90deg, transparent, #4dfae850, transparent)' }} />
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(201,167,255,0.12)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              style={{ background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(255,255,255,0.1)' }}>
               <Users className="w-4 h-4" style={{ color: '#4dfae8' }} />
             </div>
             <span className="text-xs font-light text-white/75">Bono Directo</span>
@@ -142,7 +142,7 @@ function CommissionsContent() {
       <div className="relative rounded-2xl overflow-hidden"
         style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
         <div className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, #00FF8840, #4dfae830, transparent)' }} />
+          style={{ background: 'linear-gradient(90deg, transparent, #00E5D040, #4dfae830, transparent)' }} />
 
         <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <h3 className="text-xs font-black uppercase tracking-widest text-white/55">
@@ -184,7 +184,7 @@ function CommissionsContent() {
                       </p>
                     </div>
                   </div>
-                  <span className="text-sm font-black font-mono" style={{ color: '#00FF88' }}>
+                  <span className="text-sm font-black font-mono" style={{ color: '#00E5D0' }}>
                     +${c.amount.toFixed(2)}
                   </span>
                 </div>
@@ -200,7 +200,7 @@ function CommissionsContent() {
 const Spinner = (
   <div className="flex items-center justify-center min-h-[50vh]">
     <div className="w-10 h-10 border-2 rounded-full animate-spin"
-      style={{ borderColor: 'rgba(0,255,136,0.2)', borderTopColor: '#00FF88' }} />
+      style={{ borderColor: 'rgba(0,229,208,0.2)', borderTopColor: '#00E5D0' }} />
   </div>
 )
 

@@ -259,7 +259,7 @@ export default function CreditsPage() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, rgba(154,203,255,0.15), rgba(162,102,255,0.15))', border: '1px solid rgba(255,255,255,0.1)' }}>
+          style={{ background: 'linear-gradient(135deg, rgba(0,229,208,0.15), rgba(20,126,149,0.15))', border: '1px solid rgba(255,255,255,0.1)' }}>
           <Cpu className="w-5 h-5 text-cyan-400" />
         </div>
         <div>
@@ -271,7 +271,7 @@ export default function CreditsPage() {
       </div>
 
       {/* Decorative line */}
-      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(162,102,255,0.4), rgba(154,203,255,0.2), transparent)' }} />
+      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(0,181,192,0.4), rgba(0,229,208,0.2), transparent)' }} />
 
       {/* Credits Balance Card — USD */}
       <div className="relative rounded-2xl p-6 overflow-hidden"
@@ -281,7 +281,7 @@ export default function CreditsPage() {
           backdropFilter: 'blur(16px)',
         }}>
         <div className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(162,102,255,0.5), transparent)' }} />
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(0,181,192,0.5), transparent)' }} />
         <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-15"
           style={{ background: 'radial-gradient(circle, #35d0c8, transparent)' }} />
 
@@ -296,10 +296,10 @@ export default function CreditsPage() {
             onClick={() => { setShowBuyModal(true); setBuyMsg(null) }}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl transition-all active:scale-[0.97]"
             style={{
-              background: 'linear-gradient(135deg, rgba(162,102,255,0.30), rgba(154,203,255,0.30))',
-              border: '1px solid rgba(162,102,255,0.45)',
+              background: 'linear-gradient(135deg, rgba(0,229,208,0.28), rgba(20,126,149,0.30))',
+              border: '1px solid rgba(0,181,192,0.45)',
               color: '#fff',
-              boxShadow: '0 6px 18px -10px rgba(162,102,255,0.55), inset 0 1px 0 rgba(255,255,255,0.10)',
+              boxShadow: '0 6px 18px -10px rgba(0,181,192,0.55), inset 0 1px 0 rgba(255,255,255,0.10)',
             }}>
             <Plus className="w-3.5 h-3.5" /> Comprar saldo
           </button>
@@ -408,13 +408,13 @@ export default function CreditsPage() {
             <Settings className="w-5 h-5" style={{ color: "#00E5D0" }} />
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-bold text-white">Configuración de IA</p>
+            <p className="text-sm font-bold text-[#111827]">Configuración de IA</p>
             <p className="text-[11px] font-light" style={{ color: "#6B7280" }}>
               Elegí cómo pagás la IA (saldo o tu propia API Key), tu modelo y los seguimientos — en Configuración.
             </p>
           </div>
         </div>
-        <span className="flex items-center gap-1 text-xs font-bold shrink-0 transition-all group-hover:translate-x-0.5" style={{ color: "#E879F9" }}>
+        <span className="flex items-center gap-1 text-xs font-bold shrink-0 transition-all group-hover:translate-x-0.5" style={{ color: "#0a95a8" }}>
           Configurar <ChevronRight className="w-4 h-4" />
         </span>
       </Link>
@@ -426,13 +426,13 @@ export default function CreditsPage() {
             style={{
               background: 'linear-gradient(180deg, rgba(20,24,48,0.96) 0%, rgba(14,16,34,0.96) 100%)',
               border: '1px solid #9CA3AF',
-              boxShadow: '0 30px 60px -22px rgba(0,0,0,0.82), 0 0 36px -8px rgba(162,102,255,0.30)',
+              boxShadow: '0 30px 60px -22px rgba(0,0,0,0.82), 0 0 36px -8px rgba(0,181,192,0.30)',
             }}>
             {/* Header modal */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: 'rgba(162,102,255,0.18)', border: '1px solid rgba(162,102,255,0.35)', boxShadow: '0 0 14px -4px rgba(162,102,255,0.55)' }}>
+                  style={{ background: 'rgba(0,229,208,0.16)', border: '1px solid rgba(0,181,192,0.35)', boxShadow: '0 0 14px -4px rgba(0,181,192,0.55)' }}>
                   <Wallet className="w-5 h-5 text-cyan-300" />
                 </div>
                 <div>
@@ -459,9 +459,9 @@ export default function CreditsPage() {
                     className="py-2.5 rounded-xl text-sm font-bold transition-all active:scale-[0.97]"
                     style={{
                       background: buyAmount === String(a)
-                        ? 'linear-gradient(135deg, rgba(162,102,255,0.30), rgba(154,203,255,0.20))'
+                        ? 'linear-gradient(135deg, rgba(0,229,208,0.28), rgba(20,126,149,0.20))'
                         : '#F0F3F7',
-                      border: `1px solid ${buyAmount === String(a) ? 'rgba(162,102,255,0.55)' : 'rgba(255,255,255,0.10)'}`,
+                      border: `1px solid ${buyAmount === String(a) ? 'rgba(0,181,192,0.55)' : 'rgba(255,255,255,0.10)'}`,
                       color: buyAmount === String(a) ? '#fff' : 'rgba(255,255,255,0.65)',
                     }}>
                     ${a}
@@ -480,7 +480,7 @@ export default function CreditsPage() {
                   className="w-full pl-8 pr-3 py-3 rounded-xl text-sm font-bold text-white outline-none tabular-nums"
                   placeholder="Otro monto"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #9CA3AF' }}
-                  onFocus={e => (e.currentTarget.style.borderColor = 'rgba(162,102,255,0.50)')}
+                  onFocus={e => (e.currentTarget.style.borderColor = 'rgba(0,181,192,0.50)')}
                   onBlur={e => (e.currentTarget.style.borderColor = '#9CA3AF')}
                 />
               </div>
@@ -701,7 +701,7 @@ export default function CreditsPage() {
                 style={{
                   background: 'linear-gradient(135deg, #35d0c8, #60a5fa)',
                   color: '#fff',
-                  boxShadow: '0 10px 26px -10px rgba(162,102,255,0.55), inset 0 1px 0 #E4E9F0',
+                  boxShadow: '0 10px 26px -10px rgba(0,181,192,0.55), inset 0 1px 0 #E4E9F0',
                   letterSpacing: '-0.01em',
                 }}>
                 {submittingPurchase ? (

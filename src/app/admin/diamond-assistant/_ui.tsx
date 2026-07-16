@@ -3,7 +3,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
 
-// ── Paleta MY DIAMOND ──────────────────────────────────────────────
+// ── Paleta NÜRO ──────────────────────────────────────────────
 export const BRAND = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 export const BORDER = '#E4E9F0'
 export const TEXT = '#111827'

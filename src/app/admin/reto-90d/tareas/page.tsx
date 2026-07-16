@@ -18,7 +18,7 @@ import {
   ImagePlus,
 } from 'lucide-react'
 
-// ── Paleta MY DIAMOND ──────────────────────────────────────────────
+// ── Paleta NÜRO ──────────────────────────────────────────────
 const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 const BORDER = '#E4E9F0'
 const TEXT = '#111827'

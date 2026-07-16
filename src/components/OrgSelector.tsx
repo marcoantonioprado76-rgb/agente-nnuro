@@ -44,7 +44,7 @@ export default function OrgSelector({
         ))}
       </select>
       <p style={{ fontSize: 11, color: '#9AA3B2', marginTop: 4 }}>
-        Global = lo ven los usuarios normales de MY DIAMOND. Una empresa = privado, solo esa empresa lo ve.
+        Global = lo ven los usuarios normales de NÜRO. Una empresa = privado, solo esa empresa lo ve.
       </p>
     </div>
   )

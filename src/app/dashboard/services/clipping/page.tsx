@@ -67,8 +67,8 @@ const PLATFORM_LABEL: Record<Platform, string> = {
 
 const STATUS_CONFIG = {
   HOLD: { label: 'En espera', color: '#FF8800', Icon: Clock },
-  APPROVED: { label: 'Aprobado', color: '#00FF88', Icon: CheckCircle2 },
-  REJECTED: { label: 'Rechazado', color: '#FF3366', Icon: XCircle },
+  APPROVED: { label: 'Aprobado', color: '#22c55e', Icon: CheckCircle2 },
+  REJECTED: { label: 'Rechazado', color: '#ef4444', Icon: XCircle },
 }
 
 function TikTokIcon({ size = 20 }: { size?: number }) {
@@ -217,7 +217,7 @@ function ClippingPageInner() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#FF2D55' }} />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#00E5D0' }} />
       </div>
     )
   }
@@ -229,9 +229,9 @@ function ClippingPageInner() {
       {toast && (
         <div className="fixed top-5 right-5 z-50 px-4 py-3 rounded-xl text-sm font-medium shadow-2xl transition-all"
           style={{
-            background: toast.type === 'ok' ? 'rgba(0,255,136,0.12)' : 'rgba(255,51,102,0.12)',
-            border: `1px solid ${toast.type === 'ok' ? 'rgba(0,255,136,0.3)' : 'rgba(255,51,102,0.3)'}`,
-            color: toast.type === 'ok' ? '#00FF88' : '#FF3366',
+            background: toast.type === 'ok' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+            border: `1px solid ${toast.type === 'ok' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`,
+            color: toast.type === 'ok' ? '#22c55e' : '#ef4444',
           }}>
           {toast.msg}
         </div>
@@ -256,12 +256,12 @@ function ClippingPageInner() {
         </button>
       </div>
 
-      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(255,45,85,0.3), rgba(255,107,0,0.2), transparent)' }} />
+      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(0,229,208,0.3), rgba(20,126,149,0.2), transparent)' }} />
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Ganado', value: `$${totalEarnings.toFixed(2)}`, Icon: DollarSign, color: '#00FF88' },
+          { label: 'Ganado', value: `$${totalEarnings.toFixed(2)}`, Icon: DollarSign, color: '#22c55e' },
           { label: 'Pendiente', value: `$${pendingEarnings.toFixed(2)}`, Icon: Clock, color: '#FF8800' },
           { label: 'Total vistas', value: totalViews.toLocaleString(), Icon: Eye, color: '#00E5D0' },
         ].map(({ label, value, Icon, color }) => (
@@ -301,7 +301,7 @@ function ClippingPageInner() {
                 <div>
                   <p className="text-sm font-medium text-white">{PLATFORM_LABEL[platform]}</p>
                   {isYoutube ? (
-                    <p className="text-[11px]" style={{ color: '#00FF88' }}>
+                    <p className="text-[11px]" style={{ color: '#22c55e' }}>
                       No requiere conexión — usa URL pública
                     </p>
                   ) : account ? (
@@ -318,7 +318,7 @@ function ClippingPageInner() {
 
               {isYoutube ? (
                 <span className="text-[10px] px-2.5 py-1 rounded-full font-medium"
-                  style={{ background: 'rgba(0,255,136,0.08)', color: '#00FF88', border: '1px solid rgba(0,255,136,0.2)' }}>
+                  style={{ background: 'rgba(34,197,94,0.08)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)' }}>
                   ✓ Listo
                 </span>
               ) : account ? (
@@ -471,7 +471,7 @@ function ClippingPageInner() {
                         />
                       </div>
                       {submitError && (
-                        <p className="text-xs" style={{ color: '#FF3366' }}>{submitError}</p>
+                        <p className="text-xs" style={{ color: '#ef4444' }}>{submitError}</p>
                       )}
                       <button type="submit" disabled={submitting || !videoUrl.trim() || !hasAccount}
                         className="w-full py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
@@ -535,7 +535,7 @@ function ClippingPageInner() {
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-sm font-semibold" style={{ color: '#00FF88' }}>
+                      <p className="text-sm font-semibold" style={{ color: '#22c55e' }}>
                         ${parseFloat(sub.earningsUSD).toFixed(4)}
                       </p>
                       <div className="flex items-center gap-1 justify-end mt-1">
@@ -553,7 +553,7 @@ function ClippingPageInner() {
 
       {submissions.length === 0 && campaigns.length > 0 && (
         <div className="text-center py-8">
-          <Play className="w-8 h-8 mx-auto mb-3 opacity-20" style={{ color: '#FF2D55' }} />
+          <Play className="w-8 h-8 mx-auto mb-3 opacity-20" style={{ color: '#00E5D0' }} />
           <p className="text-sm" style={{ color: '#9CA3AF' }}>
             Todavía no enviaste ningún video. ¡Elegí una campaña y empezá a ganar!
           </p>
@@ -586,7 +586,7 @@ export default function ClippingPage() {
   <div className="dm-page font-ui">
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#FF2D55' }} />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#00E5D0' }} />
       </div>
     }>
       <ClippingPageInner />

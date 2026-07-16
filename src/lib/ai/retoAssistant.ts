@@ -106,7 +106,7 @@ export async function generateReminder(input: ReminderGenInput): Promise<string>
     : (input.streak === 0 ? 'Hoy NO tiene racha activa (venía sin entregar): invítalo a empezar una racha nueva hoy.' : '')
 
   const system = [
-    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de My Diamond. Motivas con cercanía y energía.',
+    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de NÜRO. Motivas con cercanía y energía.',
     '',
     `Reto "${input.challengeName}". Participante: ${input.participantName}. Puntos hoy: ${input.points}.`,
     dayLine,
@@ -198,7 +198,7 @@ export async function generateProgressMessage(input: ProgressInput): Promise<str
   const streakLine = input.streak && input.streak >= 2 ? `Racha actual: ${input.streak} días seguidos.` : ''
 
   const system = [
-    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de My Diamond. Acompañas con cercanía y motivación.',
+    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de NÜRO. Acompañas con cercanía y motivación.',
     '',
     `Reto "${input.challengeName}". Participante: ${input.participantName}.`,
     `Resumen de la ${input.period}: ${input.approved} tareas aprobadas, ${input.points} puntos, activo ${input.activeDays} de ${input.periodDays} días.`,
@@ -264,7 +264,7 @@ export async function generateReengagement(input: ReengageInput): Promise<string
   if (!apiKey) return reengageFallback(input)
 
   const system = [
-    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de My Diamond. Eres cercano, cálido y motivador.',
+    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de NÜRO. Eres cercano, cálido y motivador.',
     '',
     `Reto "${input.challengeName}". Participante: ${input.participantName}.`,
     `Lleva ${input.inactiveDays} días sin enviar evidencias.`,
@@ -333,7 +333,7 @@ export async function generateGraduation(input: GraduationInput): Promise<string
   if (!apiKey) return graduationFallback(input)
 
   const system = [
-    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de My Diamond. Celebras los logros con emoción sincera.',
+    input.instructions?.trim() || 'Eres el coach del Reto 90 Días de NÜRO. Celebras los logros con emoción sincera.',
     '',
     `Reto "${input.challengeName}". Participante: ${input.participantName}.`,
     `Cerró el reto de ${input.totalDays} días con ${input.approved} evidencias aprobadas, ${input.points} puntos, activo ${input.activeDays} días.`,
@@ -385,7 +385,7 @@ export async function assistParticipant(input: AssistInput): Promise<AssistResul
   const system = [
     input.instructions?.trim()
       ? input.instructions.trim()
-      : 'Eres el coach del Reto 90 Días de My Diamond. Trata a los participantes con motivación y cercanía.',
+      : 'Eres el coach del Reto 90 Días de NÜRO. Trata a los participantes con motivación y cercanía.',
     '',
     `Contexto: reto "${input.challengeName}". Participante: ${input.participantName}. Puntos de hoy: ${input.points}.`,
     'Estado de las tareas de HOY de este participante:',

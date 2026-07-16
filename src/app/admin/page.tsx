@@ -40,7 +40,7 @@ interface PendingWithdrawal {
 const PLAN_COLORS: Record<string, string> = {
   BASIC: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
   PRO: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-  ELITE: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
+  ELITE: 'text-teal-300 bg-teal-500/10 border-teal-500/20',
 }
 
 export default function AdminOverviewPage() {
@@ -124,7 +124,7 @@ export default function AdminOverviewPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black uppercase tracking-tighter">Resumen General</h1>
-        <p className="text-xs text-[#111827]/30 mt-0.5">Panel de administración MY DIAMOND</p>
+        <p className="text-xs text-[#111827]/30 mt-0.5">Panel de administración NÜRO</p>
       </div>
 
       {/* Stats */}

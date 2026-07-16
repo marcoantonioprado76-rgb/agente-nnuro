@@ -81,7 +81,7 @@ export default function VerifyDevicePage() {
 
         {/* Logo + Brand */}
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" className="w-44 h-auto mb-2" />
+          <img src="/logo-oficial-nuro.png" alt="NÜRO" className="w-44 h-auto mb-2" />
           <p className="text-[11px] text-white/30 mt-1 tracking-widest uppercase">Network Marketing Digital</p>
         </div>
 

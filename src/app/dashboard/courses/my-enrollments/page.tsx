@@ -24,7 +24,7 @@ interface Enrollment {
 
 const STATUS: Record<string, { label: string; color: string; bg: string; border: string; icon: string }> = {
   PENDING:              { label: 'Comprobante en revisión', color: '#f97316', bg: 'rgba(249,115,22,0.1)',  border: 'rgba(249,115,22,0.25)',  icon: '⏳' },
-  PENDING_VERIFICATION: { label: 'Verificando en blockchain', color: '#4dfae8', bg: 'rgba(245,166,35,0.1)', border: 'rgba(245,166,35,0.3)',  icon: '⛓️' },
+  PENDING_VERIFICATION: { label: 'Verificando en blockchain', color: '#4dfae8', bg: 'rgba(0,229,208,0.1)', border: 'rgba(0,229,208,0.3)',  icon: '⛓️' },
   APPROVED:             { label: 'Acceso completo',  color: '#1fb8bb', bg: 'rgba(0,229,208,0.08)', border: 'rgba(0,229,208,0.2)',   icon: '✓' },
   REJECTED:             { label: 'Rechazado',        color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)',  icon: '✕' },
 }
@@ -57,7 +57,7 @@ export default function MyEnrollmentsPage() {
           Mis Inscripciones
         </h1>
         <div className="h-px w-20 mt-2 rounded-full"
-          style={{ background: 'linear-gradient(90deg, transparent, #147e95, #FF2DF7, transparent)' }} />
+          style={{ background: 'linear-gradient(90deg, transparent, #147e95, #00E5D0, transparent)' }} />
         <p className="text-xs mt-2" style={{ color: '#6B7280' }}>
           Cursos en los que te has inscrito o tienes acceso.
         </p>

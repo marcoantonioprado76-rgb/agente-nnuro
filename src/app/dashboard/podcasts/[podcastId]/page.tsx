@@ -87,7 +87,7 @@ export default function PodcastDetailPage() {
         {/* Card premium */}
         <div style={{
           position: 'relative', borderRadius: 26, overflow: 'hidden',
-          background: 'radial-gradient(1200px 400px at 85% -10%, rgba(0,229,208,0.22), transparent 55%), linear-gradient(150deg,#161d42 0%,#0f1332 52%,#1a262f 100%)',
+          background: 'radial-gradient(1200px 400px at 85% -10%, rgba(0,229,208,0.22), transparent 55%), linear-gradient(150deg,#212e38 0%,#172633 52%,#1a262f 100%)',
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: '0 40px 90px -40px rgba(10,14,36,0.9), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}>
@@ -107,7 +107,7 @@ export default function PodcastDetailPage() {
             {/* Info + player */}
             <div style={{ flex: '1 1 340px', minWidth: 280, color: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <i className="fa-solid fa-microphone" style={{ color: '#C77DFF', fontSize: 13 }} />
+                <i className="fa-solid fa-microphone" style={{ color: '#35d0c8', fontSize: 13 }} />
                 <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)' }}>Podcast</span>
               </div>
               <h1 style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.1, margin: 0, letterSpacing: '-0.01em' }}>{podcast.title}</h1>
@@ -141,7 +141,7 @@ export default function PodcastDetailPage() {
                     <div onClick={seekAt} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 2, height: 44, cursor: 'pointer', minWidth: 80 }}>
                       {BARS.map((h, i) => {
                         const on = i / BARS.length <= frac
-                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#E779FF,#147e95)' : 'rgba(255,255,255,0.16)', transition: 'background .12s', minWidth: 2 }} />
+                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#4dfae8,#147e95)' : 'rgba(255,255,255,0.16)', transition: 'background .12s', minWidth: 2 }} />
                       })}
                     </div>
 
@@ -176,7 +176,7 @@ export default function PodcastDetailPage() {
 function Chip({ icon, label }: { icon: string; label: string }) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 13px', borderRadius: 999, fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
-      <i className={`fa-solid ${icon}`} style={{ color: '#C77DFF', fontSize: 11 }} /> {label}
+      <i className={`fa-solid ${icon}`} style={{ color: '#35d0c8', fontSize: 11 }} /> {label}
     </span>
   )
 }

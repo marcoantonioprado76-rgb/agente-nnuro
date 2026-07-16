@@ -70,7 +70,7 @@ function ResetForm() {
 
         <div className="flex flex-col items-center mb-7">
           <div style={{ padding: '14px 24px', borderRadius: 22, background: 'linear-gradient(135deg, #212e38 0%, #273842 100%)', boxShadow: '0 18px 40px -14px rgba(8,22,36,0.5)' }}>
-            <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 140, height: 'auto', display: 'block' }} />
+            <img src="/logo-oficial-nuro.png" alt="NÜRO" style={{ width: 140, height: 'auto', display: 'block' }} />
           </div>
         </div>
 

@@ -50,7 +50,7 @@ export default function TikTokAdsPage() {
                         <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #EE1D52, #1fb8bb)' }}>muy pronto</span>
                     </h2>
                     <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
-                        Estamos integrando la API de TikTok for Business para que puedas crear y gestionar campañas directamente desde MY DIAMOND.
+                        Estamos integrando la API de TikTok for Business para que puedas crear y gestionar campañas directamente desde NÜRO.
                     </p>
                 </div>
             </div>

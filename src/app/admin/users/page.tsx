@@ -111,7 +111,7 @@ const PLAN_BADGE: Record<string, string> = {
   NONE: 'text-[#111827]/30 bg-[#F4F6FA] border-[#E4E9F0]',
   BASIC: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
   PRO: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
-  ELITE: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/25',
+  ELITE: 'text-teal-300 bg-teal-500/10 border-teal-500/25',
 }
 
 export default function AdminUsersPage() {

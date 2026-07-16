@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CSS de la landing MY DIAMOND (integrado tal cual desde index.html)
+// CSS de la landing NÜRO (integrado tal cual desde index.html)
 // ─────────────────────────────────────────────────────────────────────────────
 const CSS = `
   :root{
@@ -285,7 +285,7 @@ const CSS = `
 type Testi = { ini: string; av: string; name: string; flag: string; role: string; text: string }
 
 const ROW1: Testi[] = [
-  { ini: 'AP', av: 'av-1', name: 'Ana Paula Silva', flag: '🇧🇷', role: 'Empresária · Brasil', text: 'Automatizei meu negócio completo: bot, loja e anúncios. Hoje ganho enquanto viajo. MY DIAMOND mudou minha vida!' },
+  { ini: 'AP', av: 'av-1', name: 'Ana Paula Silva', flag: '🇧🇷', role: 'Empresária · Brasil', text: 'Automatizei meu negócio completo: bot, loja e anúncios. Hoje ganho enquanto viajo. NÜRO mudou minha vida!' },
   { ini: 'JR', av: 'av-2', name: 'James Rivera', flag: '🇺🇸', role: 'Online Business Owner · USA', text: 'The AI bots are incredible. My store sells automatically while I sleep. Best investment I made for my business this year.' },
   { ini: 'LF', av: 'av-3', name: 'Luisa Fernández', flag: '🇻🇪', role: 'Vendedora online · Venezuela', text: 'Configuré mi tienda en una tarde. Al día siguiente ya tenía mis primeras ventas. Simple, potente y rentable.' },
   { ini: 'DS', av: 'av-1', name: 'Diego Sánchez', flag: '🇦🇷', role: 'Empresario · Argentina', text: 'Lo que más me sorprendió fue la velocidad. En 2 días tenía bot, landing y campaña activos. Resultados desde el primer mes.' },
@@ -294,7 +294,7 @@ const ROW1: Testi[] = [
 
 const ROW2: Testi[] = [
   { ini: 'IC', av: 'av-3', name: 'Isabella Costa', flag: '🇧🇷', role: 'Influencer de negócios · Brasil', text: 'Em 3 meses recuperei o investimento e hoje lucro consistentemente. As ferramentas de IA são de outro nível mesmo.' },
-  { ini: 'AT', av: 'av-1', name: 'Andrés Torres', flag: '🇧🇴', role: 'Comerciante · Bolivia', text: 'Tenía miedo de la tecnología pero MY DIAMOND es muy intuitivo. Ahora mi negocio opera solo mientras yo construyo mi equipo.' },
+  { ini: 'AT', av: 'av-1', name: 'Andrés Torres', flag: '🇧🇴', role: 'Comerciante · Bolivia', text: 'Tenía miedo de la tecnología pero NÜRO es muy intuitivo. Ahora mi negocio opera solo mientras yo construyo mi equipo.' },
   { ini: 'SL', av: 'av-2', name: 'Sofía Lagos', flag: '🇨🇱', role: 'Emprendedora · Chile', text: 'Sin experiencia técnica armé todo en un fin de semana. El soporte siempre responde y las herramientas son realmente buenas.' },
   { ini: 'RC', av: 'av-3', name: 'Roberto Castillo', flag: '🇵🇪', role: 'Networker · Perú', text: 'Mis referidos crecen solos gracias al sistema. Los retiros llegan puntuales y el panel de comisiones es muy transparente.' },
   { ini: 'VM', av: 'av-1', name: 'Valentina Moreno', flag: '🇲🇽', role: 'Coach de negocios · México', text: 'Mi landing page convierte como nunca antes. Los textos los genera la IA y se ven profesionales desde el primer intento.' },
@@ -487,7 +487,7 @@ export default function HomePage() {
       <header className="nav" id="nav">
         <div className="wrap nav-in">
           <div className="brand">
-            <img className="wordmark" src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" />
+            <img className="wordmark" src="/logo-oficial-nuro.png" alt="NÜRO" />
           </div>
           <nav className="nav-actions">
             <a className="btn btn-ghost" href="/login">Iniciar sesión</a>
@@ -679,8 +679,8 @@ export default function HomePage() {
           <div className="wrap reveal" data-anim="scale">
             <div className="ic-zap"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="#fff" /></svg></div>
             <h2>Tu momento es <span className="g-magenta">ahora</span></h2>
-            <p>Miles de emprendedores en Latinoamérica ya automatizaron sus negocios con MY DIAMOND. Únete hoy y empieza a generar ingresos desde el primer día.</p>
-            <a className="btn btn-primary btn-lg" href="/register">Unirme a MY DIAMOND
+            <p>Miles de emprendedores en Latinoamérica ya automatizaron sus negocios con NÜRO. Únete hoy y empieza a generar ingresos desde el primer día.</p>
+            <a className="btn btn-primary btn-lg" href="/register">Unirme a NÜRO
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
             <div className="fine">Sin tarjeta de crédito · Acceso inmediato · Cancela cuando quieras</div>
           </div>
@@ -689,8 +689,8 @@ export default function HomePage() {
 
       <footer>
         <div className="wrap foot-in">
-          <div className="brand"><img className="wordmark" src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" /></div>
-          <div className="copy">© 2026 MY DIAMOND · Todos los derechos reservados</div>
+          <div className="brand"><img className="wordmark" src="/logo-oficial-nuro.png" alt="NÜRO" /></div>
+          <div className="copy">© 2026 NÜRO · Todos los derechos reservados</div>
           <div className="foot-links"><a href="/login">Iniciar sesión</a><a href="/register">Registrarse</a></div>
         </div>
       </footer>

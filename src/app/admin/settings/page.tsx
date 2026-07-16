@@ -31,10 +31,10 @@ const PLAN_PRICES = [
     key: 'PRICE_ELITE',
     renewalKey: 'PRICE_ELITE_RENEWAL',
     label: 'Pack Elite',
-    color: 'text-yellow-400',
-    border: 'border-yellow-500/25',
-    bg: 'bg-yellow-500/5',
-    dot: '#fbbf24',
+    color: 'text-teal-300',
+    border: 'border-teal-500/25',
+    bg: 'bg-teal-500/5',
+    dot: '#00E5D0',
   },
 ]
 
@@ -64,8 +64,8 @@ const PLAN_CREDITS_BOTS = [
     creditsDefault: '20',
     botsDefault: '8',
     label: 'Pack Elite',
-    color: 'text-yellow-400',
-    dot: '#fbbf24',
+    color: 'text-teal-300',
+    dot: '#00E5D0',
   },
 ]
 
@@ -87,7 +87,7 @@ const PLAN_TOGGLES = [
     key: 'PLAN_ELITE_ENABLED',
     label: 'Pack Elite',
     desc: 'Si está desactivado, el Pack Elite no aparece en la tienda.',
-    dot: '#fbbf24',
+    dot: '#00E5D0',
   },
 ]
 

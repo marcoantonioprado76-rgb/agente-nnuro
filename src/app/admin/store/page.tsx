@@ -191,7 +191,7 @@ export default function AdminStorePage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Tienda Admin</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #233B8F, transparent)' }} />
       </div>
 
       {/* Tabs */}
@@ -420,7 +420,7 @@ export default function AdminStorePage() {
             {itemError && <p style={{ fontSize: 12, color: '#ef4444', marginBottom: 14, background: 'rgba(239,68,68,0.08)', borderRadius: 8, padding: '7px 12px' }}>{itemError}</p>}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div><label className={LABEL}>Título *</label><input className={INPUT} value={form.title} onChange={e => setF('title', e.target.value)} placeholder="Camiseta MY DIAMOND" /></div>
+              <div><label className={LABEL}>Título *</label><input className={INPUT} value={form.title} onChange={e => setF('title', e.target.value)} placeholder="Camiseta NÜRO" /></div>
               <div><label className={LABEL}>Descripción *</label><textarea className={INPUT} rows={3} style={{ resize: 'none' }} value={form.description} onChange={e => setF('description', e.target.value)} placeholder="Descripción del producto..." /></div>
               <div>
                 <label className={LABEL}>Categoría</label>

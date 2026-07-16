@@ -17,7 +17,7 @@ import { prisma } from '@/lib/prisma'
 import { decrypt } from '@/lib/crypto'
 import { sendText, sendTemplateWithImage } from '@/lib/ycloud'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mydiamondapp.com'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agentenuro.com'
 
 /**
  * INTERRUPTOR: enviar la entrada al WhatsApp del COMPRADOR.

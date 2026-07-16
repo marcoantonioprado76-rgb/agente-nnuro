@@ -229,8 +229,8 @@ export default function BotReportsPage() {
         {[
           { label: 'Total personas', value: stats.totalConversations, color: '#00E5D0' },
           { label: 'Total ventas', value: stats.totalSales, color: '#00FF88' },
-          { label: 'Ventas hoy', value: stats.salesToday, color: '#F5A623' },
-          { label: 'Conversión', value: `${stats.conversionRate}%`, color: '#FF2DF7' },
+          { label: 'Ventas hoy', value: stats.salesToday, color: '#38BDF8' },
+          { label: 'Conversión', value: `${stats.conversionRate}%`, color: '#7DD3FC' },
         ].map(s => (
           <div key={s.label} style={{ borderRadius: 14, padding: '14px 16px', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{s.label}</p>

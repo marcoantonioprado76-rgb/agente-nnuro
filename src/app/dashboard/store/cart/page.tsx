@@ -193,7 +193,7 @@ export default function CartPage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
               <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>Total</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#F5A623' }}>{success.totalPrice.toFixed(2)} USDT</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#35d0c8' }}>{success.totalPrice.toFixed(2)} USDT</span>
             </div>
             {success.txHash && (
               <div style={{ marginTop: 10 }}>
@@ -241,7 +241,7 @@ export default function CartPage() {
       </Link>
 
       <h1 style={{ fontSize: 20, fontWeight: 800, color: '#111827', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Carrito</h1>
-      <div className="h-px w-16 mb-6 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
+      <div className="h-px w-16 mb-6 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #233B8F, transparent)' }} />
 
       {/* ── SECTION 1: CART ITEMS ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
@@ -255,7 +255,7 @@ export default function CartPage() {
               {Object.entries(item.selectedVariants ?? {}).map(([k, v]) => (
                 <span key={k} style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>{k}: {v} · </span>
               ))}
-              <p style={{ fontSize: 12, color: '#F5A623', fontWeight: 700, marginTop: 2 }}>{(item.price * item.quantity).toFixed(2)} USDT</p>
+              <p style={{ fontSize: 12, color: '#35d0c8', fontWeight: 700, marginTop: 2 }}>{(item.price * item.quantity).toFixed(2)} USDT</p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
               <button onClick={() => updateQty(idx, item.quantity - 1)} style={{ width: 26, height: 26, borderRadius: 6, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
@@ -311,7 +311,7 @@ export default function CartPage() {
         {/* Summary */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>Subtotal ({cart.length} producto{cart.length !== 1 ? 's' : ''})</span>
-          <span style={{ fontSize: 15, fontWeight: 800, color: '#F5A623' }}>{totalPrice.toFixed(2)} USDT</span>
+          <span style={{ fontSize: 15, fontWeight: 800, color: '#35d0c8' }}>{totalPrice.toFixed(2)} USDT</span>
         </div>
 
         {/* Error */}
@@ -338,8 +338,8 @@ export default function CartPage() {
               {manualEnabled && (
                 <button onClick={() => setPayTab('MANUAL')}
                   style={{ flex: 1, padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1px solid', background: 'transparent',
-                    borderColor: payTab === 'MANUAL' ? 'rgba(245,166,35,0.4)' : 'rgba(255,255,255,0.12)',
-                    color: payTab === 'MANUAL' ? '#F5A623' : 'rgba(255,255,255,0.55)' }}>
+                    borderColor: payTab === 'MANUAL' ? 'rgba(0,229,208,0.4)' : 'rgba(255,255,255,0.12)',
+                    color: payTab === 'MANUAL' ? '#35d0c8' : 'rgba(255,255,255,0.55)' }}>
                   📎 Comprobante
                 </button>
               )}
@@ -361,8 +361,8 @@ export default function CartPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {settings.PAYMENT_QR_URL && (
                   <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Escanea el QR y paga <strong style={{ color: '#F5A623' }}>{totalPrice.toFixed(2)} USDT</strong></p>
-                    <img src={settings.PAYMENT_QR_URL} alt="QR pago" style={{ width: 160, height: 160, borderRadius: 12, margin: '0 auto', display: 'block', border: '2px solid rgba(245,166,35,0.3)' }} />
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>Escanea el QR y paga <strong style={{ color: '#35d0c8' }}>{totalPrice.toFixed(2)} USDT</strong></p>
+                    <img src={settings.PAYMENT_QR_URL} alt="QR pago" style={{ width: 160, height: 160, borderRadius: 12, margin: '0 auto', display: 'block', border: '2px solid rgba(0,229,208,0.3)' }} />
                   </div>
                 )}
                 <div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Sparkles } from 'lucide-react'
 
 /**
- * "IA pensando" — vista de carga premium de marca (MY DIAMOND).
+ * "IA pensando" — vista de carga premium de marca (NÜRO).
  * Ícono con gradiente rosa→morado→azul + glow, mensaje que rota con transición
  * suave, y barra shimmer indeterminada. variant="full" para overlays de sección;
  * variant="compact" para slots pequeños (imágenes).

@@ -231,9 +231,9 @@ export default function PublicTicketPage() {
       <div className="sticky top-0 z-10 border-b border-slate-200" style={{ background: 'rgba(7,8,15,0.95)', backdropFilter: 'blur(12px)' }}>
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0">
-            <img src="/logo-oficial-mydiamond.png" alt="Logo" className="w-full h-full object-contain" />
+            <img src="/logo-oficial-nuro.png" alt="Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="text-slate-900 font-black text-sm tracking-widest uppercase">MY DIAMOND</span>
+          <span className="text-slate-900 font-black text-sm tracking-widest uppercase">NÜRO</span>
           <span className="ml-auto text-xs text-slate-400">Entradas</span>
         </div>
       </div>
@@ -647,7 +647,7 @@ export default function PublicTicketPage() {
       </div>{/* borde del ticket */}
 
       <p style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: '#94A3B8', fontWeight: 600 }}>
-        🔒 Compra segura · MY DIAMOND
+        🔒 Compra segura · NÜRO
       </p>
       </div>{/* contenedor */}
     </div>

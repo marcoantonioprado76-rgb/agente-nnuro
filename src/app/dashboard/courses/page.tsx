@@ -37,7 +37,7 @@ const STATUS_BADGE: Record<string, { label: string; style: React.CSSProperties }
   },
   PENDING_VERIFICATION: {
     label: 'Verificando cripto',
-    style: { color: '#4dfae8', background: 'rgba(201,167,255,0.1)', border: '1px solid rgba(201,167,255,0.3)' },
+    style: { color: '#4dfae8', background: 'rgba(0,229,208,0.1)', border: '1px solid rgba(0,229,208,0.3)' },
   },
   APPROVED: {
     label: 'Acceso completo',
@@ -77,7 +77,7 @@ export default function CoursesPage() {
   if (loading) {
     return (
       <div className="px-4 sm:px-6 pt-6 max-w-screen-xl mx-auto min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#FF2DF7] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#147e95] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -108,9 +108,9 @@ export default function CoursesPage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
-          <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">MY DIAMOND Academy</h1>
-          <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #147e95, #FF2DF7, transparent)' }} />
-          <p className="text-xs text-[#111827]/30 mt-2">Accede a cursos exclusivos de MY DIAMOND.</p>
+          <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">NÜRO Academy</h1>
+          <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #147e95, #00E5D0, transparent)' }} />
+          <p className="text-xs text-[#111827]/30 mt-2">Accede a cursos exclusivos de NÜRO.</p>
           {courses.length > 0 && (
             <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
               <span style={{ fontSize: 11, color: '#6B7280' }}>
@@ -183,7 +183,7 @@ export default function CoursesPage() {
                 style={{
                   fontSize: 12, fontWeight: 700, padding: '7px 14px', borderRadius: 999,
                   color: active ? '#fff' : 'rgba(255,255,255,0.6)',
-                  background: active ? 'linear-gradient(135deg, #147e95, #FF2DF7)' : 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
+                  background: active ? 'linear-gradient(135deg, #147e95, #1fb8bb)' : 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
                   border: `1px solid ${active ? 'transparent' : 'rgba(255,255,255,0.1)'}`,
                 }}>
                 {cat}

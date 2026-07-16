@@ -212,8 +212,8 @@ function CheckoutContent() {
     const isInstant = cryptoStatus === 'approved'
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-5 text-center px-4">
-        <div className={`w-16 h-16 rounded-3xl ${isInstant ? 'bg-yellow-500/15 border border-yellow-500/30' : 'bg-green-500/15 border border-green-500/30'} flex items-center justify-center`}>
-          <CheckCircle2 size={32} className={isInstant ? 'text-yellow-400' : 'text-green-400'} />
+        <div className={`w-16 h-16 rounded-3xl ${isInstant ? 'bg-[#00E5D0]/15 border border-[#00E5D0]/30' : 'bg-green-500/15 border border-green-500/30'} flex items-center justify-center`}>
+          <CheckCircle2 size={32} className={isInstant ? 'text-[#00E5D0]' : 'text-green-400'} />
         </div>
         <div>
           <h2 className="text-xl font-black text-[#111827]">
@@ -232,7 +232,7 @@ function CheckoutContent() {
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-white/55 bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-xl px-4 py-3">
-          <ShieldCheck size={13} className={isInstant ? 'text-yellow-400' : 'text-green-400'} />
+          <ShieldCheck size={13} className={isInstant ? 'text-[#00E5D0]' : 'text-green-400'} />
           {isInstant ? 'Plan activo · Verificado on-chain' : 'Tu solicitud está en revisión · Estado: Pendiente'}
         </div>
         <button
@@ -316,7 +316,7 @@ function CheckoutContent() {
           {cryptoEnabled && (
             <button
               onClick={() => { setPaymentMethod('CRYPTO'); setProofUrl(''); setError('') }}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${paymentMethod === 'CRYPTO' ? 'bg-yellow-500 text-black' : 'text-white/55 hover:text-white/80'}`}
+              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${paymentMethod === 'CRYPTO' ? 'bg-[#00E5D0] text-black' : 'text-white/55 hover:text-white/80'}`}
             >
               ₮ Pagar con USDT
             </button>
@@ -388,7 +388,7 @@ function CheckoutContent() {
               <p className="text-xs text-white/75 leading-relaxed">
                 Escanea el QR con tu app de billetera (Binance, Trust Wallet, MetaMask, etc.) y realiza el pago por exactamente:
               </p>
-              <p className="text-2xl font-black text-yellow-400">${price?.toFixed(2)} USD</p>
+              <p className="text-2xl font-black text-[#00E5D0]">${price?.toFixed(2)} USD</p>
               <a
                 href={paymentQrUrl}
                 target="_blank"

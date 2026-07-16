@@ -134,7 +134,7 @@ export default function EmpresaPage() {
       {/* Top bar — chrome propio del panel de empresa */}
       <header style={{ background: 'linear-gradient(135deg,#212e38,#1a262f)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 6px 24px rgba(5,11,20,0.35)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ height: 34, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.5))' }} />
+          <img src="/logo-oficial-nuro.png" alt="NÜRO" style={{ height: 34, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.5))' }} />
           <div>
             <p style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.1 }}>Panel de Empresa</p>
             <p style={{ fontSize: 12, opacity: 0.7 }}>{org?.name ?? ''}</p>
@@ -207,7 +207,7 @@ export default function EmpresaPage() {
             <i className="fa-solid fa-user-plus" style={{ marginRight: 7 }} />Agregar usuario
           </button>
         </div>
-        {full && <p style={{ fontSize: 12, color: '#d97706', marginBottom: 8 }}>Alcanzaste el cupo de tu contrato ({org?.maxUsers}). Contactá a MY DIAMOND para ampliarlo.</p>}
+        {full && <p style={{ fontSize: 12, color: '#d97706', marginBottom: 8 }}>Alcanzaste el cupo de tu contrato ({org?.maxUsers}). Contactá a NÜRO para ampliarlo.</p>}
 
         {error && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', borderRadius: 12, padding: '12px 16px', marginBottom: 12, fontSize: 13 }}>
@@ -261,7 +261,7 @@ export default function EmpresaPage() {
       {/* Modal: agregar usuario */}
       {showAdd && (
         <Modal onClose={() => setShowAdd(false)} title="Agregar usuario">
-          <p style={{ fontSize: 13, color: '#5B6472', marginBottom: 10 }}>Ingresá el <strong>@username</strong> de un usuario ya registrado en MY DIAMOND para sumarlo a tu empresa.</p>
+          <p style={{ fontSize: 13, color: '#5B6472', marginBottom: 10 }}>Ingresá el <strong>@username</strong> de un usuario ya registrado en NÜRO para sumarlo a tu empresa.</p>
           <input
             autoFocus value={addUsername}
             onChange={e => setAddUsername(e.target.value)}

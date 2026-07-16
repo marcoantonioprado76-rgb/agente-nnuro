@@ -15,11 +15,11 @@ const SECTIONS = [
     label: 'Cursos',
     desc: 'Aprende paso a paso con cursos exclusivos. Desbloquea cada lección completando la anterior.',
     badge: null as string | null,
-    accent: '#C026D3',
-    iconBg: 'rgba(160,32,240,0.18)',
-    iconBorder: 'rgba(192,38,211,0.55)',
-    buttonGradient: 'linear-gradient(90deg, #8b1fb0 0%, #C026D3 55%, #e23ad9 100%)',
-    buttonShadow: 'rgba(192,38,211,0.45)',
+    accent: '#00E5D0',
+    iconBg: 'rgba(0,229,208,0.16)',
+    iconBorder: 'rgba(0,181,192,0.55)',
+    buttonGradient: 'linear-gradient(90deg, #147e95 0%, #1fb8bb 55%, #3ddad2 100%)',
+    buttonShadow: 'rgba(0,181,192,0.45)',
     buttonText: 'Explorar cursos',
     features: [
       { icon: 'fa-graduation-cap', text: 'Contenido exclusivo' },
@@ -34,11 +34,11 @@ const SECTIONS = [
     label: 'Podcasts',
     desc: 'Episodios exclusivos con estrategias, casos de éxito y tendencias del mercado.',
     badge: null as string | null,
-    accent: '#5b6cff',
-    iconBg: 'rgba(91,108,255,0.18)',
-    iconBorder: 'rgba(91,108,255,0.55)',
-    buttonGradient: 'linear-gradient(90deg, #2540ff 0%, #5b6cff 55%, #7a5cff 100%)',
-    buttonShadow: 'rgba(91,108,255,0.45)',
+    accent: '#35d0c8',
+    iconBg: 'rgba(31,184,187,0.16)',
+    iconBorder: 'rgba(20,126,149,0.6)',
+    buttonGradient: 'linear-gradient(90deg, #0d7688 0%, #147e95 55%, #1fb8bb 100%)',
+    buttonShadow: 'rgba(13,118,136,0.5)',
     buttonText: 'Explorar podcasts',
     features: [
       { icon: 'fa-headphones', text: 'Episodios semanales' },
@@ -54,8 +54,8 @@ export default function AcademyPage() {
     <div className="px-4 sm:px-6 lg:px-8 pt-8 pb-24 max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-7">
-        <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">MY DIAMOND Academy</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
+        <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">NÜRO Academy</h1>
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #147e95, transparent)' }} />
         <p className="text-xs text-[#6B7280] mt-2">Selecciona el tipo de contenido que deseas ver.</p>
       </div>
 
@@ -90,8 +90,8 @@ export default function AcademyPage() {
                     position: 'absolute', top: 14, left: 14, display: 'inline-flex', alignItems: 'center', gap: 7,
                     padding: '6px 13px', borderRadius: 999, fontSize: 11, fontWeight: 800, letterSpacing: '0.06em',
                     textTransform: 'uppercase', color: '#fff',
-                    background: 'linear-gradient(90deg, #8b1fb0, #C026D3)',
-                    border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(192,38,211,0.4)',
+                    background: 'linear-gradient(90deg, #147e95, #1fb8bb)',
+                    border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 16px rgba(0,181,192,0.4)',
                   }}>
                     <i className="fa-solid fa-star" style={{ fontSize: 10 }} /> {s.badge}
                   </span>

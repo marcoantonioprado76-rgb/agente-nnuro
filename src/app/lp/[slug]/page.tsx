@@ -60,7 +60,7 @@ export default async function PublicLandingPage({
             </section>
 
             <footer className="py-12 border-t border-white/5 text-center text-dark-500 text-xs uppercase tracking-[0.3em]">
-                Potenciado por Rubin Pro & MY DIAMOND
+                Potenciado por Rubin Pro & NÜRO
             </footer>
         </main>
     )

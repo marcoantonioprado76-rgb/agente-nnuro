@@ -493,7 +493,7 @@ export default function CreateLandingPage() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Input label="Nombre de tu marca/empresa" placeholder="Ej: MY DIAMOND" value={form.brandName} onChange={(e: any) => set('brandName', e.target.value)} />
+                        <Input label="Nombre de tu marca/empresa" placeholder="Ej: NÜRO" value={form.brandName} onChange={(e: any) => set('brandName', e.target.value)} />
                     </div>
 
                     <TextArea label="Descripción de tu negocio / producto" rows={3} placeholder="Describe qué vendes, qué hace tu producto o servicio, y por qué es especial..." value={form.description} onChange={(e: any) => set('description', e.target.value)} />
@@ -512,7 +512,7 @@ export default function CreateLandingPage() {
             // ── STEP 3: Oferta & Ventas ───────────────────────────────────────
             case 3: return (
                 <div className="space-y-8">
-                    <SectionTitle icon={Tag} title="Precios & CTA" color="#FFD700" />
+                    <SectionTitle icon={Tag} title="Precios & CTA" color="#00E5D0" />
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Input label="Precio regular" placeholder="$297" value={form.regularPrice} onChange={(e: any) => set('regularPrice', e.target.value)} />
                         <Input label="Precio de oferta" placeholder="$97" value={form.salePrice} onChange={(e: any) => set('salePrice', e.target.value)} />
@@ -560,25 +560,25 @@ export default function CreateLandingPage() {
                         {form.testimonials.length < 5 && <button type="button" onClick={() => set('testimonials', [...form.testimonials, { name: '', text: '' }])} className="flex items-center gap-2 text-[#00E5D0] text-xs font-bold hover:opacity-80 transition-opacity"><Plus size={14} />Agregar testimonio</button>}
                     </div>
 
-                    <SectionTitle icon={MessageSquare} title="Preguntas Frecuentes (FAQ)" color="#FF006E" />
+                    <SectionTitle icon={MessageSquare} title="Preguntas Frecuentes (FAQ)" color="#1fb8bb" />
                     <div className="space-y-3">
                         {form.faqs.map((f, i) => (
                             <div key={i} className="flex gap-3 items-start">
-                                <div className="w-6 h-6 rounded-full bg-[#FF006E]/20 text-[#FF006E] text-xs font-black flex items-center justify-center flex-shrink-0 mt-3">{i + 1}</div>
+                                <div className="w-6 h-6 rounded-full bg-[#1fb8bb]/20 text-[#1fb8bb] text-xs font-black flex items-center justify-center flex-shrink-0 mt-3">{i + 1}</div>
                                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    <input value={f.q} onChange={e => { const arr = [...form.faqs]; arr[i].q = e.target.value; set('faqs', arr) }} placeholder="Pregunta frecuente..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/35 focus:outline-none focus:border-[#FF006E]/50 text-sm" />
-                                    <input value={f.a} onChange={e => { const arr = [...form.faqs]; arr[i].a = e.target.value; set('faqs', arr) }} placeholder="Respuesta..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/35 focus:outline-none focus:border-[#FF006E]/50 text-sm" />
+                                    <input value={f.q} onChange={e => { const arr = [...form.faqs]; arr[i].q = e.target.value; set('faqs', arr) }} placeholder="Pregunta frecuente..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/35 focus:outline-none focus:border-[#1fb8bb]/50 text-sm" />
+                                    <input value={f.a} onChange={e => { const arr = [...form.faqs]; arr[i].a = e.target.value; set('faqs', arr) }} placeholder="Respuesta..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/35 focus:outline-none focus:border-[#1fb8bb]/50 text-sm" />
                                 </div>
                                 {form.faqs.length > 1 && <button type="button" onClick={() => set('faqs', form.faqs.filter((_, j) => j !== i))} className="text-white/40 hover:text-red-400 transition-colors mt-2.5"><Trash2 size={16} /></button>}
                             </div>
                         ))}
-                        {form.faqs.length < 6 && <button type="button" onClick={() => set('faqs', [...form.faqs, { q: '', a: '' }])} className="flex items-center gap-2 text-[#FF006E] text-xs font-bold hover:opacity-80 transition-opacity"><Plus size={14} />Agregar pregunta</button>}
+                        {form.faqs.length < 6 && <button type="button" onClick={() => set('faqs', [...form.faqs, { q: '', a: '' }])} className="flex items-center gap-2 text-[#1fb8bb] text-xs font-bold hover:opacity-80 transition-opacity"><Plus size={14} />Agregar pregunta</button>}
                     </div>
 
                     <div className="space-y-2">
                         <label className="text-xs font-bold uppercase tracking-widest text-white/55">Badges de Confianza</label>
                         <div className="flex flex-wrap gap-2">
-                            {TRUST_BADGES.map(b => <Chip key={b} label={b} active={form.trustBadges.includes(b)} onClick={() => toggleArr('trustBadges', b)} color="#FFD700" />)}
+                            {TRUST_BADGES.map(b => <Chip key={b} label={b} active={form.trustBadges.includes(b)} onClick={() => toggleArr('trustBadges', b)} color="#00E5D0" />)}
                         </div>
                     </div>
                 </div>
@@ -651,9 +651,9 @@ export default function CreateLandingPage() {
                         {FONT_STYLES.map(f => <Chip key={f} label={f} active={form.fontStyle === f} onClick={() => set('fontStyle', form.fontStyle === f ? '' : f)} color={palette.secondary} />)}
                     </div>
 
-                    <SectionTitle icon={Globe2} title="SEO (opcional)" color="#7B2FFF" />
+                    <SectionTitle icon={Globe2} title="SEO (opcional)" color="#4dfae8" />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Input label="Título SEO" placeholder="Curso de Marketing Digital | MY DIAMOND" value={form.seoTitle} onChange={(e: any) => set('seoTitle', e.target.value)} />
+                        <Input label="Título SEO" placeholder="Curso de Marketing Digital | NÜRO" value={form.seoTitle} onChange={(e: any) => set('seoTitle', e.target.value)} />
                         <Input label="Meta descripción" placeholder="Aprende a vender en línea con nuestro curso..." value={form.seoDescription} onChange={(e: any) => set('seoDescription', e.target.value)} />
                     </div>
                 </div>

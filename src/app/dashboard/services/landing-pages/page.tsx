@@ -35,8 +35,8 @@ const C = {
   greenSoft: '#E7F6EC',
   greenText: '#16A34A',
   neutralPill: '#F1F4F8',
-  visualPill: '#F3E9FB',
-  visualText: '#8B35C9',
+  visualPill: '#E1F4F3',
+  visualText: '#0a95a8',
 }
 
 // URLs por tipo
@@ -172,7 +172,7 @@ export default function LandingPagesGallery() {
 
           <Link href="/dashboard/services/landing-pages/nueva"
             className="rounded-xl px-4 py-2.5 font-bold flex items-center gap-2 text-sm transition-all active:scale-[0.98] self-start md:self-auto"
-            style={{ background: BRAND, color: '#fff', boxShadow: '0 10px 26px -12px rgba(123,91,255,0.65)' }}>
+            style={{ background: BRAND, color: '#fff', boxShadow: '0 10px 26px -12px rgba(0,229,208,0.6)' }}>
             <Plus className="w-4 h-4" />
             Nueva Landing
           </Link>
@@ -195,7 +195,7 @@ export default function LandingPagesGallery() {
             </p>
             <Link href="/dashboard/services/landing-pages/nueva"
               className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-bold text-sm transition-all active:scale-[0.98]"
-              style={{ background: BRAND, color: '#fff', boxShadow: '0 10px 24px -12px rgba(123,91,255,0.6)' }}>
+              style={{ background: BRAND, color: '#fff', boxShadow: '0 10px 24px -12px rgba(0,229,208,0.6)' }}>
               <Sparkles className="w-4 h-4" />
               Crear mi primera página
             </Link>
@@ -335,7 +335,7 @@ export default function LandingPagesGallery() {
                       </Link>
                       <a href={publicUrl(it)} target="_blank" rel="noopener noreferrer"
                         className="flex-1 rounded-xl flex items-center justify-center gap-2 py-2.5 text-sm font-bold whitespace-nowrap transition-all active:scale-[0.98]"
-                        style={{ background: BRAND, color: '#fff', boxShadow: '0 10px 24px -12px rgba(123,91,255,0.6)' }}>
+                        style={{ background: BRAND, color: '#fff', boxShadow: '0 10px 24px -12px rgba(0,229,208,0.6)' }}>
                         <ExternalLink className="w-4 h-4" /> Ver página
                       </a>
                     </div>

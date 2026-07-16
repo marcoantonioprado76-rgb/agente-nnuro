@@ -1,8 +1,8 @@
 /**
- * Frases motivacionales para el equipo My Diamond / Fase Global.
+ * Frases motivacionales para el equipo NÜRO / Fase Global.
  * Se envían rotando (dos veces al día) al grupo y a los contactos activos.
  * Español latino, dirigidas al lector (no en primera persona). Sin firma: la firma
- * "— Equipo My Diamond 💎" la agrega el sender.
+ * "— Equipo NÜRO 💎" la agrega el sender.
  */
 export const MOTIVATION_PHRASES: string[] = [
   // Mentalidad y actitud
@@ -14,7 +14,7 @@ export const MOTIVATION_PHRASES: string[] = [
   'Tu actitud de hoy es el resultado que vas a ver mañana. Elige levantarte con fe, no con queja, porque la energía con la que empiezas define cómo termina tu día. ⚡',
   'El miedo casi siempre aparece justo cuando estás por crecer. No lo veas como una señal de parar, sino de que vas por buen camino. Avanza igual. 💪',
   'Deja de compararte con el ritmo de los demás. Tu proceso también te está llevando lejos, aunque no se note todavía. Confía y sigue caminando. 🌱',
-  // Herramientas My Diamond
+  // Herramientas NÜRO
   'La herramienta ya la tienes en tus manos, solo falta que la uses hoy. De nada sirve tener el mejor sistema si lo dejas guardado. Ábrelo y ponlo a trabajar. 💎',
   'Cada día que usas tu sistema Diamond, te adelantas un paso al que no lo hace. No es cuestión de suerte, es de constancia. Y la constancia siempre gana. 📈',
   'No trabajes solo con esfuerzo, trabaja con estrategia. El esfuerzo te cansa, la estrategia te multiplica. Tu sistema Diamond es esa estrategia: úsalo. 🚀',

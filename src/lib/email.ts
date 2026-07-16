@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mydiamondapp.com'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://agentenuro.com'
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -17,7 +17,7 @@ function emailWrapper(content: string, accentColor = '#00E5D0'): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MY DIAMOND</title>
+  <title>NÜRO</title>
 </head>
 <body style="margin:0;padding:0;background-color:#EEF2F7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#EEF2F7;padding:38px 16px;">
@@ -33,7 +33,7 @@ function emailWrapper(content: string, accentColor = '#00E5D0'): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td align="center" style="background:linear-gradient(160deg,#1a262f 0%,#212e38 55%,#1a262f 100%);padding:28px 24px 24px;">
-                  <img src="${APP_URL}/logo-oficial-mydiamond.png" alt="MY DIAMOND" width="140"
+                  <img src="${APP_URL}/logo-oficial-nuro.png" alt="NÜRO" width="140"
                        style="display:block;width:140px;max-width:55%;height:auto;border:0;outline:none;margin:0 auto;" />
                 </td>
               </tr>
@@ -59,7 +59,7 @@ function emailWrapper(content: string, accentColor = '#00E5D0'): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding:14px 30px;border-top:1px solid #F0F3F7;background:#FAFBFD;">
-                  <p style="color:#9CA3AF;font-size:11px;margin:0;letter-spacing:0.5px;">mydiamondapp.com &nbsp;·&nbsp; soporte@mydiamondapp.com</p>
+                  <p style="color:#9CA3AF;font-size:11px;margin:0;letter-spacing:0.5px;">agentenuro.com &nbsp;·&nbsp; soporte@agentenuro.com</p>
                 </td>
               </tr>
             </table>
@@ -71,7 +71,7 @@ function emailWrapper(content: string, accentColor = '#00E5D0'): string {
         <tr>
           <td align="center" style="padding-top:20px;">
             <p style="color:#9CA3AF;font-size:11px;margin:0;letter-spacing:0.5px;">
-              © 2026 MY DIAMOND. Todos los derechos reservados.
+              © 2026 NÜRO. Todos los derechos reservados.
             </p>
           </td>
         </tr>
@@ -98,7 +98,7 @@ export async function sendWelcomeEmail(
       Bienvenido, ${fullName}
     </h1>
     <p style="color:#6B7280;font-size:13px;margin:0 0 32px;line-height:1.8;">
-      Ya formas parte de la plataforma <span style="color:#374151;font-weight:600;">MY DIAMOND</span>.
+      Ya formas parte de la plataforma <span style="color:#374151;font-weight:600;">NÜRO</span>.
       Empieza a explorar todas las herramientas disponibles en tu panel.
     </p>
 
@@ -122,9 +122,9 @@ export async function sendWelcomeEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: `Bienvenido a MY DIAMOND, ${fullName}`,
+      subject: `Bienvenido a NÜRO, ${fullName}`,
       html: emailWrapper(content, '#00E5D0'),
     })
     console.log(`[EMAIL] Welcome sent to ${email}`)
@@ -188,7 +188,7 @@ export async function sendRetoWelcomeEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `¡Bienvenido al ${retoName}! 🎉`,
       html: emailWrapper(content, '#147e95'),
@@ -255,7 +255,7 @@ export async function sendOrderConfirmedEmail(
       ¡Tu pedido fue aprobado!
     </h1>
     <p style="color:#6B7280;font-size:13px;margin:0 0 28px;line-height:1.7;">
-      Hola <strong style="color:#374151;">${fullName}</strong>, tu compra en la Tienda MY DIAMOND ha sido confirmada.
+      Hola <strong style="color:#374151;">${fullName}</strong>, tu compra en la Tienda NÜRO ha sido confirmada.
     </p>
 
     <!-- order meta -->
@@ -334,9 +334,9 @@ export async function sendOrderConfirmedEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: `✓ Pedido #${orderId} confirmado — MY DIAMOND`,
+      subject: `✓ Pedido #${orderId} confirmado — NÜRO`,
       html: emailWrapper(content, '#00FF88'),
     })
     console.log(`[EMAIL] Order confirmed sent to ${email} (order ${orderId})`)
@@ -377,7 +377,7 @@ export async function sendPlanPurchaseConfirmedEmail(
       ¡Tu plan fue activado!
     </h1>
     <p style="color:#6B7280;font-size:13px;margin:0 0 28px;line-height:1.7;">
-      Hola <strong style="color:#374151;">${fullName}</strong>, tu compra de plan en MY DIAMOND ha sido confirmada y tu cuenta ha sido activada.
+      Hola <strong style="color:#374151;">${fullName}</strong>, tu compra de plan en NÜRO ha sido confirmada y tu cuenta ha sido activada.
     </p>
 
     <!-- plan card -->
@@ -454,9 +454,9 @@ export async function sendPlanPurchaseConfirmedEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: `✓ ${planName} activado — MY DIAMOND`,
+      subject: `✓ ${planName} activado — NÜRO`,
       html: emailWrapper(content, '#00E5D0'),
     })
     console.log(`[EMAIL] Plan confirmed sent to ${email} (${purchase.plan})`)
@@ -626,7 +626,7 @@ export async function sendAdminNewPlanRequestEmail(payload: {
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND · Admin" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO · Admin" <${process.env.GMAIL_USER}>`,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `⚡ Nueva solicitud ${planLabel} · $${payload.price.toFixed(2)} · ${payload.user.fullName}`,
       html: emailWrapper(content, '#fbbf24'),
@@ -771,7 +771,7 @@ export async function sendAdminPlanAutoActivatedEmail(payload: {
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND · Admin" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO · Admin" <${process.env.GMAIL_USER}>`,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `✓ Plan ${planLabel} activado · $${payload.price.toFixed(2)} · ${payload.user.fullName}`,
       html: emailWrapper(content, '#00FF88'),
@@ -918,7 +918,7 @@ export async function sendAdminCreditAutoActivatedEmail(payload: {
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND · Admin" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO · Admin" <${process.env.GMAIL_USER}>`,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `✓ Saldo IA acreditado · +$${payload.amountUsd.toFixed(2)} USD · ${payload.user.fullName}`,
       html: emailWrapper(content, '#35d0c8'),
@@ -1067,7 +1067,7 @@ export async function sendAdminNewCreditPurchaseEmail(payload: {
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND · Admin" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO · Admin" <${process.env.GMAIL_USER}>`,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `💼 Nueva compra de saldo IA · +$${payload.amountUsd.toFixed(2)} · ${payload.user.fullName}`,
       html: emailWrapper(content, '#35d0c8'),
@@ -1112,7 +1112,7 @@ export async function sendUserCreditPurchaseApprovedEmail(payload: {
       ¡Tu saldo de IA ya está disponible!
     </h1>
     <p style="color:#6B7280;font-size:13px;margin:0 0 28px;line-height:1.7;">
-      Hola <strong style="color:#374151;">${payload.fullName}</strong>, aprobamos tu compra y acreditamos tu saldo en MY DIAMOND.
+      Hola <strong style="color:#374151;">${payload.fullName}</strong>, aprobamos tu compra y acreditamos tu saldo en NÜRO.
     </p>
 
     <!-- amount card -->
@@ -1169,7 +1169,7 @@ export async function sendUserCreditPurchaseApprovedEmail(payload: {
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: payload.email,
       subject: `✓ Tu saldo IA fue acreditado · +$${payload.amountUsd.toFixed(2)} USD`,
       html: emailWrapper(content, '#00FF88'),
@@ -1271,7 +1271,7 @@ export async function sendUserCreditPurchaseRejectedEmail(payload: {
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: payload.email,
       subject: `Solicitud de saldo IA rechazada · #${shortId}`,
       html: emailWrapper(content, '#f87171'),
@@ -1334,7 +1334,7 @@ export async function sendCreditsExhaustedEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `⚠️ Créditos AI agotados — Bot ${botName} pausado`,
       html: emailWrapper(content, '#F59E0B'),
@@ -1395,7 +1395,7 @@ export async function sendLowBalanceWarningEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `⚠️ Saldo IA bajo — Quedan $${balanceStr} USD`,
       html: emailWrapper(content, '#F59E0B'),
@@ -1449,7 +1449,7 @@ export async function sendBotSaleReportEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: ownerEmail,
       subject: `🤖 Nueva venta — Bot ${botName} (Messenger)`,
       html: emailWrapper(content, '#00FF88'),
@@ -1478,7 +1478,7 @@ export async function sendPasswordResetEmail(
     </h1>
     <p style="color:#6B7280;font-size:13px;margin:0 0 32px;line-height:1.8;">
       Recibimos una solicitud para restablecer la contraseña de tu cuenta en
-      <span style="color:#374151;font-weight:600;">MY DIAMOND</span>.
+      <span style="color:#374151;font-weight:600;">NÜRO</span>.
       Si no fuiste tú, puedes ignorar este correo.
     </p>
 
@@ -1523,9 +1523,9 @@ export async function sendPasswordResetEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: 'Restablecer contraseña — MY DIAMOND',
+      subject: 'Restablecer contraseña — NÜRO',
       html: emailWrapper(content, '#9B00FF'),
     })
     console.log(`[EMAIL] Reset sent to ${email}`)
@@ -1574,9 +1574,9 @@ export async function sendDeviceVerificationEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: 'Código de verificación de dispositivo — MY DIAMOND',
+      subject: 'Código de verificación de dispositivo — NÜRO',
       html: emailWrapper(content, '#F59E0B'),
     })
     console.log(`[EMAIL] Device verification sent to ${email}`)
@@ -1625,9 +1625,9 @@ export async function sendAdminOtpEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
-      subject: '🔐 Código de acceso admin — MY DIAMOND',
+      subject: '🔐 Código de acceso admin — NÜRO',
       html: emailWrapper(content, '#EF4444'),
     })
     console.log(`[EMAIL] Admin OTP sent to ${email}`)
@@ -1713,7 +1713,7 @@ export async function sendTicketEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `🎟 ${isMulti ? `Entrada ${ticket.ticketNumber} de ${ticket.totalTickets}` : 'Tu entrada'}: ${ticket.ticketCode} — ${ticket.eventTitle}`,
       html: emailWrapper(content, '#00E5D0'),
@@ -1830,7 +1830,7 @@ export async function sendTicketGroupEmail(
       : `${tickets[0].ticketCode} +${tickets.length - 1} más`
 
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `🎟 ${isMulti ? `Tus ${tickets.length} entradas` : 'Tu entrada'}: ${subjectCodes} — ${event.title}`,
       html: emailWrapper(content, '#00E5D0'),
@@ -1897,7 +1897,7 @@ export async function sendTicketPendingEmail(
 
   try {
     await transporter.sendMail({
-      from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `⏳ Recibimos tu compra — ${event.title}`,
       html: emailWrapper(content, '#f59e0b'),

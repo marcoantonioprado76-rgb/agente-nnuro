@@ -141,7 +141,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
 
           {/* Price */}
           <div>
-            <span style={{ fontSize: 26, fontWeight: 900, color: '#F5A623' }}>{item.price.toFixed(2)} <span style={{ fontSize: 14, fontWeight: 600 }}>USDT</span></span>
+            <span style={{ fontSize: 26, fontWeight: 900, color: '#35d0c8' }}>{item.price.toFixed(2)} <span style={{ fontSize: 14, fontWeight: 600 }}>USDT</span></span>
           </div>
 
           {/* Stock */}

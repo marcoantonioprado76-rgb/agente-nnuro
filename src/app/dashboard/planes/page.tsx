@@ -80,8 +80,8 @@ const PACKS = [
       text: 'text-cyan-400',
       bg: 'bg-cyan-500/10',
       border: 'border-cyan-500/40',
-      btn: 'bg-cyan-600 hover:bg-cyan-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(127,86,239,0.4)]',
-      glow: 'shadow-[0_0_50px_rgba(127,86,239,0.18)]',
+      btn: 'bg-cyan-600 hover:bg-cyan-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(0,229,208,0.4)]',
+      glow: 'shadow-[0_0_50px_rgba(0,229,208,0.18)]',
       featured: true,
     },
     highlight: '⭐ Más Popular',
@@ -163,8 +163,8 @@ const PACKS = [
       text: 'text-cyan-400',
       bg: 'bg-cyan-500/10',
       border: 'border-cyan-500/30',
-      btn: 'bg-gradient-to-r from-cyan-600 to-cyan-600 hover:from-cyan-500 hover:to-cyan-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(236,72,153,0.3)]',
-      glow: 'shadow-[0_0_40px_rgba(236,72,153,0.12)]',
+      btn: 'bg-gradient-to-r from-cyan-600 to-cyan-600 hover:from-cyan-500 hover:to-cyan-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(0,229,208,0.3)]',
+      glow: 'shadow-[0_0_40px_rgba(0,229,208,0.12)]',
       featured: false,
     },
     highlight: '👑 Máximo Poder',
@@ -332,7 +332,7 @@ export default function PlanesPage() {
       .catch(() => setEnabledPlans({ BASIC: true, PRO: true, ELITE: true }))
   }, [router])
 
-  // ── Usuario de empresa: ve cómo pagarle a SU empresa (no los packs de MY DIAMOND) ──
+  // ── Usuario de empresa: ve cómo pagarle a SU empresa (no los packs de NÜRO) ──
   if (orgPay) {
     const submitProof = async () => {
       if (!proofUrl) return
@@ -417,7 +417,7 @@ export default function PlanesPage() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F4F6FA] border border-cyan-500/25 text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-4">
           <Layers size={10} />
-          MY DIAMOND · Planes oficiales
+          NÜRO · Planes oficiales
         </div>
         <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tighter mb-2">
           Elige tu Plan
@@ -438,7 +438,7 @@ export default function PlanesPage() {
         <div className="mb-8 p-4 rounded-2xl border flex items-center gap-4"
           style={{
             background: isFaseGlobal
-              ? 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(159,46,160,0.03))'
+              ? 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(20,126,149,0.04))'
               : '#FFFFFF',
             borderColor: isFaseGlobal ? 'rgba(0,229,208,0.2)' : '#E4E9F0',
           }}>

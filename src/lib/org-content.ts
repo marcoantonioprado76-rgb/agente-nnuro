@@ -34,7 +34,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
  *
  * Resultado:
  *   { ok: true, skip: true }            -> el campo no vino en el body: no tocar
- *   { ok: true, value: null }           -> contenido global de MY DIAMOND
+ *   { ok: true, value: null }           -> contenido global de NÜRO
  *   { ok: true, value: '<uuid>' }       -> privado de una empresa existente
  *   { ok: false, error }                -> empresa inválida (responder 400)
  */

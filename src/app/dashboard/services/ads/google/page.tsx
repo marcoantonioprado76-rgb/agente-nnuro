@@ -50,7 +50,7 @@ export default function GoogleAdsPage() {
                         <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #4285F4, #34A853)' }}>muy pronto</span>
                     </h2>
                     <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
-                        Estamos integrando la Google Ads API para que puedas crear campañas de Search, Display y YouTube directamente desde MY DIAMOND.
+                        Estamos integrando la Google Ads API para que puedas crear campañas de Search, Display y YouTube directamente desde NÜRO.
                     </p>
                 </div>
             </div>

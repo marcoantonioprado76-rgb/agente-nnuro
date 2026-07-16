@@ -41,7 +41,7 @@ export function buildEvidencePrompt(input: EvidencePromptInput): string {
     ? `\nINSTRUCCIONES DEL COACH/ADMIN (contexto del plan y cómo tratar a los participantes). El campo "userMessage" que devuelvas DEBE seguir este tono y trato:\n"""\n${input.instructions.trim()}\n"""\n`
     : ''
 
-  return `Eres un clasificador de evidencias para el sistema Reto 90D de My Diamond.${instructionsBlock}
+  return `Eres un clasificador de evidencias para el sistema Reto 90D de NÜRO.${instructionsBlock}
 Tu trabajo es analizar una evidencia enviada por WhatsApp y determinar a qué tarea diaria corresponde.
 Reglas:
 1. No puedes inventar tareas.

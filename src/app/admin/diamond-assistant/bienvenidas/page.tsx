@@ -117,7 +117,7 @@ const VARIABLES: WelcomeVariable[] = [
   { token: '{{ciudad}}', label: 'Ciudad', sample: 'La Paz' },
   { token: '{{sponsor}}', label: 'Sponsor', sample: 'María' },
   { token: '{{fecha}}', label: 'Fecha', sample: todaySample() },
-  { token: '{{link_reto}}', label: 'Link reto', sample: 'https://mydiamond.app/reto-90d' },
+  { token: '{{link_reto}}', label: 'Link reto', sample: 'https://agentenuro.com/reto-90d' },
   { token: '{{nombre_lider}}', label: 'Líder', sample: 'Marco' },
 ]
 

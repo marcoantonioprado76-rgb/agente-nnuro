@@ -471,7 +471,7 @@ export default function RetoConfiguracionPage() {
                 value={form.botInstructions}
                 onChange={e => set('botInstructions', e.target.value)}
                 rows={7}
-                placeholder={"Ej: Eres el coach del Reto 90 Días de My Diamond. Trata a cada participante por su nombre, con energía y cercanía (tutéalos). Recuérdales el porqué del reto y felicítalos cuando cumplen. Sé claro y breve. Si una evidencia no corresponde, explícales con amabilidad qué falta."}
+                placeholder={"Ej: Eres el coach del Reto 90 Días de NÜRO. Trata a cada participante por su nombre, con energía y cercanía (tutéalos). Recuérdales el porqué del reto y felicítalos cuando cumplen. Sé claro y breve. Si una evidencia no corresponde, explícales con amabilidad qué falta."}
                 style={{ ...inputStyle, resize: 'vertical', minHeight: 120, lineHeight: 1.6, fontFamily: 'inherit' }}
               />
             </div>

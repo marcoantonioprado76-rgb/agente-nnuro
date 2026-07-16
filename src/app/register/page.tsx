@@ -229,7 +229,7 @@ function RegisterForm() {
 
         {/* Logo oficial */}
         <div className="flex flex-col items-center mb-6">
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 200, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
+          <img src="/logo-oficial-nuro.png" alt="Agente NÜRO" style={{ width: 200, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
           <p className="text-xs text-[#6B7280] mt-3">Crea tu cuenta gratuita</p>
         </div>
 

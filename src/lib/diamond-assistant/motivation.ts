@@ -38,5 +38,5 @@ export async function nextMotivationBody(): Promise<string> {
     )
   } catch { /* noop */ }
 
-  return `${phrase}\n\n— Equipo My Diamond 💎`
+  return `${phrase}\n\n— Equipo NÜRO 💎`
 }

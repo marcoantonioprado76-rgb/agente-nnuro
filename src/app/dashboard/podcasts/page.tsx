@@ -96,7 +96,7 @@ export default function PodcastsPage() {
         {/* Header */}
         <div style={{ marginBottom: 22 }}>
           <h1 style={{ fontSize: 34, fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1 }}>
-            <span style={{ color: '#111827' }}>MY DIAMOND </span>
+            <span style={{ color: '#111827' }}>NÜRO </span>
             <span style={{ background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PODCASTS</span>
           </h1>
           <div style={{ height: 4, width: 96, borderRadius: 999, background: DG, marginTop: 10 }} />
@@ -107,7 +107,7 @@ export default function PodcastsPage() {
         {selected && (
           <div ref={heroRef} style={{
             position: 'relative', overflow: 'hidden', borderRadius: 26, marginBottom: 24, padding: 22,
-            background: 'radial-gradient(900px 320px at 88% -25%, rgba(0,229,208,0.28), transparent 55%), linear-gradient(150deg,#171e46 0%,#0f1332 52%,#1a262f 100%)',
+            background: 'radial-gradient(900px 320px at 88% -25%, rgba(0,229,208,0.28), transparent 55%), linear-gradient(150deg,#212e38 0%,#172633 52%,#1a262f 100%)',
             border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 44px 100px -50px rgba(10,14,36,0.95), inset 0 1px 0 rgba(255,255,255,0.05)',
             display: 'flex', gap: 26, flexWrap: 'wrap', alignItems: 'center',
           }}>
@@ -129,7 +129,7 @@ export default function PodcastsPage() {
             {/* Info + player */}
             <div style={{ flex: '1 1 340px', minWidth: 288, color: '#fff' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)' }}>
-                <i className="fa-solid fa-microphone" style={{ color: '#C77DFF', fontSize: 12 }} /> EP. {epNum} · Podcast
+                <i className="fa-solid fa-microphone" style={{ color: '#35d0c8', fontSize: 12 }} /> EP. {epNum} · Podcast
               </span>
               <h2 style={{ fontSize: 30, fontWeight: 900, margin: '8px 0 0', lineHeight: 1.1, letterSpacing: '-0.01em' }}>{selected.title}</h2>
               {selected.description && <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.72)', lineHeight: 1.6, marginTop: 8 }}>{selected.description}</p>}
@@ -155,7 +155,7 @@ export default function PodcastsPage() {
                     <div onClick={seekAt} style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', gap: 2, height: 42, cursor: 'pointer', minWidth: 70 }}>
                       {BARS.map((h, i) => {
                         const on = i / BARS.length <= frac
-                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#E779FF,#147e95)' : 'rgba(255,255,255,0.16)', minWidth: 2 }} />
+                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#4dfae8,#147e95)' : 'rgba(255,255,255,0.16)', minWidth: 2 }} />
                       })}
                       <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${frac * 100}%`, width: 2, background: '#fff', borderRadius: 2, opacity: 0.9, pointerEvents: 'none' }} />
                     </div>
@@ -226,10 +226,10 @@ export default function PodcastsPage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontWeight: 800, fontSize: 14, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</p>
-                    <p style={{ fontSize: 12.5, color: '#8A93A2', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>{p.description ?? 'Episodio exclusivo de MY DIAMOND.'}</p>
+                    <p style={{ fontSize: 12.5, color: '#8A93A2', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>{p.description ?? 'Episodio exclusivo de NÜRO.'}</p>
                   </div>
                   <button onClick={e => { e.stopPropagation(); choose(p, true) }}
-                    style={{ flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 10, border: '1px solid #E3D4F0', background: active ? DG : '#fff', color: active ? '#fff' : '#147e95', fontWeight: 800, fontSize: 13, cursor: 'pointer' }}>
+                    style={{ flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 10, border: '1px solid #E4E9F0', background: active ? DG : '#fff', color: active ? '#fff' : '#147e95', fontWeight: 800, fontSize: 13, cursor: 'pointer' }}>
                     <i className="fa-solid fa-headphones" /> Escuchar
                   </button>
                 </div>
@@ -245,7 +245,7 @@ export default function PodcastsPage() {
 function HeroChip({ icon, label }: { icon: string; label: string }) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '6px 13px', borderRadius: 999, fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
-      <i className={`fa-solid ${icon}`} style={{ color: '#C77DFF', fontSize: 11 }} /> {label}
+      <i className={`fa-solid ${icon}`} style={{ color: '#35d0c8', fontSize: 11 }} /> {label}
     </span>
   )
 }

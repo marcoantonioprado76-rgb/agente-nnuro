@@ -176,7 +176,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl p-4"
-      style={{ background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(0,229,208,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
+      style={{ background: 'linear-gradient(135deg, #F4F6FA 0%, #EDF1F6 45%, #E4E9F0 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(0,229,208,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 6px 14px -6px rgba(0,229,208,0.5)' }}>
           <Plus className="w-3.5 h-3.5" style={{ color: '#fff' }} />
@@ -339,7 +339,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
   const yVals = [0, Math.round(maxVal / 2), maxVal]
 
   return (
-    <div className="rounded-2xl" style={{ padding: '14px 16px 10px', background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(0,229,208,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
+    <div className="rounded-2xl" style={{ padding: '14px 16px 10px', background: 'linear-gradient(135deg, #F4F6FA 0%, #EDF1F6 45%, #E4E9F0 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(0,229,208,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
         <div>
@@ -549,7 +549,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
           >
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#12303a' }}>📋 Ventas recientes</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>📋 Ventas recientes</div>
               <div style={{ display: 'flex', gap: 6 }}>
                 {recentSales.length > 0 && (
                   <button
@@ -586,7 +586,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {recentSales.map((s, i) => (
                   <div key={i} style={{
-                    background: 'rgba(106,53,217,0.04)', border: '1px solid rgba(106,53,217,0.10)',
+                    background: 'rgba(35,59,143,0.06)', border: '1px solid rgba(35,59,143,0.16)',
                     borderRadius: 12, padding: '10px 12px',
                   }}>
                     {/* Nombre + fecha */}
@@ -601,7 +601,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
                     {/* Teléfono — línea propia para que no desborde */}
                     <div style={{
                       display: 'inline-block', marginBottom: s.reporte ? 8 : 0,
-                      fontSize: 10, fontWeight: 600, color: '#12303a',
+                      fontSize: 10, fontWeight: 600, color: '#7dd3fc',
                       background: 'rgba(13,30,121,0.08)', border: '1px solid rgba(13,30,121,0.2)',
                       borderRadius: 5, padding: '2px 7px',
                       wordBreak: 'break-all',
@@ -614,7 +614,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
                         fontSize: 11, color: '#6B7280',
                         background: 'rgba(0,0,0,0.25)', borderRadius: 8,
                         padding: '7px 10px', lineHeight: 1.6,
-                        borderLeft: '2px solid rgba(106,53,217,0.3)',
+                        borderLeft: '2px solid rgba(0,181,192,0.4)',
                         whiteSpace: 'pre-wrap', wordBreak: 'break-word',
                       }}>
                         {s.reporte}
@@ -651,7 +651,7 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
         marginTop: 30,
         borderRadius: 18,
         background: isActive
-          ? `radial-gradient(120% 80% at 50% -6%, ${accent}2a, rgba(255,255,255,0) 56%), radial-gradient(95% 75% at 100% 108%, rgba(106,53,217,0.22), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #1a262f 100%)`
+          ? `radial-gradient(120% 80% at 50% -6%, ${accent}2a, rgba(255,255,255,0) 56%), radial-gradient(95% 75% at 100% 108%, rgba(35,59,143,0.22), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #1a262f 100%)`
           : 'linear-gradient(180deg, #1a262f 0%, #1a262f 100%)',
         border: `1px solid ${isActive ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)'}`,
         boxShadow: isActive ? '0 18px 38px -22px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.045)' : 'none',

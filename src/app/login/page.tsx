@@ -61,7 +61,7 @@ export default function LoginPage() {
 
         {/* Logo oficial */}
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 230, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
+          <img src="/logo-oficial-nuro.png" alt="Agente NÜRO" style={{ width: 230, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
         </div>
 
         {/* Card */}

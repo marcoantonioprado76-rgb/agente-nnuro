@@ -457,7 +457,7 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Productos de Bots</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #233B8F, transparent)' }} />
         <p className="text-xs text-[#111827]/30 mt-1">Todos los productos añadidos por usuarios para sus agentes AI</p>
       </div>
 

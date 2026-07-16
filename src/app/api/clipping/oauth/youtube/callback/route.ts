@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const error = searchParams.get('error')
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://mydiamond.com'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://agentenuro.com'
   const redirectBase = `${appUrl}/dashboard/services/clipping`
 
   if (error || !code) {

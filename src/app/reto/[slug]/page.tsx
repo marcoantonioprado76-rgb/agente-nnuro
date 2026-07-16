@@ -95,10 +95,10 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
         <div style={{ position: 'absolute', bottom: -240, right: -160, width: 600, height: 600, borderRadius: '50%', filter: 'blur(150px)', background: 'rgba(106,53,217,0.18)' }} />
       </div>
 
-      {/* Logo oficial MY DIAMOND */}
+      {/* Logo oficial NÜRO */}
       <div style={{ position: 'relative', zIndex: 10, marginBottom: 24, display: 'flex', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 210, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
+        <img src="/logo-oficial-nuro.png" alt="NÜRO" style={{ width: 210, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
       </div>
 
       <div style={{

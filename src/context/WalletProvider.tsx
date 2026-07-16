@@ -6,7 +6,7 @@ import { bsc } from '@reown/appkit/networks'
 import { ReactNode } from 'react'
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? ''
-const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://mydiamond.com'
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://agentenuro.com'
 
 // Reown/WalletConnect inyecta un <link rel="preload"> para su fuente KHTeka.
 // En las páginas sin pago no se usa y el navegador avisa "preloaded but not
@@ -38,10 +38,10 @@ createAppKit({
   adapters: [ethersAdapter],
   networks: [bsc],
   metadata: {
-    name: 'MY DIAMOND',
+    name: 'NÜRO',
     description: 'Pagos con USDT BEP-20',
     url: appUrl,
-    icons: [`${appUrl}/logo-oficial-mydiamond.png`],
+    icons: [`${appUrl}/logo-oficial-nuro.png`],
   },
   projectId,
   features: { analytics: false },

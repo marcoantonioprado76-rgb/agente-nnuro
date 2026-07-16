@@ -515,7 +515,7 @@ function AdsDashboardInner() {
                                                 <Link href={`/dashboard/services/ads/wizard?briefId=${b.id}`}
                                                     onClick={e => e.stopPropagation()}
                                                     className="flex items-center justify-center gap-1 text-[10px] font-bold px-3 py-1.5 rounded-xl flex-1 lg:flex-none transition-all active:scale-[0.97]"
-                                                    style={{ background: 'rgba(0,229,208,0.7)', color: '#e9d5ff', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                                    style={{ background: 'rgba(0,229,208,0.7)', color: '#0a2226', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                     Campaña <ArrowRight size={9} />
                                                 </Link>
                                             </div>
@@ -596,7 +596,7 @@ function AdsDashboardInner() {
                                                 {campaign.status === 'READY' && (
                                                     <Link href={`/dashboard/services/ads/preview/${campaign.id}`}
                                                         className="text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all"
-                                                        style={{ background: 'rgba(0,229,208,0.7)', color: '#e9d5ff', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                                        style={{ background: 'rgba(0,229,208,0.7)', color: '#0a2226', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                         Publicar →
                                                     </Link>
                                                 )}

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PublicStorePageProps): Promis
         where: { slug: params.slug },
         select: { name: true, description: true, logoUrl: true, bannerUrl: true, active: true },
     })
-    if (!store || !store.active) return { title: 'Tienda no encontrada · MY DIAMOND' }
+    if (!store || !store.active) return { title: 'Tienda no encontrada · NÜRO' }
 
     const title = store.name
     const description = store.description || `Mira el catálogo de ${store.name} y haz tu pedido por WhatsApp.`

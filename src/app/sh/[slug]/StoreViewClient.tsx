@@ -312,7 +312,7 @@ function CatalogView({ store, products, categories, phone, onOpenCart, totalItem
             {/* ── FOOTER ── */}
             <footer style={{ borderTop: '1px solid var(--st-border)', padding: '24px 20px', textAlign: 'center' }}>
                 <p style={{ fontSize: 10.5, color: 'var(--st-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                    {store.name} · Powered by MY DIAMOND © 2026
+                    {store.name} · Powered by NÜRO © 2026
                 </p>
             </footer>
 

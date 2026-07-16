@@ -240,7 +240,7 @@ export async function renderTicketPng(data: TicketImageData): Promise<Buffer | n
     // Marca abajo
     ctx.fillStyle = tier.inkSoft
     ctx.font = 'bold 20px "DejaVu Sans", sans-serif'
-    ctx.fillText('MY DIAMOND', cx, 590)
+    ctx.fillText('NÜRO', cx, 590)
 
     // Borde metálico
     ctx.strokeStyle = tier.edge

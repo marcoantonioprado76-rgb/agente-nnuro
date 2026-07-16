@@ -53,8 +53,8 @@ export default function MyOrdersPage() {
 
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Mis Pedidos</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
-        <p className="text-xs mt-2" style={{ color: '#6B7280' }}>Historial de compras en la tienda MY DIAMOND.</p>
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #233B8F, transparent)' }} />
+        <p className="text-xs mt-2" style={{ color: '#6B7280' }}>Historial de compras en la tienda NÜRO.</p>
       </div>
 
       {loading && (
@@ -118,7 +118,7 @@ export default function MyOrdersPage() {
                 {/* Footer */}
                 <div style={{ padding: '10px 16px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                   <div>
-                    <span style={{ fontSize: 13, fontWeight: 800, color: '#F5A623' }}>{order.totalPrice.toFixed(2)} USDT</span>
+                    <span style={{ fontSize: 13, fontWeight: 800, color: '#35d0c8' }}>{order.totalPrice.toFixed(2)} USDT</span>
                   </div>
                   {order.txHash && (
                     <a href={`https://bscscan.com/tx/${order.txHash}`} target="_blank" rel="noreferrer"

@@ -277,7 +277,7 @@ export default function CourseDetailPage() {
 
     // 3) Fecha de finalización (línea inferior centrada en x≈838)
     const dateStr = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
-    const p1 = 'MY DIAMOND', p2 = ` Academy · ${dateStr}`
+    const p1 = 'NÜRO', p2 = ` Academy · ${dateStr}`
     ctx.textAlign = 'left'; ctx.textBaseline = 'top'
     ctx.font = `bold 30px ${FONT}`; const w1 = ctx.measureText(p1).width
     ctx.font = `30px ${FONT}`; const w2 = ctx.measureText(p2).width
@@ -408,7 +408,7 @@ export default function CourseDetailPage() {
             </span>
           )}
           {!course.freeForPlan && (
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#4dfae8', background: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.2)', padding: '3px 8px', borderRadius: 6 }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#4dfae8', background: 'rgba(0,229,208,0.1)', border: '1px solid rgba(0,229,208,0.2)', padding: '3px 8px', borderRadius: 6 }}>
               BEP-20 · BSC
             </span>
           )}
@@ -436,7 +436,7 @@ export default function CourseDetailPage() {
         </div>
       )}
       {!isLocked && isPendingVerification && (
-        <div style={{ padding: '12px 16px', borderRadius: 12, marginBottom: 20, background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.25)' }}>
+        <div style={{ padding: '12px 16px', borderRadius: 12, marginBottom: 20, background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.25)' }}>
           <p style={{ fontSize: 13, color: '#4dfae8', fontWeight: 600 }}>⛓️ Verificando en blockchain...</p>
           <p style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>Tu transacción fue enviada. Estamos confirmando los bloques en la red BSC. Se activará en minutos.</p>
         </div>
@@ -481,7 +481,7 @@ export default function CourseDetailPage() {
               <div style={{ height: '100%', width: `${coursePct}%`, borderRadius: 7, background: 'linear-gradient(90deg,#1fb8bb,#147e95,#12303a)', transition: 'width 0.3s' }} />
             </div>
             {coursePct === 100 && (
-              <div style={{ marginTop: 12, padding: '14px 16px', borderRadius: 14, background: 'rgba(99,102,190,0.07)', border: '1px solid rgba(99,102,190,0.22)', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <div style={{ marginTop: 12, padding: '14px 16px', borderRadius: 14, background: 'rgba(0,229,208,0.07)', border: '1px solid rgba(0,229,208,0.22)', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 22 }}>🎓</span>
                 <div style={{ flex: 1, minWidth: 160 }}>
                   <p style={{ fontSize: 14, fontWeight: 800, background: 'linear-gradient(135deg, #147e95 0%, #233B8F 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>¡Completaste el curso!</p>
@@ -704,7 +704,7 @@ export default function CourseDetailPage() {
               <button onClick={closeModal} style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 18 }}>✕</button>
             </div>
             <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-              <button onClick={() => setPayTab('CRYPTO')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'CRYPTO' ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'CRYPTO' ? 'rgba(245,166,35,0.4)' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'CRYPTO' ? '#4dfae8' : '#6B7280' }}>
+              <button onClick={() => setPayTab('CRYPTO')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'CRYPTO' ? 'rgba(0,229,208,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'CRYPTO' ? 'rgba(0,229,208,0.4)' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'CRYPTO' ? '#4dfae8' : '#6B7280' }}>
                 ₮ Cripto (USDT)
               </button>
               <button onClick={() => setPayTab('MANUAL')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'MANUAL' ? 'rgba(0,229,208,0.1)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'MANUAL' ? '#E4E9F0' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'MANUAL' ? '#147e95' : '#6B7280' }}>

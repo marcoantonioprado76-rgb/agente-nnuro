@@ -120,8 +120,8 @@ export default function AdminPodcastsPage() {
   <div className="dm-page font-ui">
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">MY DIAMOND Podcasts</h1>
-        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
+        <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">NÜRO Podcasts</h1>
+        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #233B8F, transparent)' }} />
       </div>
 
       {/* Top bar */}

@@ -75,7 +75,7 @@ export default function NuevaLandingChooser() {
 
               <div className="mt-auto pt-5">
                 <span className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-white transition-transform group-active:scale-[0.98]"
-                  style={{ background: BRAND, boxShadow: '0 10px 24px -12px rgba(123,91,255,0.6)' }}>
+                  style={{ background: BRAND, boxShadow: '0 10px 24px -12px rgba(0,229,208,0.6)' }}>
                   {o.cta} <ArrowRight className="w-4 h-4" />
                 </span>
               </div>

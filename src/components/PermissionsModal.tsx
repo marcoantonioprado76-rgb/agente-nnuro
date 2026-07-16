@@ -77,7 +77,7 @@ export default function PermissionsModal() {
 
         {/* Logo */}
         <div className="flex flex-col items-center gap-3">
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" className="w-40 h-auto" />
+          <img src="/logo-oficial-nuro.png" alt="NÜRO" className="w-40 h-auto" />
         </div>
 
         {/* Message */}

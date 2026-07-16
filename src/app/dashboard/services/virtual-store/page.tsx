@@ -1001,8 +1001,8 @@ export default function VirtualStorePage() {
                                         type="button"
                                         onClick={() => setStoreType('GENERAL_BUSINESS')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'GENERAL_BUSINESS'
-                                            ? 'border-[#147e95] bg-[#147e95]/10 text-white shadow-[0_0_20px_rgba(var(--[#147e95]-rgb),0.2)]'
-                                            : 'border-white/10 bg-white text-white/40 hover:border-cyan-500/30'
+                                            ? 'border-[#147e95] bg-[#147e95]/10 text-white shadow-[0_0_20px_rgba(20,126,149,0.2)]'
+                                            : 'border-white/10 bg-white/5 text-white/40 hover:border-cyan-500/30'
                                             }`}
                                     >
                                         <Store className={storeType === 'GENERAL_BUSINESS' ? 'text-[#147e95]' : ''} size={20} />
@@ -1015,8 +1015,8 @@ export default function VirtualStorePage() {
                                         type="button"
                                         onClick={() => setStoreType('NETWORK_MARKETING')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'NETWORK_MARKETING'
-                                            ? 'border-[#233B8F] bg-[#233B8F]/10 text-white shadow-[0_0_20px_rgba(var(--[#233B8F]-rgb),0.2)]'
-                                            : 'border-white/10 bg-white text-white/40 hover:border-cyan-500/30'
+                                            ? 'border-[#233B8F] bg-[#233B8F]/10 text-white shadow-[0_0_20px_rgba(35,59,143,0.2)]'
+                                            : 'border-white/10 bg-white/5 text-white/40 hover:border-cyan-500/30'
                                             }`}
                                     >
                                         <Globe className={storeType === 'NETWORK_MARKETING' ? 'text-[#233B8F]' : ''} size={20} />
@@ -1029,8 +1029,8 @@ export default function VirtualStorePage() {
                                         type="button"
                                         onClick={() => setStoreType('LANDING')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'LANDING'
-                                            ? 'border-[#16A34A] bg-[#16A34A]/10 text-white shadow-[0_0_20px_rgba(var(--[#16A34A]-rgb),0.2)]'
-                                            : 'border-white/10 bg-white text-white/40 hover:border-cyan-500/30'
+                                            ? 'border-[#16A34A] bg-[#16A34A]/10 text-white shadow-[0_0_20px_rgba(22,163,74,0.2)]'
+                                            : 'border-white/10 bg-white/5 text-white/40 hover:border-cyan-500/30'
                                             }`}
                                     >
                                         <LayoutIcon className={storeType === 'LANDING' ? 'text-[#16A34A]' : ''} size={20} />
@@ -1044,15 +1044,15 @@ export default function VirtualStorePage() {
 
                             <div>
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">Nombre</label>
-                                <input required value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="Ej: Mi Boutique" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                <input required value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="Ej: Mi Boutique" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                             </div>
                             <div>
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">Slug (URL)</label>
-                                <input required value={storeSlug} onChange={e => setStoreSlug(e.target.value)} placeholder="mi-boutique" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                <input required value={storeSlug} onChange={e => setStoreSlug(e.target.value)} placeholder="mi-boutique" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                             </div>
                             <div>
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">WhatsApp de Pedidos</label>
-                                <input value={storeWhatsapp} onChange={e => setStoreWhatsapp(e.target.value)} placeholder="Ej: 51987654321 (con código de país)" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                <input value={storeWhatsapp} onChange={e => setStoreWhatsapp(e.target.value)} placeholder="Ej: 51987654321 (con código de país)" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                                 <p className="text-[10px] text-white/40 mt-2">Los pedidos de esta tienda llegarán directamente a este número.</p>
                             </div>
 

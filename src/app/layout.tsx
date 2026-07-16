@@ -4,8 +4,8 @@ import { WalletProvider } from '@/context/WalletProvider'
 import { ConfirmHost } from '@/components/ConfirmDialog'
 
 export const metadata: Metadata = {
-  title: 'MY DIAMOND',
-  description: 'Plataforma Oficial - MY DIAMOND',
+  title: 'NÜRO',
+  description: 'Plataforma Oficial - NÜRO',
   // El favicon/apple-icon los maneja Next.js automáticamente desde
   // src/app/icon.png y src/app/apple-icon.png (generados del logo oficial).
   other: {

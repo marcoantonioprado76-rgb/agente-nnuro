@@ -157,7 +157,7 @@ export default function SetupPage() {
                                 <p className="text-sm font-black text-white">¿No querés usar tu propia API Key?</p>
                                 <p className="text-[11px] text-white/45">Comprá créditos de IA y usá nuestra clave. Saldo: <b className="text-[#147e95]">${credits.balance.toFixed(2)}</b></p>
                             </div>
-                            <span className="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl" style={{ background: 'rgba(0,229,208,0.22)', border: '1px solid rgba(255,255,255,0.08)', color: '#d6c8ff' }}>
+                            <span className="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl" style={{ background: 'rgba(0,229,208,0.22)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff' }}>
                                 Comprar
                             </span>
                         </Link>

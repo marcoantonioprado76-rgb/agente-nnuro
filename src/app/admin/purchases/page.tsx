@@ -38,7 +38,7 @@ const STATUS_LABEL: Record<string, string> = {
 const PLAN_BADGE: Record<string, string> = {
   BASIC: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
   PRO: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
-  ELITE: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/25',
+  ELITE: 'text-teal-300 bg-teal-500/10 border-teal-500/25',
 }
 
 const PLAN_LABEL: Record<string, string> = {

@@ -166,7 +166,7 @@ export default function AdminAICreditsPage() {
     NONE: 'bg-[#F4F6FA] text-[#111827]/30 border-[#E4E9F0]',
     BASIC: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
     PRO: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    ELITE: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    ELITE: 'bg-teal-500/10 text-teal-300 border-teal-500/20',
   }
 
   return (

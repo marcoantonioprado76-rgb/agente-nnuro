@@ -377,10 +377,10 @@ export default function AdminClippingPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Campañas', value: campaigns.length, Icon: Play, color: '#FF2D55' },
+          { label: 'Campañas', value: campaigns.length, Icon: Play, color: '#0a95a8' },
           { label: 'En espera', value: holdCount, Icon: Clock, color: '#FF8800' },
           { label: 'Aprobados', value: approvedCount, Icon: CheckCircle2, color: '#00FF88' },
-          { label: 'Total pagado', value: `$${totalPaid.toFixed(2)}`, Icon: DollarSign, color: '#FFD700' },
+          { label: 'Total pagado', value: `$${totalPaid.toFixed(2)}`, Icon: DollarSign, color: '#233B8F' },
         ].map(({ label, value, Icon, color }) => (
           <div key={label} className="rounded-xl p-4"
             style={{ background: `${color}08`, border: `1px solid ${color}18` }}>

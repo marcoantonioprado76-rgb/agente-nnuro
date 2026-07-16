@@ -229,7 +229,7 @@ const TOOLS: ChatCompletionTool[] = [
       parameters: {
         type: 'object',
         properties: {
-          group: { type: 'string', description: 'Nombre del grupo (ej. "My Diamond").' },
+          group: { type: 'string', description: 'Nombre del grupo (ej. "NÜRO").' },
           body: { type: 'string', description: 'Texto de la publicación (puede ir vacío si solo manda un recurso).' },
           when_local: { type: 'string', description: 'Fecha y hora LOCAL de Bolivia en formato "YYYY-MM-DD HH:MM" (24h). Calculala desde "hoy".' },
           repeat: { type: 'string', enum: ['NONE', 'DAILY', 'WEEKLY', 'WEEKDAYS'], description: 'Repetición. NONE = una sola vez.' },
