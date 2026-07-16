@@ -260,7 +260,7 @@ export default function CreditsPage() {
       <div className="flex items-center gap-4">
         <div className="w-11 h-11 rounded-xl flex items-center justify-center"
           style={{ background: 'linear-gradient(135deg, rgba(154,203,255,0.15), rgba(162,102,255,0.15))', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <Cpu className="w-5 h-5 text-violet-400" />
+          <Cpu className="w-5 h-5 text-cyan-400" />
         </div>
         <div>
           <h1 className="text-xl font-medium text-[#111827] tracking-widest uppercase">Créditos AI</h1>
@@ -287,7 +287,7 @@ export default function CreditsPage() {
 
         <div className="flex items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <Wallet className="w-4 h-4 text-violet-400" />
+            <Wallet className="w-4 h-4 text-cyan-400" />
             <span className="text-xs font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Saldo de IA
             </span>
@@ -324,7 +324,7 @@ export default function CreditsPage() {
             backdropFilter: 'blur(16px)',
           }}>
           <div className="flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-violet-400" />
+            <Receipt className="w-4 h-4 text-cyan-400" />
             <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Mis solicitudes
             </p>
@@ -338,7 +338,7 @@ export default function CreditsPage() {
               return (
                 <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #EEF2F7' }}>
-                  <ArrowDownLeft className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+                  <ArrowDownLeft className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white">+${Number(p.amountUsd).toFixed(2)} USD</p>
                     <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
@@ -433,7 +433,7 @@ export default function CreditsPage() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center"
                   style={{ background: 'rgba(162,102,255,0.18)', border: '1px solid rgba(162,102,255,0.35)', boxShadow: '0 0 14px -4px rgba(162,102,255,0.55)' }}>
-                  <Wallet className="w-5 h-5 text-violet-300" />
+                  <Wallet className="w-5 h-5 text-cyan-300" />
                 </div>
                 <div>
                   <h2 className="text-base font-black text-white leading-tight">Comprar saldo de IA</h2>
@@ -646,7 +646,7 @@ export default function CreditsPage() {
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                       style={{ background: buyProofUrl ? 'rgba(52,211,153,0.10)' : '#F0F3F7', border: '1px solid rgba(255,255,255,0.10)' }}>
                       {uploadingProof
-                        ? <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />
+                        ? <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
                         : buyProofUrl
                           ? <CheckCircle className="w-4 h-4 text-emerald-400" />
                           : <Upload className="w-4 h-4 text-white/55" />}

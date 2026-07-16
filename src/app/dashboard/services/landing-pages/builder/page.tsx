@@ -310,7 +310,7 @@ export default function BuilderIndexPage() {
                   className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg,#147e95,#7c3aed)' }}>
                   <Pencil size={12} /> Editar
                 </Link>
-                <button onClick={() => shareLink(p.id)} title="Compartir (crea una copia editable a otro usuario)" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-purple-400"><Share2 size={14} /></button>
+                <button onClick={() => shareLink(p.id)} title="Compartir (crea una copia editable a otro usuario)" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-cyan-400"><Share2 size={14} /></button>
                 {p.published && (
                   <button onClick={() => copyPublicLink(p.slug)} title="Copiar enlace público" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-emerald-400"><Link2 size={14} /></button>
                 )}
@@ -343,7 +343,7 @@ export default function BuilderIndexPage() {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                   <button onClick={() => createWith('?ai=1')}
-                    className="text-left rounded-2xl p-4 border border-purple-400/30 transition-all hover:border-purple-400/60"
+                    className="text-left rounded-2xl p-4 border border-cyan-400/30 transition-all hover:border-cyan-400/60"
                     style={{ background: 'linear-gradient(135deg,rgba(35,59,143,.1),rgba(192,38,211,.12))' }}>
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2.5" style={{ background: 'linear-gradient(135deg,#233B8F,#147e95,#1fb8bb)' }}><Wand2 size={18} className="text-white" /></div>
                     <p className="font-black text-sm text-app">Generar con IA</p>

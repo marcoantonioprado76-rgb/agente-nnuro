@@ -99,7 +99,7 @@ export default function AdminVerifyPage() {
       {/* Glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] rounded-full bg-red-600/6 blur-[100px]" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] rounded-full bg-purple-600/5 blur-[100px]" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] rounded-full bg-cyan-600/5 blur-[100px]" />
       </div>
 
       <div className="relative w-full max-w-sm">

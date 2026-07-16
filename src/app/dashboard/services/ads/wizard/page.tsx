@@ -709,7 +709,7 @@ function WizardContent() {
                                                                             <div className="mt-2.5 flex items-start gap-1.5 px-3 py-2 rounded-lg"
                                                                                 style={{ background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                                                 <Sparkles size={11} className="text-[#147e95] shrink-0 mt-0.5" />
-                                                                                <p className="text-[11px] text-purple-100/90 leading-relaxed">{strategy.reason}</p>
+                                                                                <p className="text-[11px] text-cyan-100/90 leading-relaxed">{strategy.reason}</p>
                                                                             </div>
                                                                         )}
                                                                         <div className="flex flex-wrap items-center gap-1.5 mt-3">

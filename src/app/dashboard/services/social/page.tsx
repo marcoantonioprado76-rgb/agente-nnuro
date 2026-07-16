@@ -588,7 +588,7 @@ export default function SocialPage() {
                                                         {copiedPrompt ? <><CheckCircle size={12} /> ¡Copiado!</> : <><Copy size={12} /> Prompt: Página / Contenido</>}
                                                     </button>
                                                     <button onClick={copyPersonalPrompt}
-                                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-all ${copiedPersonal ? 'bg-[#22C55E]/15 border-[#22C55E]/40 text-[#22C55E]' : 'bg-[#147e95]/15 border-white/10 text-purple-200 hover:bg-[#147e95]/25'}`}>
+                                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-all ${copiedPersonal ? 'bg-[#22C55E]/15 border-[#22C55E]/40 text-[#22C55E]' : 'bg-[#147e95]/15 border-white/10 text-cyan-200 hover:bg-[#147e95]/25'}`}>
                                                         {copiedPersonal ? <><CheckCircle size={12} /> ¡Copiado!</> : <><Copy size={12} /> Prompt: Marca Personal</>}
                                                     </button>
                                                 </div>
@@ -714,7 +714,7 @@ export default function SocialPage() {
                                         <span>{imgPromptLoading ? 'Armando…' : 'Armar prompt con nuestra estructura'}</span>
                                     </button>
                                     <button onClick={() => setShowImgManual(v => !v)}
-                                        className={`shrink-0 flex items-center gap-1.5 px-3.5 py-3 rounded-2xl text-[12px] font-bold border transition-all ${showImgManual ? 'bg-[#147e95]/25 border-white/10 text-purple-100' : 'bg-[#147e95]/12 border-white/10 text-purple-200 hover:bg-[#147e95]/20'}`}>
+                                        className={`shrink-0 flex items-center gap-1.5 px-3.5 py-3 rounded-2xl text-[12px] font-bold border transition-all ${showImgManual ? 'bg-[#147e95]/25 border-white/10 text-cyan-100' : 'bg-[#147e95]/12 border-white/10 text-cyan-200 hover:bg-[#147e95]/20'}`}>
                                         <FileText size={14} /> <span>Manual</span>
                                     </button>
                                 </div>

@@ -62,7 +62,7 @@ function ResetForm() {
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
 
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-[450px] h-[450px] rounded-full bg-purple-600/8 blur-[130px]" />
+        <div className="absolute -top-40 -right-40 w-[450px] h-[450px] rounded-full bg-cyan-600/8 blur-[130px]" />
         <div className="absolute -bottom-40 -left-40 w-[450px] h-[450px] rounded-full bg-[#0a95a8]/8 blur-[130px]" />
       </div>
 
@@ -169,7 +169,7 @@ function ResetForm() {
         </div>
 
         <p className="text-center text-[#9CA3AF] text-[11px] mt-5">
-          <Link href="/login" className="text-purple-400 hover:text-purple-300 font-bold transition-colors">
+          <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
             ← Volver al inicio de sesión
           </Link>
         </p>

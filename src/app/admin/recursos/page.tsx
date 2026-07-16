@@ -42,7 +42,7 @@ export default function AdminRecursosPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center py-24"><Loader2 className="animate-spin text-purple-400" /></div>
+    return <div className="flex items-center justify-center py-24"><Loader2 className="animate-spin text-cyan-400" /></div>
   }
 
   if (isAdmin === false) {
@@ -58,7 +58,7 @@ export default function AdminRecursosPage() {
   <div className="dm-page font-ui">
     <div>
       <h1 className="text-xl font-black text-[#111827] flex items-center gap-2 mb-5">
-        <LayoutTemplate size={20} className="text-purple-400" /> Recursos
+        <LayoutTemplate size={20} className="text-cyan-400" /> Recursos
       </h1>
       <RecursosTabs />
 

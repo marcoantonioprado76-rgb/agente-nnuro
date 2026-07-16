@@ -92,7 +92,7 @@ export default function AdminWithdrawalsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-black uppercase tracking-tighter flex items-center gap-2">
-            <Wallet size={18} className="text-pink-400" /> Solicitudes de Retiro
+            <Wallet size={18} className="text-cyan-400" /> Solicitudes de Retiro
           </h1>
           <p className="text-xs text-[#111827]/30 mt-0.5">{requests.length} solicitudes</p>
         </div>
@@ -108,7 +108,7 @@ export default function AdminWithdrawalsPage() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all ${
-              activeTab === tab ? 'bg-purple-600 text-[#111827]' : 'text-[#111827]/40 hover:text-[#111827]/70'
+              activeTab === tab ? 'bg-cyan-600 text-[#111827]' : 'text-[#111827]/40 hover:text-[#111827]/70'
             }`}
           >
             {STATUS_LABEL[tab]}
@@ -120,7 +120,7 @@ export default function AdminWithdrawalsPage() {
       <div className="bg-white/[0.025] border border-[#E4E9F0] rounded-2xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="animate-spin text-purple-400" size={22} />
+            <Loader2 className="animate-spin text-cyan-400" size={22} />
           </div>
         ) : requests.length === 0 ? (
           <div className="text-center py-16">
@@ -266,7 +266,7 @@ export default function AdminWithdrawalsPage() {
             />
             <button
               onClick={() => proofInputRef.current?.click()}
-              className="w-full py-3 rounded-xl border-2 border-dashed border-[#E4E9F0] text-[#111827]/40 hover:border-purple-500/40 hover:text-purple-400 transition-colors text-sm mb-3"
+              className="w-full py-3 rounded-xl border-2 border-dashed border-[#E4E9F0] text-[#111827]/40 hover:border-cyan-500/40 hover:text-cyan-400 transition-colors text-sm mb-3"
             >
               {uploading ? <Loader2 size={16} className="animate-spin mx-auto" /> : '📎 Seleccionar archivo'}
             </button>

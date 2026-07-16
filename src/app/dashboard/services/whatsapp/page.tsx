@@ -822,7 +822,7 @@ function WebhookTab({ bot }: { bot: Bot }) {
           <div className="mt-3">
             <p className="text-xs text-white/50 mb-2">Verify Token (pégalo en Meta al configurar el webhook):</p>
             <div className="bg-white/70 border border-white/10 rounded-xl p-3 flex items-center gap-2">
-              <code className="flex-1 text-xs text-purple-400 break-all font-mono">{bot.webhookToken}</code>
+              <code className="flex-1 text-xs text-cyan-400 break-all font-mono">{bot.webhookToken}</code>
               <CopyButton text={bot.webhookToken} />
             </div>
           </div>
@@ -867,7 +867,7 @@ function WebhookTab({ bot }: { bot: Bot }) {
                 'Envía un mensaje de prueba a tu Página de Facebook',
               ].map((step, i) => (
                 <li key={i} className="flex gap-3 text-sm text-white/75">
-                  <span className="w-5 h-5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   {step}
@@ -1080,7 +1080,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
                 value={form.metaPageToken}
                 onChange={e => setForm(f => ({ ...f, metaPageToken: e.target.value }))}
                 placeholder={creds?.hasMetaToken ? '(dejar vacío para mantener)' : 'EAAxxxxxxx...'}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-purple-400/40"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-cyan-400/40"
               />
               <button
                 type="button"

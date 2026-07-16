@@ -144,7 +144,7 @@ function RegisterForm() {
         {/* Background glows */}
         <div className="pointer-events-none fixed inset-0 overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-green-500/5 blur-[140px]" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-purple-600/6 blur-[130px]" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-cyan-600/6 blur-[130px]" />
         </div>
 
         <div className="w-full max-w-[380px] relative z-10">
@@ -221,7 +221,7 @@ function RegisterForm() {
   return (
     <div style={{backgroundImage:'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)',backgroundColor:'#1a262f',backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
       <div className="pointer-events-none fixed inset-0">
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-purple-600/20 blur-[120px]" />
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-cyan-600/20 blur-[120px]" />
         <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#0a95a8]/16 blur-[120px]" />
       </div>
 
@@ -416,7 +416,7 @@ function RegisterForm() {
                 type="checkbox"
                 checked={form.acceptTerms}
                 onChange={e => update('acceptTerms', e.target.checked)}
-                className="mt-0.5 w-3.5 h-3.5 accent-purple-500 rounded shrink-0"
+                className="mt-0.5 w-3.5 h-3.5 accent-cyan-500 rounded shrink-0"
               />
               <span className="text-[11px] text-[#6B7280] leading-relaxed">
                 Acepto los{' '}
@@ -451,7 +451,7 @@ function RegisterForm() {
 
         <p className="text-center text-white/55 text-xs mt-5">
           ¿Ya tienes cuenta?{' '}
-          <Link href="/login" className="text-purple-400 hover:text-purple-300 font-bold transition-colors">
+          <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
             Iniciar sesión
           </Link>
         </p>

@@ -27,7 +27,7 @@ interface EventStats {
 
 const EMPTY_EVENT = { title: '', description: '', image: '', paymentQrUrl: '', date: '', location: '', active: true }
 const EMPTY_TYPE = { name: '', description: '', image: '', price: '', capacity: '', bulkMinQty: '', bulkDiscountPct: '', isGuest: false }
-const INPUT = 'w-full bg-[#F4F6FA] border border-[#E4E9F0] rounded-lg px-3 py-2 text-[#111827] text-sm outline-none focus:border-purple-500/40'
+const INPUT = 'w-full bg-[#F4F6FA] border border-[#E4E9F0] rounded-lg px-3 py-2 text-[#111827] text-sm outline-none focus:border-cyan-500/40'
 const LABEL = 'block text-[11px] text-[#111827]/40 mb-1'
 const STATUS_COLORS: Record<string, string> = { PENDING: '#F5A623', APPROVED: '#4ade80', REJECTED: '#f87171' }
 const STATUS_LABELS: Record<string, string> = { PENDING: 'Pendiente', APPROVED: 'Aprobado', REJECTED: 'Rechazado' }

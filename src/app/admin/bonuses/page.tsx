@@ -101,7 +101,7 @@ export default function AdminBonusesPage() {
               value={query}
               onChange={e => { setQuery(e.target.value); search(e.target.value); setSelected(null) }}
               placeholder="Nombre, usuario o email..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] text-sm text-[#111827] placeholder:text-[#111827]/25 focus:outline-none focus:border-purple-500/50"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] text-sm text-[#111827] placeholder:text-[#111827]/25 focus:outline-none focus:border-cyan-500/50"
             />
           </div>
 
@@ -114,8 +114,8 @@ export default function AdminBonusesPage() {
                   onClick={() => { setSelected(u); setResults([]); setQuery(u.fullName) }}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F4F6FA] transition-colors text-left"
                 >
-                  <div className="w-8 h-8 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center shrink-0">
-                    <span className="text-xs font-semibold text-purple-300">{u.fullName.charAt(0).toUpperCase()}</span>
+                  <div className="w-8 h-8 rounded-full bg-cyan-600/20 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                    <span className="text-xs font-semibold text-cyan-300">{u.fullName.charAt(0).toUpperCase()}</span>
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm text-[#111827] truncate">{u.fullName}</p>
@@ -131,9 +131,9 @@ export default function AdminBonusesPage() {
 
           {/* Selected user badge */}
           {selected && (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-600/10 border border-purple-500/20">
-              <div className="w-8 h-8 rounded-full bg-purple-600/20 border border-purple-500/20 flex items-center justify-center shrink-0">
-                <span className="text-xs font-semibold text-purple-300">{selected.fullName.charAt(0).toUpperCase()}</span>
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyan-600/10 border border-cyan-500/20">
+              <div className="w-8 h-8 rounded-full bg-cyan-600/20 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                <span className="text-xs font-semibold text-cyan-300">{selected.fullName.charAt(0).toUpperCase()}</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-[#111827]">{selected.fullName}</p>
@@ -164,7 +164,7 @@ export default function AdminBonusesPage() {
                   onChange={e => setAmount(e.target.value)}
                   placeholder="0.00"
                   required
-                  className="w-full pl-7 pr-4 py-2.5 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] text-sm text-[#111827] placeholder:text-[#111827]/25 focus:outline-none focus:border-purple-500/50"
+                  className="w-full pl-7 pr-4 py-2.5 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] text-sm text-[#111827] placeholder:text-[#111827]/25 focus:outline-none focus:border-cyan-500/50"
                 />
               </div>
             </div>
@@ -177,14 +177,14 @@ export default function AdminBonusesPage() {
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Motivo del bono..."
                 maxLength={200}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] text-sm text-[#111827] placeholder:text-[#111827]/25 focus:outline-none focus:border-purple-500/50"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] text-sm text-[#111827] placeholder:text-[#111827]/25 focus:outline-none focus:border-cyan-500/50"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting || !amount}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600/80 hover:bg-purple-600 border border-purple-500/30 text-sm font-semibold text-[#111827] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-cyan-600/80 hover:bg-cyan-600 border border-cyan-500/30 text-sm font-semibold text-[#111827] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Gift size={15} />
               {submitting ? 'Acreditando...' : `Acreditar bono a ${selected.fullName.split(' ')[0]}`}

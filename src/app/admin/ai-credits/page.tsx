@@ -165,7 +165,7 @@ export default function AdminAICreditsPage() {
   const PLAN_BADGE: Record<string, string> = {
     NONE: 'bg-[#F4F6FA] text-[#111827]/30 border-[#E4E9F0]',
     BASIC: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    PRO: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    PRO: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
     ELITE: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
   }
 
@@ -177,7 +177,7 @@ export default function AdminAICreditsPage() {
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center"
           style={{ background: 'linear-gradient(135deg, rgba(162,102,255,0.2), rgba(154,203,255,0.15))', border: '1px solid #E4E9F0' }}>
-          <Cpu className="w-5 h-5 text-violet-400" />
+          <Cpu className="w-5 h-5 text-cyan-400" />
         </div>
         <div>
           <h1 className="text-xl font-black text-[#111827] uppercase tracking-widest">Créditos AI</h1>
@@ -190,7 +190,7 @@ export default function AdminAICreditsPage() {
         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #E4E9F0' }}>
 
         <div className="flex items-center gap-2 mb-2">
-          <ShieldCheck className="w-4 h-4 text-violet-400" />
+          <ShieldCheck className="w-4 h-4 text-cyan-400" />
           <p className="text-sm font-black text-[#111827] uppercase tracking-widest">API Key Global de OpenAI</p>
         </div>
 
@@ -261,7 +261,7 @@ export default function AdminAICreditsPage() {
         <button onClick={() => setShowCosts(v => !v)}
           className="w-full p-5 flex items-center justify-between gap-4 transition-colors hover:bg-white/3">
           <div className="flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-violet-400" />
+            <Cpu className="w-4 h-4 text-cyan-400" />
             <p className="text-sm font-black text-[#111827] uppercase tracking-widest">Costos por Modelo (USD)</p>
           </div>
           <span className="text-[10px] text-[#111827]/30 font-bold">{showCosts ? 'OCULTAR' : 'EDITAR'}</span>
@@ -290,7 +290,7 @@ export default function AdminAICreditsPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-[11px] font-mono font-bold text-[#111827] truncate">{model}</p>
                         <p className="text-[9px] text-[#111827]/30">
-                          default: ${def.toFixed(4)}{isCustom && <span className="ml-1.5 text-violet-400">· custom</span>}
+                          default: ${def.toFixed(4)}{isCustom && <span className="ml-1.5 text-cyan-400">· custom</span>}
                         </p>
                       </div>
                       <div className="relative w-24 shrink-0">
@@ -392,7 +392,7 @@ export default function AdminAICreditsPage() {
                   {/* Balance USD badge */}
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl shrink-0"
                     style={{ background: 'rgba(162,102,255,0.12)', border: '1px solid rgba(162,102,255,0.25)' }}>
-                    <Cpu className="w-3 h-3 text-violet-400" />
+                    <Cpu className="w-3 h-3 text-cyan-400" />
                     <span className="text-sm font-black text-[#111827] tabular-nums">${u.aiBalanceUsd.toFixed(2)}</span>
                     <span className="text-[10px] text-[#111827]/30">USD</span>
                   </div>

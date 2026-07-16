@@ -998,7 +998,7 @@ function CampaignPageInner() {
                     {/(cr[eé]dit|saldo|api\s*key|openai)/i.test(error) && (
                         <div className="flex flex-wrap gap-2 mt-2.5 pl-[27px]">
                             <Link href="/dashboard/services/ads/setup" className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white transition-all">Configurar mi API Key</Link>
-                            <Link href="/dashboard/ai-credits" className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#147e95]/25 hover:bg-[#147e95]/35 text-purple-100 transition-all">Comprar créditos de IA</Link>
+                            <Link href="/dashboard/ai-credits" className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#147e95]/25 hover:bg-[#147e95]/35 text-cyan-100 transition-all">Comprar créditos de IA</Link>
                         </div>
                     )}
                 </div>
@@ -1148,7 +1148,7 @@ function CampaignPageInner() {
                                 <div className="flex items-center justify-between mb-1.5">
                                     <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Saludo</label>
                                     <button type="button" onClick={() => fillChatWithAI('whatsappGreeting')} disabled={!!fillingChat}
-                                        className="flex items-center gap-1 text-[10px] font-bold text-[#147e95] hover:text-purple-200 disabled:opacity-50 transition-colors">
+                                        className="flex items-center gap-1 text-[10px] font-bold text-[#147e95] hover:text-cyan-200 disabled:opacity-50 transition-colors">
                                         {fillingChat === 'whatsappGreeting' ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />}
                                         Llenar con IA
                                     </button>
@@ -1167,7 +1167,7 @@ function CampaignPageInner() {
                                 <div className="flex items-center justify-between mb-1.5">
                                     <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Botón de respuesta rápida</label>
                                     <button type="button" onClick={() => fillChatWithAI('quickReply')} disabled={!!fillingChat}
-                                        className="flex items-center gap-1 text-[10px] font-bold text-[#147e95] hover:text-purple-200 disabled:opacity-50 transition-colors">
+                                        className="flex items-center gap-1 text-[10px] font-bold text-[#147e95] hover:text-cyan-200 disabled:opacity-50 transition-colors">
                                         {fillingChat === 'quickReply' ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />}
                                         Llenar con IA
                                     </button>
@@ -1483,7 +1483,7 @@ function CampaignPageInner() {
                                                 </button>
                                                 <button onClick={() => setShowManualPrompt(v => !v)} disabled={!bulkRefImageUrl}
                                                     title="Escribir mi propio prompt (manual)"
-                                                    className={`shrink-0 flex items-center gap-1.5 px-3.5 py-3 rounded-2xl text-[12px] font-bold border transition-all disabled:opacity-40 disabled:cursor-not-allowed ${showManualPrompt ? 'bg-[#147e95]/25 border-white/10 text-purple-100' : 'bg-[#147e95]/12 border-white/10 text-purple-200 hover:bg-[#147e95]/20'}`}>
+                                                    className={`shrink-0 flex items-center gap-1.5 px-3.5 py-3 rounded-2xl text-[12px] font-bold border transition-all disabled:opacity-40 disabled:cursor-not-allowed ${showManualPrompt ? 'bg-[#147e95]/25 border-white/10 text-cyan-100' : 'bg-[#147e95]/12 border-white/10 text-cyan-200 hover:bg-[#147e95]/20'}`}>
                                                     <FileText size={14} /> <span>Manual</span>
                                                 </button>
                                             </div>
@@ -1835,7 +1835,7 @@ function CampaignPageInner() {
                                                 <div className="flex items-center justify-between mb-1">
                                                     <p className="text-[9px] text-white/30 uppercase font-bold">Tu prompt (libre)</p>
                                                     <button onClick={() => generateAiPrompt(i)} disabled={aiPromptLoading}
-                                                        className="text-[9px] font-bold text-[#147e95] hover:text-purple-200 flex items-center gap-1 disabled:opacity-40">
+                                                        className="text-[9px] font-bold text-[#147e95] hover:text-cyan-200 flex items-center gap-1 disabled:opacity-40">
                                                         {aiPromptLoading ? <Loader2 size={8} className="animate-spin" /> : <Sparkles size={8} />}
                                                         {aiPromptLoading ? 'Escribiendo…' : 'Generar con IA'}
                                                     </button>

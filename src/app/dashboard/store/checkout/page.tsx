@@ -39,18 +39,18 @@ const PACK_INFO: Record<string, {
   PRO: {
     name: 'Pack Pro',
     tagline: 'Vende, anuncia y escala sin límites',
-    color: 'text-purple-400',
-    border: 'border-purple-500/30',
-    bg: 'bg-purple-500/8',
+    color: 'text-cyan-400',
+    border: 'border-cyan-500/30',
+    bg: 'bg-cyan-500/8',
     icon: Sparkles,
     features: ['2 agentes AI de WhatsApp personalizados', 'Catálogo hasta 20 productos por agente', '2 tiendas virtuales', '3 landing pages con IA', 'Publicidad Meta / TikTok / Google'],
   },
   ELITE: {
     name: 'Pack Elite',
     tagline: 'El máximo poder para líderes de red',
-    color: 'text-pink-400',
-    border: 'border-pink-500/30',
-    bg: 'bg-pink-500/8',
+    color: 'text-cyan-400',
+    border: 'border-cyan-500/30',
+    bg: 'bg-cyan-500/8',
     icon: Crown,
     features: ['5 agentes AI de WhatsApp personalizados', 'Catálogo hasta 40 productos por agente', '5 tiendas virtuales', '6 landing pages con IA', 'Acceso exclusivo a nuevos lanzamientos'],
   },
@@ -645,7 +645,7 @@ export default function CheckoutPage() {
   <div className="dm-page font-ui">
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="animate-spin text-purple-400" size={28} />
+        <Loader2 className="animate-spin text-cyan-400" size={28} />
       </div>
     }>
       <CheckoutContent />

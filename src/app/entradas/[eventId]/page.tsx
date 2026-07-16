@@ -32,7 +32,7 @@ interface EventData {
 type Step = 'info' | 'form' | 'payment' | 'done'
 type PayMethod = 'MANUAL' | 'CRYPTO'
 
-const INPUT = 'w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm outline-none focus:border-purple-500/50 placeholder-slate-400'
+const INPUT = 'w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 text-sm outline-none focus:border-cyan-500/50 placeholder-slate-400'
 const LABEL = 'block text-xs text-white/55 mb-1.5 font-bold uppercase tracking-widest'
 
 export default function PublicTicketPage() {
@@ -210,7 +210,7 @@ export default function PublicTicketPage() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#EEF2F7' }}>
-      <Loader2 size={28} className="animate-spin text-purple-400" />
+      <Loader2 size={28} className="animate-spin text-cyan-400" />
     </div>
   )
 
@@ -553,7 +553,7 @@ export default function PublicTicketPage() {
                     )}
                     <div>
                       <label className={LABEL}>Sube tu comprobante</label>
-                      <label className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-slate-300 cursor-pointer hover:border-purple-500/40 transition-colors text-sm text-slate-500">
+                      <label className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-slate-300 cursor-pointer hover:border-cyan-500/40 transition-colors text-sm text-slate-500">
                         {uploading ? <Loader2 size={16} className="animate-spin" /> : proofUrl ? <><CheckCircle2 size={16} className="text-green-400" /> Comprobante subido</> : <><Upload size={16} /> Seleccionar imagen</>}
                         <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) uploadProof(f); e.target.value = '' }} />
                       </label>

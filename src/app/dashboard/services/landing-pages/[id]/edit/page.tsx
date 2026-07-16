@@ -173,7 +173,7 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
             {/* Top Bar - Clean & Pro */}
             <nav className="h-16 sm:h-20 border-b border-[#E4E9F0] flex items-center justify-between px-3 sm:px-8 bg-black/50 backdrop-blur-2xl z-[100] fixed top-0 w-full gap-2">
                 <div className="flex items-center gap-2 sm:gap-6 min-w-0">
-                    <Link href="/dashboard/services/landing-pages" className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 rounded-full border border-purple-500/25 flex items-center justify-center hover:bg-[#EEF2F7] transition-all">
+                    <Link href="/dashboard/services/landing-pages" className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 rounded-full border border-cyan-500/25 flex items-center justify-center hover:bg-[#EEF2F7] transition-all">
                         <ArrowLeft size={18} />
                     </Link>
                     <div className="min-w-0">
@@ -184,7 +184,7 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
 
                 <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
                     {/* Desktop/Mobile toggle — oculto en móvil */}
-                    <div className="hidden sm:flex bg-[#F4F6FA] p-1 rounded-2xl border border-purple-500/25 backdrop-blur-md">
+                    <div className="hidden sm:flex bg-[#F4F6FA] p-1 rounded-2xl border border-cyan-500/25 backdrop-blur-md">
                         <button
                             onClick={() => setPreviewMode('desktop')}
                             className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 text-xs font-bold uppercase ${previewMode === 'desktop' ? 'bg-white text-black shadow-2xl scale-105' : 'text-[#111827]/40 hover:text-[#111827]'}`}
@@ -207,7 +207,7 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
                         >
                             <Code2 size={18} />
                         </button>
-                        <a href={`/lp/${page?.slug}`} target="_blank" className="p-2 sm:p-3 rounded-xl border border-purple-500/25 hover:bg-[#F4F6FA] transition-all flex-shrink-0">
+                        <a href={`/lp/${page?.slug}`} target="_blank" className="p-2 sm:p-3 rounded-xl border border-cyan-500/25 hover:bg-[#F4F6FA] transition-all flex-shrink-0">
                             <Eye size={18} />
                         </a>
                         <button
@@ -270,7 +270,7 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
                                 <button
                                     key={b.type}
                                     onClick={() => addBlock(b.type)}
-                                    className="bg-[#F4F6FA] border border-purple-500/25 p-8 rounded-[32px] text-left hover:bg-[#00FF88] hover:text-black transition-all group hover:-translate-y-2"
+                                    className="bg-[#F4F6FA] border border-cyan-500/25 p-8 rounded-[32px] text-left hover:bg-[#00FF88] hover:text-black transition-all group hover:-translate-y-2"
                                 >
                                     <b.icon className="w-10 h-10 mb-6 group-hover:scale-110 transition-transform" />
                                     <h4 className="text-lg font-black uppercase m-0">{b.label}</h4>

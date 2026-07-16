@@ -74,7 +74,7 @@ export default function VerifyDevicePage() {
       {/* Background glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-60 -left-40 w-[600px] h-[600px] rounded-full bg-amber-500/5 blur-[140px]" />
-        <div className="absolute -bottom-60 -right-40 w-[600px] h-[600px] rounded-full bg-purple-600/7 blur-[140px]" />
+        <div className="absolute -bottom-60 -right-40 w-[600px] h-[600px] rounded-full bg-cyan-600/7 blur-[140px]" />
       </div>
 
       <div className="w-full max-w-[380px] relative z-10">

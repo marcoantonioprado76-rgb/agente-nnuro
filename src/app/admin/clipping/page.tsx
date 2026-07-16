@@ -320,7 +320,7 @@ export default function AdminClippingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="animate-spin text-purple-400" size={24} />
+        <Loader2 className="animate-spin text-cyan-400" size={24} />
       </div>
     )
   }
@@ -345,7 +345,7 @@ export default function AdminClippingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-            <Play size={20} className="text-pink-400" /> Clipping
+            <Play size={20} className="text-cyan-400" /> Clipping
           </h1>
           <p className="text-xs text-[#111827]/30 mt-0.5">Gestión de campañas y videos</p>
         </div>
@@ -422,7 +422,7 @@ export default function AdminClippingPage() {
           {campaigns.length === 0 ? (
             <div className="text-center py-16 rounded-2xl"
               style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid #F0F3F7' }}>
-              <Play size={32} className="mx-auto mb-3 opacity-20 text-pink-400" />
+              <Play size={32} className="mx-auto mb-3 opacity-20 text-cyan-400" />
               <p className="text-sm text-[#111827]/25">No hay campañas. Creá la primera.</p>
             </div>
           ) : (

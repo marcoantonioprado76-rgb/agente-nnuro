@@ -12,7 +12,7 @@ import { usePlanGuard } from '@/hooks/usePlanGuard'
 
 const STATUS_COLORS: Record<string, string> = {
     DRAFT: 'text-white/55 bg-white/5',
-    SCHEDULED: 'text-purple-400 bg-purple-500/10',
+    SCHEDULED: 'text-cyan-400 bg-cyan-500/10',
     RUNNING: 'text-green-400 bg-green-400/10',
     COMPLETED: 'text-blue-400 bg-blue-400/10',
     PAUSED: 'text-orange-400 bg-orange-400/10',
@@ -98,7 +98,7 @@ export default function CrmPage() {
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[60vh]">
-            <Loader2 className="animate-spin text-purple-400" size={32} />
+            <Loader2 className="animate-spin text-cyan-400" size={32} />
         </div>
     )
 
@@ -132,11 +132,11 @@ export default function CrmPage() {
 
             {campaigns.length === 0 ? (
                 <div className="text-center py-24">
-                    <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mx-auto mb-4">
-                        <MessageSquare size={28} className="text-purple-400" />
+                    <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
+                        <MessageSquare size={28} className="text-cyan-400" />
                     </div>
                     <p className="text-[#6B7280] text-sm mb-2">No tenés campañas todavía</p>
-                    <Link href="/dashboard/crm/new" className="text-purple-400 font-bold text-sm hover:underline">
+                    <Link href="/dashboard/crm/new" className="text-cyan-400 font-bold text-sm hover:underline">
                         Crear primera campaña →
                     </Link>
                 </div>

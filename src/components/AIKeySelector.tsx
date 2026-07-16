@@ -132,7 +132,7 @@ export default function AIKeySelector({ onChange, compact = false }: Props) {
                     : 'No configurada'}
                 </p>
               </div>
-              {usingAdmin && <div className="w-3 h-3 rounded-full bg-violet-400" />}
+              {usingAdmin && <div className="w-3 h-3 rounded-full bg-cyan-400" />}
             </button>
 
             {/* CTA de compra cuando saldo bajo y usa key del admin */}

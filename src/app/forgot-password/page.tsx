@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
 
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-[450px] h-[450px] rounded-full bg-[#0a95a8]/8 blur-[130px]" />
-        <div className="absolute -bottom-40 -right-40 w-[450px] h-[450px] rounded-full bg-purple-600/8 blur-[130px]" />
+        <div className="absolute -bottom-40 -right-40 w-[450px] h-[450px] rounded-full bg-cyan-600/8 blur-[130px]" />
       </div>
 
       <div className="w-full max-w-[340px] relative z-10">
@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
 
         <p className="text-center text-[#9CA3AF] text-[11px] mt-5">
           ¿Recordaste tu contraseña?{' '}
-          <Link href="/login" className="text-purple-400 hover:text-purple-300 font-bold transition-colors">
+          <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
             Iniciar sesión
           </Link>
         </p>

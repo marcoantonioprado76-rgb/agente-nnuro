@@ -77,10 +77,10 @@ const PACKS = [
     planId: 'PRO',
     icon: Sparkles,
     accent: {
-      text: 'text-purple-400',
-      bg: 'bg-purple-500/10',
-      border: 'border-purple-500/40',
-      btn: 'bg-purple-600 hover:bg-purple-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(127,86,239,0.4)]',
+      text: 'text-cyan-400',
+      bg: 'bg-cyan-500/10',
+      border: 'border-cyan-500/40',
+      btn: 'bg-cyan-600 hover:bg-cyan-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(127,86,239,0.4)]',
       glow: 'shadow-[0_0_50px_rgba(127,86,239,0.18)]',
       featured: true,
     },
@@ -160,10 +160,10 @@ const PACKS = [
     planId: 'ELITE',
     icon: Crown,
     accent: {
-      text: 'text-pink-400',
-      bg: 'bg-pink-500/10',
-      border: 'border-pink-500/30',
-      btn: 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(236,72,153,0.3)]',
+      text: 'text-cyan-400',
+      bg: 'bg-cyan-500/10',
+      border: 'border-cyan-500/30',
+      btn: 'bg-gradient-to-r from-cyan-600 to-cyan-600 hover:from-cyan-500 hover:to-cyan-500 active:scale-[0.98] text-white font-black shadow-[0_0_20px_rgba(236,72,153,0.3)]',
       glow: 'shadow-[0_0_40px_rgba(236,72,153,0.12)]',
       featured: false,
     },
@@ -415,7 +415,7 @@ export default function PlanesPage() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F4F6FA] border border-purple-500/25 text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F4F6FA] border border-cyan-500/25 text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-4">
           <Layers size={10} />
           MY DIAMOND · Planes oficiales
         </div>
@@ -495,7 +495,7 @@ export default function PlanesPage() {
             >
               {pack.locked && (
                 <div className="absolute inset-0 rounded-3xl z-10 flex flex-col items-center justify-center gap-2 backdrop-blur-[1px]">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F4F6FA] border border-purple-500/25 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-[#F4F6FA] border border-cyan-500/25 flex items-center justify-center">
                     <Lock size={20} className="text-[#9CA3AF]" />
                   </div>
                   <p className="text-[10px] font-black text-[#9CA3AF] uppercase tracking-widest">Próximamente</p>
@@ -504,7 +504,7 @@ export default function PlanesPage() {
 
               {pack.highlight && (
                 <div className="absolute -top-3.5 inset-x-0 flex justify-center">
-                  <span className="px-4 py-1 rounded-full bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest">
+                  <span className="px-4 py-1 rounded-full bg-cyan-600 text-white text-[10px] font-black uppercase tracking-widest">
                     {pack.highlight}
                   </span>
                 </div>
@@ -537,7 +537,7 @@ export default function PlanesPage() {
                   )}
                 </div>
 
-                <div className={`h-px mb-5 ${pack.accent.featured ? 'bg-purple-500/20' : 'bg-[#F4F6FA]'}`} />
+                <div className={`h-px mb-5 ${pack.accent.featured ? 'bg-cyan-500/20' : 'bg-[#F4F6FA]'}`} />
 
                 <div className="flex-1 space-y-4 mb-6">
                   {pack.sections.map((section, si) => {
@@ -619,7 +619,7 @@ export default function PlanesPage() {
                   }
                   if (isLower) {
                     return (
-                      <button disabled className="w-full py-3 rounded-2xl text-sm font-black bg-[#F4F6FA] text-[#9CA3AF] border border-purple-500/20">
+                      <button disabled className="w-full py-3 rounded-2xl text-sm font-black bg-[#F4F6FA] text-[#9CA3AF] border border-cyan-500/20">
                         Plan inferior
                       </button>
                     )
@@ -681,7 +681,7 @@ export default function PlanesPage() {
 
       {/* Bottom note */}
       <div className="mt-6 p-4 bg-white border border-[#E4E9F0] rounded-2xl flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left" style={{ boxShadow: '0 4px 14px rgba(15,23,42,0.04)' }}>
-        <div className="w-8 h-8 rounded-xl bg-[#F4F6FA] border border-purple-500/20 flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-[#F4F6FA] border border-cyan-500/20 flex items-center justify-center shrink-0">
           <Layers size={14} className="text-[#6B7280]" />
         </div>
         <div>

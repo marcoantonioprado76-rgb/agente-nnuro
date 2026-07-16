@@ -122,7 +122,7 @@ function ShareStoreModal({ store, onClose }: { store: StoreRecord; onClose: () =
                             value={identifier}
                             onChange={e => setIdentifier(e.target.value)}
                             placeholder="@usuario o correo@email.com"
-                            className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all text-sm"
+                            className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all text-sm"
                             autoFocus
                         />
                     </div>
@@ -139,7 +139,7 @@ function ShareStoreModal({ store, onClose }: { store: StoreRecord; onClose: () =
                     </p>
 
                     <div className="flex gap-3 pt-1">
-                        <button type="button" onClick={onClose} className="flex-1 py-3 text-[#374151] font-bold rounded-xl border border-purple-500/25 hover:bg-[#F4F6FA] transition-all text-sm">
+                        <button type="button" onClick={onClose} className="flex-1 py-3 text-[#374151] font-bold rounded-xl border border-cyan-500/25 hover:bg-[#F4F6FA] transition-all text-sm">
                             Cancelar
                         </button>
                         <button type="submit" disabled={loading} className="flex-1 py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl disabled:opacity-50 flex items-center justify-center gap-2 text-sm transition-all">
@@ -427,7 +427,7 @@ export default function VirtualStorePage() {
                 {productsLoading ? (
                     <div className="py-20 flex justify-center"><Loader2 className="animate-spin text-[#233B8F]" /></div>
                 ) : products.length === 0 ? (
-                    <div className="bg-white/40 border border-purple-500/15 rounded-3xl p-20 text-center">
+                    <div className="bg-white/40 border border-cyan-500/15 rounded-3xl p-20 text-center">
                         <Package className="w-16 h-16 text-dark-600 mx-auto mb-4" />
                         <h3 className="text-xl font-bold mb-2">No hay productos aún</h3>
                         <p className="text-[#6B7280] mb-8">Empieza a llenar tu catálogo para que tus clientes puedan comprar.</p>
@@ -436,7 +436,7 @@ export default function VirtualStorePage() {
                 ) : (
                     <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6">
                         {products.map(p => (
-                            <div key={p.id} className="bg-white border border-purple-500/15 rounded-2xl overflow-hidden group">
+                            <div key={p.id} className="bg-white border border-cyan-500/15 rounded-2xl overflow-hidden group">
                                 <div className="aspect-square bg-[#F8FAFC] flex items-center justify-center overflow-hidden">
                                     {p.images?.[0] ? (
                                         <img src={p.images[0]} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
@@ -474,7 +474,7 @@ export default function VirtualStorePage() {
                                                 setProdImages(p.images || []);
                                                 setShowProductModal(true);
                                             }}
-                                            className="flex-1 bg-[#F4F6FA] hover:bg-[#EEF2F7] py-1 sm:py-2 rounded-lg text-[9px] sm:text-xs font-bold transition-all border border-purple-500/25 flex items-center justify-center gap-1"
+                                            className="flex-1 bg-[#F4F6FA] hover:bg-[#EEF2F7] py-1 sm:py-2 rounded-lg text-[9px] sm:text-xs font-bold transition-all border border-cyan-500/25 flex items-center justify-center gap-1"
                                         >
                                             <Edit3 size={10} /> <span className="hidden sm:inline">Editar</span>
                                         </button>
@@ -499,7 +499,7 @@ export default function VirtualStorePage() {
                             <form onSubmit={handleSaveProduct} className="space-y-6">
                                 <div>
                                     <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest block mb-2">Nombre</label>
-                                    <input required value={prodName} onChange={e => setProdName(e.target.value)} className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                    <input required value={prodName} onChange={e => setProdName(e.target.value)} className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                                 </div>
                                 <div>
                                     <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest block mb-2">Categoría</label>
@@ -519,7 +519,7 @@ export default function VirtualStorePage() {
                                             onChange={e => {
                                                 if (e.target.value !== 'Otra') setProdCategory(e.target.value)
                                             }}
-                                            className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all"
+                                            className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all"
                                         >
                                             <option value="General">General</option>
                                             <option value="Electrónica y Tecnología">Electrónica y Tecnología</option>
@@ -577,7 +577,7 @@ export default function VirtualStorePage() {
                                     <select
                                         value={prodCurrency}
                                         onChange={e => setProdCurrency(e.target.value)}
-                                        className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-sm text-[#111827] focus:border-[#233B8F] outline-none transition-all"
+                                        className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-sm text-[#111827] focus:border-[#233B8F] outline-none transition-all"
                                     >
                                         <option value="USD">USD ($)</option>
                                         <option value="PEN">PEN (S/)</option>
@@ -593,7 +593,7 @@ export default function VirtualStorePage() {
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <div className="flex-1 space-y-2">
                                         <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest block">Precio Normal</label>
-                                        <input required type="number" step="0.01" placeholder="0.00" value={prodPrice} onChange={e => setProdPrice(e.target.value)} className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 focus:border-[#233B8F] outline-none transition-all" />
+                                        <input required type="number" step="0.01" placeholder="0.00" value={prodPrice} onChange={e => setProdPrice(e.target.value)} className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 focus:border-[#233B8F] outline-none transition-all" />
                                     </div>
                                     <div className="flex-1 space-y-2">
                                         <label className="text-xs font-bold text-orange-400/70 uppercase tracking-widest block flex items-center gap-1.5">
@@ -604,7 +604,7 @@ export default function VirtualStorePage() {
                                     </div>
                                     <div className="w-full sm:w-28 space-y-2">
                                         <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest block">Stock</label>
-                                        <input required type="number" value={prodStock} onChange={e => setProdStock(e.target.value)} className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                        <input required type="number" value={prodStock} onChange={e => setProdStock(e.target.value)} className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                                     </div>
                                 </div>
                                 {selectedStore.type === 'NETWORK_MARKETING' && (
@@ -619,7 +619,7 @@ export default function VirtualStorePage() {
                                     <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest block mb-2">Galería de Imágenes (Hasta 4)</label>
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                                         {prodImages.map((img, idx) => (
-                                            <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-purple-500/25 bg-white group">
+                                            <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-cyan-500/25 bg-white group">
                                                 <img src={img} className="w-full h-full object-cover" />
                                                 <button
                                                     type="button"
@@ -646,7 +646,7 @@ export default function VirtualStorePage() {
                                         <input
                                             id="urlInput"
                                             placeholder="Pegar URL de imagen..."
-                                            className="flex-1 bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-sm"
+                                            className="flex-1 bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-sm"
                                             onKeyDown={e => {
                                                 if (e.key === 'Enter') {
                                                     e.preventDefault();
@@ -667,7 +667,7 @@ export default function VirtualStorePage() {
                                                     el.value = '';
                                                 }
                                             }}
-                                            className="px-4 bg-[#F4F6FA] rounded-xl border border-purple-500/25 text-xs font-bold"
+                                            className="px-4 bg-[#F4F6FA] rounded-xl border border-cyan-500/25 text-xs font-bold"
                                         >
                                             Añadir
                                         </button>
@@ -675,10 +675,10 @@ export default function VirtualStorePage() {
                                 </div>
                                 <div>
                                     <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest block mb-2">Descripción</label>
-                                    <textarea value={prodDesc} onChange={e => setProdDesc(e.target.value)} rows={3} className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all resize-y" />
+                                    <textarea value={prodDesc} onChange={e => setProdDesc(e.target.value)} rows={3} className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-[#111827] placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all resize-y" />
                                 </div>
                                 <div className="flex gap-3 pt-4">
-                                    <button type="button" onClick={() => setShowProductModal(false)} className="flex-1 py-3 sm:py-4 text-[#374151] font-bold rounded-xl border border-purple-500/25 hover:bg-[#F4F6FA] transition-all">Cancelar</button>
+                                    <button type="button" onClick={() => setShowProductModal(false)} className="flex-1 py-3 sm:py-4 text-[#374151] font-bold rounded-xl border border-cyan-500/25 hover:bg-[#F4F6FA] transition-all">Cancelar</button>
                                     <button type="submit" className="flex-1 py-3 sm:py-4 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl shadow-lg shadow-[#233B8F]/20 transition-all active:scale-95">Guardar</button>
                                 </div>
                             </form>
@@ -1002,7 +1002,7 @@ export default function VirtualStorePage() {
                                         onClick={() => setStoreType('GENERAL_BUSINESS')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'GENERAL_BUSINESS'
                                             ? 'border-[#147e95] bg-[#147e95]/10 text-white shadow-[0_0_20px_rgba(var(--[#147e95]-rgb),0.2)]'
-                                            : 'border-white/10 bg-white text-white/40 hover:border-purple-500/30'
+                                            : 'border-white/10 bg-white text-white/40 hover:border-cyan-500/30'
                                             }`}
                                     >
                                         <Store className={storeType === 'GENERAL_BUSINESS' ? 'text-[#147e95]' : ''} size={20} />
@@ -1016,7 +1016,7 @@ export default function VirtualStorePage() {
                                         onClick={() => setStoreType('NETWORK_MARKETING')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'NETWORK_MARKETING'
                                             ? 'border-[#233B8F] bg-[#233B8F]/10 text-white shadow-[0_0_20px_rgba(var(--[#233B8F]-rgb),0.2)]'
-                                            : 'border-white/10 bg-white text-white/40 hover:border-purple-500/30'
+                                            : 'border-white/10 bg-white text-white/40 hover:border-cyan-500/30'
                                             }`}
                                     >
                                         <Globe className={storeType === 'NETWORK_MARKETING' ? 'text-[#233B8F]' : ''} size={20} />
@@ -1030,7 +1030,7 @@ export default function VirtualStorePage() {
                                         onClick={() => setStoreType('LANDING')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'LANDING'
                                             ? 'border-[#16A34A] bg-[#16A34A]/10 text-white shadow-[0_0_20px_rgba(var(--[#16A34A]-rgb),0.2)]'
-                                            : 'border-white/10 bg-white text-white/40 hover:border-purple-500/30'
+                                            : 'border-white/10 bg-white text-white/40 hover:border-cyan-500/30'
                                             }`}
                                     >
                                         <LayoutIcon className={storeType === 'LANDING' ? 'text-[#16A34A]' : ''} size={20} />
@@ -1044,15 +1044,15 @@ export default function VirtualStorePage() {
 
                             <div>
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">Nombre</label>
-                                <input required value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="Ej: Mi Boutique" className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                <input required value={storeName} onChange={e => setStoreName(e.target.value)} placeholder="Ej: Mi Boutique" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                             </div>
                             <div>
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">Slug (URL)</label>
-                                <input required value={storeSlug} onChange={e => setStoreSlug(e.target.value)} placeholder="mi-boutique" className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                <input required value={storeSlug} onChange={e => setStoreSlug(e.target.value)} placeholder="mi-boutique" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                             </div>
                             <div>
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">WhatsApp de Pedidos</label>
-                                <input value={storeWhatsapp} onChange={e => setStoreWhatsapp(e.target.value)} placeholder="Ej: 51987654321 (con código de país)" className="w-full bg-white border border-purple-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
+                                <input value={storeWhatsapp} onChange={e => setStoreWhatsapp(e.target.value)} placeholder="Ej: 51987654321 (con código de país)" className="w-full bg-white border border-cyan-500/25 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:border-[#233B8F] outline-none transition-all" />
                                 <p className="text-[10px] text-white/40 mt-2">Los pedidos de esta tienda llegarán directamente a este número.</p>
                             </div>
 
@@ -1060,7 +1060,7 @@ export default function VirtualStorePage() {
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2">QR de Pago (Transferencia)</label>
                                 <div className="flex items-center gap-4">
                                     {storeQr ? (
-                                        <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-purple-500/25 group">
+                                        <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-cyan-500/25 group">
                                             <img src={storeQr} className="w-full h-full object-cover" />
                                             <button
                                                 type="button"

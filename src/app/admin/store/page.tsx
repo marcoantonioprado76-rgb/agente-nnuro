@@ -39,7 +39,7 @@ const STATUS_BADGE: Record<string, string> = {
   PENDING_VERIFICATION: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10',
   APPROVED: 'text-green-400 border-green-500/30 bg-green-500/10',
   REJECTED: 'text-red-400 border-red-500/30 bg-red-500/10',
-  SHIPPED: 'text-purple-400 border-purple-500/30 bg-purple-500/10',
+  SHIPPED: 'text-cyan-400 border-cyan-500/30 bg-cyan-500/10',
   DELIVERED: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
 }
 

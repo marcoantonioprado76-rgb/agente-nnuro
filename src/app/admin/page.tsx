@@ -39,7 +39,7 @@ interface PendingWithdrawal {
 
 const PLAN_COLORS: Record<string, string> = {
   BASIC: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-  PRO: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+  PRO: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
   ELITE: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20',
 }
 
@@ -64,7 +64,7 @@ export default function AdminOverviewPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <Loader2 className="animate-spin text-purple-400" size={24} />
+        <Loader2 className="animate-spin text-cyan-400" size={24} />
       </div>
     )
   }
@@ -97,8 +97,8 @@ export default function AdminOverviewPage() {
       label: 'Retiros Pendientes',
       value: stats?.pendingWithdrawals ?? 0,
       icon: Wallet,
-      color: 'text-pink-400',
-      bg: 'bg-pink-500/8 border-pink-500/20',
+      color: 'text-cyan-400',
+      bg: 'bg-cyan-500/8 border-cyan-500/20',
       href: '/admin/withdrawals',
       alert: (stats?.pendingWithdrawals ?? 0) > 0,
     },
@@ -157,7 +157,7 @@ export default function AdminOverviewPage() {
               <ShoppingBag size={13} className="text-orange-400" />
               <p className="text-xs font-black uppercase tracking-widest text-[#111827]/50">Compras Pendientes</p>
             </div>
-            <Link href="/admin/purchases" className="text-[10px] text-purple-400 hover:text-purple-300 flex items-center gap-1">
+            <Link href="/admin/purchases" className="text-[10px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
               Ver todo <ArrowRight size={10} />
             </Link>
           </div>
@@ -188,10 +188,10 @@ export default function AdminOverviewPage() {
         <div className="bg-white/[0.025] border border-[#E4E9F0] rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#E4E9F0]">
             <div className="flex items-center gap-2">
-              <Wallet size={13} className="text-pink-400" />
+              <Wallet size={13} className="text-cyan-400" />
               <p className="text-xs font-black uppercase tracking-widest text-[#111827]/50">Retiros Pendientes</p>
             </div>
-            <Link href="/admin/withdrawals" className="text-[10px] text-purple-400 hover:text-purple-300 flex items-center gap-1">
+            <Link href="/admin/withdrawals" className="text-[10px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1">
               Ver todo <ArrowRight size={10} />
             </Link>
           </div>

@@ -37,7 +37,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 const PLAN_BADGE: Record<string, string> = {
   BASIC: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
-  PRO: 'text-purple-400 bg-purple-500/10 border-purple-500/25',
+  PRO: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
   ELITE: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/25',
 }
 
@@ -131,7 +131,7 @@ export default function AdminPurchasesPage() {
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all ${
               activeTab === tab
-                ? 'bg-purple-600 text-[#111827]'
+                ? 'bg-cyan-600 text-[#111827]'
                 : 'text-[#111827]/40 hover:text-[#111827]/70'
             }`}
           >
@@ -144,7 +144,7 @@ export default function AdminPurchasesPage() {
       <div className="bg-white/[0.025] border border-[#E4E9F0] rounded-2xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="animate-spin text-purple-400" size={22} />
+            <Loader2 className="animate-spin text-cyan-400" size={22} />
           </div>
         ) : requests.length === 0 ? (
           <div className="text-center py-16">

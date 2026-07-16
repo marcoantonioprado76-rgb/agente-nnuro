@@ -110,7 +110,7 @@ const EMPTY_EDIT_FORM: EditForm = {
 const PLAN_BADGE: Record<string, string> = {
   NONE: 'text-[#111827]/30 bg-[#F4F6FA] border-[#E4E9F0]',
   BASIC: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
-  PRO: 'text-purple-400 bg-purple-500/10 border-purple-500/25',
+  PRO: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
   ELITE: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/25',
 }
 
@@ -359,7 +359,7 @@ export default function AdminUsersPage() {
           placeholder="Buscar por nombre, usuario o email..."
           value={search}
           onChange={e => { setSearch(e.target.value); setPage(1) }}
-          className="w-full bg-[#F4F6FA] border border-[#E4E9F0] rounded-xl pl-9 pr-4 py-2.5 text-sm text-[#111827] placeholder-white/25 outline-none focus:border-purple-500/50"
+          className="w-full bg-[#F4F6FA] border border-[#E4E9F0] rounded-xl pl-9 pr-4 py-2.5 text-sm text-[#111827] placeholder-white/25 outline-none focus:border-cyan-500/50"
         />
       </div>
 
@@ -367,7 +367,7 @@ export default function AdminUsersPage() {
       <div className="bg-white/[0.025] border border-[#E4E9F0] rounded-2xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="animate-spin text-purple-400" size={22} />
+            <Loader2 className="animate-spin text-cyan-400" size={22} />
           </div>
         ) : users.length === 0 ? (
           <div className="text-center py-16">
@@ -389,7 +389,7 @@ export default function AdminUsersPage() {
                   <tr key={u.id} className="hover:bg-white/[0.02]">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-purple-500/15 border border-purple-500/20 flex items-center justify-center text-[11px] font-black text-purple-400 shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center text-[11px] font-black text-cyan-400 shrink-0">
                           {u.fullName.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
@@ -656,7 +656,7 @@ export default function AdminUsersPage() {
 
                         {/* Device */}
                         <div className="flex items-start gap-1.5 bg-white/[0.025] rounded-lg px-2 py-1.5">
-                          <Monitor size={10} className="text-purple-400 mt-0.5 shrink-0" />
+                          <Monitor size={10} className="text-cyan-400 mt-0.5 shrink-0" />
                           <div>
                             <p className="text-[9px] text-[#111827]/25 uppercase font-bold">Dispositivo</p>
                             <p className="text-[10px] text-[#111827]/70">{d.deviceType ?? '—'} · {d.os ?? '—'}</p>

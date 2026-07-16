@@ -12,7 +12,7 @@ import {
 
 const STATUS_COLORS: Record<string, string> = {
     DRAFT: 'text-[#111827]/40',
-    SCHEDULED: 'text-purple-400',
+    SCHEDULED: 'text-cyan-400',
     RUNNING: 'text-green-400',
     COMPLETED: 'text-blue-400',
     PAUSED: 'text-orange-400',
@@ -382,7 +382,7 @@ export default function CrmCampaignDetailPage() {
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[60vh]">
-            <Loader2 className="animate-spin text-purple-400" size={32} />
+            <Loader2 className="animate-spin text-cyan-400" size={32} />
         </div>
     )
     if (!campaign) return null
@@ -410,7 +410,7 @@ export default function CrmCampaignDetailPage() {
                         <input
                             value={editForm.name}
                             onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
-                            className="w-full bg-[#F4F6FA] border border-purple-500/40 rounded-xl px-3 py-1.5 text-lg font-black text-[#111827] focus:outline-none focus:border-purple-500/70"
+                            className="w-full bg-[#F4F6FA] border border-cyan-500/40 rounded-xl px-3 py-1.5 text-lg font-black text-[#111827] focus:outline-none focus:border-cyan-500/70"
                         />
                     ) : (
                         <h1 className="text-xl font-black uppercase tracking-tighter truncate">{campaign.name}</h1>
@@ -457,7 +457,7 @@ export default function CrmCampaignDetailPage() {
                             {canEdit && (
                                 <button
                                     onClick={startEdit}
-                                    className="w-9 h-9 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] flex items-center justify-center hover:bg-[#EEF2F7] transition-all text-[#111827]/40 hover:text-purple-400"
+                                    className="w-9 h-9 rounded-xl bg-[#F4F6FA] border border-[#E4E9F0] flex items-center justify-center hover:bg-[#EEF2F7] transition-all text-[#111827]/40 hover:text-cyan-400"
                                     title="Editar campaña"
                                 >
                                     <Pencil size={14} />

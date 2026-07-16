@@ -115,7 +115,7 @@ export default function TokenPricingAdmin() {
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center"
           style={{ background: 'rgba(162,102,255,0.15)', border: '1px solid rgba(162,102,255,0.30)' }}>
-          <Cpu className="w-5 h-5 text-violet-300" />
+          <Cpu className="w-5 h-5 text-cyan-300" />
         </div>
         <div>
           <h1 className="text-xl font-black text-[#111827]">Tarifas por token</h1>

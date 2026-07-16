@@ -22,9 +22,9 @@ const PLAN_PRICES = [
     key: 'PRICE_PRO',
     renewalKey: 'PRICE_PRO_RENEWAL',
     label: 'Pack Pro',
-    color: 'text-purple-400',
-    border: 'border-purple-500/25',
-    bg: 'bg-purple-500/5',
+    color: 'text-cyan-400',
+    border: 'border-cyan-500/25',
+    bg: 'bg-cyan-500/5',
     dot: '#35d0c8',
   },
   {
@@ -55,7 +55,7 @@ const PLAN_CREDITS_BOTS = [
     creditsDefault: '8',
     botsDefault: '4',
     label: 'Pack Pro',
-    color: 'text-purple-400',
+    color: 'text-cyan-400',
     dot: '#35d0c8',
   },
   {
@@ -309,7 +309,7 @@ export default function AdminSettingsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="animate-spin text-purple-400" size={22} />
+          <Loader2 className="animate-spin text-cyan-400" size={22} />
         </div>
       ) : (
         <>
@@ -439,7 +439,7 @@ export default function AdminSettingsPage() {
                     </a>
                     <div className="flex gap-2 flex-wrap">
                       <button onClick={() => qrInputRef.current?.click()}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-bold hover:bg-purple-600/30 transition-colors">
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-600/30 transition-colors">
                         <Upload size={11} /> Cambiar QR
                       </button>
                       <button onClick={removeQr}
@@ -451,7 +451,7 @@ export default function AdminSettingsPage() {
                 </div>
               ) : (
                 <button onClick={() => qrInputRef.current?.click()} disabled={uploadingQr}
-                  className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-[#E4E9F0] rounded-xl text-[#111827]/30 hover:border-purple-500/40 hover:text-purple-400 transition-colors">
+                  className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-[#E4E9F0] rounded-xl text-[#111827]/30 hover:border-cyan-500/40 hover:text-cyan-400 transition-colors">
                   {uploadingQr
                     ? <Loader2 size={20} className="animate-spin" />
                     : <>

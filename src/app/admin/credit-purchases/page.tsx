@@ -100,7 +100,7 @@ export default function AdminCreditPurchasesPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-xl font-black uppercase tracking-tighter flex items-center gap-2">
-                        <Wallet size={18} className="text-violet-400" /> Compras de Saldo IA
+                        <Wallet size={18} className="text-cyan-400" /> Compras de Saldo IA
                     </h1>
                     <p className="text-xs text-[#111827]/30 mt-0.5">{requests.length} solicitudes</p>
                 </div>
@@ -118,7 +118,7 @@ export default function AdminCreditPurchasesPage() {
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${activeTab === tab ? 'bg-violet-500/15 border border-violet-500/35 text-violet-300' : 'bg-white/3 border border-[#E4E9F0] text-[#111827]/40 hover:text-[#111827]/70 hover:bg-white/8'}`}>
+                        className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${activeTab === tab ? 'bg-cyan-500/15 border border-cyan-500/35 text-cyan-300' : 'bg-white/3 border border-[#E4E9F0] text-[#111827]/40 hover:text-[#111827]/70 hover:bg-white/8'}`}>
                         {STATUS_LABEL[tab]}
                     </button>
                 ))}
@@ -127,7 +127,7 @@ export default function AdminCreditPurchasesPage() {
             {/* List */}
             {loading ? (
                 <div className="flex items-center justify-center py-20">
-                    <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-cyan-400 animate-spin" />
                 </div>
             ) : requests.length === 0 ? (
                 <div className="py-16 text-center rounded-2xl"
