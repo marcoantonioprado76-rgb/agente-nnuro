@@ -14,10 +14,10 @@
     --clr-border: rgba(255, 255, 255, 0.15);
     --clr-border-lg: rgba(255, 255, 255, 0.25);
 
-    --clr-accent: #D203DD;
-    --clr-accent-lt: #e855f0;
-    --clr-accent-bg: rgba(210, 3, 221, 0.14);
-    --clr-accent-bd: rgba(210, 3, 221, 0.30);
+    --clr-accent: #00E5D0;
+    --clr-accent-lt: #4dfae8;
+    --clr-accent-bg: rgba(0, 229, 208, 0.14);
+    --clr-accent-bd: rgba(0, 229, 208, 0.30);
 
     --clr-green: #22c55e;
     --clr-green-bg: rgba(34, 197, 94, 0.12);
@@ -683,10 +683,9 @@
 .sidebar {
     width: 256px;
     flex-shrink: 0;
-    background:
-        radial-gradient(circle at top left, rgba(255,9,108,0.12), transparent 26%),
-        linear-gradient(180deg, #071522 0%, #0B1B2B 55%, #050B14 100%);
-    border-right: 1px solid rgba(255,255,255,0.06);
+    /* Color sólido, un poco más oscuro que #283b48 (hacia #222831 de la paleta). */
+    background: #212e38;
+    border-right: 1px solid rgba(255,255,255,0.08);
     border-radius: 24px 0 0 0;
     flex-direction: column;
     position: sticky;
@@ -742,18 +741,39 @@
         transparent 100%
     );
 }
-.sidebar__logo::after { display: none; }
+/* sombra oscura suave detrás del logo (tono #222831 de la paleta) */
+.sidebar__logo::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 175px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center,
+        rgba(34,40,49,0.60) 0%,
+        rgba(34,40,49,0.30) 42%,
+        transparent 72%);
+    filter: blur(8px);
+    z-index: 0;
+    pointer-events: none;
+}
 
-/* logo oficial único (diamante plata + MY DIAMOND) */
+/* logo oficial de Agente NÜRO */
 .sidebar__logo-official {
-    width: 150px;
+    position: relative;
+    z-index: 1;
+    width: 132px;
     max-width: 100%;
     height: auto;
     display: block;
-    /* El PNG ya viene recortado (sin espacio transparente), así que no hacen
-       falta márgenes negativos: el logo se ve grande y nítido sin montarse. */
     margin: 6px auto;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.30));
+    /* sombra oscura con el tono #222831 de la paleta */
+    filter:
+        drop-shadow(0 5px 12px rgba(20,24,31,0.90))
+        drop-shadow(0 2px 5px rgba(34,40,49,0.75));
 }
 
 /* ── DIAMANTE ───────────────────────────────────────────── */
@@ -928,34 +948,54 @@
     letter-spacing: 0.01em;
 }
 
-/* Submenú desplegable (Servicios) */
+/* Encabezado de sección fijo (Servicios) — ya no es desplegable */
+.nav-section {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px 8px;
+    margin-top: 4px;
+}
+.nav-section__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.55);
+}
+.nav-section__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+}
+
+/* Submenú de Servicios (siempre visible) */
 .nav-sub {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    margin: 2px 0 4px;
+    gap: 4px;
+    margin: 0 0 6px;
     padding-left: 18px;
     position: relative;
-    animation: navSubIn 0.18s ease;
 }
-.nav-sub::before {
-    content: '';
-    position: absolute;
-    left: 20px;
-    top: 2px;
-    bottom: 6px;
-    width: 1px;
-    background: rgba(255,255,255,0.10);
-}
+.nav-sub--static { animation: none; }
+.nav-sub::before { display: none; }
 .nav-item--sub {
-    padding: 7px 12px;
-    font-size: 0.8rem;
+    padding: 9px 12px;
+    font-size: 0.83rem;
 }
 .nav-item--sub .nav-item__icon {
-    width: 26px;
-    height: 26px;
-    font-size: 0.68rem;
-    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    font-size: 0.74rem;
+    border-radius: 9px;
 }
 @keyframes navSubIn {
     from { opacity: 0; transform: translateY(-4px); }
@@ -975,32 +1015,70 @@
 
 .nav-item:hover {
     color: #fff;
-    background: linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%);
-    box-shadow: 0 10px 24px rgba(255,9,108,0.22);
+    background: rgba(10,24,31,0.45);
+    box-shadow: inset 0 0 0 1px rgba(0,229,208,0.30), 0 0 12px rgba(0,229,208,0.12);
 }
 
 .nav-item:hover .nav-item__icon {
-    background: rgba(255,255,255,0.18);
-    color: #fff;
+    background: rgba(0,229,208,0.14);
+    color: #00E5D0;
 }
 
+/* SELECCIONADO: tinte teal + ondas finas desde la derecha + borde + barra izquierda */
 .nav-item--active {
     color: #fff;
-    background: linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%);
-    box-shadow: 0 12px 28px rgba(255,9,108,0.28);
-    font-weight: 600;
+    overflow: hidden;
+    background:
+        repeating-radial-gradient(circle at 97% 50%, transparent 0 12px, rgba(0,229,208,0.10) 12px 13px),
+        linear-gradient(90deg, rgba(22,181,192,0.20) 0%, rgba(22,181,192,0.07) 58%, rgba(22,181,192,0.02) 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(22,181,192,0.50),
+        0 4px 16px rgba(0,0,0,0.22);
+    font-weight: 700;
 }
+.nav-item--active::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; top: 50%; transform: translateY(-50%);
+    width: 4px; height: 64%;
+    border-radius: 999px;
+    background: #16b5c0;
+    box-shadow: 0 0 10px rgba(22,181,192,0.75);
+    z-index: 2;
+}
+
+/* Onda viva (ripple): al seleccionar se expande, llena la pastilla y se detiene */
+.nav-item--active::after {
+    content: '';
+    position: absolute;
+    right: 14px; top: 50%;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,229,208,0.55);
+    transform: translate(50%, -50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    animation: navRipple 0.75s cubic-bezier(0.25,0.8,0.3,1) 0.05s 1 both;
+}
+@keyframes navRipple {
+    0%   { transform: translate(50%,-50%) scale(0);  opacity: 0.75; }
+    70%  { opacity: 0.35; }
+    100% { transform: translate(50%,-50%) scale(20); opacity: 0; }
+}
+/* el icono y el texto siempre por encima de la onda */
+.nav-item__icon, .nav-item__label { position: relative; z-index: 1; }
 
 .nav-item--active .nav-item__icon {
-    background: rgba(255,255,255,0.18);
-    color: #fff;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+    background: rgba(22,181,192,0.18);
+    color: #35d0c8;
+    box-shadow: inset 0 0 0 1px rgba(22,181,192,0.35);
 }
 
-/* el punto a la derecha del activo se ve mejor blanco sobre el gradiente */
 .nav-item--active .nav-item__dot {
-    background: #fff;
-    box-shadow: 0 0 8px rgba(255,255,255,0.7);
+    background: #16b5c0;
+    box-shadow: 0 0 8px rgba(22,181,192,0.7);
 }
 
 .nav-item--active .nav-item__dot {
@@ -1446,11 +1524,11 @@
    Pensado para las vistas con fondo claro perla.
 ════════════════════════════════════════════════════════════ */
 :root {
-    --dm-grad: linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%);
+    --dm-grad: linear-gradient(135deg, #30485a 0%, #26404f 52%, #1d3240 100%);
     --dm-silver: linear-gradient(135deg, #FFFFFF 0%, #E8EDF5 22%, #B8C0CC 45%, #F8FAFC 62%, #8F98A8 100%);
-    --dm-bg: radial-gradient(circle at top right, rgba(255,9,108,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%);
-    --dm-hero: radial-gradient(circle at 80% 40%, rgba(255,9,108,0.26), transparent 30%), linear-gradient(135deg, #081624 0%, #111A2E 52%, #070D17 100%);
-    --dm-sidebar: radial-gradient(circle at top left, rgba(255,9,108,0.12), transparent 26%), linear-gradient(180deg, #071522 0%, #0B1B2B 55%, #050B14 100%);
+    --dm-bg: radial-gradient(circle at top right, rgba(0,229,208,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%);
+    --dm-hero: radial-gradient(circle at 80% 40%, rgba(0,229,208,0.12), transparent 32%), linear-gradient(135deg, #2a4150 0%, #233c49 52%, #1b2e3a 100%);
+    --dm-sidebar: linear-gradient(180deg, #2a4150 0%, #26404f 55%, #1c2f3b 100%);
 }
 
 /* Fondo de página claro perla (las vistas migradas lo aplican en su wrapper) */
@@ -1482,7 +1560,7 @@
 /* Fondo de página premium — Nivel 1 (perla con profundidad de orbes rosa/azul) */
 .dm-page {
     background:
-        radial-gradient(circle at top right, rgba(255, 9, 108, 0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(0, 229, 208, 0.08), transparent 28%),
         radial-gradient(circle at bottom left, rgba(35, 59, 143, 0.08), transparent 30%),
         linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%);
     min-height: 100vh;
@@ -1491,12 +1569,22 @@
 
 .dm-card {
     background: #FFFFFF;
-    border: 1px solid #E4E9F0;
+    border: 1px solid #D7DEE8;
     border-radius: 22px;
-    box-shadow: 0 18px 45px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+    /* Sombras más marcadas para que las tarjetas blancas resalten sobre el fondo claro */
+    box-shadow:
+        0 1px 2px rgba(15,23,42,0.06),
+        0 6px 14px rgba(15,23,42,0.10),
+        0 20px 40px rgba(15,23,42,0.16);
     transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
-.dm-card--hover:hover { transform: translateY(-2px); box-shadow: 0 24px 54px rgba(15,23,42,0.11); }
+.dm-card--hover:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 2px 4px rgba(15,23,42,0.08),
+        0 10px 20px rgba(15,23,42,0.12),
+        0 28px 52px rgba(15,23,42,0.20);
+}
 
 /* Card destacada — línea superior 3px con gradiente diamante */
 .dm-card--feature { position: relative; overflow: hidden; }
@@ -1510,9 +1598,30 @@
 }
 
 /* Card oscura premium */
+
+/* Marmoleado #283b48 reutilizable (mismo del sidebar) */
+.dm-marble {
+    background-color: #283b48;
+    background-image:
+        url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'1400'%3E%3Cfilter%20id%3D'j'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.012'%20numOctaves%3D'5'%20seed%3D'7'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D'linear'%20slope%3D'0.9'%20intercept%3D'0'%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Crect%20width%3D'100%25'%20height%3D'100%25'%20filter%3D'url(%23j)'%2F%3E%3C%2Fsvg%3E"),
+        radial-gradient(130% 130% at 15% 15%, rgba(58,80,97,0.55) 0%, transparent 55%),
+        radial-gradient(130% 130% at 100% 100%, rgba(16,25,33,0.55) 0%, transparent 60%);
+    background-size: cover, 100% 100%, 100% 100%;
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-blend-mode: overlay, normal, normal;
+}
+
 .dm-card-dark {
-    background: var(--dm-hero);
-    border: 1px solid rgba(255,255,255,0.08);
+    /* Mismo #283b48 marmoleado del sidebar. */
+    background-color: #283b48;
+    background-image:
+        url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'1400'%3E%3Cfilter%20id%3D'j'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'0.012'%20numOctaves%3D'5'%20seed%3D'7'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3CfeComponentTransfer%3E%3CfeFuncA%20type%3D'linear'%20slope%3D'0.9'%20intercept%3D'0'%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Crect%20width%3D'100%25'%20height%3D'100%25'%20filter%3D'url(%23j)'%2F%3E%3C%2Fsvg%3E"),
+        radial-gradient(130% 130% at 15% 20%, rgba(58,80,97,0.55) 0%, transparent 55%),
+        radial-gradient(130% 130% at 100% 100%, rgba(16,25,33,0.55) 0%, transparent 60%);
+    background-size: cover, 100% 100%, 100% 100%;
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-blend-mode: overlay, normal, normal;
+    border: 1px solid rgba(255,255,255,0.10);
     border-radius: 24px;
     color: #FFFFFF;
     box-shadow: 0 24px 56px rgba(8,22,36,0.30);
@@ -1531,13 +1640,21 @@
 /* Botón gradiente principal */
 .dm-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    background: var(--dm-grad);
+    /* 2 capas: brillo glossy (sheen) arriba + base teal degradada = efecto 3D pastilla */
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.06) 44%, rgba(255,255,255,0) 55%),
+        linear-gradient(180deg, #3ddad2 0%, #17a0aa 58%, #0d7688 100%);
     color: #fff; font-weight: 700; font-family: 'Inter', sans-serif;
-    border: none; border-radius: 14px; padding: 12px 20px;
-    box-shadow: 0 14px 32px rgba(255,9,108,0.28);
-    transition: transform .18s ease, box-shadow .18s ease; cursor: pointer;
+    border: none; border-radius: 16px; padding: 13px 24px;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.32),
+        0 2px 5px rgba(0,0,0,0.22),
+        inset 0 1px 1px rgba(255,255,255,0.75),
+        inset 0 -5px 10px rgba(0,0,0,0.26);
+    transition: transform .12s ease, box-shadow .12s ease; cursor: pointer;
 }
-.dm-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 40px rgba(255,9,108,0.36); }
+.dm-btn:hover { transform: translateY(-1px); box-shadow: 0 15px 28px rgba(0,0,0,0.38), 0 2px 5px rgba(0,0,0,0.22), inset 0 1px 1px rgba(255,255,255,0.80), inset 0 -5px 10px rgba(0,0,0,0.26); }
+.dm-btn:active { transform: translateY(1px); box-shadow: 0 5px 12px rgba(0,0,0,0.30), inset 0 2px 6px rgba(0,0,0,0.30), inset 0 1px 1px rgba(255,255,255,0.4); }
 .dm-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
 /* Botón secundario oscuro */
@@ -1556,14 +1673,14 @@
     border: 1px solid #E4E9F0; border-radius: 14px; padding: 12px 20px;
     transition: border-color .18s ease, color .18s ease; cursor: pointer;
 }
-.dm-btn-ghost:hover { border-color: #FF096C; color: #FF096C; }
+.dm-btn-ghost:hover { border-color: #00E5D0; color: #00E5D0; }
 
 /* Ícono circular con gradiente */
 .dm-icon {
     width: 56px; height: 56px; border-radius: 999px;
     display: flex; align-items: center; justify-content: center;
     background: var(--dm-grad); color: #fff;
-    box-shadow: 0 14px 32px rgba(255,9,108,0.26);
+    box-shadow: 0 14px 32px rgba(0,229,208,0.26);
     flex-shrink: 0;
 }
 
@@ -1572,12 +1689,12 @@
     display: inline-flex; align-items: center; gap: 6px;
     background: var(--dm-grad); color: #fff;
     border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 700;
-    box-shadow: 0 12px 28px rgba(255,9,108,0.30);
+    box-shadow: 0 12px 28px rgba(0,229,208,0.30);
 }
 .dm-badge-soft {
     display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,9,108,0.08); color: #FF096C;
-    border: 1px solid rgba(255,9,108,0.18);
+    background: rgba(0,229,208,0.08); color: #00E5D0;
+    border: 1px solid rgba(0,229,208,0.18);
     border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;
 }
 
@@ -1588,13 +1705,13 @@
     font-family: 'Inter', sans-serif; transition: border-color .15s ease, box-shadow .15s ease;
 }
 .dm-input::placeholder { color: #9CA3AF; }
-.dm-input:focus { outline: none; border-color: #FF096C; box-shadow: 0 0 0 4px rgba(255,9,108,0.14); }
+.dm-input:focus { outline: none; border-color: #00E5D0; box-shadow: 0 0 0 4px rgba(0,229,208,0.14); }
 
 /* Barra de progreso */
 .dm-progress { height: 6px; background: #E5E7EB; border-radius: 999px; overflow: hidden; }
-.dm-progress > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #FF096C 0%, #B735B8 55%, #233B8F 100%); }
+.dm-progress > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #00E5D0 0%, #B735B8 55%, #233B8F 100%); }
 
 /* Tabs */
 .dm-tabs { display: inline-flex; gap: 4px; background: rgba(255,255,255,0.75); border: 1px solid #E4E9F0; border-radius: 18px; padding: 6px; }
 .dm-tab { color: #6B7280; border-radius: 14px; padding: 10px 16px; font-weight: 600; border: none; background: transparent; cursor: pointer; transition: all .15s ease; }
-.dm-tab--active { background: var(--dm-grad); color: #fff; box-shadow: 0 10px 24px rgba(255,9,108,0.22); }
+.dm-tab--active { background: var(--dm-grad); color: #fff; box-shadow: 0 10px 24px rgba(0,229,208,0.22); }

@@ -9,23 +9,24 @@ import NotificationBell from './NotificationBell'
 const FASE_GLOBAL_ONLY = ['/dashboard/academy', '/dashboard/recursos', '/dashboard/store']
 
 const serviceItems = [
-  { href: '/dashboard/services/ads/meta',      iconClass: 'fa-brands fa-meta',        label: 'Meta Ads',      grad: 'linear-gradient(145deg, #4f8dff, #1d4ed8)' },
+  { href: '/dashboard/services/ads/meta',      iconClass: 'fa-brands fa-meta',        label: 'Meta Ads',      grad: 'linear-gradient(145deg, #52707e, #3a5462)' },
   // { href: '/dashboard/services/ads/tiktok',    iconClass: 'fa-brands fa-tiktok',      label: 'TikTok Ads' }, // oculto temporalmente
   // { href: '/dashboard/services/ads/google',    iconClass: 'fa-brands fa-google',      label: 'Google Ads' }, // oculto temporalmente
-  { href: '/dashboard/services/whatsapp',      iconClass: 'fa-solid fa-robot',        label: 'Agentes de AI', grad: 'linear-gradient(145deg, #22d3ee, #0891b2)' },
-  { href: '/dashboard/services/social',        iconClass: 'fa-solid fa-share-nodes',  label: 'Social',        grad: 'linear-gradient(145deg, #c084fc, #9333ea)' },
-  { href: '/dashboard/services/landing-pages', iconClass: 'fa-solid fa-file-lines',   label: 'Landing',       grad: 'linear-gradient(145deg, #fbbf24, #d97706)' },
-  { href: '/dashboard/services/virtual-store', iconClass: 'fa-solid fa-shop',         label: 'Tienda',        grad: 'linear-gradient(145deg, #a3e635, #4d7c0f)' },
+  { href: '/dashboard/services/whatsapp',      iconClass: 'fa-solid fa-robot',        label: 'Agentes de AI', grad: 'linear-gradient(145deg, #52707e, #3a5462)' },
+  { href: '/dashboard/services/social',        iconClass: 'fa-solid fa-share-nodes',  label: 'Social',        grad: 'linear-gradient(145deg, #52707e, #3a5462)' },
+  { href: '/dashboard/services/landing-pages', iconClass: 'fa-solid fa-file-lines',   label: 'Landing',       grad: 'linear-gradient(145deg, #52707e, #3a5462)' },
+  { href: '/dashboard/services/virtual-store', iconClass: 'fa-solid fa-shop',         label: 'Tienda',        grad: 'linear-gradient(145deg, #52707e, #3a5462)' },
   // { href: '/dashboard/services/clipping',      iconClass: 'fa-solid fa-newspaper',    label: 'Clipping' }, // oculto temporalmente
-  { href: '/dashboard/crm',                    iconClass: 'fa-solid fa-users-gear',   label: 'CRM Broadcast', grad: 'linear-gradient(145deg, #fb923c, #ea580c)' },
+  { href: '/dashboard/crm',                    iconClass: 'fa-solid fa-users-gear',   label: 'CRM Broadcast', grad: 'linear-gradient(145deg, #52707e, #3a5462)' },
 ]
 
 const mobileNavItems = [
   { href: '/dashboard',         iconClass: 'fa-solid fa-house',        label: 'Inicio' },
   { href: '/dashboard/services',iconClass: 'fa-solid fa-th-large',     label: 'Servicios' },
-  { href: '/dashboard/academy', iconClass: 'fa-solid fa-graduation-cap', label: 'Academy' },
-  { href: '/dashboard/recursos',iconClass: 'fa-solid fa-wand-magic-sparkles', label: 'Recursos' },
-  { href: '/dashboard/store',   iconClass: 'fa-solid fa-ticket',       label: 'Eventos' },
+  // Academy, Recursos y Eventos ocultos del menú móvil de NÜRO (reversible).
+  // { href: '/dashboard/academy', iconClass: 'fa-solid fa-graduation-cap', label: 'Academy' },
+  // { href: '/dashboard/recursos',iconClass: 'fa-solid fa-wand-magic-sparkles', label: 'Recursos' },
+  // { href: '/dashboard/store',   iconClass: 'fa-solid fa-ticket',       label: 'Eventos' },
   { href: '/dashboard/settings',iconClass: 'fa-solid fa-gear',         label: 'Ajustes' },
 ]
 
@@ -37,9 +38,6 @@ async function logout() {
 export default function Navbar() {
   const pathname = usePathname()
   const isInAcademy  = pathname.startsWith('/dashboard/courses') || pathname.startsWith('/dashboard/podcasts') || pathname === '/dashboard/academy'
-  // Servicios abierto por defecto: que todos los servicios se vean en el sidebar
-  // (sobre todo para usuarios de pago, a los que se les ocultan Academy/Recursos/Shop).
-  const [servicesOpen, setServicesOpen] = useState(true)
   // Academy/Recursos/Shop: visibles para Fase Global o si el admin dio acceso manual.
   const [showExtras, setShowExtras] = useState(false)
   // "Mi Empresa": acceso al panel de admin de empresa (solo orgRole ORG_ADMIN).
@@ -68,7 +66,7 @@ export default function Navbar() {
       {/* ── SIDEBAR DESKTOP ── */}
       <aside className="sidebar hidden lg:flex" aria-label="Barra lateral">
         <Link href="/dashboard" className="sidebar__logo">
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" className="sidebar__logo-official" />
+          <img src="/logo-oficial-nuro.png" alt="Agente NÜRO" className="sidebar__logo-official" />
         </Link>
 
         {org && (
@@ -87,38 +85,31 @@ export default function Navbar() {
             <span className="nav-item__label">Inicio</span>
             <span className="nav-item__dot"></span>
           </Link>
-          {/* Servicios — desplegable */}
-          <button
-            type="button"
-            onClick={() => setServicesOpen(o => !o)}
-            aria-expanded={servicesOpen}
-            className={`nav-item ${pathname === '/dashboard/services' ? 'nav-item--active' : ''}`}
-            style={{ width: '100%', background: pathname === '/dashboard/services' ? undefined : 'none', border: 'none', cursor: 'pointer', font: 'inherit', textAlign: 'left' }}
-          >
-            <span className="nav-item__icon"><i className="fa-solid fa-th-large"></i></span>
-            <span className="nav-item__label">Servicios</span>
-            <i className="fa-solid fa-chevron-down" style={{ marginLeft: 'auto', fontSize: 11, opacity: 0.55, transition: 'transform .2s ease', transform: servicesOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}></i>
-          </button>
+          {/* Servicios — encabezado de sección fijo (sin desplegable) */}
+          <div className="nav-section">
+            <span className="nav-section__icon"><i className="fa-solid fa-th-large"></i></span>
+            <span className="nav-section__label">Servicios</span>
+          </div>
 
-          {servicesOpen && (
-            <div className="nav-sub">
-              {serviceItems.map(item => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href)
-                return (
-                  <Link key={item.href} href={item.href} className={`nav-item nav-item--sub ${isActive ? 'nav-item--active' : ''}`}>
-                    <span className="nav-item__icon" style={{
-                      color: '#fff', background: item.grad,
-                      boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.22), 0 3px 8px rgba(0,0,0,0.4)',
-                    }}><i className={item.iconClass}></i></span>
-                    <span className="nav-item__label">{item.label}</span>
-                    <span className="nav-item__dot"></span>
-                  </Link>
-                )
-              })}
-            </div>
-          )}
+          <div className="nav-sub nav-sub--static">
+            {serviceItems.map(item => {
+              const isActive = pathname === item.href || pathname.startsWith(item.href)
+              return (
+                <Link key={item.href} href={item.href} className={`nav-item nav-item--sub ${isActive ? 'nav-item--active' : ''}`}>
+                  <span className="nav-item__icon" style={{
+                    color: '#fff', background: item.grad,
+                    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.22), 0 3px 8px rgba(0,0,0,0.4)',
+                  }}><i className={item.iconClass}></i></span>
+                  <span className="nav-item__label">{item.label}</span>
+                  <span className="nav-item__dot"></span>
+                </Link>
+              )
+            })}
+          </div>
 
-          {showExtras && (
+          {/* Academy, Recursos y Eventos ocultos del sidebar de NÜRO (reversible:
+              descomentar este bloque para volver a mostrarlos a Fase Global). */}
+          {false && showExtras && (
             <>
               <Link href="/dashboard/academy" className={`nav-item ${isInAcademy ? 'nav-item--active' : ''}`}>
                 <span className="nav-item__icon"><i className="fa-solid fa-graduation-cap"></i></span>

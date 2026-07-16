@@ -15,6 +15,7 @@ interface DashboardData {
     rank?: string
     planExpiresAt?: string | null
   }
+  business?: { ingresos: number; leads: number; ventas: number }
 }
 
 const IMAGES = [
@@ -32,10 +33,10 @@ const SERVICES = [
   { href: '/dashboard/services/ads/google',    icon: 'fa-brands fa-google',        label: 'Google Ads',     desc: 'Search · Display · YT',  accent: '#FBBC04', hidden: true },
   { href: '/dashboard/services/social',        icon: 'fa-solid fa-circle-nodes',   label: 'Social',         desc: 'Todas tus redes',        accent: '#9B6BFF' },
   { href: '/dashboard/services/landing-pages', icon: 'fa-solid fa-layer-group',    label: 'Landing Pages',  desc: 'Páginas que venden',     accent: '#7B5BFF' },
-  { href: '/dashboard/services/whatsapp',      icon: 'fa-solid fa-robot',          label: 'Agentes de IA', desc: 'Venden 24/7',            accent: '#B735B8' },
+  { href: '/dashboard/services/whatsapp',      icon: 'fa-solid fa-robot',          label: 'Agentes de IA', desc: 'Venden 24/7',            accent: '#00E5D0' },
   { href: '/dashboard/services/virtual-store', icon: 'fa-solid fa-store',          label: 'Tienda Virtual', desc: 'Tu tienda online',       accent: '#3B82F6' },
   { href: '/dashboard/crm',                    icon: 'fa-solid fa-users-gear',     label: 'CRM Broadcast',  desc: 'Mensajes masivos',       accent: '#D203DD' },
-  { href: '/dashboard/academy',                icon: 'fa-solid fa-graduation-cap', label: 'Academy',        desc: 'Aprende y escala',       accent: '#8B5CF6' },
+  { href: '/dashboard/academy',                icon: 'fa-solid fa-graduation-cap', label: 'Academy',        desc: 'Aprende y escala',       accent: '#8B5CF6', hidden: true },
   { href: '/dashboard/services/clipping',      icon: 'fa-solid fa-newspaper',      label: 'Clipping',       desc: 'Gana por vistas',        accent: '#FF2D55', hidden: true },
 ]
 
@@ -113,7 +114,7 @@ export default function DashboardPage() {
       {/* ═══════════════════════════════════════════════════════════
            MOBILE VIEW
       ═══════════════════════════════════════════════════════════ */}
-      <div className="lg:hidden flex flex-col min-h-screen w-full font-ui" style={{ position: 'relative', background: 'radial-gradient(circle at top right, rgba(255,9,108,0.08), transparent 30%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 32%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', color: '#111827' }}>
+      <div className="lg:hidden flex flex-col min-h-screen w-full font-ui" style={{ position: 'relative', background: 'radial-gradient(circle at top right, rgba(0,229,208,0.08), transparent 30%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 32%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', color: '#111827' }}>
 
         {/* Cover Photo */}
         <div className="cover" id="cover">
@@ -146,7 +147,7 @@ export default function DashboardPage() {
             {data.user.fullName}
             <span className="u-pill u-pill--accent">{data.user.rank || 'PRO'}</span>
           </p>
-          <p className="profile__handle">@{data.user.username} · MY DIAMOND</p>
+          <p className="profile__handle">@{data.user.username} · NÜRO</p>
           <span className="u-pill u-pill--accent" style={{ marginTop: '4px', fontSize: '.74rem', padding: '5px 14px' }}>
             <span className="u-live-dot"></span>&nbsp;{data.user.rank || 'Plan'} · {data.user.isActive ? 'Activo' : 'Inactivo'}
           </span>
@@ -161,13 +162,13 @@ export default function DashboardPage() {
               width: '100%', padding: '12px 0', borderRadius: 12, textDecoration: 'none',
               fontWeight: 700, fontSize: 13, letterSpacing: '0.04em',
               background: data.user.rank && data.user.rank !== 'NONE'
-                ? 'rgba(255,9,108,0.08)'
-                : 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                ? 'rgba(0,229,208,0.08)'
+                : 'linear-gradient(135deg, #30485a 0%, #26404f 52%, #1d3240 100%)',
               border: data.user.rank && data.user.rank !== 'NONE'
-                ? '1px solid rgba(255,9,108,0.20)'
+                ? '1px solid rgba(0,229,208,0.20)'
                 : 'none',
-              boxShadow: data.user.rank && data.user.rank !== 'NONE' ? 'none' : '0 14px 30px rgba(255,9,108,0.26)',
-              color: data.user.rank && data.user.rank !== 'NONE' ? '#FF096C' : '#fff',
+              boxShadow: data.user.rank && data.user.rank !== 'NONE' ? 'none' : '0 14px 30px rgba(0,229,208,0.26)',
+              color: data.user.rank && data.user.rank !== 'NONE' ? '#00E5D0' : '#fff',
             }}
           >
             <i className={`fa-solid ${data.user.rank && data.user.rank !== 'NONE' ? 'fa-rotate' : 'fa-crown'}`}></i>
@@ -196,16 +197,16 @@ export default function DashboardPage() {
                   }}
                 >
                   {/* línea superior 3px con gradiente diamante */}
-                  <div style={{ position: 'absolute', top: 0, left: 16, right: 16, height: 3, borderRadius: 999, background: 'linear-gradient(90deg, #FF2D95, #B735B8, #233B8F)', pointerEvents: 'none' }} />
+                  <div style={{ position: 'absolute', top: 0, left: 16, right: 16, height: 3, borderRadius: 999, background: 'linear-gradient(90deg, #00E5D0, #26F5E2, #00C9B8)', pointerEvents: 'none' }} />
                   {/* halo suave detrás del icono */}
-                  <div style={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', width: 90, height: 60, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(255,9,108,0.18), transparent 72%)', filter: 'blur(12px)', pointerEvents: 'none' }} />
+                  <div style={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', width: 90, height: 60, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(0,229,208,0.18), transparent 72%)', filter: 'blur(12px)', pointerEvents: 'none' }} />
                   {/* icono diamante sobresaliendo desde arriba */}
                   <div className="svc-float" style={{
                     position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
                     width: 44, height: 44, borderRadius: 14,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
-                    boxShadow: '0 12px 26px -8px rgba(255,9,108,0.45), inset 0 1px 0 rgba(255,255,255,0.25)',
+                    background: 'linear-gradient(135deg, #30485a 0%, #26404f 52%, #1d3240 100%)',
+                    boxShadow: '0 12px 26px -8px rgba(0,229,208,0.45), inset 0 1px 0 rgba(255,255,255,0.25)',
                     fontSize: 17, color: '#fff',
                     WebkitFontSmoothing: 'antialiased',
                   }}>
@@ -221,33 +222,29 @@ export default function DashboardPage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-           DESKTOP VIEW — Premium light (MY DIAMOND)
+           DESKTOP VIEW — Premium light (NÜRO)
       ═══════════════════════════════════════════════════════════ */}
       <div className="hidden lg:flex w-full flex-1">
-        <main className="d-main font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(255,9,108,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', color: '#111827', minHeight: '100vh', gap: '24px' }}>
+        <main className="d-main font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(0,229,208,0.06), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.06), transparent 30%), linear-gradient(135deg, #DDE4EC 0%, #E6ECF3 45%, #D6DEE9 100%)', color: '#111827', minHeight: '100vh', gap: '24px' }}>
 
-          {/* ── COVER (carrusel) + PERFIL — layout referencia, colores diamante ── */}
+          {/* ── COVER (carrusel) + PERFIL ── */}
           <div style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', minHeight: 320, border: '1px solid #E4E9F0', boxShadow: '0 18px 45px rgba(15,23,42,0.10)' }}>
-            {/* slides del carrusel */}
             {IMAGES.map((img, i) => (
               <div key={i} style={{ position: 'absolute', inset: 0, backgroundImage: `url('${img}')`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: imgIdx === i ? 1 : 0, transition: 'opacity 1s ease' }} />
             ))}
-            {/* overlay tipo referencia: oscuro a la IZQUIERDA → transparente a la DERECHA, color del sidebar (navy, sin rosa) */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(5,11,20,0.95) 0%, rgba(7,21,34,0.82) 26%, rgba(11,27,43,0.35) 50%, rgba(7,21,34,0) 72%)' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 72%, rgba(5,11,20,0.45) 100%)' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(22,31,39,0.97) 0%, rgba(22,31,39,0.88) 26%, rgba(22,31,39,0.45) 50%, rgba(22,31,39,0) 72%)' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 68%, rgba(22,31,39,0.55) 100%)' }} />
 
-            {/* dots del carrusel (abajo-centro, como la referencia) */}
             <div style={{ position: 'absolute', bottom: 15, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 7, zIndex: 3 }}>
               {IMAGES.map((_, i) => (
-                <button key={i} onClick={() => setImgIdx(i)} aria-label={`Slide ${i + 1}`} style={{ width: imgIdx === i ? 24 : 8, height: 8, borderRadius: 999, border: 'none', cursor: 'pointer', padding: 0, background: imgIdx === i ? 'linear-gradient(90deg,#FF2D95,#B735B8,#233B8F)' : 'rgba(255,255,255,0.6)', transition: 'all .3s ease' }} />
+                <button key={i} onClick={() => setImgIdx(i)} aria-label={`Slide ${i + 1}`} style={{ width: imgIdx === i ? 24 : 8, height: 8, borderRadius: 999, border: 'none', cursor: 'pointer', padding: 0, background: imgIdx === i ? 'linear-gradient(90deg,#00E5D0,#26F5E2,#00C9B8)' : 'rgba(255,255,255,0.6)', transition: 'all .3s ease' }} />
               ))}
             </div>
 
-            {/* perfil sobre el banner (centro-izquierda, como la referencia) */}
             <div style={{ position: 'absolute', left: 34, top: '50%', transform: 'translateY(-50%)', zIndex: 3, display: 'flex', alignItems: 'center', gap: 22, maxWidth: '72%' }}>
               <label htmlFor="avatar-file-cover" style={{ cursor: uploading ? 'not-allowed' : 'pointer', position: 'relative', flexShrink: 0 }} title="Cambiar foto">
                 <input id="avatar-file-cover" type="file" accept="image/*" disabled={uploading} style={{ display: 'none' }} onChange={uploadAvatar} />
-                <div style={{ width: 104, height: 104, borderRadius: '50%', padding: 3, background: 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)', boxShadow: '0 14px 34px rgba(255,9,108,0.45)' }}>
+                <div style={{ width: 104, height: 104, borderRadius: '50%', padding: 3, background: 'linear-gradient(135deg,#00E5D0,#26F5E2,#00C9B8)', boxShadow: '0 14px 34px rgba(0,229,208,0.40)' }}>
                   <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', background: '#0B1B2B', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #fff' }}>
                     {data.user.avatarUrl
                       ? <img src={data.user.avatarUrl} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -258,7 +255,7 @@ export default function DashboardPage() {
               </label>
               <div style={{ minWidth: 0 }}>
                 <h1 style={{ margin: 0, fontSize: 'clamp(17px, 1.8vw, 24px)', fontWeight: 800, lineHeight: 1.1, color: '#fff', letterSpacing: '-0.01em', textShadow: '0 2px 18px rgba(0,0,0,0.6)' }}>{data.user.fullName}</h1>
-                <p style={{ margin: '7px 0 12px', fontSize: 14.5, fontWeight: 500, color: 'rgba(255,255,255,0.88)', textShadow: '0 1px 10px rgba(0,0,0,0.55)' }}>@{data.user.username} · MY DIAMOND</p>
+                <p style={{ margin: '7px 0 12px', fontSize: 14.5, fontWeight: 500, color: 'rgba(255,255,255,0.88)', textShadow: '0 1px 10px rgba(0,0,0,0.55)' }}>@{data.user.username} · NÜRO</p>
                 <Link href="/dashboard/planes" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '7px 15px', borderRadius: 999, border: '1px solid rgba(255,255,255,0.38)', background: 'rgba(8,22,36,0.42)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', color: '#fff', fontSize: 12.5, fontWeight: 700, letterSpacing: '0.02em', textDecoration: 'none', width: 'fit-content' }}>
                   <span style={{ width: 7, height: 7, borderRadius: '50%', background: data.user.isActive ? '#16A34A' : '#9CA3AF', boxShadow: data.user.isActive ? '0 0 8px rgba(22,163,74,0.9)' : 'none', flexShrink: 0 }} />
                   {data.user.rank || 'Plan'} · {data.user.isActive ? 'Activo' : 'Inactivo'}
@@ -273,12 +270,12 @@ export default function DashboardPage() {
             <div className="dm-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, padding: '22px 26px' }}>
               <div>
                 <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#6B7280' }}>
-                  <i className="fa-solid fa-clock" style={{ color: '#FF096C' }} />&nbsp; Plan {data.user.rank} · Vence en
+                  <i className="fa-solid fa-clock" style={{ color: '#00E5D0' }} />&nbsp; Plan {data.user.rank} · Vence en
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12 }}>
                   {[{ v: countdown?.d, l: 'Días' }, { v: countdown?.h, l: 'Horas' }, { v: countdown?.m, l: 'Min' }, { v: countdown?.s, l: 'Seg' }].map((u, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      {i > 0 && <span style={{ fontSize: 20, fontWeight: 700, color: '#B735B8', marginBottom: 16 }}>:</span>}
+                      {i > 0 && <span style={{ fontSize: 20, fontWeight: 700, color: '#00E5D0', marginBottom: 16 }}>:</span>}
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
                         <span className="font-display" style={{ fontSize: 30, fontWeight: 600, color: '#111827', background: '#F0F3F7', border: '1px solid #E4E9F0', borderRadius: 12, padding: '6px 14px', minWidth: 58, textAlign: 'center', lineHeight: 1 }}>{u.v !== undefined ? String(u.v).padStart(2, '0') : '00'}</span>
                         <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#9CA3AF' }}>{u.l}</span>
@@ -290,36 +287,83 @@ export default function DashboardPage() {
               <Link href="/dashboard/planes" className="dm-btn" style={{ textDecoration: 'none' }}><i className="fa-solid fa-rotate" /> Renovar Plan</Link>
             </div>
           ) : (
-            <div className="dm-card-dark" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, padding: 26 }}>
+            <div style={{ position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, padding: 26, borderRadius: 24, background: 'repeating-radial-gradient(circle at 62% 40%, transparent 0 21px, rgba(0,229,208,0.055) 21px 22px), linear-gradient(135deg, #273842 0%, #1d2a33 100%)', border: '1px solid rgba(0,181,192,0.22)', boxShadow: '0 18px 42px rgba(0,0,0,0.30)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div className="dm-icon" style={{ width: 50, height: 50 }}><i className="fa-solid fa-crown" style={{ fontSize: 20 }} /></div>
+                <div style={{ width: 52, height: 52, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1fb8bb, #147e95)', color: '#fff', boxShadow: '0 8px 20px rgba(0,181,192,0.40)', flexShrink: 0 }}><i className="fa-solid fa-crown" style={{ fontSize: 20 }} /></div>
                 <div>
                   <p className="font-display" style={{ fontSize: 22, fontWeight: 600, color: '#fff', margin: 0 }}>Lleva tu cuenta al siguiente nivel</p>
-                  <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.55)', margin: '4px 0 0' }}>Desbloquea acceso completo a todos los servicios MY DIAMOND.</p>
+                  <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.6)', margin: '4px 0 0' }}>Desbloquea acceso completo a todos los servicios NÜRO.</p>
                 </div>
               </div>
-              <Link href="/dashboard/planes" className="dm-btn" style={{ textDecoration: 'none', whiteSpace: 'nowrap' }}><i className="fa-solid fa-crown" /> Comprar Plan</Link>
+              <Link href="/dashboard/planes" style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '13px 24px', borderRadius: 16, background: 'linear-gradient(180deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.06) 44%, rgba(255,255,255,0) 55%), linear-gradient(180deg, #3ddad2 0%, #17a0aa 58%, #0d7688 100%)', color: '#fff', fontWeight: 700, fontSize: 14.5, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 10px 22px rgba(0,0,0,0.32), 0 2px 5px rgba(0,0,0,0.22), inset 0 1px 1px rgba(255,255,255,0.75), inset 0 -5px 10px rgba(0,0,0,0.26)' }}><i className="fa-solid fa-gem" /> Comprar Plan</Link>
             </div>
           )}
 
-          {/* ── SERVICIOS — cards claras premium ── */}
-          <section>
-            <h2 className="font-display" style={{ fontSize: 28, fontWeight: 600, color: '#111827', margin: 0 }}>Servicios</h2>
-            <p style={{ fontSize: 13.5, color: '#6B7280', margin: '4px 0 22px' }}>Gestiona tus herramientas digitales para crecer tu negocio.</p>
-            <div className="d-grid d-grid-4">
-              {SERVICES.filter(s => !s.hidden).map((s) => (
-                <Link key={s.href} href={s.href} className="dm-card dm-card--hover" style={{ padding: 22, display: 'flex', flexDirection: 'column', gap: 14, textDecoration: 'none', minHeight: 168 }}>
-                  <div style={{ width: 54, height: 54, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)`, color: '#fff', boxShadow: `0 12px 28px ${s.accent}3a`, fontSize: 20, flexShrink: 0 }}>
-                    <i className={s.icon} />
+          {/* ── PANEL RESUMEN (estadísticas + progreso + plan + servicios) ── */}
+          <section style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+
+            {/* Estadísticas — datos reales */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 18 }}>
+              {[
+                { label: 'Ingresos', value: '$' + (data.business?.ingresos ?? 0).toLocaleString('es-BO'), icon: 'fa-coins',        href: '/dashboard/services/virtual-store', link: 'Ver ingresos' },
+                { label: 'Leads',    value: (data.business?.leads ?? 0).toLocaleString('es-BO'),          icon: 'fa-user-group',    href: '/dashboard/crm',                    link: 'Ver leads' },
+                { label: 'Ventas',   value: (data.business?.ventas ?? 0).toLocaleString('es-BO'),         icon: 'fa-cart-shopping', href: '/dashboard/services/virtual-store', link: 'Ver ventas' },
+                { label: 'Tu Nivel', value: data.user.rank || 'FREE',                                     icon: 'fa-crown',         href: '/dashboard/planes',                 link: 'Ver beneficios' },
+              ].map(s => (
+                <div key={s.label} className="dm-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
+                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg,#2a3b45,#1a2730)', color: '#35d0c8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><i className={`fa-solid ${s.icon}`} /></div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ margin: 0, fontSize: 12.5, color: '#6B7280', fontWeight: 500 }}>{s.label}</p>
+                      <p className="font-display" style={{ margin: '2px 0 0', fontSize: 23, fontWeight: 700, color: '#111827', lineHeight: 1.05 }}>{s.value}</p>
+                    </div>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#111827' }}>{s.label}</p>
-                    <p style={{ margin: '4px 0 0', fontSize: 12.5, color: '#6B7280', lineHeight: 1.4 }}>{s.desc}</p>
-                  </div>
-                  <span style={{ fontSize: 12.5, fontWeight: 700, color: '#FF096C', display: 'inline-flex', alignItems: 'center', gap: 6 }}>Abrir servicio <i className="fa-solid fa-arrow-right" style={{ fontSize: 10 }} /></span>
-                </Link>
+                  <Link href={s.href} style={{ fontSize: 12.5, fontWeight: 700, color: '#0a95a8', display: 'inline-flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>{s.link} <i className="fa-solid fa-arrow-right" style={{ fontSize: 10 }} /></Link>
+                </div>
               ))}
             </div>
+
+            {/* Progreso + Plan — LADO A LADO */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 22, alignItems: 'stretch' }}>
+
+              {(() => {
+                const steps = [
+                  { label: 'Perfil creado',  done: true },
+                  { label: 'Plan activo',    done: !!(data.user.rank && data.user.rank !== 'NONE' && data.user.rank !== 'FREE') },
+                  { label: 'Primer lead',    done: (data.business?.leads ?? 0) > 0 },
+                  { label: 'Primera venta',  done: (data.business?.ventas ?? 0) > 0 },
+                ]
+                const pct = Math.round(steps.filter(s => s.done).length / steps.length * 100)
+                return (
+                  <div className="dm-card" style={{ padding: 24 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <h3 className="font-display" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#111827' }}>Tu progreso</h3>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: '#0a95a8' }}>{pct}%</span>
+                    </div>
+                    <div style={{ height: 8, borderRadius: 999, background: '#EAEEF3', margin: '14px 0 20px', overflow: 'hidden' }}>
+                      <div style={{ width: `${pct}%`, height: '100%', borderRadius: 999, background: 'linear-gradient(90deg,#1fb8bb,#147e95)' }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
+                      {steps.map(st => (
+                        <div key={st.label} style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
+                          <span style={{ width: 22, height: 22, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: st.done ? 'linear-gradient(135deg,#1fb8bb,#147e95)' : '#E4E9F0', color: st.done ? '#fff' : '#9CA3AF', fontSize: 10 }}><i className={`fa-solid ${st.done ? 'fa-check' : 'fa-minus'}`} /></span>
+                          <span style={{ fontSize: 14, color: st.done ? '#111827' : '#6B7280', fontWeight: st.done ? 600 : 500 }}>{st.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {/* Tarjeta ELITE oscura con ondas finas (como la referencia) */}
+              <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 24, padding: 26, display: 'flex', flexDirection: 'column', background: 'repeating-radial-gradient(circle at 90% 12%, transparent 0 17px, rgba(0,229,208,0.06) 17px 18px), linear-gradient(135deg,#273842 0%,#1a262f 100%)', border: '1px solid rgba(0,181,192,0.20)' }}>
+                <div style={{ width: 48, height: 48, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#1fb8bb,#147e95)', color: '#fff', fontSize: 19, marginBottom: 16, boxShadow: '0 8px 20px rgba(0,181,192,0.35)' }}><i className="fa-solid fa-crown" /></div>
+                <h3 className="font-display" style={{ margin: 0, fontSize: 21, fontWeight: 700, color: '#fff' }}>Aprovechá tu plan {data.user.rank || 'ELITE'}</h3>
+                <p style={{ margin: '8px 0 0', fontSize: 13.5, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, maxWidth: 340 }}>Accede a todas las herramientas, soporte y funciones avanzadas de NÜRO.</p>
+                <Link href="/dashboard/planes" style={{ marginTop: 'auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '13px 20px', borderRadius: 14, background: 'linear-gradient(180deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.06) 44%, rgba(255,255,255,0) 55%), linear-gradient(180deg,#3ddad2 0%,#17a0aa 58%,#0d7688 100%)', color: '#fff', fontWeight: 700, fontSize: 14.5, textDecoration: 'none', boxShadow: '0 10px 22px rgba(0,0,0,0.32), inset 0 1px 1px rgba(255,255,255,0.75), inset 0 -5px 10px rgba(0,0,0,0.26)' }}>Ver beneficios <i className="fa-solid fa-arrow-right" style={{ fontSize: 11 }} /></Link>
+              </div>
+            </div>
+
           </section>
 
         </main>

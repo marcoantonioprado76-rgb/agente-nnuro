@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
@@ -8,6 +9,23 @@ export async function GET() {
     if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const planLabel = (user as any).plan && (user as any).plan !== 'NONE' ? (user as any).plan : undefined
+
+    // Métricas reales del negocio (tarjeta de perfil del Inicio).
+    // leads = conversaciones; ventas = conversaciones marcadas como vendidas;
+    // ingresos = suma de pedidos de la tienda. Si algo falla → 0 (nunca rompe).
+    let leads = 0, ventas = 0, ingresos = 0
+    try {
+      const [leadCount, soldCount, orderSum] = await Promise.all([
+        prisma.conversation.count({ where: { bot: { userId: user.id } } }),
+        prisma.conversation.count({ where: { bot: { userId: user.id }, sold: true } }),
+        prisma.storeOrder.aggregate({ _sum: { totalPrice: true }, where: { userId: user.id } }),
+      ])
+      leads = leadCount
+      ventas = soldCount
+      ingresos = Number(orderSum._sum.totalPrice ?? 0)
+    } catch (e) {
+      console.error('[network] métricas negocio:', e instanceof Error ? e.message : e)
+    }
 
     return NextResponse.json({
       user: {
@@ -25,6 +43,7 @@ export async function GET() {
         createdAt: user.createdAt,
       },
       tree: [],
+      business: { ingresos, leads, ventas },
       stats: {
         directReferrals: 0,
         totalNetwork: 0,
