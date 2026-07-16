@@ -390,7 +390,7 @@ export default function AdminEntradasPage() {
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(110px,1fr))', gap: 8 }}>
                             {[
                               { label: 'Vendidas', value: String(stats.sold), color: '#22c55e' },
-                              { label: 'Ticket prom.', value: `$${(stats.ticketAvg ?? 0).toFixed(2)}`, color: '#a78bfa' },
+                              { label: 'Ticket prom.', value: `$${(stats.ticketAvg ?? 0).toFixed(2)}`, color: '#35d0c8' },
                               { label: 'Ingresaron', value: `${stats.checkedIn}/${stats.sold}`, color: '#3b82f6' },
                               { label: '🎁 Invitados', value: `${stats.guestsCheckedIn ?? 0}/${stats.guests ?? 0}`, color: '#16a34a' },
                               { label: 'Rechazadas', value: String(stats.rejected), color: '#f87171' },

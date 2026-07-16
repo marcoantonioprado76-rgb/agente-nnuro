@@ -314,7 +314,7 @@ function AdsDashboardInner() {
                             </p>
                         </div>
                         <span className="text-[10px] font-bold px-3 py-1.5 rounded-xl shrink-0"
-                            style={{ background: 'rgba(183,53,184,0.15)', border: '1px solid rgba(255,255,255,0.08)', color: '#c4b5fd' }}>
+                            style={{ background: 'rgba(183,53,184,0.15)', border: '1px solid rgba(255,255,255,0.08)', color: '#4dfae8' }}>
                             {hasOpenAI ? 'Reconfigurar' : 'Configurar'}
                         </span>
                     </Link>
@@ -409,7 +409,7 @@ function AdsDashboardInner() {
                                                     style={{
                                                         background: isConnected ? 'rgba(255,255,255,0.14)' : 'rgba(183,53,184,0.15)',
                                                         border: isConnected ? '1px solid rgba(255,255,255,0.22)' : '1px solid rgba(255,255,255,0.08)',
-                                                        color: isConnected ? '#fff' : '#c4b5fd'
+                                                        color: isConnected ? '#fff' : '#4dfae8'
                                                     }}>
                                                     {isConnected ? 'Reconf.' : '+ Conectar'}
                                                   </button>

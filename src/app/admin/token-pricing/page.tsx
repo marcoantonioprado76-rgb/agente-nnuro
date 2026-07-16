@@ -153,7 +153,7 @@ export default function TokenPricingAdmin() {
                   <p className="text-sm font-black text-[#111827] font-mono">{model}</p>
                   {overridden && (
                     <span className="text-[9px] font-black uppercase tracking-[0.15em] px-2 py-0.5 rounded-full"
-                      style={{ background: 'rgba(162,102,255,0.18)', border: '1px solid rgba(162,102,255,0.35)', color: '#c4b5fd' }}>
+                      style={{ background: 'rgba(162,102,255,0.18)', border: '1px solid rgba(162,102,255,0.35)', color: '#4dfae8' }}>
                       Custom
                     </span>
                   )}
@@ -198,7 +198,7 @@ export default function TokenPricingAdmin() {
           )}
           <button onClick={save} disabled={saving}
             className="ml-auto flex items-center gap-2 px-5 py-2 rounded-xl font-black text-sm uppercase tracking-[0.15em] transition-all disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #a78bfa 0%, #00E5D0 100%)', color: '#fff' }}>
+            style={{ background: 'linear-gradient(135deg, #35d0c8 0%, #00E5D0 100%)', color: '#fff' }}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Guardar
           </button>

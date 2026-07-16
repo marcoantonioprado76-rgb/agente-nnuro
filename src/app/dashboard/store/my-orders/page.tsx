@@ -29,7 +29,7 @@ const STATUS: Record<string, { label: string; color: string; bg: string; border:
   PENDING_VERIFICATION: { label: 'Verificando cripto',   color: '#F5A623', bg: 'rgba(245,166,35,0.1)',  border: 'rgba(245,166,35,0.3)',   icon: '⛓️' },
   APPROVED:             { label: 'Aprobado',             color: '#00FF88', bg: 'rgba(0,255,136,0.08)',  border: 'rgba(0,255,136,0.2)',    icon: '✓' },
   REJECTED:             { label: 'Rechazado',            color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)',   icon: '✕' },
-  SHIPPED:              { label: 'Enviado',              color: '#a78bfa', bg: 'rgba(167,139,250,0.1)', border: 'rgba(167,139,250,0.25)', icon: '🚚' },
+  SHIPPED:              { label: 'Enviado',              color: '#35d0c8', bg: 'rgba(0,229,208,0.1)', border: 'rgba(0,229,208,0.25)', icon: '🚚' },
   DELIVERED:            { label: 'Entregado',            color: '#00FF88', bg: 'rgba(0,255,136,0.1)',   border: 'rgba(0,255,136,0.25)',   icon: '📦' },
 }
 

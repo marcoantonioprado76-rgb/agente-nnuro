@@ -1861,7 +1861,7 @@ function CampaignPageInner() {
                         {configSaved && (
                             <button onClick={generateCopies} disabled={generatingCopies}
                                 className="w-full flex items-center justify-center gap-2 font-bold py-3.5 rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                                style={{ background: copiesGenerated ? 'rgba(183,53,184,0.12)' : 'linear-gradient(135deg,#147e95,#233B8F)', border: copiesGenerated ? '1px solid rgba(255,255,255,0.08)' : 'none', color: copiesGenerated ? '#c4b5fd' : '#fff', boxShadow: copiesGenerated ? 'none' : '0 0 24px rgba(183,53,184,0.25)' }}>
+                                style={{ background: copiesGenerated ? 'rgba(183,53,184,0.12)' : 'linear-gradient(135deg,#147e95,#233B8F)', border: copiesGenerated ? '1px solid rgba(255,255,255,0.08)' : 'none', color: copiesGenerated ? '#4dfae8' : '#fff', boxShadow: copiesGenerated ? 'none' : '0 0 24px rgba(183,53,184,0.25)' }}>
                                 {generatingCopies
                                     ? <><Loader2 size={15} className="animate-spin" /> Generando textos con IA...</>
                                     : copiesGenerated

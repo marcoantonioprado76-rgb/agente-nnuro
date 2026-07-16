@@ -387,7 +387,7 @@ export default function AdminStorePage() {
                           )}
                           {order.status === 'APPROVED' && (
                             <button onClick={() => doOrderAction(order.id, 'ship')} disabled={actionLoading === order.id}
-                              style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1px solid rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.07)', color: '#a78bfa' }}>
+                              style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1px solid rgba(0,229,208,0.3)', background: 'rgba(0,229,208,0.07)', color: '#35d0c8' }}>
                               🚚 Marcar enviado
                             </button>
                           )}

@@ -242,7 +242,7 @@ export default function CreditsPage() {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="w-10 h-10 border-2 rounded-full animate-spin"
-          style={{ borderColor: '#E4E9F0', borderTopColor: '#a78bfa' }} />
+          style={{ borderColor: '#E4E9F0', borderTopColor: '#35d0c8' }} />
       </div>
     )
   }
@@ -283,7 +283,7 @@ export default function CreditsPage() {
         <div className="absolute top-0 left-0 right-0 h-px"
           style={{ background: 'linear-gradient(90deg, transparent, rgba(162,102,255,0.5), transparent)' }} />
         <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-15"
-          style={{ background: 'radial-gradient(circle, #a78bfa, transparent)' }} />
+          style={{ background: 'radial-gradient(circle, #35d0c8, transparent)' }} />
 
         <div className="flex items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
@@ -586,7 +586,7 @@ export default function CreditsPage() {
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
-                      style={{ background: 'linear-gradient(135deg, #a78bfa, #60a5fa)', color: '#fff' }}>1</span>
+                      style={{ background: 'linear-gradient(135deg, #35d0c8, #60a5fa)', color: '#fff' }}>1</span>
                     <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.55)' }}>
                       Escanea el QR y paga
                     </label>
@@ -631,7 +631,7 @@ export default function CreditsPage() {
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
-                      style={{ background: 'linear-gradient(135deg, #a78bfa, #60a5fa)', color: '#fff' }}>2</span>
+                      style={{ background: 'linear-gradient(135deg, #35d0c8, #60a5fa)', color: '#fff' }}>2</span>
                     <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.55)' }}>
                       Subí el comprobante
                     </label>
@@ -699,7 +699,7 @@ export default function CreditsPage() {
                 disabled={submittingPurchase || uploadingProof || !buyProofUrl}
                 className="w-full py-3 rounded-xl font-black text-sm transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
-                  background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+                  background: 'linear-gradient(135deg, #35d0c8, #60a5fa)',
                   color: '#fff',
                   boxShadow: '0 10px 26px -10px rgba(162,102,255,0.55), inset 0 1px 0 #E4E9F0',
                   letterSpacing: '-0.01em',

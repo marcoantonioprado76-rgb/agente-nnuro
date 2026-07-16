@@ -814,7 +814,7 @@ export default function BuilderEditorPage() {
   function applyTheme(to: string) {
     const ed = editorRef.current
     if (!ed) return
-    const ACCENTS = ['#147e95', '#c4b5fd', '#8b5cf6', '#a855f7', '#7c3aed', '#1fb8bb', '#a78bfa', '#c4b5fd', '#f59e0b', '#f97316', '#fb923c', '#fbbf24', '#22c55e', '#10b981', '#4ade80', '#147e95', '#c4b5fd', '#ec4899', '#f43f5e']
+    const ACCENTS = ['#147e95', '#4dfae8', '#8b5cf6', '#a855f7', '#7c3aed', '#1fb8bb', '#35d0c8', '#4dfae8', '#f59e0b', '#f97316', '#fb923c', '#fbbf24', '#22c55e', '#10b981', '#4ade80', '#147e95', '#4dfae8', '#ec4899', '#f43f5e']
     try {
       let html = ed.getHtml(); let css = ed.getCss() || ''
       ACCENTS.forEach(a => { const re = new RegExp(a, 'gi'); html = html.replace(re, to); css = css.replace(re, to) })
@@ -1021,7 +1021,7 @@ export default function BuilderEditorPage() {
   // Fila de animaciones: cada opción es una clase fx-*. La activa se resalta. ✖ = quitar.
   const AnimRow = (current: string, opts: [string, string, string][]) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', borderRadius: 9, padding: '3px 5px' }}>
-      <span style={{ color: '#c4b5fd', fontSize: 12, fontWeight: 800, padding: '0 3px' }}>✨</span>
+      <span style={{ color: '#4dfae8', fontSize: 12, fontWeight: 800, padding: '0 3px' }}>✨</span>
       {opts.map(([cls, ic, tip]) => (
         <button key={cls} title={tip} onClick={() => applyAnim(current === cls ? '' : cls)}
           style={{ background: current === cls ? 'rgba(139,92,246,.4)' : 'transparent', border: '1px solid ' + (current === cls ? 'rgba(139,92,246,.6)' : 'transparent'), color: '#fff', fontSize: 14, width: 30, height: 28, borderRadius: 7, cursor: 'pointer' }}>{ic}</button>
@@ -1097,7 +1097,7 @@ export default function BuilderEditorPage() {
           <p className="bld-hint" style={{ color: '#64748b', fontSize: 11, margin: 0 }}>Tocá un texto para cambiar tamaño/estilo · doble clic para escribir · 📱/💻 arriba a la derecha</p>
         </div>
         <button onClick={() => setShowBlocks(v => !v)} disabled={loading}
-          style={{ background: showBlocks ? 'rgba(183,53,184,0.35)' : 'rgba(183,53,184,0.15)', border: '1px solid rgba(183,53,184,0.4)', color: '#c4b5fd', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>➕ Elementos</button>
+          style={{ background: showBlocks ? 'rgba(183,53,184,0.35)' : 'rgba(183,53,184,0.15)', border: '1px solid rgba(183,53,184,0.4)', color: '#4dfae8', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>➕ Elementos</button>
         <button onClick={() => setShowFill(true)} disabled={loading} title="Rellenar esta plantilla con tu negocio"
           style={{ background: 'linear-gradient(135deg,#f59e0b,#ec4899,#8b5cf6)', border: 'none', color: '#fff', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>🪄 Rellenar IA</button>
         <button onClick={() => setShowAI(true)} disabled={loading} title="Generar una landing nueva desde cero"
@@ -1105,7 +1105,7 @@ export default function BuilderEditorPage() {
         <button onClick={() => setShowTemplates(true)} disabled={loading}
           style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#cbd5e1', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>📄 Plantillas</button>
         <button onClick={() => setShowColors(true)} disabled={loading}
-          style={{ background: 'rgba(139,92,246,0.14)', border: '1px solid rgba(139,92,246,0.35)', color: '#c4b5fd', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>🎨 Color</button>
+          style={{ background: 'rgba(139,92,246,0.14)', border: '1px solid rgba(139,92,246,0.35)', color: '#4dfae8', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>🎨 Color</button>
         <button onClick={openLeads} disabled={loading}
           style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>📥 Leads</button>
         {page?.published && (
@@ -1142,7 +1142,7 @@ export default function BuilderEditorPage() {
       {/* Barra de TEXTO (aparece al tocar un título/párrafo/botón): tamaño, estilo, color */}
       {textTools && !previewMode && (
         <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(183,53,184,.6)', borderRadius: 12, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ color: '#c4b5fd', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>Aa Texto</span>
+          <span style={{ color: '#4dfae8', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>Aa Texto</span>
           {/* Tamaño */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', borderRadius: 9, padding: '2px 4px' }}>
             <button title="Más chico" onClick={() => applyTextStyle({ 'font-size': Math.max(8, textTools.size - 2) + 'px' })}
@@ -1224,9 +1224,9 @@ export default function BuilderEditorPage() {
       {/* Barra de IMAGEN (aparece al tocar una foto): ancho, esquinas, sombra, borde */}
       {imgTools && !previewMode && (
         <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(183,53,184,.5)', borderRadius: 12, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ color: '#c4b5fd', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>🖼️ Imagen</span>
+          <span style={{ color: '#4dfae8', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>🖼️ Imagen</span>
           <button title="Cambiar / subir foto" onClick={pickImage}
-            style={{ background: 'rgba(183,53,184,.15)', border: '1px solid rgba(183,53,184,.4)', color: '#c4b5fd', fontWeight: 800, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>🖼️ Cambiar</button>
+            style={{ background: 'rgba(183,53,184,.15)', border: '1px solid rgba(183,53,184,.4)', color: '#4dfae8', fontWeight: 800, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>🖼️ Cambiar</button>
           <button title="Duplicar (añadir otra foto al riel)" onClick={dupImage}
             style={{ background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#cbd5e1', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>➕ Foto</button>
           {Stepper('Ancho %', imgTools.widthPct, 10, 100, 5, n => applyImgStyle({ width: n + '%', height: 'auto' }))}
@@ -1295,7 +1295,7 @@ export default function BuilderEditorPage() {
           {/* Campos de formulario — solo cuando la sección seleccionada ES un <form> */}
           {boxTools.isForm && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 3, background: '#0b0f1a', border: '1px solid rgba(183,53,184,.4)', borderRadius: 9, padding: '3px 5px' }}>
-              <span style={{ color: '#c4b5fd', fontSize: 12, fontWeight: 800, padding: '0 3px' }}>📋</span>
+              <span style={{ color: '#4dfae8', fontSize: 12, fontWeight: 800, padding: '0 3px' }}>📋</span>
               {([['Campo', NEW_FLD_TEXT], ['Email', NEW_FLD_EMAIL], ['WhatsApp', NEW_FLD_PHONE], ['Mensaje', NEW_FLD_MSG], ['Enviar', NEW_FLD_SUBMIT]] as [string, string][]).map(([lbl, html]) => (
                 <button key={lbl} title={`Agregar ${lbl}`} onClick={() => addInside(html)}
                   style={{ background: 'transparent', border: 'none', color: '#cbd5e1', fontSize: 12, fontWeight: 700, padding: '5px 7px', borderRadius: 7, cursor: 'pointer', whiteSpace: 'nowrap' }}>{lbl}</button>

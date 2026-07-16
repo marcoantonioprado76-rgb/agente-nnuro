@@ -320,7 +320,7 @@ export default function AdminAICreditsPage() {
             <div className="flex gap-2 pt-1">
               <button onClick={saveCosts} disabled={savingCosts || !costs}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold disabled:opacity-40 transition-all"
-                style={{ background: 'rgba(162,102,255,0.2)', border: '1px solid rgba(162,102,255,0.4)', color: '#a78bfa' }}>
+                style={{ background: 'rgba(162,102,255,0.2)', border: '1px solid rgba(162,102,255,0.4)', color: '#35d0c8' }}>
                 {savingCosts ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
                 Guardar costos
               </button>
@@ -427,7 +427,7 @@ export default function AdminAICreditsPage() {
                           style={{
                             background: creditMode === m.value ? 'rgba(162,102,255,0.2)' : 'rgba(255,255,255,0.04)',
                             border: `1px solid ${creditMode === m.value ? 'rgba(162,102,255,0.4)' : '#E4E9F0'}`,
-                            color: creditMode === m.value ? '#a78bfa' : '#6B7280',
+                            color: creditMode === m.value ? '#35d0c8' : '#6B7280',
                           }}>
                           <m.icon style={{ width: 11, height: 11 }} />
                           {m.label}
@@ -451,7 +451,7 @@ export default function AdminAICreditsPage() {
                       </div>
                       <button onClick={() => assignCredits(u.id)} disabled={savingCredits || !creditInput}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold disabled:opacity-40"
-                        style={{ background: 'rgba(162,102,255,0.2)', border: '1px solid rgba(162,102,255,0.4)', color: '#a78bfa' }}>
+                        style={{ background: 'rgba(162,102,255,0.2)', border: '1px solid rgba(162,102,255,0.4)', color: '#35d0c8' }}>
                         {savingCredits ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
                         Guardar
                       </button>

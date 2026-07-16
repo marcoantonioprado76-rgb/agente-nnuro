@@ -176,7 +176,7 @@ export default function AdminBotTemplatesPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 5 }}>
                   <span style={{ fontWeight: 700, color: '#fff', fontSize: 14 }}>{t.name}</span>
                   {t.category && <span style={{ fontSize: 11, color: '#6B7280', background: '#F0F3F7', padding: '2px 8px', borderRadius: 5 }}>{t.category}</span>}
-                  <span style={{ fontSize: 10, fontWeight: 700, color: '#a78bfa', background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.2)', padding: '2px 7px', borderRadius: 5 }}>{t.aiModel}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: '#35d0c8', background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.2)', padding: '2px 7px', borderRadius: 5 }}>{t.aiModel}</span>
                   <button
                     onClick={() => toggleActive(t)}
                     style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, border: '1px solid', cursor: 'pointer', background: 'none',

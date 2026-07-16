@@ -324,7 +324,7 @@ export default function CountryMapSelector({ selected, onChange }: Props) {
                                             style={{
                                                 default: { fill: isSel ? '#147e95' : '#212e38', stroke: '#1a262f', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
                                                 hover: { fill: isSel ? '#147e95' : '#102A55', stroke: '#1a262f', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
-                                                pressed: { fill: '#5b21b6', outline: 'none' }
+                                                pressed: { fill: '#147e95', outline: 'none' }
                                             }}
                                         />
                                     )

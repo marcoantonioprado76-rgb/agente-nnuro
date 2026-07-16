@@ -25,7 +25,7 @@ const PLAN_PRICES = [
     color: 'text-purple-400',
     border: 'border-purple-500/25',
     bg: 'bg-purple-500/5',
-    dot: '#a78bfa',
+    dot: '#35d0c8',
   },
   {
     key: 'PRICE_ELITE',
@@ -56,7 +56,7 @@ const PLAN_CREDITS_BOTS = [
     botsDefault: '4',
     label: 'Pack Pro',
     color: 'text-purple-400',
-    dot: '#a78bfa',
+    dot: '#35d0c8',
   },
   {
     creditsKey: 'PLAN_ELITE_CREDITS',
@@ -81,7 +81,7 @@ const PLAN_TOGGLES = [
     key: 'PLAN_PRO_ENABLED',
     label: 'Pack Pro',
     desc: 'Si está desactivado, el Pack Pro no aparece en la tienda.',
-    dot: '#a78bfa',
+    dot: '#35d0c8',
   },
   {
     key: 'PLAN_ELITE_ENABLED',

@@ -511,9 +511,9 @@ export default function PublicTicketPage() {
                 {/* MONTO A PAGAR en la moneda del método elegido (destacado). */}
                 <div className="p-4 rounded-2xl border text-center" style={{
                   background: payMethod === 'CRYPTO' ? '#FFFBEB' : '#F5F3FF',
-                  borderColor: payMethod === 'CRYPTO' ? '#FCD34D' : '#C4B5FD',
+                  borderColor: payMethod === 'CRYPTO' ? '#FCD34D' : '#4dfae8',
                 }}>
-                  <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: payMethod === 'CRYPTO' ? '#92400E' : '#5B21B6' }}>
+                  <p className="text-[11px] font-black uppercase tracking-widest" style={{ color: payMethod === 'CRYPTO' ? '#92400E' : '#147e95' }}>
                     Monto a pagar
                   </p>
                   {payMethod === 'MANUAL' ? (

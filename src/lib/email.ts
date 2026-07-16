@@ -818,7 +818,7 @@ export async function sendAdminCreditAutoActivatedEmail(payload: {
   const triggerText = triggerLabel[payload.trigger] ?? 'Verificado on-chain'
 
   const content = `
-    <p style="color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">✓ Saldo IA acreditado · USDT verificado</p>
+    <p style="color:#35d0c8;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">✓ Saldo IA acreditado · USDT verificado</p>
 
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 6px;letter-spacing:-0.3px;line-height:1.3;">
       ${payload.user.fullName} cargó +$${payload.amountUsd.toFixed(2)} USD
@@ -832,7 +832,7 @@ export async function sendAdminCreditAutoActivatedEmail(payload: {
       <tr>
         <td style="background:rgba(162,102,255,0.08);border:1px solid rgba(162,102,255,0.25);border-radius:12px;padding:16px 20px;">
           <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 4px;">Solicitud</p>
-          <p style="color:#a78bfa;font-size:20px;font-weight:900;letter-spacing:5px;margin:0 0 6px;font-family:'Courier New',monospace;">#${shortId}</p>
+          <p style="color:#35d0c8;font-size:20px;font-weight:900;letter-spacing:5px;margin:0 0 6px;font-family:'Courier New',monospace;">#${shortId}</p>
           <p style="color:#6B7280;font-size:11px;margin:0;">${dateStr}</p>
         </td>
       </tr>
@@ -921,7 +921,7 @@ export async function sendAdminCreditAutoActivatedEmail(payload: {
       from: `"MY DIAMOND · Admin" <${process.env.GMAIL_USER}>`,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `✓ Saldo IA acreditado · +$${payload.amountUsd.toFixed(2)} USD · ${payload.user.fullName}`,
-      html: emailWrapper(content, '#a78bfa'),
+      html: emailWrapper(content, '#35d0c8'),
     })
     console.log(`[EMAIL] Admin credit auto-activated notif sent (${payload.trigger}) for ${payload.user.email} → ${ADMIN_NOTIFICATION_EMAIL}`)
     return true
@@ -974,7 +974,7 @@ export async function sendAdminNewCreditPurchaseEmail(payload: {
   const newBalance = payload.user.aiBalanceUsd + payload.amountUsd
 
   const content = `
-    <p style="color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">💼 Compra de saldo IA · Pendiente</p>
+    <p style="color:#35d0c8;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">💼 Compra de saldo IA · Pendiente</p>
 
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 6px;letter-spacing:-0.3px;line-height:1.3;">
       ${payload.user.fullName} solicita +$${payload.amountUsd.toFixed(2)} USD
@@ -988,7 +988,7 @@ export async function sendAdminNewCreditPurchaseEmail(payload: {
       <tr>
         <td style="background:rgba(162,102,255,0.08);border:1px solid rgba(162,102,255,0.25);border-radius:12px;padding:16px 20px;">
           <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 4px;">Solicitud</p>
-          <p style="color:#a78bfa;font-size:20px;font-weight:900;letter-spacing:5px;margin:0 0 6px;font-family:'Courier New',monospace;">#${shortId}</p>
+          <p style="color:#35d0c8;font-size:20px;font-weight:900;letter-spacing:5px;margin:0 0 6px;font-family:'Courier New',monospace;">#${shortId}</p>
           <p style="color:#6B7280;font-size:11px;margin:0;">${dateStr}</p>
         </td>
       </tr>
@@ -1070,7 +1070,7 @@ export async function sendAdminNewCreditPurchaseEmail(payload: {
       from: `"MY DIAMOND · Admin" <${process.env.GMAIL_USER}>`,
       to: ADMIN_NOTIFICATION_EMAIL,
       subject: `💼 Nueva compra de saldo IA · +$${payload.amountUsd.toFixed(2)} · ${payload.user.fullName}`,
-      html: emailWrapper(content, '#a78bfa'),
+      html: emailWrapper(content, '#35d0c8'),
     })
     console.log(`[EMAIL] Admin credit purchase notif sent for ${payload.user.email} → ${ADMIN_NOTIFICATION_EMAIL}`)
     return true

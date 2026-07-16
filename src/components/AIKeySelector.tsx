@@ -58,7 +58,7 @@ export default function AIKeySelector({ onChange, compact = false }: Props) {
     ? `Admin AI · $${config.aiBalanceUsd.toFixed(2)}`
     : 'Sin key configurada'
 
-  const dotColor = usingOwn ? '#60a5fa' : lowBalance ? '#f59e0b' : usingAdmin ? '#a78bfa' : '#ef4444'
+  const dotColor = usingOwn ? '#60a5fa' : lowBalance ? '#f59e0b' : usingAdmin ? '#35d0c8' : '#ef4444'
 
   return (
     <div className="relative inline-block shrink-0 max-w-full">
@@ -120,7 +120,7 @@ export default function AIKeySelector({ onChange, compact = false }: Props) {
               }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: 'rgba(162,102,255,0.15)', border: '1px solid rgba(162,102,255,0.3)' }}>
-                <ShieldCheck style={{ width: 13, height: 13, color: '#a78bfa' }} />
+                <ShieldCheck style={{ width: 13, height: 13, color: '#35d0c8' }} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-white">Key del Admin</p>

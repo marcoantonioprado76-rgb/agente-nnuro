@@ -430,7 +430,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
               <stop offset="100%" stopColor="#6A35D9" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="gc-sales-line" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%"   stopColor="#A78BFA" />
+              <stop offset="0%"   stopColor="#35d0c8" />
               <stop offset="100%" stopColor="#6A35D9" />
             </linearGradient>
             <filter id="gc-glow-conv" x="-30%" y="-30%" width="160%" height="160%">
@@ -4099,9 +4099,9 @@ export default function WhatsAppPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
               {([
                 { Icon: Plus,        title: 'Crea el agente',         desc: 'Nombre + URL webhook.',  c: '#C9A7FF' },
-                { Icon: Key,         title: 'Configura credenciales', desc: 'API keys YCloud / OpenAI.', c: '#A78BFA' },
+                { Icon: Key,         title: 'Configura credenciales', desc: 'API keys YCloud / OpenAI.', c: '#35d0c8' },
                 { Icon: ShoppingBag, title: 'Agrega productos',       desc: 'Base de conocimiento.',  c: '#7DD3FC' },
-                { Icon: Webhook,     title: 'Conecta YCloud',         desc: 'Apunta el webhook.',     c: '#A78BFA' },
+                { Icon: Webhook,     title: 'Conecta YCloud',         desc: 'Apunta el webhook.',     c: '#35d0c8' },
               ] as const).map((step, i) => (
                 <div key={i} className="flex items-center gap-2.5 rounded-xl px-3 py-2 transition-colors"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
