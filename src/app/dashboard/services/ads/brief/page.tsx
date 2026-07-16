@@ -32,7 +32,7 @@ const emptyBrief: BriefForm = {
 
 const Loader = () => (
     <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-[#E4E9F0] border-t-[#B735B8] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#E4E9F0] border-t-[#147e95] rounded-full animate-spin" />
     </div>
 )
 
@@ -239,7 +239,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
             {!brief ? (
                 <>
                     {/* PASO 1 — Categoría del negocio (arriba de todo, obligatoria) */}
-                    <p className="text-[11px] font-bold text-[#B735B8] mb-2.5 flex items-center gap-1.5">
+                    <p className="text-[11px] font-bold text-[#147e95] mb-2.5 flex items-center gap-1.5">
                         <Sparkles size={12} /> Describí tu negocio
                         <span className="text-white/25 font-normal">— la IA detecta el rubro automáticamente</span>
                     </p>
@@ -312,7 +312,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
                             {!audioBlob ? (
                                 <div className="flex flex-col items-center gap-6">
                                     <button onClick={recording ? stopRecording : startRecording}
-                                        className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all ${recording ? 'bg-[#F87171] shadow-[0_0_60px_rgba(239,68,68,0.5)]' : 'bg-[#B735B8] shadow-[0_0_60px_rgba(183,53,184,0.4)]'}`}>
+                                        className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all ${recording ? 'bg-[#F87171] shadow-[0_0_60px_rgba(239,68,68,0.5)]' : 'bg-[#147e95] shadow-[0_0_60px_rgba(183,53,184,0.4)]'}`}>
                                         {recording && <span className="absolute inset-0 rounded-full bg-[#F87171] animate-ping opacity-25" />}
                                         {recording ? <Square size={32} className="text-white" /> : <Mic size={32} className="text-white" />}
                                     </button>
@@ -329,7 +329,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
                                         <button onClick={() => { setAudioBlob(null); setRecordingTime(0) }} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-all flex items-center gap-2">
                                             <RefreshCw size={14} /> Volver a grabar
                                         </button>
-                                        <button onClick={transcribeAudio} disabled={transcribing} className="px-6 py-2 rounded-xl bg-[#B735B8] text-white text-sm font-bold hover:bg-[#B735B8] disabled:opacity-50 transition-all flex items-center gap-2">
+                                        <button onClick={transcribeAudio} disabled={transcribing} className="px-6 py-2 rounded-xl bg-[#147e95] text-white text-sm font-bold hover:bg-[#147e95] disabled:opacity-50 transition-all flex items-center gap-2">
                                             {transcribing ? <><Loader2 size={14} className="animate-spin" /> Transcribiendo...</> : <><Sparkles size={14} /> Transcribir</>}
                                         </button>
                                     </div>
@@ -352,12 +352,12 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
                     {/* Lo nuevo que generó la IA según la categoría (orientado a los anuncios) */}
                     {(() => { const b = brief as any; const cat = AD_CATEGORIES.find(c => c.id === b.category); return (
                         <div className="p-4 rounded-2xl space-y-3" style={{ background: 'rgba(183,53,184,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                            <p className="text-[11px] font-bold text-[#B735B8] flex items-center gap-1.5">
+                            <p className="text-[11px] font-bold text-[#147e95] flex items-center gap-1.5">
                                 <Sparkles size={12} /> Enfoque del anuncio {cat && <span className="text-white/30 font-normal">· {cat.emoji} {cat.label}</span>}
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
                                 {Array.isArray(b.benefits) && b.benefits.length > 0 && (
-                                    <div><p className="text-white/30 font-bold uppercase mb-1">Beneficios</p><ul className="space-y-0.5">{b.benefits.map((x: string, i: number) => <li key={i} className="text-white/60 flex gap-1.5"><span className="text-[#B735B8]">✓</span>{x}</li>)}</ul></div>
+                                    <div><p className="text-white/30 font-bold uppercase mb-1">Beneficios</p><ul className="space-y-0.5">{b.benefits.map((x: string, i: number) => <li key={i} className="text-white/60 flex gap-1.5"><span className="text-[#147e95]">✓</span>{x}</li>)}</ul></div>
                                 )}
                                 {Array.isArray(b.adConcepts) && b.adConcepts.length > 0 && (
                                     <div><p className="text-white/30 font-bold uppercase mb-1">Conceptos visuales</p><ul className="space-y-0.5">{b.adConcepts.map((x: string, i: number) => <li key={i} className="text-white/60 flex gap-1.5"><span className="text-[#4C97D8]">▸</span>{x}</li>)}</ul></div>
@@ -381,7 +381,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
                         <button onClick={onCancel} className="flex-1 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-all">
                             Cancelar
                         </button>
-                        <button onClick={saveBrief} disabled={saving} className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+                        <button onClick={saveBrief} disabled={saving} className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
                             {saving ? <><Loader2 size={16} className="animate-spin" /> Guardando...</> : <><Save size={16} /> Guardar Negocio</>}
                         </button>
                     </div>
@@ -428,7 +428,7 @@ function EditBriefView({ brief, onSaved, onCancel }: { brief: Brief; onSaved: (b
             <EditBriefForm brief={form} onChange={setForm} />
             <div className="flex gap-3 mt-6">
                 <button onClick={onCancel} className="flex-1 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-all">Cancelar</button>
-                <button onClick={save} disabled={saving} className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+                <button onClick={save} disabled={saving} className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
                     {saving ? <><Loader2 size={16} className="animate-spin" /> Guardando...</> : <><Save size={16} /> Guardar Cambios</>}
                 </button>
             </div>
@@ -460,7 +460,7 @@ function EditBriefForm({ brief, onChange }: { brief: BriefForm; onChange: (b: Br
                 <TagList label="Puntos de Dolor" items={brief.painPoints} onChange={v => onChange({ ...brief, painPoints: v })} placeholder="Ej: Dificultad para bajar de peso..." />
                 <TagList label="Intereses" items={brief.interests} onChange={v => onChange({ ...brief, interests: v })} placeholder="Ej: Salud y bienestar..." />
                 <div>
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest block mb-2">Ubicaciones <span className="text-[#B735B8]/60 font-normal lowercase">· detectadas por IA, podés ajustarlas</span></label>
+                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest block mb-2">Ubicaciones <span className="text-[#147e95]/60 font-normal lowercase">· detectadas por IA, podés ajustarlas</span></label>
                     <LocationSelector selected={brief.targetLocations || []} onChange={v => onChange({ ...brief, targetLocations: v })} platform="meta" />
                 </div>
             </Section>
@@ -475,7 +475,7 @@ function EditBriefForm({ brief, onChange }: { brief: BriefForm; onChange: (b: Br
             {((brief as any).category || (brief as any).benefits || (brief as any).adConcepts) && (
                 <Section title="Enfoque del Anuncio (IA)">
                     <div>
-                        <label className="text-xs font-bold text-white/40 uppercase tracking-widest block mb-2">Categoría <span className="text-[#B735B8]/60 font-normal lowercase">· detectada por IA, podés cambiarla</span></label>
+                        <label className="text-xs font-bold text-white/40 uppercase tracking-widest block mb-2">Categoría <span className="text-[#147e95]/60 font-normal lowercase">· detectada por IA, podés cambiarla</span></label>
                         <select value={(brief as any).category || 'otro'} onChange={e => onChange({ ...brief, category: e.target.value } as any)} className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]">
                             {AD_CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.emoji} {c.label}</option>)}
                         </select>
@@ -564,16 +564,16 @@ function TagList({ label, items, onChange, placeholder }: { label: string; items
             <label className="text-xs font-bold text-white/40 uppercase tracking-widest block mb-2">{label}</label>
             <div className="flex flex-wrap gap-2 mb-2">
                 {items.map((item, i) => (
-                    <span key={i} className="flex items-center gap-1.5 text-xs bg-[#B735B8]/10 border border-white/10 text-[#B735B8] px-3 py-1.5 rounded-full font-medium">
+                    <span key={i} className="flex items-center gap-1.5 text-xs bg-[#147e95]/10 border border-white/10 text-[#147e95] px-3 py-1.5 rounded-full font-medium">
                         {item}
-                        <button onClick={() => onChange(items.filter((_, j) => j !== i))} className="text-[#B735B8] hover:text-[#F87171]">×</button>
+                        <button onClick={() => onChange(items.filter((_, j) => j !== i))} className="text-[#147e95] hover:text-[#F87171]">×</button>
                     </span>
                 ))}
             </div>
             <div className="flex gap-2">
                 <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), add())}
                     placeholder={placeholder} className="flex-1 bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 placeholder:text-white/30" />
-                <button onClick={add} className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-[#B735B8]/20 transition-all">+ Agregar</button>
+                <button onClick={add} className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-[#147e95]/20 transition-all">+ Agregar</button>
             </div>
         </div>
     )

@@ -351,7 +351,7 @@ export default function AdminClippingPage() {
         </div>
         <button onClick={runSync} disabled={syncing}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-50"
-          style={{ background: 'rgba(210,3,221,0.08)', border: '1px solid rgba(210,3,221,0.2)', color: '#D203DD' }}>
+          style={{ background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.2)', color: '#00E5D0' }}>
           <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
           {syncing ? 'Sincronizando...' : 'Sync vistas'}
         </button>
@@ -361,7 +361,7 @@ export default function AdminClippingPage() {
       {syncResult && (
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: 'Total procesados', value: syncResult.total, color: '#D203DD' },
+            { label: 'Total procesados', value: syncResult.total, color: '#00E5D0' },
             { label: 'Aprobados', value: syncResult.approved, color: '#00FF88' },
             { label: 'Errores', value: syncResult.errors, color: '#FF3366' },
           ].map(({ label, value, color }) => (
@@ -552,7 +552,7 @@ export default function AdminClippingPage() {
                       {[
                         { Icon: Eye, label: 'Base', value: sub.baseViews, color: '#6B7280' },
                         { Icon: TrendingUp, label: 'Actuales', value: sub.currentViews, color: '#6B7280' },
-                        { Icon: Play, label: 'Nuevas', value: sub.deltaViews, color: '#D203DD' },
+                        { Icon: Play, label: 'Nuevas', value: sub.deltaViews, color: '#00E5D0' },
                         { Icon: Heart, label: 'Likes', value: sub.likes ?? 0, color: '#FF3388' },
                         { Icon: MessageCircle, label: 'Comentarios', value: sub.comments ?? 0, color: '#a855f7' },
                       ].map(({ Icon, label, value, color }) => (
@@ -718,7 +718,7 @@ export default function AdminClippingPage() {
 
                 {/* Upload button */}
                 <label className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${uploadingImage ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-110'}`}
-                  style={{ background: 'rgba(210,3,221,0.06)', border: '1px solid rgba(210,3,221,0.2)', color: '#D203DD' }}>
+                  style={{ background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(0,229,208,0.2)', color: '#00E5D0' }}>
                   {uploadingImage
                     ? <Loader2 size={13} className="animate-spin" />
                     : <ImagePlus size={13} />

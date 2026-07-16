@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Calendar, CheckCircle2, Loader2, MessageCircle } from 'lucide-react'
 
-const BRAND = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const BRAND = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 const NAVY = '#1E2A4A'
 const MUTED = '#8B93A7'
 
@@ -91,7 +91,7 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
     }}>
       {/* Glows suaves (igual que el login) */}
       <div style={{ pointerEvents: 'none', position: 'fixed', inset: 0, overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -240, left: -160, width: 600, height: 600, borderRadius: '50%', filter: 'blur(150px)', background: 'rgba(255,9,108,0.16)' }} />
+        <div style={{ position: 'absolute', top: -240, left: -160, width: 600, height: 600, borderRadius: '50%', filter: 'blur(150px)', background: 'rgba(0,229,208,0.16)' }} />
         <div style={{ position: 'absolute', bottom: -240, right: -160, width: 600, height: 600, borderRadius: '50%', filter: 'blur(150px)', background: 'rgba(106,53,217,0.18)' }} />
       </div>
 
@@ -108,7 +108,7 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
       }}>
         {state === 'loading' ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
-            <Loader2 size={26} className="animate-spin" style={{ color: '#B735B8' }} />
+            <Loader2 size={26} className="animate-spin" style={{ color: '#147e95' }} />
           </div>
         ) : state === 'notfound' ? (
           <div style={{ textAlign: 'center', padding: '30px 0' }}>
@@ -118,8 +118,8 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
         ) : state === 'closed' ? (
           <div style={{ textAlign: 'center', padding: '30px 0' }}>
             <div style={{ position: 'relative', width: 48, height: 48, margin: '0 auto 14px' }}>
-              <Calendar size={48} strokeWidth={1.6} style={{ color: '#B735B8' }} />
-              <span style={{ position: 'absolute', bottom: 6, left: 0, right: 0, textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#B735B8' }}>90</span>
+              <Calendar size={48} strokeWidth={1.6} style={{ color: '#147e95' }} />
+              <span style={{ position: 'absolute', bottom: 6, left: 0, right: 0, textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#147e95' }}>90</span>
             </div>
             <p style={{ fontSize: 18, fontWeight: 800, color: NAVY, margin: 0 }}>Registro cerrado</p>
             <p style={{ fontSize: 14, color: MUTED, marginTop: 8 }}>Por ahora no se aceptan nuevas inscripciones. Vuelve más tarde 🙌</p>
@@ -161,8 +161,8 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
             {/* Encabezado */}
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ position: 'relative', width: 48, height: 48, margin: '0 auto 12px' }}>
-                <Calendar size={48} strokeWidth={1.6} style={{ color: '#B735B8' }} />
-                <span style={{ position: 'absolute', bottom: 6, left: 0, right: 0, textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#B735B8' }}>90</span>
+                <Calendar size={48} strokeWidth={1.6} style={{ color: '#147e95' }} />
+                <span style={{ position: 'absolute', bottom: 6, left: 0, right: 0, textAlign: 'center', fontSize: 15, fontWeight: 800, color: '#147e95' }}>90</span>
               </div>
               <h1 style={{ fontSize: 24, fontWeight: 800, color: NAVY, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.01em', lineHeight: 1.15 }}>
                 Regístrate al {retoName}

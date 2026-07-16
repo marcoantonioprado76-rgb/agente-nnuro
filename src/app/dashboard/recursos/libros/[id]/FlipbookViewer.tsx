@@ -60,7 +60,7 @@ export default function FlipbookViewer({ resourceId }: { resourceId: string }) {
     return (
       <div className="max-w-md mx-auto text-center py-24">
         <p className="text-red-400 text-sm mb-4">{error || 'No encontrado'}</p>
-        <Link href="/dashboard/recursos/libros" className="text-[#D203DD] underline text-sm">Volver a Libros</Link>
+        <Link href="/dashboard/recursos/libros" className="text-[#00E5D0] underline text-sm">Volver a Libros</Link>
       </div>
     )
   }
@@ -140,7 +140,7 @@ export default function FlipbookViewer({ resourceId }: { resourceId: string }) {
         </button>
         <a href={res.archivoUrl} download target="_blank" rel="noreferrer"
           className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-white transition-all active:scale-95"
-          style={{ background: 'linear-gradient(135deg,#0D1E79,#D203DD)' }}>
+          style={{ background: 'linear-gradient(135deg,#0D1E79,#00E5D0)' }}>
           <i className="fa-solid fa-download"></i><span className="hidden sm:inline">Descargar</span>
         </a>
       </div>
@@ -164,7 +164,7 @@ export default function FlipbookViewer({ resourceId }: { resourceId: string }) {
             <div className="flex items-center gap-2 shrink-0">
               <a href={res.archivoUrl} download target="_blank" rel="noreferrer"
                 className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-white transition-all active:scale-95"
-                style={{ background: 'linear-gradient(135deg,#0D1E79,#D203DD)' }}>
+                style={{ background: 'linear-gradient(135deg,#0D1E79,#00E5D0)' }}>
                 <i className="fa-solid fa-download"></i><span className="hidden sm:inline">Descargar</span>
               </a>
               <button onClick={() => setExpanded(false)}

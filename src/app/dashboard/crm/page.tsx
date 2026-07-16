@@ -115,7 +115,7 @@ export default function CrmPage() {
                     <Link
                         href="/dashboard/crm/new"
                         className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black uppercase tracking-wide text-white transition-all hover:opacity-90"
-                        style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}
+                        style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}
                     >
                         <Plus size={15} /> Nueva campaña
                     </Link>
@@ -190,7 +190,7 @@ export default function CrmPage() {
                                     </div>
                                     <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] rounded-full transition-all"
+                                            className="h-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] rounded-full transition-all"
                                             style={{ width: `${Math.min(100, (c.sentCount / c.totalContacts) * 100)}%` }}
                                         />
                                     </div>
@@ -228,7 +228,7 @@ export default function CrmPage() {
                                     <button
                                         onClick={() => reenviarCampaign(c.id)}
                                         disabled={reenvying === c.id}
-                                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#FF096C]/10 hover:bg-[#FF096C]/20 text-[#FF096C] text-xs font-bold transition-all disabled:opacity-50"
+                                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#0a95a8]/10 hover:bg-[#0a95a8]/20 text-[#0a95a8] text-xs font-bold transition-all disabled:opacity-50"
                                     >
                                         {reenvying === c.id ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
                                         Reenviar
@@ -236,7 +236,7 @@ export default function CrmPage() {
                                 ) : ['DRAFT', 'SCHEDULED', 'PAUSED', 'FAILED'].includes(c.status) ? (
                                     <button
                                         onClick={() => executeCampaign(c.id)}
-                                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all ${c.status === 'FAILED' ? 'bg-red-500/10 hover:bg-red-500/20 text-red-400' : 'bg-[#FF096C]/10 hover:bg-[#FF096C]/20 text-[#FF096C]'}`}
+                                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all ${c.status === 'FAILED' ? 'bg-red-500/10 hover:bg-red-500/20 text-red-400' : 'bg-[#0a95a8]/10 hover:bg-[#0a95a8]/20 text-[#0a95a8]'}`}
                                     >
                                         <Play size={12} /> {c.status === 'PAUSED' ? 'Reanudar' : c.status === 'FAILED' ? 'Reintentar' : 'Enviar'}
                                     </button>

@@ -142,7 +142,7 @@ function ShareStoreModal({ store, onClose }: { store: StoreRecord; onClose: () =
                         <button type="button" onClick={onClose} className="flex-1 py-3 text-[#374151] font-bold rounded-xl border border-purple-500/25 hover:bg-[#F4F6FA] transition-all text-sm">
                             Cancelar
                         </button>
-                        <button type="submit" disabled={loading} className="flex-1 py-3 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl disabled:opacity-50 flex items-center justify-center gap-2 text-sm transition-all">
+                        <button type="submit" disabled={loading} className="flex-1 py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl disabled:opacity-50 flex items-center justify-center gap-2 text-sm transition-all">
                             {loading ? <Loader2 size={14} className="animate-spin" /> : <Share2 size={14} />}
                             Compartir
                         </button>
@@ -418,7 +418,7 @@ export default function VirtualStorePage() {
                     </div>
                     <button
                         onClick={() => { resetProductForm(); setShowProductModal(true); }}
-                        className="bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[#233B8F]/90"
+                        className="bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[#233B8F]/90"
                     >
                         <Plus size={20} /> Añadir Producto
                     </button>
@@ -679,7 +679,7 @@ export default function VirtualStorePage() {
                                 </div>
                                 <div className="flex gap-3 pt-4">
                                     <button type="button" onClick={() => setShowProductModal(false)} className="flex-1 py-3 sm:py-4 text-[#374151] font-bold rounded-xl border border-purple-500/25 hover:bg-[#F4F6FA] transition-all">Cancelar</button>
-                                    <button type="submit" className="flex-1 py-3 sm:py-4 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl shadow-lg shadow-[#233B8F]/20 transition-all active:scale-95">Guardar</button>
+                                    <button type="submit" className="flex-1 py-3 sm:py-4 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl shadow-lg shadow-[#233B8F]/20 transition-all active:scale-95">Guardar</button>
                                 </div>
                             </form>
                         </div>
@@ -695,7 +695,7 @@ export default function VirtualStorePage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                        style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 10px 22px -8px rgba(255,9,108,0.45)' }}>
+                        style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 10px 22px -8px rgba(0,229,208,0.45)' }}>
                         <Store className="w-5 h-5 text-white" />
                     </div>
                     <div className="min-w-0">
@@ -708,7 +708,7 @@ export default function VirtualStorePage() {
                     onClick={() => { resetStoreForm(); setShowStoreModal(true); }}
                     className="rounded-xl px-4 py-2.5 font-bold flex items-center gap-2 text-sm transition-all active:scale-[0.98]"
                     style={{
-                        background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                        background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                         color: '#fff',
                         boxShadow: '0 10px 26px -10px rgba(34,183,255,0.6), inset 0 1px 0 rgba(255,255,255,0.18)',
                     }}
@@ -735,7 +735,7 @@ export default function VirtualStorePage() {
                     <button onClick={() => setShowStoreModal(true)}
                         className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 font-bold text-sm transition-all active:scale-[0.98]"
                         style={{
-                            background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                            background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                             color: '#fff',
                             boxShadow: '0 10px 26px -10px rgba(34,183,255,0.6)',
                         }}>
@@ -944,10 +944,10 @@ export default function VirtualStorePage() {
                                             onClick={() => openStoreProducts(store)}
                                             className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11.5px] font-bold transition-all active:scale-[0.98] hover:opacity-90"
                                             style={{
-                                                background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                                                background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                                                 border: 'none',
                                                 color: '#fff',
-                                                boxShadow: '0 8px 20px -8px rgba(255,9,108,0.5), inset 0 1px 0 rgba(255,255,255,0.18)',
+                                                boxShadow: '0 8px 20px -8px rgba(0,229,208,0.5), inset 0 1px 0 rgba(255,255,255,0.18)',
                                                 letterSpacing: '-0.01em',
                                             }}>
                                             <Package className="w-3 h-3" />
@@ -1001,11 +1001,11 @@ export default function VirtualStorePage() {
                                         type="button"
                                         onClick={() => setStoreType('GENERAL_BUSINESS')}
                                         className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 text-center ${storeType === 'GENERAL_BUSINESS'
-                                            ? 'border-[#B735B8] bg-[#B735B8]/10 text-white shadow-[0_0_20px_rgba(var(--[#B735B8]-rgb),0.2)]'
+                                            ? 'border-[#147e95] bg-[#147e95]/10 text-white shadow-[0_0_20px_rgba(var(--[#147e95]-rgb),0.2)]'
                                             : 'border-white/10 bg-white text-white/40 hover:border-purple-500/30'
                                             }`}
                                     >
-                                        <Store className={storeType === 'GENERAL_BUSINESS' ? 'text-[#B735B8]' : ''} size={20} />
+                                        <Store className={storeType === 'GENERAL_BUSINESS' ? 'text-[#147e95]' : ''} size={20} />
                                         <div>
                                             <p className="font-bold text-[11px]">Mi Negocio</p>
                                             <p className="text-[9px] opacity-60">Venta General</p>
@@ -1225,7 +1225,7 @@ export default function VirtualStorePage() {
 
                                 <label className="text-xs font-bold text-white/55 uppercase tracking-widest block mb-2 mt-4">Color principal (opcional)</label>
                                 <div className="flex items-center gap-3">
-                                    <input type="color" value={storeThemePrimary || '#D203DD'} onChange={e => setStoreThemePrimary(e.target.value)}
+                                    <input type="color" value={storeThemePrimary || '#00E5D0'} onChange={e => setStoreThemePrimary(e.target.value)}
                                         className="w-11 h-9 rounded-lg bg-transparent border border-white/10 cursor-pointer p-0.5" />
                                     {storeThemePrimary
                                         ? <button type="button" onClick={() => setStoreThemePrimary('')} className="text-[10px] text-white/55 underline">usar el del tema</button>
@@ -1265,7 +1265,7 @@ export default function VirtualStorePage() {
                                 })()}
                             </div>
 
-                            <button type="submit" className="w-full bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition-all">
+                            <button type="submit" className="w-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold py-4 rounded-xl shadow-lg active:scale-[0.98] transition-all">
                                 {editStore ? 'Guardar Cambios' : 'Crear Tienda'}
                             </button>
                         </form>

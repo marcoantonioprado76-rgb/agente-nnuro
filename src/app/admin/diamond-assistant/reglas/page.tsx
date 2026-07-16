@@ -328,7 +328,7 @@ export default function DiamondAssistantReglas() {
       {/* ── Estado global de agentes ──────────────────────────────── */}
       {agentsLoading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : agentsError ? (
         <ErrorBox message={agentsError} />
@@ -347,7 +347,7 @@ export default function DiamondAssistantReglas() {
               background: 'rgba(183,53,184,0.10)',
             }}
           >
-            <Bot size={26} style={{ color: '#B735B8' }} />
+            <Bot size={26} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>Primero crea un agente</p>
           <p style={{ fontSize: 13, color: MUTED, margin: '6px auto 16px', lineHeight: 1.55, maxWidth: 360 }}>
@@ -426,7 +426,7 @@ export default function DiamondAssistantReglas() {
           {/* ── Lista de reglas ─────────────────────────────────────── */}
           {rulesLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '48px 0' }}>
-              <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+              <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
             </div>
           ) : rulesError ? (
             <ErrorBox message={rulesError} />
@@ -444,7 +444,7 @@ export default function DiamondAssistantReglas() {
                   background: 'rgba(183,53,184,0.10)',
                 }}
               >
-                <ShieldCheck size={26} style={{ color: '#B735B8' }} />
+                <ShieldCheck size={26} style={{ color: '#147e95' }} />
               </div>
               <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>
                 {selectedAgent ? `${selectedAgent.name} aún no tiene reglas` : 'Aún no hay reglas'}

@@ -9,7 +9,7 @@ import { ClipboardCheck, Loader2, X, Check, XCircle, Eye, FileText, ImageIcon } 
 // Reto 90D — Panel admin · Evidencias / entregas (ADMIN-ONLY)
 // ═══════════════════════════════════════════════════════════════════════════
 
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 
 const SUBNAV = [
   { href: '/admin/reto-90d', label: 'Resumen', exact: true },
@@ -29,7 +29,7 @@ const SUB_STATUS: Record<SubStatus, { label: string; color: string; bg: string }
   REVIEW: { label: 'Revisión', color: '#233B8F', bg: 'rgba(35,59,143,0.1)' },
   REJECTED: { label: 'Rechazado', color: '#DC2626', bg: 'rgba(220,38,38,0.1)' },
   DUPLICATED: { label: 'Duplicado', color: '#6B7280', bg: 'rgba(107,114,128,0.12)' },
-  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#B735B8', bg: 'rgba(183,53,184,0.1)' },
+  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#147e95', bg: 'rgba(183,53,184,0.1)' },
 }
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [
@@ -298,7 +298,7 @@ export default function AdminReto90dEvidenciasPage() {
             Limpiar
           </button>
         )}
-        {refreshing && <Loader2 size={16} className="animate-spin" style={{ color: '#B735B8' }} />}
+        {refreshing && <Loader2 size={16} className="animate-spin" style={{ color: '#147e95' }} />}
         <span style={{ fontSize: 13, color: '#6B7280', marginLeft: 'auto' }}>
           {loading ? '' : `${submissions.length} evidencia${submissions.length !== 1 ? 's' : ''}`}
         </span>
@@ -313,7 +313,7 @@ export default function AdminReto90dEvidenciasPage() {
       {/* Content */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : !challengeId ? (
         <div style={{ textAlign: 'center', padding: '56px 16px', color: '#6B7280', fontSize: 14, background: '#fff', borderRadius: 16, border: '1px solid #E4E9F0' }}>

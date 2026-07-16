@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 
 // ── Paleta MY DIAMOND ──────────────────────────────────────────────
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 const BORDER = '#E4E9F0'
 const TEXT = '#111827'
 const MUTED = '#6B7280'
@@ -448,7 +448,7 @@ export default function AdminReto90dTasksPage() {
                     <span style={metaChip}>
                       {EVIDENCE_LABEL[(t.evidenceType as EvidenceType)] ?? t.evidenceType}
                     </span>
-                    <span style={metaChip}><Star size={12} style={{ color: '#B735B8' }} /> {t.points} pts</span>
+                    <span style={metaChip}><Star size={12} style={{ color: '#147e95' }} /> {t.points} pts</span>
                     <span style={metaChip}><Clock size={12} style={{ color: '#233B8F' }} /> {t.deadlineTime}</span>
                     <span style={metaChip}>Auto-aprob. {Math.round((t.autoApproveMin ?? 0) * 100)}%</span>
                   </div>
@@ -457,7 +457,7 @@ export default function AdminReto90dTasksPage() {
                   {t.expectedKeywords?.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {t.expectedKeywords.map((k, i) => (
-                        <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#B735B8', background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.16)' }}>
+                        <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.16)' }}>
                           {k}
                         </span>
                       ))}
@@ -570,7 +570,7 @@ export default function AdminReto90dTasksPage() {
                 {splitList(modal.data.expectedKeywords).length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                     {splitList(modal.data.expectedKeywords).map((k, i) => (
-                      <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#B735B8', background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.16)' }}>{k}</span>
+                      <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.16)' }}>{k}</span>
                     ))}
                   </div>
                 )}

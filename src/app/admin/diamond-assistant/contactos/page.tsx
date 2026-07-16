@@ -323,7 +323,7 @@ export default function DiamondAssistantContactos() {
       <div style={{ background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 16, overflow: 'hidden', boxShadow: '0 1px 3px rgba(17,24,39,0.04)' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '64px 0' }}>
-            <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+            <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
           </div>
         ) : error ? (
           <div style={{ textAlign: 'center', padding: '56px 16px' }}>
@@ -339,7 +339,7 @@ export default function DiamondAssistantContactos() {
         ) : contacts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '56px 16px' }}>
             <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-              <ContactIcon size={24} style={{ color: '#B735B8' }} />
+              <ContactIcon size={24} style={{ color: '#147e95' }} />
             </div>
             <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>
               {hasFilters ? 'Sin resultados' : 'Aún no hay contactos'}
@@ -381,7 +381,7 @@ export default function DiamondAssistantContactos() {
                     <tr key={c.id} style={{ borderBottom: `1px solid ${BORDER}` }}>
                       <td style={tdStyle}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-                          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(183,53,184,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#B735B8', flexShrink: 0 }}>
+                          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(183,53,184,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#147e95', flexShrink: 0 }}>
                             {(c.name?.trim()?.charAt(0) ?? '#').toUpperCase()}
                           </div>
                           <span style={{ fontWeight: 700, color: c.name ? TEXT : '#9CA3AF' }}>
@@ -393,7 +393,7 @@ export default function DiamondAssistantContactos() {
                       <td style={tdStyle}>
                         {c.country || c.city ? (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: MUTED }}>
-                            <MapPin size={12} style={{ color: '#B735B8' }} />
+                            <MapPin size={12} style={{ color: '#147e95' }} />
                             {[c.country, c.city].filter(Boolean).join(' · ')}
                           </span>
                         ) : (
@@ -403,7 +403,7 @@ export default function DiamondAssistantContactos() {
                       <td style={{ ...tdStyle, color: c.sponsor ? TEXT : '#9CA3AF' }}>{c.sponsor ?? '—'}</td>
                       <td style={tdStyle}>
                         {c.tag ? (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#B735B8', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)' }}>
                             <Tag size={10} /> {c.tag}
                           </span>
                         ) : (

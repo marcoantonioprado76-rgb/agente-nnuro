@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 const CATS = ['Bienvenidos', 'Distribuidores', 'Presentación de negocios', 'Lista de precios', 'Únete a mi equipo', 'Cumpleaños', 'Rangos', 'Varios', 'Otros']
 const DISPLAY_MAX = 440
 
@@ -119,7 +119,7 @@ export default function NuevoFlyerPage() {
           {!fondoUrl ? (
             <label style={{ display: 'grid', placeItems: 'center', height: 320, border: '2px dashed #C9D2DE', borderRadius: 16, background: '#fff', cursor: 'pointer', color: '#7A8494', textAlign: 'center', padding: 20 }}>
               <div>
-                <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 32, color: '#B735B8' }} />
+                <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 32, color: '#147e95' }} />
                 <p style={{ marginTop: 10, fontWeight: 700 }}>{uploading ? 'Subiendo…' : 'Subí la imagen de fondo del flyer'}</p>
                 <p style={{ fontSize: 12, marginTop: 4 }}>JPG o PNG · es el diseño base</p>
               </div>
@@ -136,12 +136,12 @@ export default function NuevoFlyerPage() {
                 style={{ position: 'relative', width: dispW, height: dispH, backgroundImage: `url(${fondoUrl})`, backgroundSize: 'cover', borderRadius: 10, overflow: 'hidden', boxShadow: '0 10px 30px -16px rgba(11,27,43,0.5)', userSelect: 'none', maxWidth: '100%' }}
               >
                 {photo && (
-                  <div onMouseDown={e => onDown(e, 'photo')} style={{ position: 'absolute', left: photo.x * scale, top: photo.y * scale, width: photo.w * scale, height: photo.h * scale, border: `2px dashed ${selected === 'photo' ? '#FF2D95' : 'rgba(255,255,255,0.8)'}`, borderRadius: 8, display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,0.9)', background: 'rgba(0,0,0,0.15)', cursor: 'move' }}>
+                  <div onMouseDown={e => onDown(e, 'photo')} style={{ position: 'absolute', left: photo.x * scale, top: photo.y * scale, width: photo.w * scale, height: photo.h * scale, border: `2px dashed ${selected === 'photo' ? '#1fb8bb' : 'rgba(255,255,255,0.8)'}`, borderRadius: 8, display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,0.9)', background: 'rgba(0,0,0,0.15)', cursor: 'move' }}>
                     <i className="fa-solid fa-user" /> <span style={{ fontSize: 10, marginLeft: 4 }}>foto</span>
                   </div>
                 )}
                 {texts.map(t => (
-                  <div key={t.id} onMouseDown={e => onDown(e, t.id)} style={{ position: 'absolute', left: t.x * scale, top: t.y * scale, width: t.w * scale, fontSize: t.fontSize * scale, color: t.fill, textAlign: t.align, fontWeight: t.fontWeight as any, lineHeight: 1.1, cursor: 'move', outline: selected === t.id ? '2px solid #FF2D95' : 'none', textShadow: '0 1px 3px rgba(0,0,0,0.35)', whiteSpace: 'pre-wrap' }}>
+                  <div key={t.id} onMouseDown={e => onDown(e, t.id)} style={{ position: 'absolute', left: t.x * scale, top: t.y * scale, width: t.w * scale, fontSize: t.fontSize * scale, color: t.fill, textAlign: t.align, fontWeight: t.fontWeight as any, lineHeight: 1.1, cursor: 'move', outline: selected === t.id ? '2px solid #1fb8bb' : 'none', textShadow: '0 1px 3px rgba(0,0,0,0.35)', whiteSpace: 'pre-wrap' }}>
                     {t.text || 'Texto'}
                   </div>
                 ))}
@@ -176,7 +176,7 @@ export default function NuevoFlyerPage() {
               <Field label="Alineación">
                 <div style={{ display: 'flex', gap: 6 }}>
                   {(['left', 'center', 'right'] as const).map(a => (
-                    <button key={a} onClick={() => upd(sel.id, { align: a })} style={{ flex: 1, padding: '8px 0', borderRadius: 8, border: sel.align === a ? '2px solid #B735B8' : '1px solid #E4E9F0', background: '#fff', cursor: 'pointer', color: '#5B6472' }}><i className={`fa-solid fa-align-${a}`} /></button>
+                    <button key={a} onClick={() => upd(sel.id, { align: a })} style={{ flex: 1, padding: '8px 0', borderRadius: 8, border: sel.align === a ? '2px solid #147e95' : '1px solid #E4E9F0', background: '#fff', cursor: 'pointer', color: '#5B6472' }}><i className={`fa-solid fa-align-${a}`} /></button>
                   ))}
                 </div>
               </Field>

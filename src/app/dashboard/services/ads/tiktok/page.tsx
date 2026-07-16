@@ -28,7 +28,7 @@ export default function TikTokAdsPage() {
                         <span className="font-black text-xl text-white">T</span>
                     </div>
                     <div>
-                        <h1 className="text-2xl font-black tracking-tight leading-none">TikTok Ads <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #EE1D52, #FF2D95)' }}>AI</span></h1>
+                        <h1 className="text-2xl font-black tracking-tight leading-none">TikTok Ads <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #EE1D52, #1fb8bb)' }}>AI</span></h1>
                         <p className="text-xs text-white/35 mt-0.5">TikTok for Business · Impulsado por IA</p>
                     </div>
                 </div>
@@ -42,12 +42,12 @@ export default function TikTokAdsPage() {
                 <div className="relative">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
                         style={{ background: 'rgba(238,29,82,0.12)', border: '1px solid rgba(238,29,82,0.25)' }}>
-                        <Clock size={12} className="text-[#FF2D95]" />
-                        <span className="text-xs font-black text-[#FF2D95] uppercase tracking-widest">En desarrollo</span>
+                        <Clock size={12} className="text-[#1fb8bb]" />
+                        <span className="text-xs font-black text-[#1fb8bb] uppercase tracking-widest">En desarrollo</span>
                     </div>
                     <h2 className="text-3xl md:text-4xl font-black mb-3 leading-tight">
                         TikTok Ads estará disponible <br className="hidden md:block" />
-                        <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #EE1D52, #FF2D95)' }}>muy pronto</span>
+                        <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(90deg, #EE1D52, #1fb8bb)' }}>muy pronto</span>
                     </h2>
                     <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
                         Estamos integrando la API de TikTok for Business para que puedas crear y gestionar campañas directamente desde MY DIAMOND.
@@ -66,7 +66,7 @@ export default function TikTokAdsPage() {
                                 style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.06)' }}>
                                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
                                     style={{ background: 'rgba(238,29,82,0.1)', border: '1px solid rgba(238,29,82,0.2)' }}>
-                                    <Icon size={15} className="text-[#FF2D95]" />
+                                    <Icon size={15} className="text-[#1fb8bb]" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-white/80">{f.label}</p>
@@ -103,7 +103,7 @@ export default function TikTokAdsPage() {
 
                 <div className="mt-5 pt-4 border-t border-white/6">
                     <a href="https://business-api.tiktok.com" target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-bold text-[#FF2D95] hover:underline">
+                        className="inline-flex items-center gap-2 text-xs font-bold text-[#1fb8bb] hover:underline">
                         <ExternalLink size={12} /> Ver estado de aprobación en TikTok Business API
                     </a>
                 </div>

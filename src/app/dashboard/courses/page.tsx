@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
-const DG = 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)'
+const DG = 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)'
 
 interface Enrollment {
   status: 'PENDING' | 'PENDING_VERIFICATION' | 'APPROVED' | 'REJECTED'
@@ -27,7 +27,7 @@ interface Course {
 const NIVEL_COLOR: Record<string, string> = {
   Principiante: '#7DD3FC',
   Intermedio: '#C9A7FF',
-  Avanzado: '#FF2D95',
+  Avanzado: '#1fb8bb',
 }
 
 const STATUS_BADGE: Record<string, { label: string; style: React.CSSProperties }> = {
@@ -109,7 +109,7 @@ export default function CoursesPage() {
       <div className="mb-6 flex items-start justify-between gap-3 flex-wrap">
         <div className="min-w-0">
           <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">MY DIAMOND Academy</h1>
-          <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #B735B8, #FF2DF7, transparent)' }} />
+          <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #147e95, #FF2DF7, transparent)' }} />
           <p className="text-xs text-[#111827]/30 mt-2">Accede a cursos exclusivos de MY DIAMOND.</p>
           {courses.length > 0 && (
             <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
@@ -123,7 +123,7 @@ export default function CoursesPage() {
               )}
               {courses.some(c => c.freeForPlan) && (
                 <span style={{ fontSize: 11, color: '#6B7280' }}>
-                  <b style={{ color: '#B735B8' }}>{courses.filter(c => c.freeForPlan).length}</b> gratis con tu plan
+                  <b style={{ color: '#147e95' }}>{courses.filter(c => c.freeForPlan).length}</b> gratis con tu plan
                 </span>
               )}
             </div>
@@ -134,7 +134,7 @@ export default function CoursesPage() {
           className="shrink-0 whitespace-nowrap"
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
-            fontSize: 12, fontWeight: 600, color: '#B735B8',
+            fontSize: 12, fontWeight: 600, color: '#147e95',
             background: 'rgba(183,53,184,0.07)', border: '1px solid #E4E9F0',
             borderRadius: 8, padding: '7px 14px', textDecoration: 'none',
           }}>
@@ -183,7 +183,7 @@ export default function CoursesPage() {
                 style={{
                   fontSize: 12, fontWeight: 700, padding: '7px 14px', borderRadius: 999,
                   color: active ? '#fff' : 'rgba(255,255,255,0.6)',
-                  background: active ? 'linear-gradient(135deg, #B735B8, #FF2DF7)' : 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+                  background: active ? 'linear-gradient(135deg, #147e95, #FF2DF7)' : 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
                   border: `1px solid ${active ? 'transparent' : 'rgba(255,255,255,0.1)'}`,
                 }}>
                 {cat}
@@ -197,7 +197,7 @@ export default function CoursesPage() {
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
             style={{ background: 'rgba(183,53,184,0.06)', border: '1px solid #E4E9F0' }}>
-            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#B735B8" strokeWidth="1.5">
+            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#147e95" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
             </svg>
           </div>
@@ -208,7 +208,7 @@ export default function CoursesPage() {
           <p className="text-sm text-[#111827]/30">
             Sin resultados{search ? <> para <span className="text-[#111827]/60">"{search}"</span></> : activeCat !== 'Todos' ? <> en <span className="text-[#111827]/60">{activeCat}</span></> : ''}
           </p>
-          <button onClick={() => { setSearch(''); setActiveCat('Todos') }} className="mt-3 text-xs text-[#FF096C] hover:underline">Limpiar filtros</button>
+          <button onClick={() => { setSearch(''); setActiveCat('Todos') }} className="mt-3 text-xs text-[#0a95a8] hover:underline">Limpiar filtros</button>
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -238,7 +238,7 @@ export default function CoursesPage() {
                     <img src={course.coverUrl} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: isLocked ? 'brightness(0.5)' : 'none' }} />
                   ) : (
                     <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <svg className="w-10 h-10 opacity-20" viewBox="0 0 24 24" fill="none" stroke="#B735B8" strokeWidth="1">
+                      <svg className="w-10 h-10 opacity-20" viewBox="0 0 24 24" fill="none" stroke="#147e95" strokeWidth="1">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
                       </svg>
                     </div>
@@ -303,7 +303,7 @@ export default function CoursesPage() {
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
                     {isLocked ? (
-                      <Link href="/dashboard/planes" style={{ color: '#B735B8', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>
+                      <Link href="/dashboard/planes" style={{ color: '#147e95', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>
                         Ver plan →
                       </Link>
                     ) : (

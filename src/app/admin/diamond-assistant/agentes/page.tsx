@@ -72,7 +72,7 @@ const PROVIDER_OPTIONS: { value: Agent['provider']; label: string }[] = [
 const PROVIDER_STYLE: Record<Agent['provider'], { color: string; tint: string }> = {
   BAILEYS: { color: '#16A34A', tint: 'rgba(22,163,74,0.10)' },
   YCLOUD: { color: '#233B8F', tint: 'rgba(35,59,143,0.10)' },
-  META: { color: '#B735B8', tint: 'rgba(183,53,184,0.10)' },
+  META: { color: '#147e95', tint: 'rgba(183,53,184,0.10)' },
 }
 
 // Etiquetas de los campos de credenciales por proveedor (solo API-based).
@@ -319,7 +319,7 @@ export default function DiamondAssistantAgentes() {
       {/* Estado de carga / error / vacío */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : listError ? (
         <div
@@ -349,7 +349,7 @@ export default function DiamondAssistantAgentes() {
               background: 'rgba(183,53,184,0.10)',
             }}
           >
-            <Sparkles size={26} style={{ color: '#B735B8' }} />
+            <Sparkles size={26} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>Aún no hay agentes</p>
           <p style={{ fontSize: 13, color: MUTED, margin: '6px 0 16px', lineHeight: 1.55 }}>
@@ -467,7 +467,7 @@ export default function DiamondAssistantAgentes() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 'auto' }}>
                   <Badge icon={Cpu} label={agent.model} color="#233B8F" tint="rgba(35,59,143,0.08)" />
                   <Badge icon={Radio} label={PROVIDER_OPTIONS.find((p) => p.value === agent.provider)?.label ?? agent.provider} color={prov.color} tint={prov.tint} />
-                  <Badge icon={Zap} label={`temp ${agent.temperature}`} color="#B735B8" tint="rgba(183,53,184,0.08)" />
+                  <Badge icon={Zap} label={`temp ${agent.temperature}`} color="#147e95" tint="rgba(183,53,184,0.08)" />
                   {agent.hasOpenaiKey && (
                     <Badge icon={KeyRound} label="API key" color="#16A34A" tint="rgba(22,163,74,0.10)" />
                   )}
@@ -662,7 +662,7 @@ export default function DiamondAssistantAgentes() {
               <div style={{ marginBottom: 16 }}>
                 <label style={labelStyle}>
                   Temperatura{' '}
-                  <span style={{ textTransform: 'none', fontWeight: 800, color: '#B735B8' }}>
+                  <span style={{ textTransform: 'none', fontWeight: 800, color: '#147e95' }}>
                     {form.temperature.toFixed(2)}
                   </span>
                 </label>
@@ -674,7 +674,7 @@ export default function DiamondAssistantAgentes() {
                     step={0.05}
                     value={form.temperature}
                     onChange={(e) => setForm((p) => ({ ...p, temperature: Number(e.target.value) }))}
-                    style={{ flex: 1, accentColor: '#B735B8' }}
+                    style={{ flex: 1, accentColor: '#147e95' }}
                   />
                   <input
                     type="number"
@@ -717,7 +717,7 @@ export default function DiamondAssistantAgentes() {
               <div style={{ marginBottom: 16, padding: 14, borderRadius: 12, background: 'rgba(183,53,184,0.05)', border: '1px solid rgba(183,53,184,0.18)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 13, fontWeight: 800, color: '#111827' }}>
-                    <Mic size={15} style={{ color: '#B735B8' }} /> Responder con voz
+                    <Mic size={15} style={{ color: '#147e95' }} /> Responder con voz
                   </span>
                   <button
                     type="button"
@@ -728,7 +728,7 @@ export default function DiamondAssistantAgentes() {
                       voiceMode: !p.voiceEnabled && p.voiceMode === 'off' ? 'audio_in' : p.voiceMode,
                     }))}
                     aria-label="Alternar voz"
-                    style={{ position: 'relative', width: 42, height: 23, borderRadius: 999, border: 'none', cursor: 'pointer', flexShrink: 0, background: form.voiceEnabled ? '#B735B8' : '#D1D5DB' }}
+                    style={{ position: 'relative', width: 42, height: 23, borderRadius: 999, border: 'none', cursor: 'pointer', flexShrink: 0, background: form.voiceEnabled ? '#147e95' : '#D1D5DB' }}
                   >
                     <span style={{ position: 'absolute', top: 3, left: form.voiceEnabled ? 22 : 3, width: 17, height: 17, borderRadius: 999, background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', transition: 'left 0.15s' }} />
                   </button>

@@ -217,14 +217,14 @@ export default function AdminOrganizationsPage() {
       <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-black uppercase tracking-tighter flex items-center gap-2">
-            <Building2 size={18} className="text-[#B735B8]" /> Empresas
+            <Building2 size={18} className="text-[#147e95]" /> Empresas
           </h1>
           <p className="text-xs text-[#111827]/30 mt-0.5">{orgs.length} organizaciones registradas</p>
         </div>
         <button
           onClick={() => { setCreateErr(null); setForm({ name: '', maxUsers: '10', adminUsername: '' }); setCreateOpen(true) }}
           className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-black text-white transition-all active:scale-95 shrink-0"
-          style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 8px 18px rgba(183,53,184,0.28)' }}
+          style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 8px 18px rgba(183,53,184,0.28)' }}
         >
           <Plus size={15} /> Crear empresa
         </button>
@@ -234,12 +234,12 @@ export default function AdminOrganizationsPage() {
       <div className="bg-white/[0.025] border border-[#E4E9F0] rounded-2xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="animate-spin text-[#B735B8]" size={22} />
+            <Loader2 className="animate-spin text-[#147e95]" size={22} />
           </div>
         ) : error ? (
           <div className="text-center py-16">
             <p className="text-xs text-red-500">{error}</p>
-            <button onClick={fetchOrgs} className="mt-3 text-[11px] font-bold text-[#B735B8] hover:underline">Reintentar</button>
+            <button onClick={fetchOrgs} className="mt-3 text-[11px] font-bold text-[#147e95] hover:underline">Reintentar</button>
           </div>
         ) : orgs.length === 0 ? (
           <div className="text-center py-16">
@@ -269,7 +269,7 @@ export default function AdminOrganizationsPage() {
                         {o.logoUrl ? (
                           <img src={o.logoUrl} alt={o.name} className="w-7 h-7 rounded-lg object-cover border border-[#E4E9F0] shrink-0" />
                         ) : (
-                          <div className="w-7 h-7 rounded-lg bg-[#B735B8]/15 border border-[#B735B8]/20 flex items-center justify-center text-[11px] font-black text-[#B735B8] shrink-0">
+                          <div className="w-7 h-7 rounded-lg bg-[#147e95]/15 border border-[#147e95]/20 flex items-center justify-center text-[11px] font-black text-[#147e95] shrink-0">
                             {o.name.charAt(0).toUpperCase()}
                           </div>
                         )}
@@ -282,7 +282,7 @@ export default function AdminOrganizationsPage() {
 
                     {/* Miembros / cupo */}
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 rounded-full border ${full ? 'text-amber-600 bg-amber-500/10 border-amber-500/25' : 'text-[#B735B8] bg-[#B735B8]/10 border-[#B735B8]/20'}`}>
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 rounded-full border ${full ? 'text-amber-600 bg-amber-500/10 border-amber-500/25' : 'text-[#147e95] bg-[#147e95]/10 border-[#147e95]/20'}`}>
                         <Users size={10} /> {o.memberCount} / {o.maxUsers}
                       </span>
                     </td>
@@ -305,7 +305,7 @@ export default function AdminOrganizationsPage() {
                         onClick={() => patchOrg(o.id, { active: !o.active })}
                         disabled={updating === o.id}
                         title={o.active ? 'Desactivar empresa' : 'Activar empresa'}
-                        className={`relative w-10 h-5 rounded-full transition-colors shrink-0 disabled:opacity-50 ${o.active ? 'bg-[#B735B8]' : 'bg-[#E4E9F0]'}`}
+                        className={`relative w-10 h-5 rounded-full transition-colors shrink-0 disabled:opacity-50 ${o.active ? 'bg-[#147e95]' : 'bg-[#E4E9F0]'}`}
                       >
                         <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${o.active ? 'left-[1.375rem]' : 'left-0.5'}`} />
                       </button>
@@ -321,9 +321,9 @@ export default function AdminOrganizationsPage() {
                             <button
                               onClick={() => { setQuotaValue(String(o.maxUsers)); setQuotaModal(o) }}
                               title="Editar cupo de usuarios"
-                              className="p-1.5 rounded-lg bg-[#B735B8]/8 border border-[#B735B8]/20 hover:bg-[#B735B8]/20 transition-colors"
+                              className="p-1.5 rounded-lg bg-[#147e95]/8 border border-[#147e95]/20 hover:bg-[#147e95]/20 transition-colors"
                             >
-                              <SlidersHorizontal size={13} className="text-[#B735B8]" />
+                              <SlidersHorizontal size={13} className="text-[#147e95]" />
                             </button>
                             <button
                               onClick={() => { setAssignErr(null); setAssignUsername(''); setAssignModal(o) }}
@@ -356,14 +356,14 @@ export default function AdminOrganizationsPage() {
       {createOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => !creating && setCreateOpen(false)} />
-          <div className="relative bg-[#13131f] border border-[#B735B8]/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#13131f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#B735B8]/10 border border-[#B735B8]/20 flex items-center justify-center">
-                  <Building2 size={15} className="text-[#B735B8]" />
+                <div className="w-8 h-8 rounded-lg bg-[#147e95]/10 border border-[#147e95]/20 flex items-center justify-center">
+                  <Building2 size={15} className="text-[#147e95]" />
                 </div>
                 <p className="text-sm font-black text-white">Crear empresa</p>
               </div>
@@ -381,7 +381,7 @@ export default function AdminOrganizationsPage() {
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="Acme Corp"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#B735B8]/50"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#147e95]/50"
                 />
               </div>
               <div>
@@ -392,7 +392,7 @@ export default function AdminOrganizationsPage() {
                   value={form.maxUsers}
                   onChange={e => setForm(f => ({ ...f, maxUsers: e.target.value }))}
                   placeholder="10"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#B735B8]/50"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#147e95]/50"
                 />
               </div>
               <div>
@@ -406,7 +406,7 @@ export default function AdminOrganizationsPage() {
                     value={form.adminUsername}
                     onChange={e => setForm(f => ({ ...f, adminUsername: e.target.value }))}
                     placeholder="usuario_existente"
-                    className="w-full bg-black/30 border border-white/10 rounded-xl pl-7 pr-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#B735B8]/50"
+                    className="w-full bg-black/30 border border-white/10 rounded-xl pl-7 pr-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#147e95]/50"
                   />
                 </div>
                 <p className="text-[10px] text-white/20 mt-1">Si lo completas, se asignará como ORG_ADMIN de la empresa.</p>
@@ -431,7 +431,7 @@ export default function AdminOrganizationsPage() {
                   onClick={createOrg}
                   disabled={creating}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black text-white transition-all active:scale-95 disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}
                 >
                   {creating ? <Loader2 size={14} className="animate-spin" /> : <><Plus size={13} /> Crear</>}
                 </button>
@@ -445,14 +445,14 @@ export default function AdminOrganizationsPage() {
       {quotaModal && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => updating !== quotaModal.id && setQuotaModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#B735B8]/20 rounded-2xl p-6 w-full max-w-xs z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#13131f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-xs z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-[#B735B8]/10 border border-[#B735B8]/20 flex items-center justify-center shrink-0">
-                  <SlidersHorizontal size={15} className="text-[#B735B8]" />
+                <div className="w-8 h-8 rounded-lg bg-[#147e95]/10 border border-[#147e95]/20 flex items-center justify-center shrink-0">
+                  <SlidersHorizontal size={15} className="text-[#147e95]" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-black text-white truncate">Cupo de usuarios</p>
@@ -471,7 +471,7 @@ export default function AdminOrganizationsPage() {
               autoFocus
               value={quotaValue}
               onChange={e => setQuotaValue(e.target.value)}
-              className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#B735B8]/50 mb-4 text-right font-bold"
+              className="w-full bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#147e95]/50 mb-4 text-right font-bold"
             />
 
             <div className="flex gap-2">
@@ -486,7 +486,7 @@ export default function AdminOrganizationsPage() {
                 onClick={saveQuota}
                 disabled={updating === quotaModal.id}
                 className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black text-white transition-all active:scale-95 disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}
               >
                 {updating === quotaModal.id ? <Loader2 size={14} className="animate-spin" /> : <><Check size={13} /> Guardar</>}
               </button>

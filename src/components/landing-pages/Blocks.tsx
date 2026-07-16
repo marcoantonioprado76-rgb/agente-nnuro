@@ -1283,9 +1283,9 @@ function RawHtmlBlock({ data, isEditing }: BlockProps) {
             {isEditing && (
                 <div style={{
                     position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
-                    background: 'rgba(210,3,221,0.12)', border: '1px solid rgba(210,3,221,0.3)',
+                    background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.3)',
                     borderRadius: 9999, padding: '4px 16px', fontSize: 11, fontWeight: 700,
-                    color: '#D203DD', letterSpacing: '0.1em', zIndex: 10, whiteSpace: 'nowrap',
+                    color: '#00E5D0', letterSpacing: '0.1em', zIndex: 10, whiteSpace: 'nowrap',
                 }}>
                     📄 Página HTML personalizada — edita el código en el panel lateral
                 </div>

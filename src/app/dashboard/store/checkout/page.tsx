@@ -324,7 +324,7 @@ function CheckoutContent() {
           {manualEnabled && (
             <button
               onClick={() => { setPaymentMethod('MANUAL'); setProofUrl(''); setError('') }}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${paymentMethod === 'MANUAL' ? 'bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white' : 'text-white/55 hover:text-white/80'}`}
+              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${paymentMethod === 'MANUAL' ? 'bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white' : 'text-white/55 hover:text-white/80'}`}
             >
               🏦 Transferencia
             </button>
@@ -371,7 +371,7 @@ function CheckoutContent() {
       {/* Step 1: QR de pago */}
       <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] flex items-center justify-center text-[10px] font-black text-white">1</div>
+          <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] flex items-center justify-center text-[10px] font-black text-white">1</div>
           <p className="text-sm font-black text-white">Escanea el QR y realiza tu pago</p>
         </div>
 
@@ -413,7 +413,7 @@ function CheckoutContent() {
       {/* Step 2: Upload proof */}
       <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] flex items-center justify-center text-[10px] font-black text-white">2</div>
+          <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] flex items-center justify-center text-[10px] font-black text-white">2</div>
           <p className="text-sm font-black text-white">Sube tu comprobante de pago</p>
         </div>
         <p className="text-xs text-white/55">
@@ -453,7 +453,7 @@ function CheckoutContent() {
           <button
             onClick={() => proofInputRef.current?.click()}
             disabled={uploading}
-            className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-white/10 rounded-xl text-white/55 hover:border-[#FF096C]/40 hover:text-[#FF096C] transition-colors"
+            className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-white/10 rounded-xl text-white/55 hover:border-[#0a95a8]/40 hover:text-[#0a95a8] transition-colors"
           >
             {uploading ? (
               <>
@@ -483,7 +483,7 @@ function CheckoutContent() {
       <button
         onClick={submit}
         disabled={submitting || !proofUrl || uploading}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90 text-white font-black text-sm transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90 text-white font-black text-sm transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {submitting ? (
           <><Loader2 size={15} className="animate-spin" /> Enviando solicitud...</>

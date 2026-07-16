@@ -252,9 +252,9 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-in fade-in duration-300">
                     <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => setShowBlockPicker(false)} />
                     <div className="relative w-full max-w-4xl rounded-[40px] p-12 overflow-hidden border border-white/10 shadow-[0_0_100px_rgba(0,255,136,0.1)] text-white" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
-                        <Glow color="#FF2D95" className="-top-40 -left-40" opacity={0.1} />
+                        <Glow color="#1fb8bb" className="-top-40 -left-40" opacity={0.1} />
                         <h2 className="text-3xl font-black uppercase tracking-tighter mb-12 flex items-center gap-4 text-white">
-                            <div className="w-10 h-1 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] rounded-full" />
+                            <div className="w-10 h-1 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] rounded-full" />
                             Biblioteca de Bloques Pro
                         </h2>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 
 interface Settings {
   name?: string
@@ -73,7 +73,7 @@ export default function CobroEmpresaPage() {
         {loading ? <p style={{ color: '#9AA3B2', textAlign: 'center', padding: 30 }}>Cargando…</p> : (
           <>
             <div style={{ display: 'flex', gap: 9, alignItems: 'center', background: 'rgba(35,59,143,0.06)', border: '1px solid rgba(35,59,143,0.15)', borderRadius: 12, padding: '11px 15px', marginBottom: 18, fontSize: 13, color: '#33405A' }}>
-              <i className="fa-solid fa-circle-info" style={{ color: '#B735B8' }} />
+              <i className="fa-solid fa-circle-info" style={{ color: '#147e95' }} />
               Estos datos los verán <strong>&nbsp;tus usuarios</strong> para pagarte a vos (transferencia / USDT). MY DIAMOND no interviene en el cobro.
             </div>
 
@@ -139,7 +139,7 @@ export default function CobroEmpresaPage() {
 function Card({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
   return (
     <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: '18px 20px', marginBottom: 14, boxShadow: '0 6px 18px -14px rgba(11,27,43,0.35)' }}>
-      <h3 style={{ fontSize: 14, fontWeight: 800, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}><i className={icon} style={{ color: '#B735B8' }} />{title}</h3>
+      <h3 style={{ fontSize: 14, fontWeight: 800, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}><i className={icon} style={{ color: '#147e95' }} />{title}</h3>
       {children}
     </div>
   )

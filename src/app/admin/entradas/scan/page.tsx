@@ -146,7 +146,7 @@ export default function ScanPage() {
   const reset = () => { setResult({ kind: 'idle' }); setManual('') }
 
   // ── Paleta CLARA de la app (fondo #EEF2F7, tarjetas blancas, degradado de marca) ──
-  const BRAND = 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)'
+  const BRAND = 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)'
   const PAGE_BG = '#EEF2F7'
   const SURFACE = '#FFFFFF'
   const BORDER = '#E4E9F0'
@@ -175,7 +175,7 @@ export default function ScanPage() {
 
         {/* Encabezado */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 20px rgba(255,9,108,0.28)', flexShrink: 0 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 20px rgba(0,229,208,0.28)', flexShrink: 0 }}>
             <QrCode size={20} color="#fff" />
           </div>
           <div>
@@ -189,7 +189,7 @@ export default function ScanPage() {
         {/* Cámara */}
         <div style={{ position: 'relative', borderRadius: 18, overflow: 'hidden', background: '#000', aspectRatio: '1/1', marginBottom: 12, display: scanning ? 'block' : 'none', border: `1px solid ${BORDER}`, boxShadow: '0 6px 24px rgba(17,24,39,0.10)' }}>
           <video ref={videoRef} playsInline muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', inset: '18%', border: '3px solid #FF2D95', borderRadius: 18, boxShadow: '0 0 0 9999px rgba(0,0,0,0.42), 0 0 24px rgba(255,45,149,0.5)' }} />
+          <div style={{ position: 'absolute', inset: '18%', border: '3px solid #1fb8bb', borderRadius: 18, boxShadow: '0 0 0 9999px rgba(0,0,0,0.42), 0 0 24px rgba(255,45,149,0.5)' }} />
           <p style={{ position: 'absolute', bottom: 12, left: 0, right: 0, textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#fff', margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.85)' }}>
             Apuntá al QR de la entrada
           </p>
@@ -198,7 +198,7 @@ export default function ScanPage() {
         {!scanning && result.kind === 'idle' && (
           <button
             onClick={startCamera}
-            style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', cursor: 'pointer', fontWeight: 900, fontSize: 15, color: '#fff', background: BRAND, boxShadow: '0 12px 28px rgba(255,9,108,0.26)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+            style={{ width: '100%', padding: '15px 0', borderRadius: 14, border: 'none', cursor: 'pointer', fontWeight: 900, fontSize: 15, color: '#fff', background: BRAND, boxShadow: '0 12px 28px rgba(0,229,208,0.26)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
           >
             <QrCode size={19} /> Escanear con la cámara
           </button>
@@ -244,14 +244,14 @@ export default function ScanPage() {
         {/* Resultado */}
         <div style={{ marginTop: 20 }}>
           {result.kind === 'checking' && (
-            <div style={{ ...CARD, display: 'flex', justifyContent: 'center' }}><Loader2 size={24} className="animate-spin" color="#D203DD" /></div>
+            <div style={{ ...CARD, display: 'flex', justifyContent: 'center' }}><Loader2 size={24} className="animate-spin" color="#00E5D0" /></div>
           )}
 
           {result.kind === 'found' && (
             <div style={CARD}>
               <p style={LABEL}>Entrada válida</p>
               <p style={{ fontSize: 24, fontWeight: 900, margin: '10px 0 3px', color: TXT }}>{result.name}</p>
-              <p style={{ fontSize: 14, color: '#D203DD', fontWeight: 800, margin: 0 }}>{result.type}</p>
+              <p style={{ fontSize: 14, color: '#00E5D0', fontWeight: 800, margin: 0 }}>{result.type}</p>
               <p style={{ fontSize: 13, color: TXT_SOFT, margin: '3px 0 18px' }}>{result.event}</p>
               <button
                 onClick={() => check(result.code, true)}

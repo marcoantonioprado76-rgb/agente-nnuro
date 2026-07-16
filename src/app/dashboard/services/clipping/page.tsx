@@ -241,7 +241,7 @@ function ClippingPageInner() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 50%, #233B8F 100%)' }}>
+            style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 50%, #233B8F 100%)' }}>
             <Play className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -263,7 +263,7 @@ function ClippingPageInner() {
         {[
           { label: 'Ganado', value: `$${totalEarnings.toFixed(2)}`, Icon: DollarSign, color: '#00FF88' },
           { label: 'Pendiente', value: `$${pendingEarnings.toFixed(2)}`, Icon: Clock, color: '#FF8800' },
-          { label: 'Total vistas', value: totalViews.toLocaleString(), Icon: Eye, color: '#D203DD' },
+          { label: 'Total vistas', value: totalViews.toLocaleString(), Icon: Eye, color: '#00E5D0' },
         ].map(({ label, value, Icon, color }) => (
           <div key={label} className="rounded-xl p-4"
             style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>

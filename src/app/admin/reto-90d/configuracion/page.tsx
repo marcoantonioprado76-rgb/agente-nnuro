@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 
 // ── Paleta de marca ───────────────────────────────────────────────────────────
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 
 // ── Sub-navegación del módulo Reto 90D ────────────────────────────────────────
 const NAV = [
@@ -157,7 +157,7 @@ function RetoConnection() {
       <div style={box}>
         {st === 'loading' ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>
-            <Loader2 size={18} className="animate-spin" style={{ color: '#B735B8' }} />
+            <Loader2 size={18} className="animate-spin" style={{ color: '#147e95' }} />
           </div>
         ) : connected ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
@@ -187,7 +187,7 @@ function RetoConnection() {
           </div>
         ) : st === 'connecting' ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: '6px 0' }}>
-            <Loader2 size={20} className="animate-spin" style={{ color: '#B735B8' }} />
+            <Loader2 size={20} className="animate-spin" style={{ color: '#147e95' }} />
             <p style={{ fontSize: 12.5, color: '#6B7280', margin: 0 }}>Generando QR…</p>
           </div>
         ) : st === 'error' ? (
@@ -206,7 +206,7 @@ function RetoConnection() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '4px 0' }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <QrCode size={19} style={{ color: '#B735B8' }} />
+              <QrCode size={19} style={{ color: '#147e95' }} />
             </div>
             <p style={{ fontSize: 12.5, color: '#6B7280', margin: 0, textAlign: 'center' }}>El número del reto no está conectado.</p>
             <button onClick={connect} disabled={connecting} style={primaryBtn}>
@@ -428,7 +428,7 @@ export default function RetoConfiguracionPage() {
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
           <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest flex items-center gap-2">
-            <Settings size={18} className="text-[#B735B8]" /> Reto 90D — Configuración
+            <Settings size={18} className="text-[#147e95]" /> Reto 90D — Configuración
           </h1>
           <div className="h-px w-16 mt-2 rounded-full" style={{ background: BRAND_GRADIENT }} />
         </div>
@@ -437,7 +437,7 @@ export default function RetoConfiguracionPage() {
 
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 size={22} className="animate-spin text-[#B735B8]" />
+            <Loader2 size={22} className="animate-spin text-[#147e95]" />
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -448,7 +448,7 @@ export default function RetoConfiguracionPage() {
                 background: 'rgba(183,53,184,0.06)', border: '1px solid rgba(183,53,184,0.2)',
               }}
             >
-              <Info size={16} className="text-[#B735B8]" style={{ flexShrink: 0, marginTop: 1 }} />
+              <Info size={16} className="text-[#147e95]" style={{ flexShrink: 0, marginTop: 1 }} />
               <p style={{ fontSize: 12.5, color: '#6B7280', lineHeight: 1.6, margin: 0 }}>
                 El número del reto se conecta <strong style={{ color: '#111827' }}>aquí mismo</strong> por QR
                 (más abajo). Es un número dedicado, aparte de tus bots de venta.
@@ -458,7 +458,7 @@ export default function RetoConfiguracionPage() {
             {/* Card: Instrucciones del bot (system prompt) ───────── */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Sparkles size={15} className="text-[#B735B8]" />
+                <Sparkles size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Instrucciones del bot (personalidad)
                 </p>
@@ -479,7 +479,7 @@ export default function RetoConfiguracionPage() {
             {/* Card: Mensaje de bienvenida ──────────────────────── */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Sparkles size={15} className="text-[#B735B8]" />
+                <Sparkles size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Mensaje de bienvenida
                 </p>
@@ -500,7 +500,7 @@ export default function RetoConfiguracionPage() {
             {/* Card: API Key de OpenAI (motor de la IA) ──────────── */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Sparkles size={15} className="text-[#B735B8]" />
+                <Sparkles size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   API Key de OpenAI
                 </p>
@@ -541,7 +541,7 @@ export default function RetoConfiguracionPage() {
             {/* Card: Voz del bot (ElevenLabs) ────────────────────── */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <Mic size={15} className="text-[#B735B8]" />
+                <Mic size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Voz del bot (ElevenLabs)
                 </p>
@@ -609,7 +609,7 @@ export default function RetoConfiguracionPage() {
             {/* Card: Bot y contactos ─────────────────────────────── */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Bot size={15} className="text-[#B735B8]" />
+                <Bot size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Bot y contactos
                 </p>
@@ -717,7 +717,7 @@ export default function RetoConfiguracionPage() {
             {/* Card: Horarios ────────────────────────────────────── */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <Clock size={15} className="text-[#B735B8]" />
+                <Clock size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Horarios
                 </p>

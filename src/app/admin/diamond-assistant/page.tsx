@@ -58,9 +58,9 @@ const MSG_STATUS_STYLE: Record<MsgStatus, { label: string; color: string; bg: st
 
 const CAMPAIGN_STATUS_STYLE: Record<CampaignStatus, { label: string; color: string }> = {
   DRAFT: { label: 'Borrador', color: '#6B7280' },
-  PENDING_APPROVAL: { label: 'Por aprobar', color: '#B735B8' },
+  PENDING_APPROVAL: { label: 'Por aprobar', color: '#147e95' },
   SCHEDULED: { label: 'Programada', color: '#233B8F' },
-  SENDING: { label: 'Enviando', color: '#FF2D95' },
+  SENDING: { label: 'Enviando', color: '#1fb8bb' },
   SENT: { label: 'Enviada', color: '#16A34A' },
   FAILED: { label: 'Fallida', color: '#DC2626' },
   CANCELLED: { label: 'Cancelada', color: '#9CA3AF' },
@@ -138,7 +138,7 @@ export default function DiamondAssistantDashboard() {
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '90px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : error ? (
         <div style={{ ...cardStyle, textAlign: 'center', padding: '48px 16px' }}>
@@ -194,7 +194,7 @@ export default function DiamondAssistantDashboard() {
             {/* Actividad reciente */}
             <div style={cardStyle}>
               <p style={{ ...sectionTitle, display: 'flex', alignItems: 'center', gap: 7 }}>
-                <Activity size={13} style={{ color: '#B735B8' }} /> Actividad reciente
+                <Activity size={13} style={{ color: '#147e95' }} /> Actividad reciente
               </p>
               {data.recent.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '28px 8px' }}>
@@ -215,7 +215,7 @@ export default function DiamondAssistantDashboard() {
                         }}
                       >
                         <div style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isOut ? 'rgba(35,59,143,0.10)' : 'rgba(183,53,184,0.10)' }}>
-                          {isOut ? <ArrowUpRight size={14} style={{ color: '#233B8F' }} /> : <ArrowDownLeft size={14} style={{ color: '#B735B8' }} />}
+                          {isOut ? <ArrowUpRight size={14} style={{ color: '#233B8F' }} /> : <ArrowDownLeft size={14} style={{ color: '#147e95' }} />}
                         </div>
                         <div style={{ minWidth: 0, flex: 1 }}>
                           <p style={{ fontSize: 12.5, fontWeight: 700, margin: 0, fontFamily: 'ui-monospace, monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{log.contactPhone}</p>

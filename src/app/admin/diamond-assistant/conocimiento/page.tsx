@@ -332,7 +332,7 @@ export default function DiamondAssistantConocimiento() {
       {/* ── Carga de agentes ────────────────────────────────────────── */}
       {loadingAgents ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : agentsError ? (
         <ErrorBox message={agentsError} />
@@ -351,7 +351,7 @@ export default function DiamondAssistantConocimiento() {
               background: 'rgba(183,53,184,0.10)',
             }}
           >
-            <Bot size={26} style={{ color: '#B735B8' }} />
+            <Bot size={26} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>Aún no hay agentes</p>
           <p style={{ fontSize: 13, color: MUTED, margin: '6px 0 0', lineHeight: 1.55, maxWidth: 420, marginInline: 'auto' }}>
@@ -365,7 +365,7 @@ export default function DiamondAssistantConocimiento() {
           <div style={{ ...cardStyle, marginBottom: 18, padding: 16 }}>
             <label style={labelStyle}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <Bot size={12} style={{ color: '#B735B8' }} /> Agente a entrenar
+                <Bot size={12} style={{ color: '#147e95' }} /> Agente a entrenar
               </span>
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -392,7 +392,7 @@ export default function DiamondAssistantConocimiento() {
           {/* ── Lista de conocimiento ─────────────────────────────────── */}
           {loadingItems ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '48px 0' }}>
-              <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+              <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
             </div>
           ) : itemsError ? (
             <ErrorBox message={itemsError} />

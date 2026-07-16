@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
         start_url: '/',
         display: 'standalone',
         background_color: '#07102e',
-        theme_color: '#D203DD',
+        theme_color: '#00E5D0',
         icons: [
             {
                 src: '/logo-oficial-mydiamond.png',

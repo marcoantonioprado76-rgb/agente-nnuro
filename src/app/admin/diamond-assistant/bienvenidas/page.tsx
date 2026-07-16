@@ -481,7 +481,7 @@ export default function DiamondAssistantBienvenidas() {
       {/* ── Carga de agentes ────────────────────────────────────────── */}
       {loadingAgents ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : agentsError ? (
         <ErrorBox message={agentsError} />
@@ -489,7 +489,7 @@ export default function DiamondAssistantBienvenidas() {
         // Sin agentes: guiar a crear uno primero.
         <div style={{ ...cardStyle, textAlign: 'center', padding: '48px 24px' }}>
           <div style={emptyIconWrap('rgba(183,53,184,0.10)')}>
-            <Bot size={26} style={{ color: '#B735B8' }} />
+            <Bot size={26} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>Aún no hay agentes</p>
           <p style={{ fontSize: 13, color: MUTED, margin: '6px 0 0', lineHeight: 1.55, maxWidth: 420, marginInline: 'auto' }}>
@@ -503,7 +503,7 @@ export default function DiamondAssistantBienvenidas() {
           <div style={{ ...cardStyle, marginBottom: 18, padding: 16 }}>
             <label style={labelStyle}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <Bot size={12} style={{ color: '#B735B8' }} /> Agente
+                <Bot size={12} style={{ color: '#147e95' }} /> Agente
               </span>
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -567,14 +567,14 @@ export default function DiamondAssistantBienvenidas() {
           {/* ── Lista de plantillas ───────────────────────────────────── */}
           {loadingItems ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '48px 0' }}>
-              <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+              <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
             </div>
           ) : itemsError ? (
             <ErrorBox message={itemsError} />
           ) : visibleItems.length === 0 ? (
             <div style={{ ...cardStyle, textAlign: 'center', padding: '48px 24px' }}>
               <div style={emptyIconWrap('rgba(255,45,149,0.10)')}>
-                <PartyPopper size={26} style={{ color: '#FF2D95' }} />
+                <PartyPopper size={26} style={{ color: '#1fb8bb' }} />
               </div>
               <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>
                 {activeKind === 'PRIVATE' ? 'Sin bienvenidas al privado todavía' : 'Este agente aún no tiene bienvenidas'}
@@ -721,7 +721,7 @@ export default function DiamondAssistantBienvenidas() {
               <div style={{ marginBottom: 16 }}>
                 <label style={labelStyle}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <Eye size={12} style={{ color: '#B735B8' }} /> Vista previa
+                    <Eye size={12} style={{ color: '#147e95' }} /> Vista previa
                     <span style={{ textTransform: 'none', fontWeight: 600, color: '#B0B7C3' }}>· con datos de ejemplo</span>
                   </span>
                 </label>
@@ -984,7 +984,7 @@ const primaryBtnStyle: CSSProperties = {
 const codeChip: CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
-  color: '#B735B8',
+  color: '#147e95',
   background: 'rgba(183,53,184,0.10)',
   padding: '1px 6px',
   borderRadius: 6,

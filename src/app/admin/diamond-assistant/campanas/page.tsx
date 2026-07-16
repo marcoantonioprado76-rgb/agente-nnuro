@@ -150,7 +150,7 @@ const STATUS_META: Record<
   DRAFT: { label: 'Borrador', color: '#6B7280', bg: 'rgba(107,114,128,0.10)', border: 'rgba(107,114,128,0.22)' },
   PENDING_APPROVAL: { label: 'Pendiente de aprobación', color: '#B45309', bg: 'rgba(245,158,11,0.13)', border: 'rgba(245,158,11,0.32)' },
   SCHEDULED: { label: 'Aprobada · lista para enviar', color: '#233B8F', bg: 'rgba(35,59,143,0.10)', border: 'rgba(35,59,143,0.24)' },
-  SENDING: { label: 'Enviando…', color: '#B735B8', bg: 'rgba(183,53,184,0.10)', border: 'rgba(183,53,184,0.24)' },
+  SENDING: { label: 'Enviando…', color: '#147e95', bg: 'rgba(183,53,184,0.10)', border: 'rgba(183,53,184,0.24)' },
   SENT: { label: 'Enviada', color: '#16A34A', bg: 'rgba(22,163,74,0.10)', border: 'rgba(22,163,74,0.25)' },
   FAILED: { label: 'Fallida', color: '#DC2626', bg: 'rgba(220,38,38,0.10)', border: 'rgba(220,38,38,0.25)' },
   CANCELLED: { label: 'Cancelada', color: '#6B7280', bg: 'rgba(107,114,128,0.10)', border: 'rgba(107,114,128,0.22)' },
@@ -726,7 +726,7 @@ export default function DiamondAssistantCampanas() {
           marginBottom: 14,
         }}
       >
-        <ShieldCheck size={18} style={{ color: '#B735B8', flexShrink: 0, marginTop: 1 }} />
+        <ShieldCheck size={18} style={{ color: '#147e95', flexShrink: 0, marginTop: 1 }} />
         <p style={{ fontSize: 12.5, color: MUTED, margin: 0, lineHeight: 1.55 }}>
           Toda campaña nace <strong style={{ color: '#B45309' }}>pendiente de aprobación</strong> y no se envía hasta que la apruebes.
           Al ejecutar, se hace un <strong>envío simulado</strong> que queda registrado en el Historial:{' '}
@@ -779,7 +779,7 @@ export default function DiamondAssistantCampanas() {
       {/* Lista */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '64px 0' }}>
-          <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : error ? (
         <div style={{ textAlign: 'center', padding: '56px 16px', background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 16 }}>
@@ -792,7 +792,7 @@ export default function DiamondAssistantCampanas() {
       ) : campaigns.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '56px 16px', background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 16 }}>
           <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-            <Megaphone size={24} style={{ color: '#B735B8' }} />
+            <Megaphone size={24} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>{statusFilter ? 'Sin campañas en este estado' : 'Aún no hay campañas'}</p>
           <p style={{ fontSize: 12.5, color: MUTED, margin: '4px 0 16px' }}>
@@ -825,14 +825,14 @@ export default function DiamondAssistantCampanas() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 6, fontSize: 11.5, color: MUTED }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Sparkles size={12} style={{ color: '#B735B8' }} /> {agentName(c.agentId, c.agent?.name)}
+                        <Sparkles size={12} style={{ color: '#147e95' }} /> {agentName(c.agentId, c.agent?.name)}
                       </span>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <Users size={12} style={{ color: '#233B8F' }} /> {TARGET_LABEL[c.targetType]}
                       </span>
                       {c.mediaAssetId && (
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <Paperclip size={12} style={{ color: '#FF2D95' }} />
+                          <Paperclip size={12} style={{ color: '#1fb8bb' }} />
                           {c.mediaTitle ?? 'Adjunto'}{c.mediaType ? ` · ${MEDIA_LABEL[c.mediaType]}` : ''}
                         </span>
                       )}
@@ -864,7 +864,7 @@ export default function DiamondAssistantCampanas() {
                       </button>
                     )}
                     {busy && (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 13px', borderRadius: 9, fontSize: 12, fontWeight: 800, color: '#B735B8', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.24)' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 13px', borderRadius: 9, fontSize: 12, fontWeight: 800, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.24)' }}>
                         <Loader2 size={13} className="animate-spin" /> Enviando…
                       </span>
                     )}
@@ -1094,10 +1094,10 @@ export default function DiamondAssistantCampanas() {
                       {selectedContacts.length > 0 && (
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
                           {selectedContacts.map((c) => (
-                            <span key={c.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 999, color: '#B735B8', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)' }}>
+                            <span key={c.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)' }}>
                               {c.name || c.phone}
                               <button type="button" onClick={() => toggleContact(c)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', padding: 0 }}>
-                                <X size={11} style={{ color: '#B735B8' }} />
+                                <X size={11} style={{ color: '#147e95' }} />
                               </button>
                             </span>
                           ))}
@@ -1106,7 +1106,7 @@ export default function DiamondAssistantCampanas() {
                       <div style={{ maxHeight: 168, overflowY: 'auto', border: `1px solid ${BORDER}`, borderRadius: 10 }}>
                         {contactLoading ? (
                           <div style={{ padding: 18, textAlign: 'center' }}>
-                            <Loader2 size={16} className="animate-spin" style={{ color: '#B735B8' }} />
+                            <Loader2 size={16} className="animate-spin" style={{ color: '#147e95' }} />
                           </div>
                         ) : contactResults.length === 0 ? (
                           <p style={{ fontSize: 12, color: MUTED, textAlign: 'center', padding: 16, margin: 0 }}>Sin contactos.</p>
@@ -1271,7 +1271,7 @@ export default function DiamondAssistantCampanas() {
                 </div>
 
                 <div style={{ marginTop: 10, display: 'flex', alignItems: 'flex-start', gap: 7, fontSize: 11, color: MUTED, lineHeight: 1.5 }}>
-                  <Gauge size={13} style={{ color: '#B735B8', flexShrink: 0, marginTop: 1 }} />
+                  <Gauge size={13} style={{ color: '#147e95', flexShrink: 0, marginTop: 1 }} />
                   <span>La campaña quedará pendiente de aprobación. El envío real por WhatsApp se activa en la fase de integración.</span>
                 </div>
               </div>

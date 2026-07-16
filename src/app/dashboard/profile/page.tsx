@@ -79,7 +79,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" style={{ background: 'linear-gradient(135deg,#F8FAFC,#F5F7FA 45%,#EEF2F7)' }}>
-        <Loader2 className="w-9 h-9 animate-spin" style={{ color: '#FF096C' }} />
+        <Loader2 className="w-9 h-9 animate-spin" style={{ color: '#0a95a8' }} />
       </div>
     )
   }
@@ -87,14 +87,14 @@ export default function ProfilePage() {
   if (!user) return null
 
   const fields = [
-    { icon: User,     label: 'Usuario',            value: `@${user.username}`,         color: '#FF096C' },
-    { icon: Mail,     label: 'Correo Electrónico',  value: user.email,                  color: '#B735B8' },
+    { icon: User,     label: 'Usuario',            value: `@${user.username}`,         color: '#0a95a8' },
+    { icon: Mail,     label: 'Correo Electrónico',  value: user.email,                  color: '#147e95' },
     { icon: MapPin,   label: 'Ubicación',           value: user.city && user.country ? `${user.city}, ${user.country}` : 'No especificada', color: '#233B8F' },
     { icon: Calendar, label: 'Miembro desde',       value: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-', color: '#16A34A' },
   ]
 
   return (
-    <div className="font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(255,9,108,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', minHeight: '100vh' }}>
+    <div className="font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(0,229,208,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', minHeight: '100vh' }}>
     <div className="px-4 sm:px-6 lg:px-8 pt-8 max-w-screen-xl mx-auto pb-20 space-y-6">
 
       {/* Header */}
@@ -108,7 +108,7 @@ export default function ProfilePage() {
         {/* Card de perfil */}
         <div className="dm-card-dark md:col-span-1" style={{ padding: 28, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <div className="relative mb-4">
-            <div style={{ width: 84, height: 84, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--dm-grad)', color: '#fff', boxShadow: '0 14px 32px rgba(255,9,108,0.26)' }}>
+            <div style={{ width: 84, height: 84, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--dm-grad)', color: '#fff', boxShadow: '0 14px 32px rgba(0,229,208,0.26)' }}>
               <UserCircle className="w-12 h-12" />
             </div>
             <div style={{ position: 'absolute', bottom: 4, right: 4, width: 16, height: 16, borderRadius: '50%', border: '2px solid #fff', background: user.isActive ? '#16A34A' : '#ef4444' }} />
@@ -141,12 +141,12 @@ export default function ProfilePage() {
               <h2 className="font-display" style={{ fontSize: 22, fontWeight: 600, color: '#fff', margin: 0 }}>{user.fullName}</h2>
               <button onClick={startEdit} title="Editar nombre"
                 style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Pencil className="w-3 h-3" style={{ color: '#FF096C' }} />
+                <Pencil className="w-3 h-3" style={{ color: '#0a95a8' }} />
               </button>
             </div>
           )}
 
-          <p style={{ fontSize: 12, letterSpacing: '0.08em', color: '#FF096C', fontWeight: 600, margin: '2px 0 14px' }}>@{user.username}</p>
+          <p style={{ fontSize: 12, letterSpacing: '0.08em', color: '#0a95a8', fontWeight: 600, margin: '2px 0 14px' }}>@{user.username}</p>
 
           {msg && (
             <div style={{ width: '100%', marginBottom: 12, padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600,
@@ -166,7 +166,7 @@ export default function ProfilePage() {
         {/* Detalles */}
         <div className="dm-card-dark md:col-span-2" style={{ padding: 28 }}>
           <div className="flex items-center gap-2 mb-6">
-            <FileText className="w-4 h-4" style={{ color: '#B735B8' }} />
+            <FileText className="w-4 h-4" style={{ color: '#147e95' }} />
             <h3 style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#fff', margin: 0 }}>Detalles de la Cuenta</h3>
           </div>
           <div className="grid gap-3">

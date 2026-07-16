@@ -290,7 +290,7 @@ export default function AdminCoursesPage() {
     <div>
       <div style={{ marginBottom: 24 }}>
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">JD Academy</h1>
-        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
       </div>
 
       {/* Tabs */}
@@ -299,8 +299,8 @@ export default function AdminCoursesPage() {
           <button key={tab} onClick={() => setActiveTab(tab)}
             style={{
               padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', border: 'none',
-              background: 'none', borderBottom: activeTab === tab ? '2px solid #B735B8' : '2px solid transparent',
-              color: activeTab === tab ? '#B735B8' : '#6B7280',
+              background: 'none', borderBottom: activeTab === tab ? '2px solid #147e95' : '2px solid transparent',
+              color: activeTab === tab ? '#147e95' : '#6B7280',
               marginBottom: -1,
             }}>
             {tab === 'courses' ? 'Cursos' : 'Inscripciones'}
@@ -316,7 +316,7 @@ export default function AdminCoursesPage() {
             <button
               onClick={() => { setSaveError(null); setCourseModal({ mode: 'create', data: { ...EMPTY_COURSE, videos: [{ title: '', youtubeUrl: '' }] } }) }}
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 700,
-                background: 'linear-gradient(135deg, #D203DD 0%, #00FF88 100%)', color: '#000', border: 'none', cursor: 'pointer' }}
+                background: 'linear-gradient(135deg, #00E5D0 0%, #00FF88 100%)', color: '#000', border: 'none', cursor: 'pointer' }}
             >
               <Plus size={14} /> Nuevo curso
             </button>
@@ -335,7 +335,7 @@ export default function AdminCoursesPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   {/* Cover thumb */}
                   <div style={{ width: 48, height: 48, borderRadius: 10, flexShrink: 0, overflow: 'hidden',
-                    background: 'rgba(210,3,221,0.06)', border: '1px solid rgba(210,3,221,0.1)' }}>
+                    background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(0,229,208,0.1)' }}>
                     {c.coverUrl ? (
                       <img src={c.coverUrl} alt={c.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
@@ -393,7 +393,7 @@ export default function AdminCoursesPage() {
                     </span>
                     {c.freeForPlan && (
                       <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', padding: '3px 8px', borderRadius: 6,
-                        color: '#B735B8', background: 'rgba(210,3,221,0.08)', border: '1px solid rgba(210,3,221,0.2)' }}>
+                        color: '#147e95', background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.2)' }}>
                         Gratis / Plan
                       </span>
                     )}
@@ -413,9 +413,9 @@ export default function AdminCoursesPage() {
             {(['ALL', 'PENDING', 'PENDING_VERIFICATION', 'APPROVED', 'REJECTED'] as const).map(s => (
               <button key={s} onClick={() => setEnrollmentTab(s)}
                 style={{ padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid',
-                  borderColor: enrollmentTab === s ? 'rgba(210,3,221,0.4)' : '#E4E9F0',
-                  background: enrollmentTab === s ? 'rgba(210,3,221,0.08)' : 'transparent',
-                  color: enrollmentTab === s ? '#B735B8' : '#6B7280' }}>
+                  borderColor: enrollmentTab === s ? 'rgba(0,229,208,0.4)' : '#E4E9F0',
+                  background: enrollmentTab === s ? 'rgba(0,229,208,0.08)' : 'transparent',
+                  color: enrollmentTab === s ? '#147e95' : '#6B7280' }}>
                 {s === 'ALL' ? 'Todas' : STATUS_LABEL[s]}
               </button>
             ))}
@@ -438,7 +438,7 @@ export default function AdminCoursesPage() {
                       <p style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{e.user.fullName}</p>
                       <p style={{ fontSize: 12, color: '#6B7280' }}>{e.user.username} · {e.user.email}</p>
                       <p style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-                        Curso: <span style={{ color: '#B735B8' }}>{e.course.title}</span>
+                        Curso: <span style={{ color: '#147e95' }}>{e.course.title}</span>
                         <span style={{ color: '#6B7280' }}> — {Number(e.course.price).toFixed(2)} USDT</span>
                       </p>
                       <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
@@ -453,8 +453,8 @@ export default function AdminCoursesPage() {
 
                       {e.proofUrl && (
                         <a href={e.proofUrl} target="_blank" rel="noopener noreferrer"
-                          style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#B735B8',
-                            padding: '5px 10px', borderRadius: 8, background: 'rgba(210,3,221,0.08)', border: '1px solid rgba(210,3,221,0.2)', textDecoration: 'none' }}>
+                          style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#147e95',
+                            padding: '5px 10px', borderRadius: 8, background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.2)', textDecoration: 'none' }}>
                           <ExternalLink size={11} /> Comprobante
                         </a>
                       )}
@@ -638,7 +638,7 @@ export default function AdminCoursesPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <label style={{ fontSize: 12, color: '#6B7280' }}>Videos del curso</label>
                 <button onClick={addVideo}
-                  style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#D203DD', background: 'none', border: 'none', cursor: 'pointer' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#00E5D0', background: 'none', border: 'none', cursor: 'pointer' }}>
                   <Plus size={12} /> Agregar
                 </button>
               </div>
@@ -655,7 +655,7 @@ export default function AdminCoursesPage() {
                       <input type="text" value={v.moduloTitulo || ''} onChange={e => setVideo(idx, 'moduloTitulo', e.target.value)}
                         placeholder="Sección / Módulo (opcional, ej. Introducción)"
                         style={{ width: '100%', padding: '7px 10px', borderRadius: 8, fontSize: 11, color: 'rgba(255,255,255,0.85)', marginBottom: 6,
-                          background: 'rgba(210,3,221,0.05)', border: '1px solid rgba(210,3,221,0.2)', outline: 'none', boxSizing: 'border-box' }} />
+                          background: 'rgba(0,229,208,0.05)', border: '1px solid rgba(0,229,208,0.2)', outline: 'none', boxSizing: 'border-box' }} />
                       <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: v.preview ? '#00FF88' : '#6B7280', cursor: 'pointer', marginBottom: 6 }}>
                         <input type="checkbox" checked={!!v.preview} onChange={e => setVideo(idx, 'preview', e.target.checked)} />
                         🎁 Gratis (preview) — se puede ver sin inscribirse
@@ -671,11 +671,11 @@ export default function AdminCoursesPage() {
                         <div style={{ fontSize: 11, color: '#6B7280', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: '8px 10px' }}>
                           Subiendo… {up}%
                           <div style={{ height: 4, borderRadius: 4, background: '#E4E9F0', marginTop: 6, overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${up}%`, background: 'linear-gradient(90deg,#D203DD,#00FF88)', transition: 'width 0.2s' }} />
+                            <div style={{ height: '100%', width: `${up}%`, background: 'linear-gradient(90deg,#00E5D0,#00FF88)', transition: 'width 0.2s' }} />
                           </div>
                         </div>
                       ) : (
-                        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#D203DD', background: 'rgba(210,3,221,0.06)', border: '1px dashed rgba(210,3,221,0.35)', borderRadius: 8, padding: '9px 10px', cursor: 'pointer' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#00E5D0', background: 'rgba(0,229,208,0.06)', border: '1px dashed rgba(0,229,208,0.35)', borderRadius: 8, padding: '9px 10px', cursor: 'pointer' }}>
                           <Upload size={14} /> Subir video
                           <input type="file" accept="video/*" style={{ display: 'none' }}
                             onChange={e => { const f = e.target.files?.[0]; if (f) uploadVideo(idx, f); e.target.value = '' }} />
@@ -704,7 +704,7 @@ export default function AdminCoursesPage() {
                             <button onClick={() => removeResource(idx, j)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: 12 }}>✕</button>
                           </div>
                         ))}
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#D203DD', cursor: 'pointer' }}>
+                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#00E5D0', cursor: 'pointer' }}>
                           <Plus size={11} /> Agregar recurso (PDF, etc.)
                           <input type="file" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadResource(idx, f); e.target.value = '' }} />
                         </label>
@@ -730,7 +730,7 @@ export default function AdminCoursesPage() {
               </button>
               <button onClick={saveCourse} disabled={saving}
                 style={{ flex: 2, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 700,
-                  background: saving ? 'rgba(210,3,221,0.3)' : 'linear-gradient(135deg, #D203DD 0%, #00FF88 100%)',
+                  background: saving ? 'rgba(0,229,208,0.3)' : 'linear-gradient(135deg, #00E5D0 0%, #00FF88 100%)',
                   border: 'none', color: '#000', cursor: saving ? 'not-allowed' : 'pointer' }}>
                 {saving ? 'Guardando...' : courseModal.mode === 'create' ? 'Crear curso' : 'Guardar cambios'}
               </button>

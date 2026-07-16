@@ -22,7 +22,7 @@ interface Item {
   updatedAt: string
 }
 
-const BRAND = 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)'
+const BRAND = 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)'
 const C = {
   card: '#FFFFFF',
   panel: '#F5F7FA',
@@ -31,7 +31,7 @@ const C = {
   ink: '#111827',
   muted: '#6B7280',
   faint: '#9AA3AF',
-  accent: '#B735B8',
+  accent: '#147e95',
   greenSoft: '#E7F6EC',
   greenText: '#16A34A',
   neutralPill: '#F1F4F8',

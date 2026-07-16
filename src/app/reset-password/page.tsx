@@ -10,7 +10,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
       <div style={{background:'linear-gradient(135deg,#F8FAFC,#F5F7FA 45%,#EEF2F7)',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#FF096C]/30 border-t-[#FF096C] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#0a95a8]/30 border-t-[#0a95a8] rounded-full animate-spin" />
       </div>
     }>
       <ResetForm />
@@ -63,7 +63,7 @@ function ResetForm() {
 
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-[450px] h-[450px] rounded-full bg-purple-600/8 blur-[130px]" />
-        <div className="absolute -bottom-40 -left-40 w-[450px] h-[450px] rounded-full bg-[#FF096C]/8 blur-[130px]" />
+        <div className="absolute -bottom-40 -left-40 w-[450px] h-[450px] rounded-full bg-[#0a95a8]/8 blur-[130px]" />
       </div>
 
       <div className="w-full max-w-[340px] relative z-10">
@@ -87,10 +87,10 @@ function ResetForm() {
                 href="/login"
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98]"
                 style={{
-                  background: 'linear-gradient(135deg, #0D1E79, #D203DD)',
+                  background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
                   color: '#fff',
                   border: '1px solid rgba(255,255,255,0.12)',
-                  boxShadow: '0 4px 20px rgba(210,3,221,0.25)',
+                  boxShadow: '0 4px 20px rgba(0,229,208,0.25)',
                 }}
               >
                 Iniciar sesión <ArrowRight size={13} />
@@ -152,10 +152,10 @@ function ResetForm() {
                   disabled={loading}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-60 mt-1"
                   style={{
-                    background: 'linear-gradient(135deg, #0D1E79, #D203DD)',
+                    background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
                     color: '#fff',
                     border: '1px solid rgba(255,255,255,0.12)',
-                    boxShadow: '0 4px 20px rgba(210,3,221,0.25)',
+                    boxShadow: '0 4px 20px rgba(0,229,208,0.25)',
                   }}
                 >
                   {loading

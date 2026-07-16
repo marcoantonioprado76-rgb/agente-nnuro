@@ -246,7 +246,7 @@ export default function AdminSettingsPage() {
           placeholder={placeholder}
           value={prices[settingKey] ?? ''}
           onChange={e => setPrices(prev => ({ ...prev, [settingKey]: e.target.value }))}
-          className="w-28 bg-[#F4F6FA] border border-[#E4E9F0] rounded-xl pl-6 pr-3 py-2 text-sm font-bold text-[#111827] outline-none focus:border-[#B735B8]/50 text-right"
+          className="w-28 bg-[#F4F6FA] border border-[#E4E9F0] rounded-xl pl-6 pr-3 py-2 text-sm font-bold text-[#111827] outline-none focus:border-[#147e95]/50 text-right"
         />
       </div>
       <button
@@ -277,7 +277,7 @@ export default function AdminSettingsPage() {
           placeholder={placeholder ?? fallback}
           value={prices[settingKey] ?? ''}
           onChange={e => setPrices(prev => ({ ...prev, [settingKey]: e.target.value }))}
-          className={`w-28 bg-[#F4F6FA] border border-[#E4E9F0] rounded-xl ${prefix ? 'pl-6' : 'pl-3'} pr-3 py-2 text-sm font-bold text-[#111827] outline-none focus:border-[#B735B8]/50 text-right`}
+          className={`w-28 bg-[#F4F6FA] border border-[#E4E9F0] rounded-xl ${prefix ? 'pl-6' : 'pl-3'} pr-3 py-2 text-sm font-bold text-[#111827] outline-none focus:border-[#147e95]/50 text-right`}
         />
       </div>
       <button

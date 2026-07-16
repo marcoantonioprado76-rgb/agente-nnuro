@@ -59,7 +59,7 @@ function CommissionsContent() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #FF2D95, #B735B8 50%, #233B8F)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          style={{ background: 'linear-gradient(135deg, #1fb8bb, #147e95 50%, #233B8F)', border: '1px solid rgba(255,255,255,0.12)' }}>
           <Wallet className="w-5 h-5 text-white" />
         </div>
         <div>

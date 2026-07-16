@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Trophy, Pencil, Trash2, Plus, Check, X, CalendarDays, Loader2, Power } from 'lucide-react'
 
-const BRAND = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 const BORDER = '#E4E9F0'
 const TEXT = '#111827'
 const MUTED = '#6B7280'

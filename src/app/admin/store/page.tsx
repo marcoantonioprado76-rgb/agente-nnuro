@@ -191,7 +191,7 @@ export default function AdminStorePage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Tienda Admin</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
       </div>
 
       {/* Tabs */}
@@ -199,9 +199,9 @@ export default function AdminStorePage() {
         {(['items', 'orders'] as const).map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
             style={{ padding: '8px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1px solid',
-              borderColor: activeTab === t ? 'rgba(210,3,221,0.4)' : '#E4E9F0',
-              background: activeTab === t ? 'rgba(210,3,221,0.08)' : 'transparent',
-              color: activeTab === t ? '#B735B8' : '#6B7280' }}>
+              borderColor: activeTab === t ? 'rgba(0,229,208,0.4)' : '#E4E9F0',
+              background: activeTab === t ? 'rgba(0,229,208,0.08)' : 'transparent',
+              color: activeTab === t ? '#147e95' : '#6B7280' }}>
             {t === 'items' ? '🏷️ Productos' : '📦 Pedidos'}
           </button>
         ))}
@@ -214,7 +214,7 @@ export default function AdminStorePage() {
             <button onClick={fetchItems} style={{ padding: '7px 10px', borderRadius: 8, background: '#F0F3F7', border: '1px solid #E4E9F0', cursor: 'pointer' }}>
               <RefreshCw size={13} className="text-[#111827]/40" />
             </button>
-            <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 8, background: 'linear-gradient(135deg, #D203DD, #00FF88)', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13, color: '#000' }}>
+            <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 8, background: 'linear-gradient(135deg, #00E5D0, #00FF88)', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13, color: '#000' }}>
               <Plus size={14} /> Nuevo producto
             </button>
           </div>
@@ -242,7 +242,7 @@ export default function AdminStorePage() {
                       {item.active ? 'Activo' : 'Inactivo'}
                     </span>
                     <div style={{ display: 'flex', gap: 6 }}>
-                      <button onClick={() => openEdit(item)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(210,3,221,0.07)', border: '1px solid rgba(210,3,221,0.15)', cursor: 'pointer', color: '#B735B8' }}><Edit2 size={13} /></button>
+                      <button onClick={() => openEdit(item)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(0,229,208,0.07)', border: '1px solid rgba(0,229,208,0.15)', cursor: 'pointer', color: '#147e95' }}><Edit2 size={13} /></button>
                       <button onClick={() => setDeleteConfirm(item.id)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer', color: '#ef4444' }}><Trash2 size={13} /></button>
                     </div>
                   </div>
@@ -260,8 +260,8 @@ export default function AdminStorePage() {
             {ORDER_STATUSES.map(s => (
               <button key={s} onClick={() => setOrderTab(s)}
                 style={{ padding: '5px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: 'transparent',
-                  borderColor: orderTab === s ? 'rgba(210,3,221,0.4)' : '#E4E9F0',
-                  color: orderTab === s ? '#B735B8' : '#6B7280' }}>
+                  borderColor: orderTab === s ? 'rgba(0,229,208,0.4)' : '#E4E9F0',
+                  color: orderTab === s ? '#147e95' : '#6B7280' }}>
                 {s === 'ALL' ? 'Todos' : STATUS_LABEL[s]}
               </button>
             ))}
@@ -348,7 +348,7 @@ export default function AdminStorePage() {
                           {order.txHash && (
                             <p style={{ fontSize: 11, marginTop: 4 }}>
                               <span style={{ color: '#6B7280' }}>Tx: </span>
-                              <a href={`https://bscscan.com/tx/${order.txHash}`} target="_blank" rel="noreferrer" style={{ color: '#B735B8', wordBreak: 'break-all', textDecoration: 'none' }}>{order.txHash} ↗</a>
+                              <a href={`https://bscscan.com/tx/${order.txHash}`} target="_blank" rel="noreferrer" style={{ color: '#147e95', wordBreak: 'break-all', textDecoration: 'none' }}>{order.txHash} ↗</a>
                             </p>
                           )}
                           {order.proofUrl && (
@@ -363,7 +363,7 @@ export default function AdminStorePage() {
                           {order.status === 'PENDING' && (
                             <>
                               <button onClick={() => doOrderAction(order.id, 'approve')} disabled={actionLoading === order.id}
-                                style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg, #D203DD, #00FF88)', color: '#000' }}>
+                                style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg, #00E5D0, #00FF88)', color: '#000' }}>
                                 {actionLoading === order.id ? '...' : '✓ Aprobar'}
                               </button>
                               <button onClick={() => { setRejectModal({ id: order.id }); setRejectNotes('') }}
@@ -375,7 +375,7 @@ export default function AdminStorePage() {
                           {order.status === 'PENDING_VERIFICATION' && (
                             <>
                               <button onClick={() => doOrderAction(order.id, 'approve')} disabled={actionLoading === order.id}
-                                style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg, #D203DD, #00FF88)', color: '#000' }}>
+                                style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg, #00E5D0, #00FF88)', color: '#000' }}>
                                 {actionLoading === order.id ? '...' : '✓ Aprobar manualmente'}
                               </button>
                               <button onClick={() => { setRejectModal({ id: order.id }); setRejectNotes('') }}
@@ -393,7 +393,7 @@ export default function AdminStorePage() {
                           )}
                           {order.status === 'SHIPPED' && (
                             <button onClick={() => doOrderAction(order.id, 'deliver')} disabled={actionLoading === order.id}
-                              style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg, #00FF88, #D203DD)', color: '#000' }}>
+                              style={{ padding: '7px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg, #00FF88, #00E5D0)', color: '#000' }}>
                               📦 Marcar entregado
                             </button>
                           )}
@@ -444,7 +444,7 @@ export default function AdminStorePage() {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                   <label className={LABEL} style={{ margin: 0 }}>Imágenes (URLs)</label>
-                  <button onClick={addImage} style={{ fontSize: 11, color: '#D203DD', background: 'none', border: 'none', cursor: 'pointer' }}>+ Agregar</button>
+                  <button onClick={addImage} style={{ fontSize: 11, color: '#00E5D0', background: 'none', border: 'none', cursor: 'pointer' }}>+ Agregar</button>
                 </div>
                 {form.images.map((img, i) => (
                   <div key={i} style={{ marginBottom: 8 }}>
@@ -468,7 +468,7 @@ export default function AdminStorePage() {
                         onClick={() => fileInputRefs.current[i]?.click()}
                         disabled={uploadingIdx === i}
                         title="Subir imagen"
-                        style={{ padding: '0 10px', borderRadius: 7, background: 'rgba(210,3,221,0.07)', border: '1px solid rgba(210,3,221,0.2)', cursor: uploadingIdx === i ? 'not-allowed' : 'pointer', color: '#D203DD', flexShrink: 0 }}>
+                        style={{ padding: '0 10px', borderRadius: 7, background: 'rgba(0,229,208,0.07)', border: '1px solid rgba(0,229,208,0.2)', cursor: uploadingIdx === i ? 'not-allowed' : 'pointer', color: '#00E5D0', flexShrink: 0 }}>
                         {uploadingIdx === i ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
                       </button>
                       {form.images.length > 1 && (
@@ -483,7 +483,7 @@ export default function AdminStorePage() {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                   <label className={LABEL} style={{ margin: 0 }}>Variantes (opcional)</label>
-                  <button onClick={addVariant} style={{ fontSize: 11, color: '#D203DD', background: 'none', border: 'none', cursor: 'pointer' }}>+ Agregar variante</button>
+                  <button onClick={addVariant} style={{ fontSize: 11, color: '#00E5D0', background: 'none', border: 'none', cursor: 'pointer' }}>+ Agregar variante</button>
                 </div>
                 {form.variants.map((v, i) => (
                   <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
@@ -505,7 +505,7 @@ export default function AdminStorePage() {
 
               <button onClick={saveItem} disabled={saving}
                 style={{ padding: '12px 0', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer', border: 'none',
-                  background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #D203DD, #00FF88)', color: saving ? '#6B7280' : '#000' }}>
+                  background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #00E5D0, #00FF88)', color: saving ? '#6B7280' : '#000' }}>
                 {saving ? 'Guardando...' : (editingItem ? 'Guardar cambios' : 'Crear producto')}
               </button>
             </div>

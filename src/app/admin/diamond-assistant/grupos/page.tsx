@@ -456,7 +456,7 @@ export default function DiamondAssistantGrupos() {
       {/* Contenido */}
       {!agentId ? null : loadingGroups ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : groupsError ? (
         <ErrorBox message={groupsError} />
@@ -496,14 +496,14 @@ export default function DiamondAssistantGrupos() {
                       {g.size != null ? `${g.size} miembros` : 'Grupo de WhatsApp'}
                     </p>
                   </div>
-                  {saving && <Loader2 size={16} className="animate-spin" style={{ color: '#B735B8', flexShrink: 0 }} />}
+                  {saving && <Loader2 size={16} className="animate-spin" style={{ color: '#147e95', flexShrink: 0 }} />}
                 </div>
 
                 {/* Toggles */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
                   <ToggleRow
                     icon={Zap}
-                    color="#B735B8"
+                    color="#147e95"
                     tint="rgba(183,53,184,0.10)"
                     title="Automatización"
                     desc="El agente actúa en este grupo"
@@ -533,7 +533,7 @@ export default function DiamondAssistantGrupos() {
                   />
                   <ToggleRow
                     icon={UserPlus}
-                    color="#B735B8"
+                    color="#147e95"
                     tint="rgba(183,53,184,0.10)"
                     title="Bienvenida al privado"
                     desc="Le escribe presentándose (1:1)"
@@ -592,7 +592,7 @@ export default function DiamondAssistantGrupos() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 2 }}>
                             <span style={{ fontSize: 10.5, fontWeight: 800, color: sm.color, background: sm.bg, padding: '1px 7px', borderRadius: 999 }}>{sm.label}</span>
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11.5, fontWeight: 700, color: '#374151' }}><CalendarClock size={11} /> {whenStr}</span>
-                            {p.repeat !== 'NONE' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10.5, fontWeight: 700, color: '#B735B8' }}><Repeat size={10} /> {repeatText(p)}</span>}
+                            {p.repeat !== 'NONE' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10.5, fontWeight: 700, color: '#147e95' }}><Repeat size={10} /> {repeatText(p)}</span>}
                             {p.alsoToPrivate && <span style={{ fontSize: 10.5, fontWeight: 700, color: '#16A34A' }}>💬 privado</span>}
                           </div>
                           <p style={{ fontSize: 11.5, color: isMotiv ? '#7C3AED' : '#4B5563', margin: 0, lineHeight: 1.35, fontWeight: isMotiv ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -1333,7 +1333,7 @@ function SchedulerModal({
             </p>
             {loading ? (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '20px 0' }}>
-                <Loader2 size={20} className="animate-spin" style={{ color: '#B735B8' }} />
+                <Loader2 size={20} className="animate-spin" style={{ color: '#147e95' }} />
               </div>
             ) : posts.length === 0 ? (
               <p style={{ fontSize: 12.5, color: MUTED, margin: 0, lineHeight: 1.5 }}>
@@ -1356,7 +1356,7 @@ function SchedulerModal({
                             <CalendarClock size={12} /> {whenStr}
                           </span>
                           {p.repeat !== 'NONE' && (
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, color: '#B735B8' }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, color: '#147e95' }}>
                               <Repeat size={11} /> {repeatText(p)}
                             </span>
                           )}

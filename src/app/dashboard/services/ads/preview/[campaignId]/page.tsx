@@ -84,7 +84,7 @@ export default function PreviewPage() {
     }
 
     if (loading) {
-        return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="animate-spin text-[#B735B8]" size={32} /></div>
+        return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="animate-spin text-[#147e95]" size={32} /></div>
     }
 
     if (!campaign) return null
@@ -111,7 +111,7 @@ export default function PreviewPage() {
                     <button
                         onClick={publish}
                         disabled={publishing || campaign.status === 'PUBLISHING'}
-                        className="flex items-center gap-2 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm shadow-[0_0_30px_rgba(183,53,184,0.3)]"
+                        className="flex items-center gap-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm shadow-[0_0_30px_rgba(183,53,184,0.3)]"
                     >
                         {publishing ? <><Loader2 size={15} className="animate-spin" /> Publicando...</> : <><Rocket size={15} /> Publicar Campaña</>}
                     </button>
@@ -157,7 +157,7 @@ export default function PreviewPage() {
                     <p className="text-white/30 text-sm mb-4">No hay anuncios generados todavía</p>
                     <Link
                         href={`/dashboard/services/ads/campaign/${campaign.strategy?.id || campaign.strategyId}`}
-                        className="text-[#B735B8] text-sm font-bold hover:underline"
+                        className="text-[#147e95] text-sm font-bold hover:underline"
                     >
                         Volver a generar copies →
                     </Link>
@@ -191,7 +191,7 @@ export default function PreviewPage() {
                         <div className="bg-[#18191a] rounded-2xl overflow-hidden border border-white/10">
                             {/* Post header */}
                             <div className="flex items-center gap-3 p-3 border-b border-white/5">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#FF2D95] via-[#B735B8] to-[#233B8F] flex items-center justify-center text-xs font-black">
+                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1fb8bb] via-[#147e95] to-[#233B8F] flex items-center justify-center text-xs font-black">
                                     {campaign.brief?.name?.[0] || 'N'}
                                 </div>
                                 <div className="flex-1">
@@ -272,13 +272,13 @@ export default function PreviewPage() {
                             <div
                                 key={i}
                                 onClick={() => setActiveSlot(i)}
-                                className={`bg-dark-900/40 border rounded-2xl p-4 cursor-pointer transition-all ${i === activeSlot ? 'border-white/10 bg-[#B735B8]/5' : 'border-white/5 hover:border-white/15'}`}
+                                className={`bg-dark-900/40 border rounded-2xl p-4 cursor-pointer transition-all ${i === activeSlot ? 'border-white/10 bg-[#147e95]/5' : 'border-white/5 hover:border-white/15'}`}
                             >
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="text-[10px] font-black uppercase text-white/30">Anuncio #{i + 1}</span>
                                     <button
                                         onClick={e => { e.stopPropagation(); setEditingSlot(editingSlot === i ? null : i) }}
-                                        className="text-[10px] font-bold text-[#B735B8] hover:underline flex items-center gap-1"
+                                        className="text-[10px] font-bold text-[#147e95] hover:underline flex items-center gap-1"
                                     >
                                         <Edit3 size={10} /> Editar
                                     </button>
@@ -311,7 +311,7 @@ export default function PreviewPage() {
                                             <button
                                                 onClick={() => saveCreative(i)}
                                                 disabled={saving}
-                                                className="flex-1 py-2 rounded-xl bg-[#B735B8] text-white text-xs font-bold hover:bg-[#B735B8] disabled:opacity-50"
+                                                className="flex-1 py-2 rounded-xl bg-[#147e95] text-white text-xs font-bold hover:bg-[#147e95] disabled:opacity-50"
                                             >
                                                 {saving ? 'Guardando...' : 'Guardar'}
                                             </button>
@@ -330,7 +330,7 @@ export default function PreviewPage() {
                             <button
                                 onClick={publish}
                                 disabled={publishing || campaign.status === 'PUBLISHING'}
-                                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold py-4 rounded-2xl hover:opacity-90 disabled:opacity-50 transition-all mt-4 shadow-[0_0_30px_rgba(183,53,184,0.3)]"
+                                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold py-4 rounded-2xl hover:opacity-90 disabled:opacity-50 transition-all mt-4 shadow-[0_0_30px_rgba(183,53,184,0.3)]"
                             >
                                 {publishing
                                     ? <><Loader2 size={18} className="animate-spin" /> Publicando en Meta Ads...</>

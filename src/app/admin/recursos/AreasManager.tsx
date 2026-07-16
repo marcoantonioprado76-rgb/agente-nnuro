@@ -63,7 +63,7 @@ export default function AreasManager() {
     <div className="rounded-2xl border border-[#E4E9F0] bg-white mb-6 overflow-hidden">
       <button onClick={() => setOpen(o => !o)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F7F9FC] transition-all">
         <span className="text-sm font-black text-[#111827] flex items-center gap-2">
-          <Tags size={16} className="text-[#B735B8]" /> Áreas del menú de Flyers
+          <Tags size={16} className="text-[#147e95]" /> Áreas del menú de Flyers
           <span className="text-[10px] font-bold text-[#9CA3AF]">({activas} visibles de {areas.length})</span>
         </span>
         {open ? <ChevronUp size={16} className="text-[#9CA3AF]" /> : <ChevronDown size={16} className="text-[#9CA3AF]" />}
@@ -74,7 +74,7 @@ export default function AreasManager() {
           <p className="text-[11px] text-[#9CA3AF] mb-2">Elegí qué áreas aparecen en “Filtrar flyers”. Ocultá las que no uses, agregá nuevas o borralas. (Esto solo lo ve el admin.)</p>
 
           {loading ? (
-            <div className="flex justify-center py-6"><Loader2 className="animate-spin text-[#B735B8]" size={20} /></div>
+            <div className="flex justify-center py-6"><Loader2 className="animate-spin text-[#147e95]" size={20} /></div>
           ) : (
             <div className="space-y-1.5">
               {areas.map((a, i) => (
@@ -100,10 +100,10 @@ export default function AreasManager() {
           <form onSubmit={add} className="flex gap-2 pt-2">
             <input value={nuevo} onChange={e => setNuevo(e.target.value)} maxLength={60}
               placeholder="Nueva área (ej. Promociones)"
-              className="flex-1 px-3 py-2 rounded-xl bg-[#F0F3F7] border border-[#E4E9F0] text-sm text-[#111827] placeholder-[#9CA3AF] focus:border-[#B735B8] outline-none" />
+              className="flex-1 px-3 py-2 rounded-xl bg-[#F0F3F7] border border-[#E4E9F0] text-sm text-[#111827] placeholder-[#9CA3AF] focus:border-[#147e95] outline-none" />
             <button type="submit" disabled={adding || !nuevo.trim()}
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)' }}>
+              style={{ background: 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)' }}>
               {adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={15} />} Agregar
             </button>
           </form>

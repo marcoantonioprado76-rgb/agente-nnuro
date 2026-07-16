@@ -121,7 +121,7 @@ export default function AdminPodcastsPage() {
     <div>
       <div style={{ marginBottom: 24 }}>
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">MY DIAMOND Podcasts</h1>
-        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-16 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
       </div>
 
       {/* Top bar */}
@@ -130,7 +130,7 @@ export default function AdminPodcastsPage() {
         <button
           onClick={() => { setSaveError(null); setModal({ mode: 'create', data: EMPTY }) }}
           style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 700,
-            background: 'linear-gradient(135deg, #D203DD 0%, #00FF88 100%)', color: '#000', border: 'none', cursor: 'pointer' }}
+            background: 'linear-gradient(135deg, #00E5D0 0%, #00FF88 100%)', color: '#000', border: 'none', cursor: 'pointer' }}
         >
           <Plus size={14} /> Nuevo episodio
         </button>
@@ -147,7 +147,7 @@ export default function AdminPodcastsPage() {
             <div key={p.id} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid #E4E9F0' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {/* Cover */}
-                <div style={{ width: 48, height: 48, borderRadius: 10, flexShrink: 0, overflow: 'hidden', background: 'rgba(210,3,221,0.06)', border: '1px solid rgba(210,3,221,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 10, flexShrink: 0, overflow: 'hidden', background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(0,229,208,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {p.coverUrl ? <img src={p.coverUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <Mic size={16} className="text-[#111827]/20" />}
                 </div>
                 {/* Info */}
@@ -243,8 +243,8 @@ export default function AdminPodcastsPage() {
                     <button key={mode} type="button"
                       onClick={() => setModal({ ...modal, data: { ...modal.data, mediaMode: mode, embedUrl: '' } })}
                       style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '7px 0', borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: 'none', transition: 'all 0.15s',
-                        background: modal.data.mediaMode === mode ? 'rgba(210,3,221,0.2)' : 'transparent',
-                        color: modal.data.mediaMode === mode ? '#D203DD' : '#6B7280' }}>
+                        background: modal.data.mediaMode === mode ? 'rgba(0,229,208,0.2)' : 'transparent',
+                        color: modal.data.mediaMode === mode ? '#00E5D0' : '#6B7280' }}>
                       {mode === 'url' ? <><Link size={12} /> Enlace externo</> : <><Music size={12} /> Subir archivo</>}
                     </button>
                   ))}
@@ -272,10 +272,10 @@ export default function AdminPodcastsPage() {
                       </div>
                     ) : (
                       <button type="button" onClick={() => audioInputRef.current?.click()} disabled={uploadingAudio}
-                        style={{ width: '100%', padding: '20px 0', borderRadius: 10, border: '1.5px dashed rgba(210,3,221,0.3)', background: 'rgba(210,3,221,0.04)', cursor: uploadingAudio ? 'wait' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: '#6B7280' }}>
+                        style={{ width: '100%', padding: '20px 0', borderRadius: 10, border: '1.5px dashed rgba(0,229,208,0.3)', background: 'rgba(0,229,208,0.04)', cursor: uploadingAudio ? 'wait' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, color: '#6B7280' }}>
                         {uploadingAudio
-                          ? <><Loader2 size={18} className="animate-spin" style={{ color: '#D203DD' }} /><span style={{ fontSize: 12 }}>Subiendo...</span></>
-                          : <><Music size={18} style={{ color: '#D203DD' }} /><span style={{ fontSize: 13, fontWeight: 700 }}>Subir audio desde computadora</span><span style={{ fontSize: 11, color: '#9CA3AF' }}>MP3, WAV, AAC, M4A</span></>
+                          ? <><Loader2 size={18} className="animate-spin" style={{ color: '#00E5D0' }} /><span style={{ fontSize: 12 }}>Subiendo...</span></>
+                          : <><Music size={18} style={{ color: '#00E5D0' }} /><span style={{ fontSize: 13, fontWeight: 700 }}>Subir audio desde computadora</span><span style={{ fontSize: 11, color: '#9CA3AF' }}>MP3, WAV, AAC, M4A</span></>
                         }
                       </button>
                     )}
@@ -299,7 +299,7 @@ export default function AdminPodcastsPage() {
                       <button key={c} type="button" onClick={() => setModal({ ...modal, data: { ...modal.data, categoria: c } })}
                         style={{ padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer', color: '#fff',
                           border: on ? 'none' : '1px solid rgba(255,255,255,0.14)',
-                          background: on ? 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)' : 'rgba(255,255,255,0.05)' }}>
+                          background: on ? 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)' : 'rgba(255,255,255,0.05)' }}>
                         {c}
                       </button>
                     )
@@ -330,7 +330,7 @@ export default function AdminPodcastsPage() {
               <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
                 <button onClick={() => setModal(null)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 600, background: '#F0F3F7', border: '1px solid #E4E9F0', color: '#6B7280', cursor: 'pointer' }}>Cancelar</button>
                 <button onClick={handleSave} disabled={saving}
-                  style={{ flex: 2, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, background: saving ? 'rgba(210,3,221,0.3)' : 'linear-gradient(135deg, #D203DD 0%, #00FF88 100%)', border: 'none', color: '#000', cursor: saving ? 'not-allowed' : 'pointer' }}>
+                  style={{ flex: 2, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, background: saving ? 'rgba(0,229,208,0.3)' : 'linear-gradient(135deg, #00E5D0 0%, #00FF88 100%)', border: 'none', color: '#000', cursor: saving ? 'not-allowed' : 'pointer' }}>
                   {saving ? 'Guardando...' : modal.mode === 'create' ? 'Crear episodio' : 'Guardar cambios'}
                 </button>
               </div>

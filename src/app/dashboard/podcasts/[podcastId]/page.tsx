@@ -12,7 +12,7 @@ interface Podcast {
   embedUrl: string
 }
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 const AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.aac', '.m4a']
 const isDirectAudio = (url: string) => AUDIO_EXTS.some(ext => url.toLowerCase().includes(ext))
 
@@ -64,7 +64,7 @@ export default function PodcastDetailPage() {
 
   if (loading) return (
     <div className="px-4 sm:px-6 pt-6 max-w-screen-xl mx-auto min-h-[60vh] flex items-center justify-center">
-      <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#B735B8', borderTopColor: 'transparent' }} />
+      <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#147e95', borderTopColor: 'transparent' }} />
     </div>
   )
 
@@ -141,7 +141,7 @@ export default function PodcastDetailPage() {
                     <div onClick={seekAt} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 2, height: 44, cursor: 'pointer', minWidth: 80 }}>
                       {BARS.map((h, i) => {
                         const on = i / BARS.length <= frac
-                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#E779FF,#B735B8)' : 'rgba(255,255,255,0.16)', transition: 'background .12s', minWidth: 2 }} />
+                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#E779FF,#147e95)' : 'rgba(255,255,255,0.16)', transition: 'background .12s', minWidth: 2 }} />
                       })}
                     </div>
 

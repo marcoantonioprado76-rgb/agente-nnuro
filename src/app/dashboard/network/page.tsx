@@ -149,7 +149,7 @@ function RootCard({ name, username, isActive }: { name: string; username: string
 }
 
 // ── Pan & Zoom canvas ─────────────────────────────────────────────────────────
-function PanZoomCanvas({ children, color = '#D203DD' }: { children: React.ReactNode; color?: string }) {
+function PanZoomCanvas({ children, color = '#00E5D0' }: { children: React.ReactNode; color?: string }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const [scale, setScale] = useState(1)
@@ -307,7 +307,7 @@ export default function NetworkPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-[#E4E9F0] border-t-[#FF096C] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#E4E9F0] border-t-[#0a95a8] rounded-full animate-spin" />
       </div>
     )
   }

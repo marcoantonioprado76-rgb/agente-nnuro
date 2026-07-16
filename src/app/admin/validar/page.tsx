@@ -224,7 +224,7 @@ export default function ValidarPage() {
           <button
             onClick={() => lookup()}
             disabled={!code.trim()}
-            style={{ marginTop: 16, width: '100%', padding: '16px 0', borderRadius: 14, background: code.trim() ? 'linear-gradient(135deg,#D203DD,#0D1E79)' : '#F0F3F7', color: code.trim() ? '#fff' : '#9CA3AF', fontWeight: 900, fontSize: 16, border: 'none', cursor: code.trim() ? 'pointer' : 'default', letterSpacing: 2, textTransform: 'uppercase', transition: 'all 0.2s' }}
+            style={{ marginTop: 16, width: '100%', padding: '16px 0', borderRadius: 14, background: code.trim() ? 'linear-gradient(135deg,#00E5D0,#0D1E79)' : '#F0F3F7', color: code.trim() ? '#fff' : '#9CA3AF', fontWeight: 900, fontSize: 16, border: 'none', cursor: code.trim() ? 'pointer' : 'default', letterSpacing: 2, textTransform: 'uppercase', transition: 'all 0.2s' }}
           >
             Verificar código
           </button>

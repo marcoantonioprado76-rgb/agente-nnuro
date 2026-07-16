@@ -221,13 +221,13 @@ export default function BotReportsPage() {
           📊 Reportes
         </h1>
         <p style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>{botName}</p>
-        <div style={{ height: 2, width: 60, marginTop: 10, borderRadius: 99, background: 'linear-gradient(90deg, #D203DD, #00FF88)' }} />
+        <div style={{ height: 2, width: 60, marginTop: 10, borderRadius: 99, background: 'linear-gradient(90deg, #00E5D0, #00FF88)' }} />
       </div>
 
       {/* Stat cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: 24 }} className="sm:grid-cols-4 sm:gap-3">
         {[
-          { label: 'Total personas', value: stats.totalConversations, color: '#D203DD' },
+          { label: 'Total personas', value: stats.totalConversations, color: '#00E5D0' },
           { label: 'Total ventas', value: stats.totalSales, color: '#00FF88' },
           { label: 'Ventas hoy', value: stats.salesToday, color: '#F5A623' },
           { label: 'Conversión', value: `${stats.conversionRate}%`, color: '#FF2DF7' },

@@ -88,11 +88,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const Sidebar = () => (
-    <div className="flex flex-col h-full" style={{ background: 'radial-gradient(circle at top left, rgba(255,9,108,0.12), transparent 26%), linear-gradient(180deg, #071522 0%, #0B1B2B 55%, #050B14 100%)' }}>
+    <div className="flex flex-col h-full" style={{ background: 'radial-gradient(circle at top left, rgba(0,229,208,0.12), transparent 26%), linear-gradient(180deg, #071522 0%, #0B1B2B 55%, #050B14 100%)' }}>
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 8px 18px rgba(255,9,108,0.30)' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 8px 18px rgba(0,229,208,0.30)' }}>
             <Shield size={15} className="text-white" />
           </div>
           <div>
@@ -116,7 +116,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   ? 'text-white'
                   : 'text-white/55 hover:text-white hover:bg-white/5'
               }`}
-              style={active ? { background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 12px 28px rgba(255,9,108,0.28)' } : undefined}
+              style={active ? { background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 12px 28px rgba(0,229,208,0.28)' } : undefined}
             >
               <Icon size={15} className={active ? 'text-white' : 'text-white/40'} />
               {label}
@@ -140,7 +140,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   )
 
   return (
-    <div className="min-h-screen flex font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(255,9,108,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', color: '#111827' }}>
+    <div className="min-h-screen flex font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(0,229,208,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', color: '#111827' }}>
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex flex-col w-56 shrink-0 border-r border-white/5 fixed left-0 top-0 bottom-0">
         <Sidebar />
@@ -170,7 +170,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Menu size={15} className="text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <Shield size={13} className="text-[#FF096C]" />
+            <Shield size={13} className="text-[#0a95a8]" />
             <span className="text-xs font-bold text-[#6B7280] uppercase tracking-widest">Admin Panel</span>
           </div>
         </div>

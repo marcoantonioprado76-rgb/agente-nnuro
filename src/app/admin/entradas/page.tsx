@@ -208,13 +208,13 @@ export default function AdminEntradasPage() {
             <p style={{ fontSize: 12, color: '#6B7280', margin: '4px 0 0' }}>Crea eventos con tipos de entrada y administra ventas</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <a href="/admin/entradas/scan" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'rgba(210,3,221,0.12)', border: '1px solid rgba(210,3,221,0.25)', color: '#D203DD', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
+            <a href="/admin/entradas/scan" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.25)', color: '#00E5D0', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
               📷 Escanear QR
             </a>
             <a href="/admin/validar" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'rgba(74,222,128,0.12)', border: '1px solid rgba(74,222,128,0.25)', color: '#4ade80', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
               ✓ Validar en puerta
             </a>
-            <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer' }}>
+            <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer' }}>
               <Plus size={15} /> Nuevo evento
             </button>
           </div>
@@ -231,7 +231,7 @@ export default function AdminEntradasPage() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {events.map(ev => (
-              <div key={ev.id} style={{ borderRadius: 14, border: activeEvent?.id === ev.id ? '1px solid rgba(210,3,221,0.4)' : '1px solid rgba(255,255,255,0.07)', background: activeEvent?.id === ev.id ? 'rgba(210,3,221,0.05)' : 'rgba(255,255,255,0.025)', overflow: 'hidden' }}>
+              <div key={ev.id} style={{ borderRadius: 14, border: activeEvent?.id === ev.id ? '1px solid rgba(0,229,208,0.4)' : '1px solid rgba(255,255,255,0.07)', background: activeEvent?.id === ev.id ? 'rgba(0,229,208,0.05)' : 'rgba(255,255,255,0.025)', overflow: 'hidden' }}>
 
                 {/* Event row */}
                 <div style={{ display: 'flex', gap: 12, padding: '14px 16px', alignItems: 'center', cursor: 'pointer' }} onClick={() => setActiveEvent(activeEvent?.id === ev.id ? null : ev)}>
@@ -244,7 +244,7 @@ export default function AdminEntradasPage() {
                     <div style={{ display: 'flex', gap: 10, marginTop: 3, flexWrap: 'wrap' }}>
                       {ev.date && <span style={{ fontSize: 11, color: '#6B7280' }}>📅 {formatDate(ev.date)}</span>}
                       {ev.location && <span style={{ fontSize: 11, color: '#6B7280' }}>📍 {ev.location}</span>}
-                      <span style={{ fontSize: 11, color: '#D203DD', fontWeight: 700 }}>🎟 {ev.ticketCount} vendidas</span>
+                      <span style={{ fontSize: 11, color: '#00E5D0', fontWeight: 700 }}>🎟 {ev.ticketCount} vendidas</span>
                       {ev.ticketTypes.length === 0
                         ? <span style={{ fontSize: 11, color: '#F5A623', fontWeight: 700 }}>⚠ Sin tipos — clic para agregar</span>
                         : <span style={{ fontSize: 11, color: '#6B7280' }}>{ev.ticketTypes.length} tipo{ev.ticketTypes.length !== 1 ? 's' : ''}</span>
@@ -291,7 +291,7 @@ export default function AdminEntradasPage() {
                         />
                         <button
                           onClick={() => copyLink(ev.id)}
-                          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: 800, color: '#fff', background: copied === ev.id ? '#22c55e' : 'linear-gradient(135deg,#D203DD,#0D1E79)' }}
+                          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: 800, color: '#fff', background: copied === ev.id ? '#22c55e' : 'linear-gradient(135deg,#00E5D0,#0D1E79)' }}
                         >
                           {copied === ev.id ? <><Check size={14} /> ¡Copiado!</> : <><Copy size={14} /> Copiar</>}
                         </button>
@@ -321,7 +321,7 @@ export default function AdminEntradasPage() {
                     <div style={{ padding: '14px 16px', borderBottom: '1px solid #F0F3F7' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                         <p style={{ fontSize: 11, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1.5, margin: 0 }}>Tipos de entrada</p>
-                        <button onClick={() => openCreateType(ev.id)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 8, background: 'rgba(210,3,221,0.12)', border: '1px solid rgba(210,3,221,0.25)', color: '#D203DD', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+                        <button onClick={() => openCreateType(ev.id)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 8, background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.25)', color: '#00E5D0', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
                           <Plus size={12} /> Agregar tipo
                         </button>
                       </div>
@@ -356,7 +356,7 @@ export default function AdminEntradasPage() {
                         {/* Descarga el reporte COMPLETO (abre en Excel) */}
                         <a
                           href={`/api/admin/entradas/${ev.id}/report`}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 9, background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none' }}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 9, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none' }}
                         >
                           ⬇ Descargar reporte
                         </a>
@@ -367,9 +367,9 @@ export default function AdminEntradasPage() {
                         <div style={{ marginBottom: 14 }}>
                           {/* Ingresos — la métrica principal, destacada */}
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 8, marginBottom: 8 }}>
-                            <div style={{ background: 'rgba(210,3,221,0.08)', border: '1px solid rgba(210,3,221,0.25)', borderRadius: 12, padding: '12px 14px' }}>
+                            <div style={{ background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.25)', borderRadius: 12, padding: '12px 14px' }}>
                               <p style={{ fontSize: 10, color: '#9CA3AF', margin: 0, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>Ingresos confirmados</p>
-                              <p style={{ fontSize: 24, fontWeight: 900, color: '#D203DD', margin: '3px 0 0', lineHeight: 1.1 }}>
+                              <p style={{ fontSize: 24, fontWeight: 900, color: '#00E5D0', margin: '3px 0 0', lineHeight: 1.1 }}>
                                 ${stats.revenue.toFixed(2)} <span style={{ fontSize: 12, color: '#9CA3AF' }}>USDT</span>
                               </p>
                               {stats.revenueBs > 0 && (
@@ -414,7 +414,7 @@ export default function AdminEntradasPage() {
                                 <div key={t.name} style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 10, padding: '9px 12px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                                   <span style={{ fontSize: 12.5, color: '#fff', fontWeight: 700 }}>{t.name}</span>
                                   <span style={{ fontSize: 12.5, color: '#fff', fontWeight: 800, textAlign: 'right' }}>{t.sold}</span>
-                                  <span style={{ fontSize: 12.5, color: '#D203DD', fontWeight: 800, textAlign: 'right', minWidth: 90 }}>${t.revenue.toFixed(2)}</span>
+                                  <span style={{ fontSize: 12.5, color: '#00E5D0', fontWeight: 800, textAlign: 'right', minWidth: 90 }}>${t.revenue.toFixed(2)}</span>
                                 </div>
                               ))}
                             </div>
@@ -426,7 +426,7 @@ export default function AdminEntradasPage() {
                           <Search size={14} color="#6B7280" />
                           <input value={ticketSearch} onChange={e => setTicketSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && fetchTickets(ev.id, ticketFilter, ticketSearch)} placeholder="Código, nombre, tipo..." style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: '#fff', fontSize: 12 }} />
                         </div>
-                        <button onClick={() => fetchTickets(ev.id, ticketFilter, ticketSearch)} style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(210,3,221,0.15)', border: '1px solid rgba(210,3,221,0.2)', color: '#D203DD', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Buscar</button>
+                        <button onClick={() => fetchTickets(ev.id, ticketFilter, ticketSearch)} style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.2)', color: '#00E5D0', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Buscar</button>
                         {['ALL', 'PENDING', 'APPROVED', 'REJECTED'].map(s => (
                           <button key={s} onClick={() => setTicketFilter(s)} style={{ padding: '6px 10px', borderRadius: 8, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: '1px solid', borderColor: ticketFilter === s ? (STATUS_COLORS[s] ?? '#6B7280') : 'rgba(255,255,255,0.08)', background: ticketFilter === s ? `${STATUS_COLORS[s] ?? '#fff'}22` : 'transparent', color: ticketFilter === s ? (STATUS_COLORS[s] ?? '#fff') : '#6B7280' }}>
                             {s === 'ALL' ? 'Todos' : STATUS_LABELS[s]}
@@ -450,7 +450,7 @@ export default function AdminEntradasPage() {
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                                     <span style={{ fontFamily: 'Courier New', fontSize: 12, fontWeight: 800, letterSpacing: 2 }}>{t.ticketCode}</span>
-                                    <span style={{ fontSize: 10, padding: '1px 7px', borderRadius: 20, background: 'rgba(210,3,221,0.12)', color: '#D203DD', fontWeight: 700 }}>{t.ticketTypeName}</span>
+                                    <span style={{ fontSize: 10, padding: '1px 7px', borderRadius: 20, background: 'rgba(0,229,208,0.12)', color: '#00E5D0', fontWeight: 700 }}>{t.ticketTypeName}</span>
                                     {t.checkedIn && <span style={{ fontSize: 10, padding: '1px 7px', borderRadius: 20, background: 'rgba(74,222,128,0.15)', color: '#4ade80', fontWeight: 700 }}>✓ Usado</span>}
                                   </div>
                                   <p style={{ margin: '2px 0 0', fontSize: 11, color: '#6B7280' }}>{t.customerName} · {t.customerEmail} · x{t.quantity} · ${t.totalPrice.toFixed(2)} USDT</p>
@@ -465,7 +465,7 @@ export default function AdminEntradasPage() {
                                     </>
                                   )}
                                   {t.status === 'APPROVED' && !t.checkedIn && (
-                                    <button disabled={actionLoading === t.id} onClick={e => { e.stopPropagation(); doTicketAction(t.id, 'checkin') }} style={{ padding: '5px 12px', borderRadius: 7, background: 'rgba(210,3,221,0.15)', border: '1px solid rgba(210,3,221,0.3)', color: '#D203DD', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+                                    <button disabled={actionLoading === t.id} onClick={e => { e.stopPropagation(); doTicketAction(t.id, 'checkin') }} style={{ padding: '5px 12px', borderRadius: 7, background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.3)', color: '#00E5D0', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
                                       {actionLoading === t.id ? <Loader2 size={12} className="animate-spin" /> : '✓ Check-in'}
                                     </button>
                                   )}
@@ -478,7 +478,7 @@ export default function AdminEntradasPage() {
                                   <div><p style={{ fontSize: 10, color: '#9CA3AF', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 1.5 }}>Precio unitario</p><p style={{ fontSize: 12, color: '#374151', margin: 0 }}>${t.unitPrice.toFixed(2)} USDT</p></div>
                                   <div><p style={{ fontSize: 10, color: '#9CA3AF', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 1.5 }}>Fecha</p><p style={{ fontSize: 12, color: '#374151', margin: 0 }}>{formatDate(t.createdAt)}</p></div>
                                   {t.checkedInAt && <div><p style={{ fontSize: 10, color: '#9CA3AF', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 1.5 }}>Check-in</p><p style={{ fontSize: 12, color: '#4ade80', margin: 0 }}>{formatDate(t.checkedInAt)}</p></div>}
-                                  {t.proofUrl && <div><a href={t.proofUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#D203DD', textDecoration: 'none', fontWeight: 600 }}>Ver comprobante →</a></div>}
+                                  {t.proofUrl && <div><a href={t.proofUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#00E5D0', textDecoration: 'none', fontWeight: 600 }}>Ver comprobante →</a></div>}
                                   {t.txHash && <div style={{ width: '100%' }}><p style={{ fontSize: 10, color: '#9CA3AF', margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: 1.5 }}>TX Hash</p><p style={{ fontSize: 10, color: '#6B7280', margin: 0, fontFamily: 'Courier New', wordBreak: 'break-all' }}>{t.txHash}</p></div>}
 
                                   {/* QR de la entrada: el mismo que se manda por WhatsApp y se escanea en la puerta. */}
@@ -495,7 +495,7 @@ export default function AdminEntradasPage() {
                                         href={`/api/entradas/qr/${encodeURIComponent(t.ticketCode)}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        style={{ fontSize: 12, color: '#D203DD', textDecoration: 'none', fontWeight: 700 }}
+                                        style={{ fontSize: 12, color: '#00E5D0', textDecoration: 'none', fontWeight: 700 }}
                                       >
                                         Abrir / descargar QR →
                                       </a>
@@ -619,7 +619,7 @@ export default function AdminEntradasPage() {
             {formError && <p style={{ fontSize: 12, color: '#f87171', marginTop: 10 }}>{formError}</p>}
             <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
               <button onClick={() => setModal(false)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, border: '1px solid #E4E9F0', background: 'none', color: '#6B7280', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>Cancelar</button>
-              <button onClick={saveEvent} disabled={saving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={saveEvent} disabled={saving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 {saving ? <><Loader2 size={14} className="animate-spin" /> Guardando...</> : editing ? 'Guardar cambios' : 'Crear evento'}
               </button>
             </div>
@@ -642,7 +642,7 @@ export default function AdminEntradasPage() {
                 <label className={LABEL}>Elegí el tipo</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 6 }}>
                   {[
-                    { key: 'VIP', label: 'VIP', emoji: '💎', guest: false, color: '#D203DD' },
+                    { key: 'VIP', label: 'VIP', emoji: '💎', guest: false, color: '#00E5D0' },
                     { key: 'GENERAL', label: 'General', emoji: '🎟️', guest: false, color: '#233B8F' },
                     { key: 'INVITADO', label: 'Invitado', emoji: '🎁', guest: true, color: '#16a34a' },
                   ].map(p => {
@@ -714,8 +714,8 @@ export default function AdminEntradasPage() {
               </div>
 
               {!typeForm.isGuest && (
-                <div style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(210,3,221,0.06)', border: '1px solid rgba(210,3,221,0.15)' }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: 'rgba(210,3,221,0.8)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Descuento por cantidad (opcional)</p>
+                <div style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(0,229,208,0.15)' }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: 'rgba(0,229,208,0.8)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Descuento por cantidad (opcional)</p>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <div style={{ flex: 1 }}><label className={LABEL}>Mín. entradas</label><input className={INPUT} type="number" min="2" value={typeForm.bulkMinQty} onChange={e => setTypeForm(f => ({ ...f, bulkMinQty: e.target.value }))} placeholder="Ej: 4" /></div>
                     <div style={{ flex: 1 }}><label className={LABEL}>% descuento</label><input className={INPUT} type="number" min="1" max="99" step="0.5" value={typeForm.bulkDiscountPct} onChange={e => setTypeForm(f => ({ ...f, bulkDiscountPct: e.target.value }))} placeholder="Ej: 10" /></div>
@@ -727,7 +727,7 @@ export default function AdminEntradasPage() {
             {typeError && <p style={{ fontSize: 12, color: '#f87171', marginTop: 10 }}>{typeError}</p>}
             <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
               <button onClick={() => setTypeModal(null)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, border: '1px solid #E4E9F0', background: 'none', color: '#6B7280', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>Cancelar</button>
-              <button onClick={saveType} disabled={typeSaving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={saveType} disabled={typeSaving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 {typeSaving ? <><Loader2 size={14} className="animate-spin" /> Guardando...</> : typeModal.editing ? 'Guardar' : 'Crear tipo'}
               </button>
             </div>

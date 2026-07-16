@@ -90,7 +90,7 @@ export default function VerifyDevicePage() {
 
           {/* Top accent line */}
           <div className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6) 40%, rgba(210,3,221,0.5) 60%, transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6) 40%, rgba(0,229,208,0.5) 60%, transparent)' }} />
 
           <div className="flex items-center gap-2.5 mb-5">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
@@ -151,7 +151,7 @@ export default function VerifyDevicePage() {
               disabled={loading || success}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-[0.18em] transition-all active:scale-[0.98] disabled:opacity-50"
               style={{
-                background: 'linear-gradient(135deg, #b45309, #D203DD)',
+                background: 'linear-gradient(135deg, #b45309, #00E5D0)',
                 color: '#fff',
                 border: '1px solid rgba(255,255,255,0.1)',
                 boxShadow: '0 6px 24px rgba(180,83,9,0.25)',

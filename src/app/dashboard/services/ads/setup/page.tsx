@@ -151,11 +151,11 @@ export default function SetupPage() {
                             className="flex items-center gap-3 p-4 rounded-2xl transition-all hover:brightness-110"
                             style={{ background: 'linear-gradient(135deg,rgba(183,53,184,0.14),rgba(37,99,235,0.06))', border: '1px solid rgba(255,255,255,0.08)' }}>
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                                <Sparkles size={18} className="text-[#B735B8]" />
+                                <Sparkles size={18} className="text-[#147e95]" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-black text-white">¿No querés usar tu propia API Key?</p>
-                                <p className="text-[11px] text-white/45">Comprá créditos de IA y usá nuestra clave. Saldo: <b className="text-[#B735B8]">${credits.balance.toFixed(2)}</b></p>
+                                <p className="text-[11px] text-white/45">Comprá créditos de IA y usá nuestra clave. Saldo: <b className="text-[#147e95]">${credits.balance.toFixed(2)}</b></p>
                             </div>
                             <span className="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl" style={{ background: 'rgba(183,53,184,0.22)', border: '1px solid rgba(255,255,255,0.08)', color: '#d6c8ff' }}>
                                 Comprar
@@ -221,7 +221,7 @@ export default function SetupPage() {
                         </div>
 
                         <button type="submit" disabled={saving || !apiKey.trim()}
-                            className="w-full bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+                            className="w-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
                             {saving ? <><Loader2 size={15} className="animate-spin" /> Validando...</> : 'Guardar y validar API Key'}
                         </button>
                     </form>

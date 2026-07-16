@@ -16,7 +16,7 @@ const services = [
     title: 'Tienda Virtual',
     description: 'Tu propia tienda online lista para vender. Recibe pedidos por WhatsApp sin comisiones.',
     icon: ShoppingCart,
-    from: '#D203DD', to: '#0066FF',
+    from: '#00E5D0', to: '#0066FF',
     features: ['Catálogo profesional', 'Pedidos por WhatsApp', 'Sin comisiones'],
     link: '/dashboard/services/virtual-store',
     requiredPlan: 'BASIC' as UserPlan,
@@ -26,7 +26,7 @@ const services = [
     title: 'Agentes AI de Ventas',
     description: 'Tu agente AI vende, responde y fideliza clientes las 24 horas sin levantar un dedo.',
     icon: MessageCircle,
-    from: '#FF096C', to: '#B735B8',
+    from: '#0a95a8', to: '#147e95',
     features: ['Disponible 24/7', 'Respuestas automáticas', 'Cierre de ventas'],
     link: '/dashboard/services/whatsapp',
     requiredPlan: 'BASIC' as UserPlan,
@@ -156,7 +156,7 @@ export default function ServicesPage() {
   }
 
   return (
-    <div className="font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(255,9,108,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', minHeight: '100vh' }}>
+    <div className="font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(0,229,208,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 30%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', minHeight: '100vh' }}>
     <div className="px-4 sm:px-6 lg:px-8 pt-8 max-w-screen-xl mx-auto pb-20">
 
       {/* Header */}
@@ -188,8 +188,8 @@ export default function ServicesPage() {
 
       {!loading && !expired && plan === 'NONE' && (
         <div className="mb-6 flex items-start gap-3 px-4 py-4 rounded-2xl"
-          style={{ background: 'rgba(255,9,108,0.06)', border: '1px solid rgba(255,9,108,0.18)' }}>
-          <Lock className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#FF096C' }} />
+          style={{ background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(0,229,208,0.18)' }}>
+          <Lock className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#0a95a8' }} />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold" style={{ color: '#111827' }}>Activa tu plan para desbloquear los servicios</p>
             <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>
@@ -218,12 +218,12 @@ export default function ServicesPage() {
                     boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
                   <div className="flex items-start justify-between mb-5">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                      style={{ background: unlocked ? `linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)` : 'rgba(255,255,255,0.05)', boxShadow: unlocked ? `0 12px 28px -8px ${service.from}66` : 'none' }}>
+                      style={{ background: unlocked ? `linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)` : 'rgba(255,255,255,0.05)', boxShadow: unlocked ? `0 12px 28px -8px ${service.from}66` : 'none' }}>
                       <service.icon className="w-7 h-7" style={{ color: unlocked ? '#fff' : 'rgba(255,255,255,0.42)' }} />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-[0.12em] px-3 py-1 rounded-full"
                       style={isFree
-                        ? { background: 'rgba(255,9,108,0.12)', color: '#FF096C', border: '1px solid rgba(255,9,108,0.3)' }
+                        ? { background: 'rgba(0,229,208,0.12)', color: '#0a95a8', border: '1px solid rgba(0,229,208,0.3)' }
                         : unlocked
                           ? { background: 'rgba(34,197,94,0.16)', color: '#4ADE80', border: '1px solid rgba(34,197,94,0.32)' }
                           : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.42)', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -244,8 +244,8 @@ export default function ServicesPage() {
                     </Link>
                   ) : (
                     <button onClick={() => router.push('/dashboard/planes')}
-                      className="flex items-center justify-center gap-2 font-semibold rounded-xl bg-[#FF096C]/10 text-[#FF096C] hover:bg-[#FF096C]/20 transition-colors"
-                      style={{ width: '100%', padding: '12px 20px', fontSize: 14, border: '1px solid rgba(255,9,108,0.3)' }}>
+                      className="flex items-center justify-center gap-2 font-semibold rounded-xl bg-[#0a95a8]/10 text-[#0a95a8] hover:bg-[#0a95a8]/20 transition-colors"
+                      style={{ width: '100%', padding: '12px 20px', fontSize: 14, border: '1px solid rgba(0,229,208,0.3)' }}>
                       <Lock className="w-4 h-4" /> {expired ? 'Renovar Plan' : 'Ver Planes'}
                     </button>
                   )}

@@ -55,7 +55,7 @@ export default function AcademyPage() {
       {/* Header */}
       <div className="mb-7">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">MY DIAMOND Academy</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
         <p className="text-xs text-[#6B7280] mt-2">Selecciona el tipo de contenido que deseas ver.</p>
       </div>
 

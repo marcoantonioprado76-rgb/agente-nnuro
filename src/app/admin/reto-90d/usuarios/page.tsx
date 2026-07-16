@@ -9,7 +9,7 @@ import { Users, Plus, Loader2, X, Pause, Play, UserMinus, Phone, Calendar, Link2
 // Reto 90D — Panel admin · Miembros (ADMIN-ONLY)
 // ═══════════════════════════════════════════════════════════════════════════
 
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 
 const SUBNAV = [
   { href: '/admin/reto-90d', label: 'Resumen', exact: true },
@@ -120,7 +120,7 @@ function RegistrationLink() {
   return (
     <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, padding: 18, marginBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-        <Link2 size={15} style={{ color: '#B735B8' }} />
+        <Link2 size={15} style={{ color: '#147e95' }} />
         <p style={{ fontSize: 13, fontWeight: 800, color: '#111827', margin: 0 }}>Link de registro público</p>
         <span style={{ fontSize: 10.5, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: open ? '#16A34A' : '#6B7280', background: open ? 'rgba(22,163,74,0.1)' : 'rgba(107,114,128,0.12)', padding: '2px 8px', borderRadius: 999 }}>
           {open ? 'Abierto' : 'Cerrado'}
@@ -402,7 +402,7 @@ export default function AdminReto90dUsuariosPage() {
       {/* Content */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : !challengeId ? (
         <div style={{ textAlign: 'center', padding: '56px 16px', color: '#6B7280', fontSize: 14, background: '#fff', borderRadius: 16, border: '1px solid #E4E9F0' }}>

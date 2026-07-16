@@ -140,12 +140,12 @@ export default function ResourcesAdmin({ tipo }: { tipo: 'presentacion' | 'libro
     setBusy(null); load()
   }
 
-  if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="animate-spin text-[#B735B8]" /></div>
+  if (loading) return <div className="flex items-center justify-center py-24"><Loader2 className="animate-spin text-[#147e95]" /></div>
 
   if (isAdmin === false) {
     return (
       <div className="max-w-md mx-auto text-center py-20">
-        <Lock className="mx-auto text-[#B735B8]/40 mb-3" size={28} />
+        <Lock className="mx-auto text-[#147e95]/40 mb-3" size={28} />
         <p className="text-[#6B7280] text-sm">Tu cuenta no gestiona Recursos. La maneja la cuenta de administración designada.</p>
       </div>
     )
@@ -157,7 +157,7 @@ export default function ResourcesAdmin({ tipo }: { tipo: 'presentacion' | 'libro
         <p className="text-xs text-[#6B7280]">{items.length} {items.length === 1 ? l.sing : l.plur}. Sube el PDF; la portada y el nº de páginas se generan solos.</p>
         <button onClick={() => setOpen(o => !o)}
           className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all"
-          style={{ background: 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)' }}>
+          style={{ background: 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)' }}>
           <Plus size={15} /> {open ? 'Cerrar' : `Nuevo`}
         </button>
       </div>
@@ -170,12 +170,12 @@ export default function ResourcesAdmin({ tipo }: { tipo: 'presentacion' | 'libro
               <label className="block text-[11px] font-bold text-[#6B7280] mb-1.5">Título</label>
               <input value={titulo} onChange={e => setTitulo(e.target.value)} maxLength={150}
                 placeholder={`Nombre de la ${l.sing}`}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#F0F3F7] border border-[#E4E9F0] text-sm text-[#111827] placeholder-[#9CA3AF] focus:border-[#B735B8] outline-none" />
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F0F3F7] border border-[#E4E9F0] text-sm text-[#111827] placeholder-[#9CA3AF] focus:border-[#147e95] outline-none" />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-[#6B7280] mb-1.5">Categoría</label>
               <select value={categoria} onChange={e => setCategoria(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#F0F3F7] border border-[#E4E9F0] text-sm text-[#111827] focus:border-[#B735B8] outline-none">
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F0F3F7] border border-[#E4E9F0] text-sm text-[#111827] focus:border-[#147e95] outline-none">
                 {CATEGORIAS_RECURSOS.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -186,7 +186,7 @@ export default function ResourcesAdmin({ tipo }: { tipo: 'presentacion' | 'libro
               <label className="block text-[11px] font-bold text-[#6B7280] mb-1.5">Archivo PDF</label>
               <input ref={pdfInput} type="file" accept="application/pdf"
                 onChange={e => onPdf(e.target.files?.[0] || null)}
-                className="block w-full text-xs text-[#6B7280] file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-[#B735B8] file:text-white file:text-xs file:font-bold hover:file:opacity-90" />
+                className="block w-full text-xs text-[#6B7280] file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-[#147e95] file:text-white file:text-xs file:font-bold hover:file:opacity-90" />
               <div className="mt-2 text-[11px] text-[#9CA3AF] flex items-center gap-2 min-h-[18px]">
                 {analizando ? <><Loader2 size={12} className="animate-spin" /> Analizando PDF…</>
                   : pdfFile ? <><FileText size={12} /> {pdfFile.name}{paginas ? ` · ${paginas} pág.` : ''}</>
@@ -214,7 +214,7 @@ export default function ResourcesAdmin({ tipo }: { tipo: 'presentacion' | 'libro
             <button type="button" onClick={resetForm} className="px-4 py-2.5 rounded-xl text-sm font-bold text-[#6B7280] bg-[#F0F3F7] hover:bg-[#E4E9F0] transition-all">Cancelar</button>
             <button type="submit" disabled={saving || analizando}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)' }}>
+              style={{ background: 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)' }}>
               {saving ? <><Loader2 size={14} className="animate-spin" /> Subiendo…</> : <>Guardar {l.sing}</>}
             </button>
           </div>

@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-function emailWrapper(content: string, accentColor = '#D203DD'): string {
+function emailWrapper(content: string, accentColor = '#00E5D0'): string {
   return `
 <!DOCTYPE html>
 <html lang="es">
@@ -42,7 +42,7 @@ function emailWrapper(content: string, accentColor = '#D203DD'): string {
             <!-- Línea con el degradado de la marca -->
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td style="height:5px;background:linear-gradient(90deg,${accentColor} 0%,#B735B8 50%,#233B8F 100%);"></td>
+                <td style="height:5px;background:linear-gradient(90deg,${accentColor} 0%,#147e95 50%,#233B8F 100%);"></td>
               </tr>
             </table>
 
@@ -91,7 +91,7 @@ export async function sendWelcomeEmail(
 ): Promise<boolean> {
   const content = `
     <!-- label -->
-    <p style="color:#D203DD;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">Cuenta creada exitosamente</p>
+    <p style="color:#00E5D0;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">Cuenta creada exitosamente</p>
 
     <!-- heading -->
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 10px;letter-spacing:-0.3px;line-height:1.3;">
@@ -110,7 +110,7 @@ export async function sendWelcomeEmail(
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 30px;border-radius:10px;letter-spacing:0.5px;">
             Ir a mi panel &rarr;
@@ -125,7 +125,7 @@ export async function sendWelcomeEmail(
       from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `Bienvenido a MY DIAMOND, ${fullName}`,
-      html: emailWrapper(content, '#D203DD'),
+      html: emailWrapper(content, '#00E5D0'),
     })
     console.log(`[EMAIL] Welcome sent to ${email}`)
     return true
@@ -176,7 +176,7 @@ export async function sendRetoWelcomeEmail(
     <p style="color:#9CA3AF;font-size:12px;margin:8px 0 0;">Pronto te contactaremos por WhatsApp para empezar.</p>`
 
   const content = `
-    <p style="color:#B735B8;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">Reto 90 Días</p>
+    <p style="color:#147e95;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">Reto 90 Días</p>
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 14px;letter-spacing:-0.3px;line-height:1.3;">
       ¡Felicidades, ${esc(fullName)}! 🎉
     </h1>
@@ -191,7 +191,7 @@ export async function sendRetoWelcomeEmail(
       from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `¡Bienvenido al ${retoName}! 🎉`,
-      html: emailWrapper(content, '#B735B8'),
+      html: emailWrapper(content, '#147e95'),
     })
     console.log(`[EMAIL] Reto welcome sent to ${email}`)
     return true
@@ -312,9 +312,9 @@ export async function sendOrderConfirmedEmail(
     <!-- tx hash -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr>
-        <td style="background:rgba(210,3,221,0.03);border:1px solid rgba(210,3,221,0.1);border-radius:10px;padding:12px 16px;">
+        <td style="background:rgba(0,229,208,0.03);border:1px solid rgba(0,229,208,0.1);border-radius:10px;padding:12px 16px;">
           <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 4px;">TX Hash (BSC)</p>
-          <p style="color:rgba(210,3,221,0.6);font-size:10px;margin:0;word-break:break-all;font-family:'Courier New',Courier,monospace;">${order.txHash}</p>
+          <p style="color:rgba(0,229,208,0.6);font-size:10px;margin:0;word-break:break-all;font-family:'Courier New',Courier,monospace;">${order.txHash}</p>
         </td>
       </tr>
     </table>` : ''}
@@ -322,7 +322,7 @@ export async function sendOrderConfirmedEmail(
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard/store/my-orders"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 28px;border-radius:10px;letter-spacing:0.5px;">
             Ver mis pedidos &rarr;
@@ -370,7 +370,7 @@ export async function sendPlanPurchaseConfirmedEmail(
 
   const content = `
     <!-- label -->
-    <p style="color:#D203DD;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">✓ Plan Activado</p>
+    <p style="color:#00E5D0;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">✓ Plan Activado</p>
 
     <!-- heading -->
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 6px;letter-spacing:-0.3px;line-height:1.3;">
@@ -383,12 +383,12 @@ export async function sendPlanPurchaseConfirmedEmail(
     <!-- plan card -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
       <tr>
-        <td style="background:linear-gradient(135deg,rgba(210,3,221,0.07),rgba(0,255,136,0.04));border:1px solid rgba(210,3,221,0.2);border-radius:14px;padding:20px 24px;">
+        <td style="background:linear-gradient(135deg,rgba(0,229,208,0.07),rgba(0,255,136,0.04));border:1px solid rgba(0,229,208,0.2);border-radius:14px;padding:20px 24px;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td>
                 <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 6px;">Plan adquirido</p>
-                <p style="color:#D203DD;font-size:24px;font-weight:900;letter-spacing:2px;margin:0;">${planName.toUpperCase()}</p>
+                <p style="color:#00E5D0;font-size:24px;font-weight:900;letter-spacing:2px;margin:0;">${planName.toUpperCase()}</p>
               </td>
               <td style="text-align:right;vertical-align:top;">
                 <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 4px;">Total pagado</p>
@@ -432,9 +432,9 @@ export async function sendPlanPurchaseConfirmedEmail(
     <!-- tx hash -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr>
-        <td style="background:rgba(210,3,221,0.03);border:1px solid rgba(210,3,221,0.1);border-radius:10px;padding:12px 16px;">
+        <td style="background:rgba(0,229,208,0.03);border:1px solid rgba(0,229,208,0.1);border-radius:10px;padding:12px 16px;">
           <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 4px;">TX Hash (BSC)</p>
-          <p style="color:rgba(210,3,221,0.6);font-size:10px;margin:0;word-break:break-all;font-family:'Courier New',Courier,monospace;">${purchase.txHash}</p>
+          <p style="color:rgba(0,229,208,0.6);font-size:10px;margin:0;word-break:break-all;font-family:'Courier New',Courier,monospace;">${purchase.txHash}</p>
         </td>
       </tr>
     </table>` : ''}
@@ -442,7 +442,7 @@ export async function sendPlanPurchaseConfirmedEmail(
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 28px;border-radius:10px;letter-spacing:0.5px;">
             Ir a mi panel &rarr;
@@ -457,7 +457,7 @@ export async function sendPlanPurchaseConfirmedEmail(
       from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `✓ ${planName} activado — MY DIAMOND`,
-      html: emailWrapper(content, '#D203DD'),
+      html: emailWrapper(content, '#00E5D0'),
     })
     console.log(`[EMAIL] Plan confirmed sent to ${email} (${purchase.plan})`)
     return true
@@ -759,7 +759,7 @@ export async function sendAdminPlanAutoActivatedEmail(payload: {
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/admin/purchases?status=APPROVED"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:800;font-size:13px;padding:14px 32px;border-radius:10px;letter-spacing:0.5px;">
             Ver en panel admin →
@@ -906,7 +906,7 @@ export async function sendAdminCreditAutoActivatedEmail(payload: {
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/admin/credit-purchases?status=APPROVED"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:800;font-size:13px;padding:14px 32px;border-radius:10px;letter-spacing:0.5px;">
             Ver en panel admin →
@@ -1055,7 +1055,7 @@ export async function sendAdminNewCreditPurchaseEmail(payload: {
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/admin/credit-purchases"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:800;font-size:13px;padding:14px 32px;border-radius:10px;letter-spacing:0.5px;">
             Revisar solicitud →
@@ -1157,7 +1157,7 @@ export async function sendUserCreditPurchaseApprovedEmail(payload: {
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard/wallet"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:800;font-size:13px;padding:14px 32px;border-radius:10px;letter-spacing:0.5px;">
             Ver mi saldo →
@@ -1322,7 +1322,7 @@ export async function sendCreditsExhaustedEmail(
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard/wallet"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 28px;border-radius:10px;letter-spacing:0.5px;">
             Recargar créditos &rarr;
@@ -1383,7 +1383,7 @@ export async function sendLowBalanceWarningEmail(
 
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard/wallet"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 28px;border-radius:10px;letter-spacing:0.5px;">
             Recargar saldo &rarr;
@@ -1423,7 +1423,7 @@ export async function sendBotSaleReportEmail(
     </h1>
     <p style="color:#6B7280;font-size:13px;margin:0 0 24px;line-height:1.7;">
       Hola <strong style="color:#374151;">${ownerName}</strong>, tu bot
-      <strong style="color:#D203DD;">${botName}</strong> acaba de cerrar una venta en Messenger.
+      <strong style="color:#00E5D0;">${botName}</strong> acaba de cerrar una venta en Messenger.
     </p>
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
@@ -1437,7 +1437,7 @@ export async function sendBotSaleReportEmail(
 
     <table cellpadding="0" cellspacing="0">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
           <a href="${APP_URL}/dashboard/services/whatsapp"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 28px;border-radius:10px;letter-spacing:0.5px;">
             Ver en el panel &rarr;
@@ -1490,7 +1490,7 @@ export async function sendPasswordResetEmail(
     <!-- CTA -->
     <table cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
       <tr>
-        <td style="border-radius:10px;background:linear-gradient(135deg,#7B00EF 0%,#D203DD 100%);">
+        <td style="border-radius:10px;background:linear-gradient(135deg,#7B00EF 0%,#00E5D0 100%);">
           <a href="${resetLink}"
              style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 30px;border-radius:10px;letter-spacing:0.5px;">
             Restablecer contraseña &rarr;
@@ -1663,7 +1663,7 @@ export async function sendTicketEmail(
   const ticketLabel = isMulti ? `Entrada ${ticket.ticketNumber} de ${ticket.totalTickets}` : 'Entrada Confirmada'
 
   const content = `
-    <p style="color:#D203DD;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">🎟 ${ticketLabel}</p>
+    <p style="color:#00E5D0;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">🎟 ${ticketLabel}</p>
 
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 6px;letter-spacing:-0.3px;line-height:1.3;">
       ¡Tu entrada está lista!
@@ -1684,7 +1684,7 @@ export async function sendTicketEmail(
     <!-- Ticket code block -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
       <tr>
-        <td style="background:linear-gradient(135deg,rgba(210,3,221,0.12),rgba(13,30,121,0.18));border:2px solid rgba(210,3,221,0.35);border-radius:16px;padding:24px 20px;text-align:center;">
+        <td style="background:linear-gradient(135deg,rgba(0,229,208,0.12),rgba(13,30,121,0.18));border:2px solid rgba(0,229,208,0.35);border-radius:16px;padding:24px 20px;text-align:center;">
           <p style="color:#9CA3AF;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 12px;">Código de entrada</p>
           <p style="color:#111827;font-size:32px;font-weight:900;letter-spacing:8px;margin:0;font-family:'Courier New',Courier,monospace;">${ticket.ticketCode}</p>
           <p style="color:#9CA3AF;font-size:10px;margin:12px 0 0;">Presenta este código en la entrada del evento</p>
@@ -1716,7 +1716,7 @@ export async function sendTicketEmail(
       from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `🎟 ${isMulti ? `Entrada ${ticket.ticketNumber} de ${ticket.totalTickets}` : 'Tu entrada'}: ${ticket.ticketCode} — ${ticket.eventTitle}`,
-      html: emailWrapper(content, '#D203DD'),
+      html: emailWrapper(content, '#00E5D0'),
     })
     console.log(`[EMAIL] Ticket sent to ${email} (${ticket.ticketCode})`)
     return true
@@ -1764,7 +1764,7 @@ export async function sendTicketGroupEmail(
             <!-- Botón para DESCARGAR la entrada -->
             <table cellpadding="0" cellspacing="0" align="center" style="margin:16px auto 0;">
               <tr>
-                <td style="border-radius:10px;background:linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%);">
+                <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
                   <a href="${APP_URL}/api/entradas/ticket/${encodeURIComponent(t.ticketCode)}.png?d=1"
                      style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 26px;border-radius:10px;">
                     ⬇ Descargar mi entrada
@@ -1786,7 +1786,7 @@ export async function sendTicketGroupEmail(
   `).join('')
 
   const content = `
-    <p style="color:#D203DD;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">🎟 ${isMulti ? `${tickets.length} Entradas Confirmadas` : 'Entrada Confirmada'}</p>
+    <p style="color:#00E5D0;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">🎟 ${isMulti ? `${tickets.length} Entradas Confirmadas` : 'Entrada Confirmada'}</p>
 
     <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 6px;letter-spacing:-0.3px;line-height:1.3;">
       ¡${isMulti ? 'Tus entradas están' : 'Tu entrada está'} lista${isMulti ? 's' : ''}!
@@ -1833,7 +1833,7 @@ export async function sendTicketGroupEmail(
       from: `"MY DIAMOND" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `🎟 ${isMulti ? `Tus ${tickets.length} entradas` : 'Tu entrada'}: ${subjectCodes} — ${event.title}`,
-      html: emailWrapper(content, '#D203DD'),
+      html: emailWrapper(content, '#00E5D0'),
     })
     console.log(`[EMAIL] Group ticket sent to ${email} (${tickets.length} codes)`)
     return true

@@ -404,8 +404,8 @@ export default function CreditsPage() {
         style={{ background: "#FFFFFF", border: "1px solid #E4E9F0", textDecoration: "none" }}>
         <div className="flex items-center gap-4 min-w-0">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: "rgba(210,3,221,0.12)", border: "1px solid rgba(210,3,221,0.3)" }}>
-            <Settings className="w-5 h-5" style={{ color: "#D203DD" }} />
+            style={{ background: "rgba(0,229,208,0.12)", border: "1px solid rgba(0,229,208,0.3)" }}>
+            <Settings className="w-5 h-5" style={{ color: "#00E5D0" }} />
           </div>
           <div className="min-w-0">
             <p className="text-sm font-bold text-white">Configuración de IA</p>
@@ -720,7 +720,7 @@ export default function CreditsPage() {
               <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'rgba(255,255,255,0.55)' }} />
               <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
                 {buyMethod === 'CRYPTO'
-                  ? <>Enviá los <strong className="text-[#B735B8]">USDT-BEP20</strong> a la dirección, pegá el TX hash y dale verificar. Si la red ya confirmó (3 bloques) tu saldo se acredita al instante. Si todavía está confirmando, queda pendiente y se aprueba sola en 1-2 min.</>
+                  ? <>Enviá los <strong className="text-[#147e95]">USDT-BEP20</strong> a la dirección, pegá el TX hash y dale verificar. Si la red ya confirmó (3 bloques) tu saldo se acredita al instante. Si todavía está confirmando, queda pendiente y se aprueba sola en 1-2 min.</>
                   : <>Realizá la transferencia, subí el comprobante y enviá la solicitud. El admin la verifica y acredita tu saldo. Generalmente toma menos de 24h.</>
                 }
               </p>

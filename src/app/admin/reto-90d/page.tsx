@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 
 // ── Paleta MY DIAMOND ──────────────────────────────────────────────
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 const BORDER = '#E4E9F0'
 const TEXT = '#111827'
 const MUTED = '#6B7280'
@@ -169,8 +169,8 @@ export default function AdminReto90dDashboard() {
 
   const kpiCards = [
     { label: 'Usuarios inscritos', value: enrolled, icon: Users, tint: 'rgba(35,59,143,0.10)', color: '#233B8F' },
-    { label: 'Tareas del día', value: tasksToday, icon: ListChecks, tint: 'rgba(183,53,184,0.10)', color: '#B735B8' },
-    { label: 'Evidencias hoy', value: evidencesToday, icon: Camera, tint: 'rgba(255,45,149,0.10)', color: '#FF2D95' },
+    { label: 'Tareas del día', value: tasksToday, icon: ListChecks, tint: 'rgba(183,53,184,0.10)', color: '#147e95' },
+    { label: 'Evidencias hoy', value: evidencesToday, icon: Camera, tint: 'rgba(255,45,149,0.10)', color: '#1fb8bb' },
   ]
 
   return (
@@ -274,7 +274,7 @@ export default function AdminReto90dDashboard() {
             {/* Ranking del día */}
             <div style={cardStyle}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-                <Medal size={16} style={{ color: '#B735B8' }} />
+                <Medal size={16} style={{ color: '#147e95' }} />
                 <p style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>Ranking del día</p>
               </div>
               {ranking.length === 0 ? (

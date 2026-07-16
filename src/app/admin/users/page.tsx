@@ -468,9 +468,9 @@ export default function AdminUsersPage() {
                             <button
                               onClick={() => setExtrasModalId(u.id)}
                               title="Servicios extra (manual)"
-                              className="p-1.5 rounded-lg bg-[#B735B8]/8 border border-[#B735B8]/20 hover:bg-[#B735B8]/20 transition-colors"
+                              className="p-1.5 rounded-lg bg-[#147e95]/8 border border-[#147e95]/20 hover:bg-[#147e95]/20 transition-colors"
                             >
-                              <SlidersHorizontal size={13} className="text-[#B735B8]" />
+                              <SlidersHorizontal size={13} className="text-[#147e95]" />
                             </button>
                             <button
                               onClick={() => { setCustomDays(''); setDaysModalId(u.id) }}
@@ -482,9 +482,9 @@ export default function AdminUsersPage() {
                             <button
                               onClick={() => openInfoModal({ id: u.id, username: u.username, fullName: u.fullName })}
                               title="Ver información del usuario"
-                              className="p-1.5 rounded-lg bg-[#B735B8]/8 border border-[#B735B8]/20 hover:bg-[#B735B8]/20 transition-colors"
+                              className="p-1.5 rounded-lg bg-[#147e95]/8 border border-[#147e95]/20 hover:bg-[#147e95]/20 transition-colors"
                             >
-                              <Eye size={13} className="text-[#B735B8]" />
+                              <Eye size={13} className="text-[#147e95]" />
                             </button>
                             <button
                               onClick={() => openEditModal({ id: u.id, username: u.username, fullName: u.fullName })}
@@ -725,15 +725,15 @@ export default function AdminUsersPage() {
       {infoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => setInfoModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#B735B8]/20 rounded-2xl p-6 w-full max-w-lg z-10 shadow-2xl shadow-black/60 max-h-[85vh] overflow-y-auto">
+          <div className="relative bg-[#13131f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-lg z-10 shadow-2xl shadow-black/60 max-h-[85vh] overflow-y-auto">
 
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#B735B8]/10 border border-[#B735B8]/20 flex items-center justify-center">
-                  <Eye size={15} className="text-[#B735B8]" />
+                <div className="w-8 h-8 rounded-lg bg-[#147e95]/10 border border-[#147e95]/20 flex items-center justify-center">
+                  <Eye size={15} className="text-[#147e95]" />
                 </div>
                 <div>
                   <p className="text-xs font-black text-[#111827]">{infoModal.fullName}</p>
@@ -747,7 +747,7 @@ export default function AdminUsersPage() {
 
             {detailLoading ? (
               <div className="flex justify-center py-10">
-                <Loader2 size={20} className="animate-spin text-[#B735B8]" />
+                <Loader2 size={20} className="animate-spin text-[#147e95]" />
               </div>
             ) : !detail ? (
               <div className="text-center py-10">
@@ -819,12 +819,12 @@ export default function AdminUsersPage() {
                       const fmt = (n: number) => (n === Infinity ? '∞' : String(n))
                       return (
                         <div key={svc.label} className="flex items-center gap-2 bg-white/[0.025] rounded-lg px-2.5 py-1.5">
-                          <Icon size={12} className="text-[#B735B8] shrink-0" />
+                          <Icon size={12} className="text-[#147e95] shrink-0" />
                           <span className="text-[11px] text-[#111827]/70 flex-1">{svc.label}</span>
                           <span className="text-[11px] text-[#111827]/50 font-mono">
                             {fmt(svc.lim.plan)} + {fmt(svc.lim.extra)} =
                           </span>
-                          <span className="text-[11px] font-black text-[#B735B8] font-mono min-w-[1.5rem] text-right">
+                          <span className="text-[11px] font-black text-[#147e95] font-mono min-w-[1.5rem] text-right">
                             {fmt(svc.lim.total)}
                           </span>
                         </div>
@@ -854,9 +854,9 @@ export default function AdminUsersPage() {
                 {/* Saldo IA */}
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-[#111827]/25 mb-2">Saldo IA</p>
-                  <div className="bg-[#B735B8]/8 border border-[#B735B8]/20 rounded-lg px-3 py-2">
-                    <p className="text-sm font-black text-[#B735B8]">
-                      ${detail.saldoIa.toFixed(4)} <span className="text-[10px] text-[#B735B8]/60 font-bold">USD</span>
+                  <div className="bg-[#147e95]/8 border border-[#147e95]/20 rounded-lg px-3 py-2">
+                    <p className="text-sm font-black text-[#147e95]">
+                      ${detail.saldoIa.toFixed(4)} <span className="text-[10px] text-[#147e95]/60 font-bold">USD</span>
                     </p>
                   </div>
                 </div>
@@ -865,7 +865,7 @@ export default function AdminUsersPage() {
                 <button
                   onClick={() => impersonate(infoModal.id)}
                   disabled={impersonating}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#B735B8]/15 border border-[#B735B8]/30 text-sm font-black text-[#B735B8] hover:bg-[#B735B8]/25 transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#147e95]/15 border border-[#147e95]/30 text-sm font-black text-[#147e95] hover:bg-[#147e95]/25 transition-colors disabled:opacity-50"
                 >
                   {impersonating
                     ? <Loader2 size={14} className="animate-spin" />
@@ -947,8 +947,8 @@ export default function AdminUsersPage() {
             <div className="relative w-full max-w-sm rounded-2xl border border-[#E4E9F0] bg-white shadow-2xl overflow-hidden">
               <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#E4E9F0]">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-9 h-9 rounded-xl bg-[#B735B8]/10 border border-[#B735B8]/20 flex items-center justify-center shrink-0">
-                    <SlidersHorizontal size={16} className="text-[#B735B8]" />
+                  <div className="w-9 h-9 rounded-xl bg-[#147e95]/10 border border-[#147e95]/20 flex items-center justify-center shrink-0">
+                    <SlidersHorizontal size={16} className="text-[#147e95]" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-black text-[#111827] truncate">Servicios extra · {eu.fullName}</p>
@@ -961,15 +961,15 @@ export default function AdminUsersPage() {
               </div>
               <div className="p-4 space-y-2">
                 {/* Acceso manual a Academy / Recursos / Shop (lo que se oculta a usuarios de pago) */}
-                <div className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl bg-[#B735B8]/8 border border-[#B735B8]/20">
+                <div className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl bg-[#147e95]/8 border border-[#147e95]/20">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <GraduationCap size={15} className="text-[#B735B8] shrink-0" />
+                    <GraduationCap size={15} className="text-[#147e95] shrink-0" />
                     <span className="text-xs font-bold text-[#374151]">Acceso a Academy / Recursos / Shop</span>
                   </div>
                   <button
                     onClick={() => updateUser(eu.id, { accessExtras: !eu.accessExtras })}
                     title={eu.accessExtras ? 'Quitar acceso' : 'Dar acceso'}
-                    className={`relative w-10 h-5 rounded-full transition-colors shrink-0 ${eu.accessExtras ? 'bg-[#B735B8]' : 'bg-[#E4E9F0]'}`}
+                    className={`relative w-10 h-5 rounded-full transition-colors shrink-0 ${eu.accessExtras ? 'bg-[#147e95]' : 'bg-[#E4E9F0]'}`}
                   >
                     <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${eu.accessExtras ? 'left-[1.375rem]' : 'left-0.5'}`} />
                   </button>
@@ -981,13 +981,13 @@ export default function AdminUsersPage() {
                   return (
                     <div key={svc.key} className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E4E9F0]">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <Icon size={15} className="text-[#B735B8] shrink-0" />
+                        <Icon size={15} className="text-[#147e95] shrink-0" />
                         <span className="text-xs font-bold text-[#374151] truncate">{svc.label}</span>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button onClick={() => updateUser(eu.id, { [svc.key]: Math.max(0, v - 1) })} className="w-7 h-7 rounded-lg bg-white border border-[#E4E9F0] hover:bg-[#EEF2F7] text-[#111827]/60 hover:text-[#111827] transition-colors flex items-center justify-center text-sm font-black">−</button>
-                        <span className="text-sm font-black text-[#B735B8] min-w-[2.5rem] text-center">+{v}</span>
-                        <button onClick={() => updateUser(eu.id, { [svc.key]: v + 1 })} className="w-7 h-7 rounded-lg bg-white border border-[#E4E9F0] hover:bg-[#B735B8]/15 text-[#111827]/60 hover:text-[#B735B8] transition-colors flex items-center justify-center text-sm font-black">+</button>
+                        <span className="text-sm font-black text-[#147e95] min-w-[2.5rem] text-center">+{v}</span>
+                        <button onClick={() => updateUser(eu.id, { [svc.key]: v + 1 })} className="w-7 h-7 rounded-lg bg-white border border-[#E4E9F0] hover:bg-[#147e95]/15 text-[#111827]/60 hover:text-[#147e95] transition-colors flex items-center justify-center text-sm font-black">+</button>
                       </div>
                     </div>
                   )

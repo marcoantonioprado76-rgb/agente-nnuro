@@ -10,7 +10,7 @@ import { Sparkles } from 'lucide-react'
  * variant="compact" para slots pequeños (imágenes).
  * (Antes usaba clases CSS inexistentes → salía un bloque azul plano.)
  */
-const GRAD = 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)'
+const GRAD = 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)'
 
 export function AiThinking({ messages, className = '', variant = 'full' }:
     { messages: string[]; className?: string; variant?: 'full' | 'compact' }) {

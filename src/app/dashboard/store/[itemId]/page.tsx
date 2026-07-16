@@ -79,7 +79,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
     return (
       <div className="px-4 sm:px-6 pt-6 max-w-screen-2xl mx-auto">
         <p className="text-[#111827]/40 text-sm">Producto no encontrado.</p>
-        <Link href="/dashboard/store" style={{ color: '#D203DD', fontSize: 13, textDecoration: 'none' }}>← Volver a la tienda</Link>
+        <Link href="/dashboard/store" style={{ color: '#00E5D0', fontSize: 13, textDecoration: 'none' }}>← Volver a la tienda</Link>
       </div>
     )
   }
@@ -110,7 +110,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
               <img src={images[activeImg]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg className="w-16 h-16 opacity-20" viewBox="0 0 24 24" fill="none" stroke="#D203DD" strokeWidth="1"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" /></svg>
+                <svg className="w-16 h-16 opacity-20" viewBox="0 0 24 24" fill="none" stroke="#00E5D0" strokeWidth="1"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" /></svg>
               </div>
             )}
             {outOfStock && (
@@ -123,7 +123,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
             <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               {images.map((src, i) => (
                 <button key={i} onClick={() => setActiveImg(i)}
-                  style={{ width: 56, height: 56, borderRadius: 8, overflow: 'hidden', border: `2px solid ${activeImg === i ? '#D203DD' : 'rgba(255,255,255,0.1)'}`, background: 'none', cursor: 'pointer', padding: 0 }}>
+                  style={{ width: 56, height: 56, borderRadius: 8, overflow: 'hidden', border: `2px solid ${activeImg === i ? '#00E5D0' : 'rgba(255,255,255,0.1)'}`, background: 'none', cursor: 'pointer', padding: 0 }}>
                   <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </button>
               ))}
@@ -134,7 +134,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
         {/* Info */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 24, borderRadius: 16, background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
           <div>
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#D203DD', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{item.category}</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#00E5D0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{item.category}</span>
             <h1 style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: '#fff', margin: '6px 0 8px', lineHeight: 1.2 }}>{item.title}</h1>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>{item.description}</p>
           </div>
@@ -157,8 +157,8 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
                 {v.options.map(opt => (
                   <button key={opt} onClick={() => setSelectedVariants(p => ({ ...p, [v.name]: opt }))}
                     style={{ padding: '6px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: 'transparent',
-                      borderColor: selectedVariants[v.name] === opt ? '#D203DD' : 'rgba(255,255,255,0.1)',
-                      color: selectedVariants[v.name] === opt ? '#D203DD' : 'rgba(255,255,255,0.55)' }}>
+                      borderColor: selectedVariants[v.name] === opt ? '#00E5D0' : 'rgba(255,255,255,0.1)',
+                      color: selectedVariants[v.name] === opt ? '#00E5D0' : 'rgba(255,255,255,0.55)' }}>
                     {opt}
                   </button>
                 ))}
@@ -184,12 +184,12 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 4 }}>
             <button onClick={addToCart} disabled={outOfStock}
               style={{ flex: 1, minWidth: 140, padding: '12px 20px', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: outOfStock ? 'not-allowed' : 'pointer', border: 'none',
-                background: outOfStock ? 'rgba(255,255,255,0.06)' : 'linear-gradient(90deg, #FF2D95 0%, #B735B8 50%, #233B8F 100%)',
+                background: outOfStock ? 'rgba(255,255,255,0.06)' : 'linear-gradient(90deg, #1fb8bb 0%, #147e95 50%, #233B8F 100%)',
                 color: outOfStock ? 'rgba(255,255,255,0.42)' : '#fff' }}>
               {outOfStock ? 'No disponible' : '🛒 Agregar al carrito'}
             </button>
             <Link href="/dashboard/store/cart"
-              style={{ flex: 1, minWidth: 120, padding: '12px 20px', borderRadius: 10, fontWeight: 700, fontSize: 14, textAlign: 'center', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#FF096C', background: 'rgba(255,9,108,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              style={{ flex: 1, minWidth: 120, padding: '12px 20px', borderRadius: 10, fontWeight: 700, fontSize: 14, textAlign: 'center', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#0a95a8', background: 'rgba(0,229,208,0.1)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
               Ver carrito
             </Link>
           </div>

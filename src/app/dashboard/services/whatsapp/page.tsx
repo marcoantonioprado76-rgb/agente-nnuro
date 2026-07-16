@@ -178,7 +178,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
     <form onSubmit={handleSubmit} className="rounded-2xl p-4"
       style={{ background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(183,53,184,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)', boxShadow: '0 6px 14px -6px rgba(183,53,184,0.5)' }}>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 6px 14px -6px rgba(183,53,184,0.5)' }}>
           <Plus className="w-3.5 h-3.5" style={{ color: '#fff' }} />
         </div>
         <h3 className="text-sm font-bold text-[#111827]" style={{ letterSpacing: '-0.01em' }}>Crear nuevo agente</h3>
@@ -196,7 +196,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
             <button key={o.t} type="button" onClick={() => setType(o.t)}
               className="rounded-xl px-2.5 py-2 flex items-center gap-2 transition-all duration-200"
               style={{
-                background: sel ? 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' : 'rgba(17,24,39,0.04)',
+                background: sel ? 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' : 'rgba(17,24,39,0.04)',
                 border: `1px solid ${sel ? 'transparent' : 'rgba(17,24,39,0.10)'}`,
                 boxShadow: sel ? '0 8px 18px -8px rgba(183,53,184,0.5)' : 'none',
               }}>
@@ -225,9 +225,9 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
           disabled={loading || !name.trim()}
           className="w-full sm:w-auto px-5 py-2.5 font-bold rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98]"
           style={{
-            background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+            background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
             color: '#fff',
-            boxShadow: '0 12px 28px -10px rgba(255,9,108,0.5), inset 0 1px 0 rgba(255,255,255,0.28)',
+            boxShadow: '0 12px 28px -10px rgba(0,229,208,0.5), inset 0 1px 0 rgba(255,255,255,0.28)',
           }}
         >
           {loading ? <Spinner /> : <Plus className="w-4 h-4" />}
@@ -371,7 +371,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
           {bots.map(b => (
             <button key={b.id} onClick={() => setSelectedBotId(b.id)}
               style={{ padding: '5px 13px', borderRadius: 99, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: '1px solid', transition: 'all 0.15s',
-                background: selectedBotId === b.id ? 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)' : 'rgba(17,24,39,0.04)',
+                background: selectedBotId === b.id ? 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)' : 'rgba(17,24,39,0.04)',
                 borderColor: selectedBotId === b.id ? 'transparent' : 'rgba(17,24,39,0.12)',
                 color: selectedBotId === b.id ? '#fff' : '#6B7280',
                 boxShadow: selectedBotId === b.id ? '0 8px 18px -8px rgba(183,53,184,0.55)' : 'none',
@@ -381,7 +381,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                   minWidth: 16, height: 16, borderRadius: 99,
-                  background: 'linear-gradient(135deg, #FF2D95, #B735B8, #233B8F)', color: '#fff',
+                  background: 'linear-gradient(135deg, #1fb8bb, #147e95, #233B8F)', color: '#fff',
                   fontSize: 9, fontWeight: 800, padding: '0 4px', marginLeft: 4,
                 }}>
                   {b.salesCount}
@@ -506,7 +506,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12,
               fontWeight: 700, color: '#fff',
-              background: 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)',
+              background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)',
               border: '1px solid transparent',
               boxShadow: '0 8px 20px -10px rgba(183,53,184,0.6)',
               borderRadius: 10, padding: '7px 16px',
@@ -518,7 +518,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
               <span style={{
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 minWidth: 18, height: 18, borderRadius: 99,
-                background: 'linear-gradient(135deg, #FF2D95, #B735B8, #233B8F)', color: '#fff',
+                background: 'linear-gradient(135deg, #1fb8bb, #147e95, #233B8F)', color: '#fff',
                 fontSize: 10, fontWeight: 800, padding: '0 5px',
               }}>
                 {recentSales.length}
@@ -636,7 +636,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
 
 function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) {
   const isActive = bot.status === 'ACTIVE'
-  const accent = isActive ? '#B735B8' : '#7C82A8'
+  const accent = isActive ? '#147e95' : '#7C82A8'
   const channel = bot.type === 'YCLOUD' ? 'YCloud' : bot.type === 'BAILEYS' ? 'WhatsApp Web' : 'Messenger'
   const stats = [
     { icon: ShoppingBag, label: 'Productos', value: bot._count?.assignedProducts ?? 0 },
@@ -832,12 +832,12 @@ function WebhookTab({ bot }: { bot: Bot }) {
       {!isMeta && (
         <div className="dm-card-dark p-6 rounded-2xl">
           <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
-            <Key className="w-4 h-4 text-[#B735B8]" />
+            <Key className="w-4 h-4 text-[#147e95]" />
             Webhook Token (secreto)
           </h3>
           <p className="text-xs text-white/50 mb-4">
             Este token valida que el webhook viene de YCloud. Ya está incluido en la URL anterior como{' '}
-            <code className="text-[#B735B8]">?token=...</code>
+            <code className="text-[#147e95]">?token=...</code>
           </p>
           <div className="bg-white/70 border border-white/10 rounded-xl p-3 flex items-center gap-2">
             <code className="flex-1 text-xs text-white/75 font-mono truncate">
@@ -1031,7 +1031,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
       {/* Credentials form */}
       <form onSubmit={handleSave} className="dm-card-dark p-6 rounded-2xl space-y-5">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <Key className="w-4 h-4 text-[#B735B8]" />
+          <Key className="w-4 h-4 text-[#147e95]" />
           Claves de API
         </h3>
 
@@ -1052,7 +1052,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
                 value={form.ycloudApiKey}
                 onChange={e => setForm(f => ({ ...f, ycloudApiKey: e.target.value }))}
                 placeholder={creds?.hasYcloudKey ? '(dejar vacío para mantener)' : 'yk_live_...'}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#B735B8]/40"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#147e95]/40"
               />
               <button
                 type="button"
@@ -1108,7 +1108,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
               value={form.openaiApiKey}
               onChange={e => setForm(f => ({ ...f, openaiApiKey: e.target.value }))}
               placeholder={creds?.hasOpenAIKey ? '(dejar vacío para mantener)' : 'sk-proj-...'}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#B735B8]/40"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#147e95]/40"
             />
             <button
               type="button"
@@ -1130,7 +1130,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
               value={form.whatsappInstanceNumber}
               onChange={e => setForm(f => ({ ...f, whatsappInstanceNumber: e.target.value }))}
               placeholder="15551234567 (sin + ni espacios)"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#B735B8]/40"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#147e95]/40"
             />
           </div>
         )}
@@ -1145,7 +1145,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
               value={form.reportPhone}
               onChange={e => setForm(f => ({ ...f, reportPhone: e.target.value }))}
               placeholder="15559876543"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#B735B8]/40"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-dark-500 focus:outline-none focus:border-[#147e95]/40"
               required
             />
             <p className="text-xs text-white/40 mt-1">
@@ -1157,7 +1157,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
+          className="w-full py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
         >
           {loading ? <Spinner /> : <Save className="w-4 h-4" />}
           Guardar credenciales
@@ -1167,7 +1167,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
       {/* Model selector */}
       <div className="dm-card-dark p-6 rounded-2xl space-y-4">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <Zap className="w-4 h-4 text-[#B735B8]" />
+          <Zap className="w-4 h-4 text-[#147e95]" />
           Modelo de IA
           <span className="text-xs font-normal text-white/50 ml-1">— para respuestas al cliente</span>
         </h3>
@@ -1175,8 +1175,8 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
 
         <div className="space-y-2">
           {[
-            { id: 'gpt-5.2',     label: 'GPT-5.2',     desc: 'Último modelo · Máxima capacidad', color: 'text-[#B735B8]' },
-            { id: 'gpt-5.1',     label: 'GPT-5.1',     desc: 'Más inteligente · Mayor costo',    color: 'text-[#B735B8]' },
+            { id: 'gpt-5.2',     label: 'GPT-5.2',     desc: 'Último modelo · Máxima capacidad', color: 'text-[#147e95]' },
+            { id: 'gpt-5.1',     label: 'GPT-5.1',     desc: 'Más inteligente · Mayor costo',    color: 'text-[#147e95]' },
             { id: 'gpt-4o',      label: 'GPT-4o',       desc: 'Equilibrado · Costo moderado',     color: 'text-[#7DD3FC]' },
             { id: 'gpt-4o-mini', label: 'GPT-4o Mini',  desc: 'Más económico · Muy capaz',        color: 'text-[#16A34A]' },
           ].map(m => (
@@ -1186,7 +1186,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
               onClick={() => setSelectedModel(m.id)}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all text-left ${
                 selectedModel === m.id
-                  ? 'border-[#B735B8]/60 bg-[#B735B8]/10'
+                  ? 'border-[#147e95]/60 bg-[#147e95]/10'
                   : 'border-white/10 bg-white/30 hover:border-white/10'
               }`}
             >
@@ -1194,7 +1194,7 @@ function CredentialsTab({ bot, onStatusChange }: { bot: Bot; onStatusChange: (st
                 <span className={`text-sm font-semibold ${selectedModel === m.id ? m.color : 'text-white'}`}>{m.label}</span>
                 <p className="text-xs text-white/50 mt-0.5">{m.desc}</p>
               </div>
-              {selectedModel === m.id && <CheckCircle2 className="w-4 h-4 text-[#B735B8] shrink-0" />}
+              {selectedModel === m.id && <CheckCircle2 className="w-4 h-4 text-[#147e95] shrink-0" />}
             </button>
           ))}
         </div>
@@ -1778,7 +1778,7 @@ function PromptTab({ bot, onSaved }: { bot: Bot; onSaved: (updated: Partial<Bot>
               <button
                 type="button"
                 onClick={() => loadTemplate(EXAMPLE_PROMPT_PRO)}
-                className="text-[10px] px-2.5 py-1 rounded-lg bg-[#B735B8]/15 border border-[#B735B8]/35 text-[#C9A7FF] hover:bg-[#B735B8]/25 transition-colors font-medium"
+                className="text-[10px] px-2.5 py-1 rounded-lg bg-[#147e95]/15 border border-[#147e95]/35 text-[#C9A7FF] hover:bg-[#147e95]/25 transition-colors font-medium"
               >
                 Completa (Pro)
               </button>
@@ -1831,7 +1831,7 @@ function PromptTab({ bot, onSaved }: { bot: Bot; onSaved: (updated: Partial<Bot>
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
+          className="w-full py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
         >
           {loading ? <Spinner /> : <Save className="w-4 h-4" />}
           Guardar plantilla
@@ -2003,7 +2003,7 @@ function MediaGallery({
   labelPlaceholder = 'Etiqueta',
   showCover = false,
   addText = 'Agregar',
-  accent = '#B735B8',
+  accent = '#147e95',
   mixed = false,
 }: {
   items: MediaItem[]
@@ -2076,7 +2076,7 @@ function MediaGallery({
               key={t}
               type="button"
               onClick={() => setAddType(t)}
-              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${addType === t ? 'bg-[#B735B8] text-white' : 'text-white/60 hover:text-white'}`}
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${addType === t ? 'bg-[#147e95] text-white' : 'text-white/60 hover:text-white'}`}
             >
               {t === 'image' ? '📷 Imagen' : '🎬 Video'}
             </button>
@@ -2219,7 +2219,7 @@ function ProductForm({
     >
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-white flex items-center gap-2">
-          <Package className="w-4 h-4 text-[#B735B8]" />
+          <Package className="w-4 h-4 text-[#147e95]" />
           {product ? 'Editar producto' : 'Nuevo producto'}
         </h3>
         <button type="button" onClick={onCancel} className="text-white/50 hover:text-white transition-colors">
@@ -2231,7 +2231,7 @@ function ProductForm({
 
       {/* Basic info */}
       <div className={sectionClass}>
-        <div className={sectionHeaderClass}><span className="w-1 h-3.5 bg-[#B735B8]/70 rounded-full" />Información básica</div>
+        <div className={sectionHeaderClass}><span className="w-1 h-3.5 bg-[#147e95]/70 rounded-full" />Información básica</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Nombre del producto *</label>
@@ -2330,7 +2330,7 @@ function ProductForm({
 
       {/* Prices */}
       <div className={sectionClass}>
-        <div className={sectionHeaderClass}><span className="w-1 h-3.5 bg-[#B735B8]/70 rounded-full" />Precios</div>
+        <div className={sectionHeaderClass}><span className="w-1 h-3.5 bg-[#147e95]/70 rounded-full" />Precios</div>
         <div>
           <label className={labelClass}>Moneda</label>
           <select
@@ -2390,7 +2390,7 @@ function ProductForm({
       {/* Images Section */}
       <div className={sectionClass}>
         <div>
-          <div className={`${sectionHeaderClass} mb-1`}><span className="w-1 h-3.5 bg-[#B735B8]/70 rounded-full" />Imágenes del producto</div>
+          <div className={`${sectionHeaderClass} mb-1`}><span className="w-1 h-3.5 bg-[#147e95]/70 rounded-full" />Imágenes del producto</div>
           <p className="text-xs text-white/40 mb-3">Subí las fotos del producto. La primera es la portada. Podés agregar o quitar las que quieras.</p>
           <MediaGallery
             type="image"
@@ -2419,9 +2419,9 @@ function ProductForm({
       {/* Media de seguimiento — 3 espacios separados */}
       <div className={sectionClass}>
         <div className={`${sectionHeaderClass} mb-1`}>
-          <span className="w-1 h-3.5 bg-[#B735B8]/70 rounded-full" />
+          <span className="w-1 h-3.5 bg-[#147e95]/70 rounded-full" />
           Media de seguimiento
-          <span className="text-[10px] bg-[#B735B8]/20 text-[#B735B8] px-2 py-0.5 rounded border border-[#B735B8]/30 normal-case font-normal">NUEVO</span>
+          <span className="text-[10px] bg-[#147e95]/20 text-[#147e95] px-2 py-0.5 rounded border border-[#147e95]/30 normal-case font-normal">NUEVO</span>
         </div>
         <p className="text-xs text-white/40 mb-4">
           Opcional. Si el cliente consultó este producto y no concretó la compra, el agente adjuntará esto en el mensaje de seguimiento automático.
@@ -2482,9 +2482,9 @@ function ProductForm({
       {/* Testimonial Videos */}
       <div className={sectionClass}>
         <div className={`${sectionHeaderClass} mb-1`}>
-          <span className="w-1 h-3.5 bg-[#B735B8]/70 rounded-full" />
+          <span className="w-1 h-3.5 bg-[#147e95]/70 rounded-full" />
           Videos de testimonios
-          <span className="text-[10px] bg-[#B735B8]/20 text-[#B735B8] px-2 py-0.5 rounded border border-[#B735B8]/30 normal-case font-normal">NUEVO</span>
+          <span className="text-[10px] bg-[#147e95]/20 text-[#147e95] px-2 py-0.5 rounded border border-[#147e95]/30 normal-case font-normal">NUEVO</span>
         </div>
         <p className="text-xs text-white/40 mb-3">El agente enviará estos videos cuando el cliente necesite mayor confianza. Máximo 90 segundos por video.</p>
         <MediaGallery
@@ -2511,7 +2511,7 @@ function ProductForm({
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 py-3 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors text-sm"
+          className="flex-1 py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2 transition-colors text-sm"
         >
           {loading ? <Spinner /> : <Save className="w-4 h-4" />}
           {product ? 'Actualizar' : 'Crear producto'}
@@ -2719,7 +2719,7 @@ function ProductsTab({ bot }: { bot: Bot }) {
         </div>
         <button
           onClick={() => { setEditingProduct(null); setShowForm(true) }}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl text-sm hover:opacity-90 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl text-sm hover:opacity-90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nuevo producto
@@ -2830,7 +2830,7 @@ function ProductsTab({ bot }: { bot: Bot }) {
                       <button
                         onClick={() => handleAssign(product)}
                         disabled={actioning === product.id}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#FF096C]/10 text-[#FF096C] hover:bg-[#FF096C]/20 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#0a95a8]/10 text-[#0a95a8] hover:bg-[#0a95a8]/20 transition-colors disabled:opacity-50"
                       >
                         {actioning === product.id ? <Spinner /> : <Plus className="w-3 h-3" />}
                         Asignar
@@ -2907,8 +2907,8 @@ function FollowUpTab({
     <div className="max-w-2xl space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300 transition-all">
       <div className="dm-card-dark p-6 rounded-2xl border border-white/10 space-y-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#B735B8]/12 border border-[#B735B8]/25 flex items-center justify-center">
-            <Bell className="w-5 h-5 text-[#B735B8]" />
+          <div className="w-10 h-10 rounded-xl bg-[#147e95]/12 border border-[#147e95]/25 flex items-center justify-center">
+            <Bell className="w-5 h-5 text-[#147e95]" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">Configuración de Seguimientos</h3>
@@ -2956,13 +2956,13 @@ function FollowUpTab({
           <div className="md:col-span-2 space-y-2 pt-2 border-t border-white/10">
             <label className="text-[10px] font-bold text-white/75 uppercase tracking-widest pl-1 flex items-center gap-2">
               Prompt de seguimiento
-              <span className="text-[9px] bg-[#B735B8]/20 text-[#B735B8] px-1.5 py-0.5 rounded border border-[#B735B8]/30 normal-case font-normal tracking-normal">Opcional</span>
+              <span className="text-[9px] bg-[#147e95]/20 text-[#147e95] px-1.5 py-0.5 rounded border border-[#147e95]/30 normal-case font-normal tracking-normal">Opcional</span>
             </label>
             <textarea
               value={fp}
               onChange={e => setFp(e.target.value)}
               rows={4}
-              className="w-full bg-white/5 border border-white/10 focus:border-[#B735B8]/40 rounded-xl px-4 py-3 text-sm text-white transition-all outline-none resize-y placeholder:text-white/30"
+              className="w-full bg-white/5 border border-white/10 focus:border-[#147e95]/40 rounded-xl px-4 py-3 text-sm text-white transition-all outline-none resize-y placeholder:text-white/30"
               placeholder="Ej: Escribe con tono cercano y amable. Recuérdale que tenemos envío gratis esta semana y ofrécele resolver cualquier duda antes de decidir."
             />
             <p className="text-[10px] text-white/40 italic pl-1">
@@ -2978,7 +2978,7 @@ function FollowUpTab({
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 shrink-0 shadow-lg shadow-[#16A34A]/10"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 shrink-0 shadow-lg shadow-[#16A34A]/10"
             >
               {saving ? <Spinner /> : <Check className="w-4 h-4" />}
               Guardar Cambios
@@ -2987,9 +2987,9 @@ function FollowUpTab({
         </form>
       </div>
 
-      <div className="bg-[#B735B8]/8 border border-[#B735B8]/25 rounded-2xl p-4 flex gap-4">
-        <div className="w-10 h-10 rounded-full bg-[#B735B8]/15 flex items-center justify-center shrink-0">
-          <Zap className="w-5 h-5 text-[#B735B8]" />
+      <div className="bg-[#147e95]/8 border border-[#147e95]/25 rounded-2xl p-4 flex gap-4">
+        <div className="w-10 h-10 rounded-full bg-[#147e95]/15 flex items-center justify-center shrink-0">
+          <Zap className="w-5 h-5 text-[#147e95]" />
         </div>
         <div>
           <h4 className="text-sm font-bold text-[#111827]">¿Cómo funciona?</h4>
@@ -3117,7 +3117,7 @@ function QRTab({ bot }: { bot: Bot }) {
               <button
                 onClick={handleConnect}
                 disabled={connecting || status === 'connecting' || status === 'qr_ready'}
-                className="flex items-center gap-2 px-3 py-2 bg-[#FF096C]/10 border border-[#FF096C]/30 text-[#FF096C] hover:bg-[#FF096C]/20 rounded-xl text-xs font-medium transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-3 py-2 bg-[#0a95a8]/10 border border-[#0a95a8]/30 text-[#0a95a8] hover:bg-[#0a95a8]/20 rounded-xl text-xs font-medium transition-colors disabled:opacity-50"
               >
                 {connecting || status === 'connecting' ? <Spinner /> : <RefreshCw className="w-3.5 h-3.5" />}
                 {status === 'qr_ready' ? 'Escanea el QR' : 'Conectar'}
@@ -3143,7 +3143,7 @@ function QRTab({ bot }: { bot: Bot }) {
       {status === 'qr_ready' && qrBase64 && (
         <div className="dm-card-dark p-6 rounded-2xl text-center space-y-4">
           <div className="flex items-center gap-2 justify-center text-sm font-bold text-white">
-            <QrCode className="w-4 h-4 text-[#B735B8]" />
+            <QrCode className="w-4 h-4 text-[#147e95]" />
             Escanea con WhatsApp
           </div>
           <p className="text-xs text-white/50">
@@ -3163,7 +3163,7 @@ function QRTab({ bot }: { bot: Bot }) {
       {/* Conectado */}
       {status === 'connected' && (
         <div className="dm-card-dark p-6 rounded-2xl border border-[#16A34A]/20 text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-[#B735B8]/12 border border-[#B735B8]/25 flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-xl bg-[#147e95]/12 border border-[#147e95]/25 flex items-center justify-center mx-auto">
             <Wifi className="w-6 h-6 text-[#16A34A]" />
           </div>
           <div className="text-sm font-bold text-white">¡Agente conectado correctamente!</div>
@@ -3659,7 +3659,7 @@ function ChatsTab({ bot }: { bot: Bot }) {
             <button
               onClick={handleMarkAsSold}
               disabled={markingSold}
-              style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, opacity: markingSold ? 0.6 : 1 }}
+              style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, opacity: markingSold ? 0.6 : 1 }}
             >
               {markingSold ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
               Confirmar Venta
@@ -3783,7 +3783,7 @@ function BotDetailView({
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 10px 22px -8px rgba(255,9,108,0.45)' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 10px 22px -8px rgba(0,229,208,0.45)' }}>
             <Bot className="w-5 h-5 text-white" />
           </div>
           {editingName ? (
@@ -3852,7 +3852,7 @@ function BotDetailView({
               ? 'text-white'
               : 'text-[#6B7280] hover:text-[#111827] hover:bg-[#F4F6FA]'
               }`}
-            style={tab === t.id ? { background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 8px 20px rgba(255,9,108,0.28)' } : undefined}
+            style={tab === t.id ? { background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 8px 20px rgba(0,229,208,0.28)' } : undefined}
           >
             {t.icon}
             {t.label}
@@ -3998,13 +3998,13 @@ export default function WhatsAppPage() {
           <ArrowLeft className="w-4.5 h-4.5 text-[#6B7280] group-hover:text-[#111827] transition-colors" />
         </Link>
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 10px 22px -8px rgba(255,9,108,0.45)' }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 10px 22px -8px rgba(0,229,208,0.45)' }}>
             <MessageCircle className="w-4.5 h-4.5 text-white" />
           </div>
           <div className="min-w-0">
             <h1 className="text-lg font-bold text-[#111827] flex items-center gap-2 leading-tight" style={{ letterSpacing: '-0.02em' }}>
               <span className="truncate">WhatsApp Bots</span>
-              <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md shrink-0" style={{ background: 'rgba(183,53,184,0.12)', color: '#B735B8', border: '1px solid rgba(183,53,184,0.28)' }}>
+              <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md shrink-0" style={{ background: 'rgba(183,53,184,0.12)', color: '#147e95', border: '1px solid rgba(183,53,184,0.28)' }}>
                 Multi-Tenant
               </span>
             </h1>

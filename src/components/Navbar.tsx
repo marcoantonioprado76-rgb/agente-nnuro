@@ -73,7 +73,7 @@ export default function Navbar() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 14px 12px', padding: '7px 10px', borderRadius: 10, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} title={`Empresa: ${org.name}`}>
             {org.logoUrl
               ? <img src={org.logoUrl} alt={org.name} style={{ height: 22, maxWidth: 80, objectFit: 'contain' }} />
-              : <i className="fa-solid fa-building" style={{ color: '#B735B8', fontSize: 14 }} />}
+              : <i className="fa-solid fa-building" style={{ color: '#147e95', fontSize: 14 }} />}
             <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{org.name}</span>
           </div>
         )}
@@ -130,7 +130,7 @@ export default function Navbar() {
           )}
           {isOrgAdmin && (
             <a href="/empresa" className="nav-item">
-              <span className="nav-item__icon" style={{ color: '#fff', background: 'linear-gradient(145deg,#FF2D95,#B735B8)' }}><i className="fa-solid fa-building"></i></span>
+              <span className="nav-item__icon" style={{ color: '#fff', background: 'linear-gradient(145deg,#1fb8bb,#147e95)' }}><i className="fa-solid fa-building"></i></span>
               <span className="nav-item__label">Mi Empresa</span>
               {orgPending > 0
                 ? <span style={{ marginLeft: 'auto', background: '#ef4444', color: '#fff', borderRadius: 999, fontSize: 11, fontWeight: 800, minWidth: 18, height: 18, display: 'inline-grid', placeItems: 'center', padding: '0 5px' }}>{orgPending}</span>

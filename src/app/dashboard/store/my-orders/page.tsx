@@ -53,7 +53,7 @@ export default function MyOrdersPage() {
 
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Mis Pedidos</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
         <p className="text-xs mt-2" style={{ color: '#6B7280' }}>Historial de compras en la tienda MY DIAMOND.</p>
       </div>
 
@@ -67,7 +67,7 @@ export default function MyOrdersPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div style={{ fontSize: 40, marginBottom: 12 }}>📦</div>
           <p className="text-sm" style={{ color: '#6B7280', marginBottom: 16 }}>No tienes pedidos aún.</p>
-          <Link href="/dashboard/store" style={{ color: '#D203DD', fontSize: 13, textDecoration: 'none', border: '1px solid #E4E9F0', borderRadius: 8, padding: '7px 16px' }}>
+          <Link href="/dashboard/store" style={{ color: '#00E5D0', fontSize: 13, textDecoration: 'none', border: '1px solid #E4E9F0', borderRadius: 8, padding: '7px 16px' }}>
             Ir a la tienda
           </Link>
         </div>
@@ -122,7 +122,7 @@ export default function MyOrdersPage() {
                   </div>
                   {order.txHash && (
                     <a href={`https://bscscan.com/tx/${order.txHash}`} target="_blank" rel="noreferrer"
-                      style={{ fontSize: 11, color: '#D203DD', textDecoration: 'none' }}>
+                      style={{ fontSize: 11, color: '#00E5D0', textDecoration: 'none' }}>
                       Ver tx ↗
                     </a>
                   )}

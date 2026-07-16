@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 
 interface OrgUser {
   id: string
@@ -175,7 +175,7 @@ export default function EmpresaPage() {
 
         {/* Recordatorio de facturación */}
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', background: 'rgba(35,59,143,0.06)', border: '1px solid rgba(35,59,143,0.15)', borderRadius: 12, padding: '12px 16px', marginTop: 14, fontSize: 13, color: '#33405A' }}>
-          <i className="fa-solid fa-file-invoice-dollar" style={{ color: '#B735B8' }} />
+          <i className="fa-solid fa-file-invoice-dollar" style={{ color: '#147e95' }} />
           Vos activás a tus usuarios y les cobrás con <strong>&nbsp;tu propia factura</strong>.
         </div>
 
@@ -183,7 +183,7 @@ export default function EmpresaPage() {
         {org && (
           <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 14, padding: '14px 16px', marginTop: 14 }}>
             <p style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#9AA3B2', marginBottom: 5 }}>
-              <i className="fa-solid fa-link" style={{ marginRight: 6, color: '#B735B8' }} />Link de invitación
+              <i className="fa-solid fa-link" style={{ marginRight: 6, color: '#147e95' }} />Link de invitación
             </p>
             <p style={{ fontSize: 12.5, color: '#5B6472', marginBottom: 9 }}>Pasale este link a tu gente: quien se registre ahí queda <strong>dentro de tu empresa</strong> automáticamente (después lo activás acá abajo).</p>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -241,7 +241,7 @@ export default function EmpresaPage() {
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 9px', borderRadius: 999, background: u.plan === 'NONE' ? '#F1F3F8' : 'rgba(183,53,184,0.1)', color: u.plan === 'NONE' ? '#9AA3B2' : '#B735B8', border: '1px solid #E4E9F0' }}>{u.plan}</span>
+                    <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 9px', borderRadius: 999, background: u.plan === 'NONE' ? '#F1F3F8' : 'rgba(183,53,184,0.1)', color: u.plan === 'NONE' ? '#9AA3B2' : '#147e95', border: '1px solid #E4E9F0' }}>{u.plan}</span>
                     <span style={{ fontSize: 12, fontWeight: 800, color: dCls }}>{dTxt}</span>
                     <span style={{ fontSize: 11, fontWeight: 700, color: u.isActive ? '#16a34a' : '#ef4444' }}>{u.isActive ? 'Activo' : 'Inactivo'}</span>
                     <div style={{ display: 'flex', gap: 6 }}>
@@ -283,7 +283,7 @@ export default function EmpresaPage() {
           <p style={{ fontSize: 13, color: '#5B6472', marginBottom: 12 }}>Elegí el plan a activar (30 días). Recordá cobrarle con tu factura.</p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
             {['BASIC', 'PRO', 'ELITE'].map(p => (
-              <button key={p} onClick={() => setPlanChoice(p)} style={{ flex: 1, padding: '12px 0', borderRadius: 11, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: planChoice === p ? '2px solid #B735B8' : '1px solid #E4E9F0', background: planChoice === p ? 'rgba(183,53,184,0.08)' : '#fff', color: planChoice === p ? '#B735B8' : '#5B6472' }}>{p}</button>
+              <button key={p} onClick={() => setPlanChoice(p)} style={{ flex: 1, padding: '12px 0', borderRadius: 11, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: planChoice === p ? '2px solid #147e95' : '1px solid #E4E9F0', background: planChoice === p ? 'rgba(183,53,184,0.08)' : '#fff', color: planChoice === p ? '#147e95' : '#5B6472' }}>{p}</button>
             ))}
           </div>
           <div style={modalActions}>

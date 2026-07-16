@@ -53,7 +53,7 @@ export default function LoginPage() {
 
       {/* Glows suaves */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-60 -left-40 w-[600px] h-[600px] rounded-full blur-[150px]" style={{ background: 'rgba(255,9,108,0.16)' }} />
+        <div className="absolute -top-60 -left-40 w-[600px] h-[600px] rounded-full blur-[150px]" style={{ background: 'rgba(0,229,208,0.16)' }} />
         <div className="absolute -bottom-60 -right-40 w-[600px] h-[600px] rounded-full blur-[150px]" style={{ background: 'rgba(106,53,217,0.18)' }} />
       </div>
 
@@ -130,7 +130,7 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className="dm-login-btn w-full uppercase tracking-[0.18em] text-xs mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
-              style={{ padding: '14px 20px', borderRadius: 16, fontWeight: 800, color: '#fff', border: 'none', cursor: 'pointer', background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}
+              style={{ padding: '14px 20px', borderRadius: 16, fontWeight: 800, color: '#fff', border: 'none', cursor: 'pointer', background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}
             >
               {loading
                 ? <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
         <p className="text-center text-[11px] mt-5" style={{ color: 'rgba(255,255,255,0.55)' }}>
           ¿Sin cuenta?{' '}
-          <Link href="/register" className="font-bold transition-colors" style={{ color: '#FF096C' }}>
+          <Link href="/register" className="font-bold transition-colors" style={{ color: '#0a95a8' }}>
             Registrarse
           </Link>
         </p>

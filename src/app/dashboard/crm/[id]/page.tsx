@@ -440,7 +440,7 @@ export default function CrmCampaignDetailPage() {
                             <button
                                 onClick={saveEdit}
                                 disabled={savingEdit}
-                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black text-white transition-all disabled:opacity-50 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90"
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black text-white transition-all disabled:opacity-50 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90"
                             >
                                 {savingEdit ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
                                 Guardar
@@ -515,7 +515,7 @@ export default function CrmCampaignDetailPage() {
                             <div className="h-3 bg-white/5 rounded-full overflow-hidden">
                                 <div
                                     className="h-full rounded-full transition-all duration-500"
-                                    style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #FF2D95, #B735B8, #233B8F)' }}
+                                    style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #1fb8bb, #147e95, #12303a)' }}
                                 />
                             </div>
                             <div className="flex justify-between text-[10px] text-white/40 mt-1.5">
@@ -534,7 +534,7 @@ export default function CrmCampaignDetailPage() {
                                 onChange={e => setEditForm(f => ({ ...f, prompt: e.target.value }))}
                                 rows={5}
                                 placeholder="Mensaje que la IA usará como base para cada contacto..."
-                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/35 focus:outline-none focus:border-[#FF2D95]/50 resize-none leading-relaxed"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/35 focus:outline-none focus:border-[#1fb8bb]/50 resize-none leading-relaxed"
                             />
                         ) : (
                             <p className="text-sm text-white/75 leading-relaxed">{campaign.prompt || <span className="text-white/40 italic">Sin prompt</span>}</p>
@@ -553,7 +553,7 @@ export default function CrmCampaignDetailPage() {
                                     <button
                                         type="button"
                                         onClick={() => { setShowAddContact(v => !v); setNewPhone(''); setNewName('') }}
-                                        className="flex items-center gap-1.5 text-[11px] font-black text-[#FF096C] bg-[#FF096C]/10 border border-[#FF096C]/20 rounded-lg px-2.5 py-1 hover:bg-[#FF096C]/20 transition-all"
+                                        className="flex items-center gap-1.5 text-[11px] font-black text-[#0a95a8] bg-[#0a95a8]/10 border border-[#0a95a8]/20 rounded-lg px-2.5 py-1 hover:bg-[#0a95a8]/20 transition-all"
                                     >
                                         <Plus size={11} /> Agregar contacto
                                     </button>
@@ -569,14 +569,14 @@ export default function CrmCampaignDetailPage() {
                                     onChange={e => setNewPhone(e.target.value)}
                                     onKeyDown={e => e.key === 'Enter' && addContact()}
                                     placeholder="Teléfono (+591...)"
-                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-white/35 focus:outline-none focus:border-[#FF2D95]/40 min-w-0"
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-white/35 focus:outline-none focus:border-[#1fb8bb]/40 min-w-0"
                                 />
                                 <input
                                     value={newName}
                                     onChange={e => setNewName(e.target.value)}
                                     onKeyDown={e => e.key === 'Enter' && addContact()}
                                     placeholder="Nombre (opcional)"
-                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-white/35 focus:outline-none focus:border-[#FF2D95]/40 min-w-0"
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-white/35 focus:outline-none focus:border-[#1fb8bb]/40 min-w-0"
                                 />
                                 <button
                                     type="button"
@@ -600,7 +600,7 @@ export default function CrmCampaignDetailPage() {
                                         <button
                                             type="button"
                                             onClick={() => { setShowAddContact(true); setNewPhone(''); setNewName('') }}
-                                            className="inline-flex items-center gap-2 text-xs font-black text-[#FF096C] bg-[#FF096C]/10 border border-[#FF096C]/20 rounded-xl px-4 py-2 hover:bg-[#FF096C]/20 transition-all"
+                                            className="inline-flex items-center gap-2 text-xs font-black text-[#0a95a8] bg-[#0a95a8]/10 border border-[#0a95a8]/20 rounded-xl px-4 py-2 hover:bg-[#0a95a8]/20 transition-all"
                                         >
                                             <Plus size={12} /> Agregar primer contacto
                                         </button>
@@ -614,13 +614,13 @@ export default function CrmCampaignDetailPage() {
                                                 <input
                                                     value={editPhone}
                                                     onChange={e => setEditPhone(e.target.value)}
-                                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-[#FF2D95]/40 min-w-0"
+                                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-[#1fb8bb]/40 min-w-0"
                                                 />
                                                 <input
                                                     value={editName}
                                                     onChange={e => setEditName(e.target.value)}
                                                     placeholder="Nombre"
-                                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white placeholder-white/35 focus:outline-none focus:border-[#FF2D95]/40 min-w-0"
+                                                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white placeholder-white/35 focus:outline-none focus:border-[#1fb8bb]/40 min-w-0"
                                                 />
                                                 <button type="button" onClick={saveEditContact} disabled={savingContact} className="text-green-400 hover:text-green-300 disabled:opacity-40 shrink-0">
                                                     {savingContact ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
@@ -646,7 +646,7 @@ export default function CrmCampaignDetailPage() {
                                                 )}
                                                 {!['RUNNING', 'COMPLETED'].includes(campaign.status) && (
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all shrink-0">
-                                                        <button type="button" onClick={() => startEditContact(c)} className="text-white/40 hover:text-[#FF096C] transition-all">
+                                                        <button type="button" onClick={() => startEditContact(c)} className="text-white/40 hover:text-[#0a95a8] transition-all">
                                                             <Pencil size={12} />
                                                         </button>
                                                         <button
@@ -714,7 +714,7 @@ export default function CrmCampaignDetailPage() {
                                                 <p className="text-[10px] text-white/40">{botAiActive ? 'Agente responde mensajes' : 'Solo envío, sin respuestas'}</p>
                                             </div>
                                         </div>
-                                        <div className={`w-9 h-5 rounded-full transition-all relative ${botAiActive ? 'bg-[#B735B8]' : 'bg-white/15'}`}>
+                                        <div className={`w-9 h-5 rounded-full transition-all relative ${botAiActive ? 'bg-[#147e95]' : 'bg-white/15'}`}>
                                             <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${botAiActive ? 'left-4' : 'left-0.5'}`} />
                                         </div>
                                     </button>
@@ -729,9 +729,9 @@ export default function CrmCampaignDetailPage() {
                                 <p className="text-[10px] text-white/40 text-center">Abre WhatsApp → Dispositivos vinculados → Vincular dispositivo</p>
                             </div>
                         ) : waStatus.status === 'connecting' ? (
-                            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#FF096C]/10 border border-[#FF096C]/20">
-                                <Loader2 size={14} className="text-[#FF096C] animate-spin shrink-0" />
-                                <p className="text-xs text-[#FF096C]">Generando QR...</p>
+                            <div className="flex items-center gap-2 p-3 rounded-xl bg-[#0a95a8]/10 border border-[#0a95a8]/20">
+                                <Loader2 size={14} className="text-[#0a95a8] animate-spin shrink-0" />
+                                <p className="text-xs text-[#0a95a8]">Generando QR...</p>
                             </div>
                         ) : (
                             <div className="space-y-3">
@@ -772,7 +772,7 @@ export default function CrmCampaignDetailPage() {
                                     type="button"
                                     onClick={connectWhatsApp}
                                     disabled={waConnecting}
-                                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-white transition-all disabled:opacity-50 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90"
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-white transition-all disabled:opacity-50 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90"
                                 >
                                     {waConnecting ? <Loader2 size={12} className="animate-spin" /> : <Smartphone size={12} />}
                                     Conectar nuevo QR
@@ -809,7 +809,7 @@ export default function CrmCampaignDetailPage() {
                                 <button
                                     onClick={execute}
                                     disabled={actionLoading}
-                                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-black text-sm transition-all disabled:opacity-50 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90"
+                                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-black text-sm transition-all disabled:opacity-50 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90"
                                 >
                                     {actionLoading ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
                                     {campaign.status === 'PAUSED' ? 'Reanudar envío' : 'Iniciar envío ahora'}
@@ -819,7 +819,7 @@ export default function CrmCampaignDetailPage() {
                             <button
                                 onClick={resend}
                                 disabled={actionLoading}
-                                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-black text-sm transition-all disabled:opacity-50 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90"
+                                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-black text-sm transition-all disabled:opacity-50 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90"
                             >
                                 {actionLoading ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
                                 Reenviar a esta lista
@@ -840,7 +840,7 @@ export default function CrmCampaignDetailPage() {
                     {/* Remarketing recurrente */}
                     <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
                         <div className="flex items-center gap-2">
-                            <RefreshCw size={13} className="text-[#FF096C]" />
+                            <RefreshCw size={13} className="text-[#0a95a8]" />
                             <p className="text-xs font-black uppercase tracking-widest text-white/40">Remarketing recurrente</p>
                         </div>
                         {campaign.recurring && campaign.nextRunAt && (
@@ -857,7 +857,7 @@ export default function CrmCampaignDetailPage() {
                                         <button key={d} type="button"
                                             onClick={() => setRecDays(prev => on ? prev.filter(x => x !== d) : [...prev, d])}
                                             className="w-8 h-8 rounded-lg text-xs font-black transition-all"
-                                            style={{ background: on ? 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' : 'rgba(255,255,255,0.05)', color: on ? '#fff' : 'rgba(255,255,255,0.55)', border: `1px solid ${on ? 'transparent' : 'rgba(255,255,255,0.1)'}` }}>
+                                            style={{ background: on ? 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' : 'rgba(255,255,255,0.05)', color: on ? '#fff' : 'rgba(255,255,255,0.55)', border: `1px solid ${on ? 'transparent' : 'rgba(255,255,255,0.1)'}` }}>
                                             {lbl}
                                         </button>
                                     )
@@ -868,13 +868,13 @@ export default function CrmCampaignDetailPage() {
                             <div className="flex-1">
                                 <p className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1.5">Hora (Bolivia)</p>
                                 <input type="time" value={recTime} onChange={e => setRecTime(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF2D95]/50" style={{ colorScheme: 'dark' }} />
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#1fb8bb]/50" style={{ colorScheme: 'dark' }} />
                             </div>
                             {visualFiles.length > 0 && (
                                 <div className="flex-1">
                                     <p className="text-[10px] text-white/40 uppercase font-black tracking-widest mb-1.5">Imagen</p>
                                     <select value={recImageId} onChange={e => setRecImageId(e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF2D95]/50">
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#1fb8bb]/50">
                                         <option value="">Rotar todas</option>
                                         {visualFiles.map((img: any, i: number) => <option key={img.id} value={img.id}>Imagen {i + 1}</option>)}
                                     </select>
@@ -883,7 +883,7 @@ export default function CrmCampaignDetailPage() {
                         </div>
                         <div className="flex gap-2">
                             <button onClick={() => saveRecurrence(true)} disabled={savingRec}
-                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white font-black text-xs transition-all disabled:opacity-50 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90">
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white font-black text-xs transition-all disabled:opacity-50 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90">
                                 {savingRec ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
                                 {campaign.recurring ? 'Actualizar' : 'Activar'}
                             </button>
@@ -911,12 +911,12 @@ export default function CrmCampaignDetailPage() {
                                             max="3600"
                                             value={editForm.delayValue}
                                             onChange={e => setEditForm(f => ({ ...f, delayValue: e.target.value }))}
-                                            className="w-24 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF2D95]/50"
+                                            className="w-24 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#1fb8bb]/50"
                                         />
                                         <select
                                             value={editForm.delayUnit}
                                             onChange={e => setEditForm(f => ({ ...f, delayUnit: e.target.value }))}
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF2D95]/50"
+                                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#1fb8bb]/50"
                                         >
                                             <option value="seconds">Segundos</option>
                                             <option value="minutes">Minutos</option>
@@ -929,7 +929,7 @@ export default function CrmCampaignDetailPage() {
                                         type="datetime-local"
                                         value={editForm.scheduledAt}
                                         onChange={e => setEditForm(f => ({ ...f, scheduledAt: e.target.value }))}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF2D95]/50"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#1fb8bb]/50"
                                         style={{ colorScheme: 'dark' }}
                                     />
                                 </div>
@@ -963,7 +963,7 @@ export default function CrmCampaignDetailPage() {
                                 {visualFiles.map((img: any, i: number) => (
                                     <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
                                         {img.type === 'VIDEO' ? (
-                                            <div className="w-full h-full bg-[#B735B8]/10 flex flex-col items-center justify-center">
+                                            <div className="w-full h-full bg-[#147e95]/10 flex flex-col items-center justify-center">
                                                 <Film size={24} className="text-[#C9A7FF]" />
                                                 <span className="text-[9px] text-[#C9A7FF] mt-1">Video</span>
                                             </div>
@@ -972,7 +972,7 @@ export default function CrmCampaignDetailPage() {
                                         )}
                                         <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] font-black px-1.5 py-0.5 rounded">{i + 1}</span>
                                         {img.type === 'VIDEO' && (
-                                            <span className="absolute top-1 right-1 bg-[#B735B8]/80 text-white text-[8px] font-bold px-1 rounded">VID</span>
+                                            <span className="absolute top-1 right-1 bg-[#147e95]/80 text-white text-[8px] font-bold px-1 rounded">VID</span>
                                         )}
                                         {canEdit && (
                                             <button
@@ -989,7 +989,7 @@ export default function CrmCampaignDetailPage() {
                                     <button
                                         onClick={() => imageInputRef.current?.click()}
                                         disabled={uploadingImageCount > 0}
-                                        className="aspect-square rounded-xl border-2 border-dashed border-white/10 hover:border-[#FF2D95]/40 flex flex-col items-center justify-center gap-1 text-white/40 hover:text-[#FF096C] transition-all disabled:opacity-50"
+                                        className="aspect-square rounded-xl border-2 border-dashed border-white/10 hover:border-[#1fb8bb]/40 flex flex-col items-center justify-center gap-1 text-white/40 hover:text-[#0a95a8] transition-all disabled:opacity-50"
                                     >
                                         {uploadingImageCount > 0 ? <Loader2 size={16} className="animate-spin" /> : <><Upload size={14} /><span className="text-[9px] font-bold">Agregar</span></>}
                                     </button>
@@ -999,7 +999,7 @@ export default function CrmCampaignDetailPage() {
                             <button
                                 onClick={() => imageInputRef.current?.click()}
                                 disabled={uploadingImageCount > 0}
-                                className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-[#FF2D95]/40 text-white/40 hover:text-[#FF096C] transition-all disabled:opacity-50 mb-3"
+                                className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-white/10 hover:border-[#1fb8bb]/40 text-white/40 hover:text-[#0a95a8] transition-all disabled:opacity-50 mb-3"
                             >
                                 {uploadingImageCount > 0 ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
                                 <span className="text-sm">Agregar imágenes o videos</span>

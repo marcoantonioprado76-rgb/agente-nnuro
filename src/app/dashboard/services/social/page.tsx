@@ -13,7 +13,7 @@ const NETWORKS = [
 ]
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
-    PUBLISHED: { label: 'Publicado', color: '#FF096C', icon: CheckCircle },
+    PUBLISHED: { label: 'Publicado', color: '#0a95a8', icon: CheckCircle },
     SCHEDULED: { label: 'Programado', color: '#00BFFF', icon: Clock },
     FAILED: { label: 'Fallido', color: '#FF4444', icon: XCircle },
     PARTIAL: { label: 'Parcial', color: '#FFA500', icon: CheckCircle },
@@ -481,14 +481,14 @@ export default function SocialPage() {
             <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="min-w-0">
                     <h1 className="text-xl sm:text-2xl font-bold text-[#111827] flex items-center gap-2">
-                        <Send size={22} className="text-[#FF096C] flex-shrink-0" /> Publicador Social
+                        <Send size={22} className="text-[#0a95a8] flex-shrink-0" /> Publicador Social
                     </h1>
                     <p className="text-[#6B7280] text-xs sm:text-sm mt-1">Publica en Facebook, Instagram, TikTok y YouTube</p>
                 </div>
                 <div className="flex items-center gap-2 self-start flex-shrink-0 flex-wrap">
                   <AIKeySelector compact />
                   <button onClick={() => { setScript(''); setScriptTopic(''); setScriptModal(true) }}
-                    className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-[#FF096C]/10 text-[#FF096C] border border-[#FF096C]/30 hover:bg-[#FF096C]/20 transition-all text-sm font-medium whitespace-nowrap">
+                    className="flex items-center gap-2 px-3 py-2 sm:px-4 rounded-xl bg-[#0a95a8]/10 text-[#0a95a8] border border-[#0a95a8]/30 hover:bg-[#0a95a8]/20 transition-all text-sm font-medium whitespace-nowrap">
                     <FileText size={14} /> Guión de video
                   </button>
                 </div>
@@ -510,7 +510,7 @@ export default function SocialPage() {
                             <div className="h-1.5 rounded-full transition-all"
                                 style={{
                                     width: `${Math.min(100, (usageLimits.monthlyCount / usageLimits.limits.monthlyPosts) * 100)}%`,
-                                    background: usageLimits.monthlyCount >= usageLimits.limits.monthlyPosts ? '#FF4444' : '#FF096C'
+                                    background: usageLimits.monthlyCount >= usageLimits.limits.monthlyPosts ? '#FF4444' : '#0a95a8'
                                 }} />
                         </div>
                     </div>
@@ -540,7 +540,7 @@ export default function SocialPage() {
                     { id: 'connections', label: 'Cuentas', icon: Zap },
                 ].map(t => (
                     <button key={t.id} onClick={() => setTab(t.id as any)}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${tab === t.id ? 'bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white hover:opacity-90' : 'bg-[#F4F6FA] text-[#6B7280] hover:bg-[#EEF2F7]'}`}>
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${tab === t.id ? 'bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white hover:opacity-90' : 'bg-[#F4F6FA] text-[#6B7280] hover:bg-[#EEF2F7]'}`}>
                         <t.icon size={14} /> {t.label}
                     </button>
                 ))}
@@ -588,7 +588,7 @@ export default function SocialPage() {
                                                         {copiedPrompt ? <><CheckCircle size={12} /> ¡Copiado!</> : <><Copy size={12} /> Prompt: Página / Contenido</>}
                                                     </button>
                                                     <button onClick={copyPersonalPrompt}
-                                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-all ${copiedPersonal ? 'bg-[#22C55E]/15 border-[#22C55E]/40 text-[#22C55E]' : 'bg-[#B735B8]/15 border-white/10 text-purple-200 hover:bg-[#B735B8]/25'}`}>
+                                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold transition-all ${copiedPersonal ? 'bg-[#22C55E]/15 border-[#22C55E]/40 text-[#22C55E]' : 'bg-[#147e95]/15 border-white/10 text-purple-200 hover:bg-[#147e95]/25'}`}>
                                                         {copiedPersonal ? <><CheckCircle size={12} /> ¡Copiado!</> : <><Copy size={12} /> Prompt: Marca Personal</>}
                                                     </button>
                                                 </div>
@@ -598,7 +598,7 @@ export default function SocialPage() {
                                                 className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-white/35 resize-none focus:outline-none focus:border-[#C9A7FF]/50 leading-relaxed" />
                                             <div className="flex gap-2">
                                                 <button onClick={handleGenerateProfile} disabled={profileGenLoading}
-                                                    className="flex-1 px-3 py-2 bg-gradient-to-r from-[#C9A7FF] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl text-xs disabled:opacity-40 flex items-center justify-center gap-2">
+                                                    className="flex-1 px-3 py-2 bg-gradient-to-r from-[#C9A7FF] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl text-xs disabled:opacity-40 flex items-center justify-center gap-2">
                                                     {profileGenLoading ? <><Loader2 size={13} className="animate-spin" /> Armando…</> : <><Sparkles size={13} /> Generar perfil con IA</>}
                                                 </button>
                                                 {contentProfiles.length > 0 && (
@@ -709,12 +709,12 @@ export default function SocialPage() {
                             <div>
                                 <div className="flex items-stretch gap-2">
                                     <button onClick={handleWritePrompt} disabled={imgPromptLoading || !selectedProfileId}
-                                        className="flex-1 min-w-0 flex items-center justify-center gap-2 px-3 py-3 rounded-2xl text-[12.5px] font-black text-white leading-tight text-center bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90">
+                                        className="flex-1 min-w-0 flex items-center justify-center gap-2 px-3 py-3 rounded-2xl text-[12.5px] font-black text-white leading-tight text-center bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90">
                                         {imgPromptLoading ? <Loader2 size={15} className="shrink-0 animate-spin" /> : <Sparkles size={15} className="shrink-0" />}
                                         <span>{imgPromptLoading ? 'Armando…' : 'Armar prompt con nuestra estructura'}</span>
                                     </button>
                                     <button onClick={() => setShowImgManual(v => !v)}
-                                        className={`shrink-0 flex items-center gap-1.5 px-3.5 py-3 rounded-2xl text-[12px] font-bold border transition-all ${showImgManual ? 'bg-[#B735B8]/25 border-white/10 text-purple-100' : 'bg-[#B735B8]/12 border-white/10 text-purple-200 hover:bg-[#B735B8]/20'}`}>
+                                        className={`shrink-0 flex items-center gap-1.5 px-3.5 py-3 rounded-2xl text-[12px] font-bold border transition-all ${showImgManual ? 'bg-[#147e95]/25 border-white/10 text-purple-100' : 'bg-[#147e95]/12 border-white/10 text-purple-200 hover:bg-[#147e95]/20'}`}>
                                         <FileText size={14} /> <span>Manual</span>
                                     </button>
                                 </div>
@@ -739,7 +739,7 @@ export default function SocialPage() {
                             {/* PASO 3: generar imagen — SOLO aparece cuando el prompt ya está listo (como Meta Ads) */}
                             {imgPrompt.trim() && (
                                 <button onClick={handleGenerateImage} disabled={imgLoading}
-                                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90">
+                                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90">
                                     {imgLoading ? <><Loader2 size={16} className="animate-spin" /> Creando tu contenido… ({imgQuality === 'alta' ? '~1-2 min' : '~30-60s'})</> : <><Wand2 size={16} /> Generar imagen</>}
                                 </button>
                             )}
@@ -767,7 +767,7 @@ export default function SocialPage() {
                             <div className="bg-white rounded-xl overflow-hidden w-full max-w-[420px] mx-auto shadow-[0_2px_14px_rgba(0,0,0,0.28)]">
                                 {/* Encabezado */}
                                 <div className="flex items-center gap-2.5 px-3 pt-3 pb-1.5">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9A7FF] to-[#B735B8] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9A7FF] to-[#147e95] flex items-center justify-center text-white font-bold text-sm shrink-0">
                                         {previewName.replace('@', '').charAt(0).toUpperCase()}
                                     </div>
                                     <div className="min-w-0">
@@ -784,12 +784,12 @@ export default function SocialPage() {
                                         className="w-full bg-transparent text-[#050505] text-[13px] whitespace-pre-wrap break-words leading-snug resize-none focus:outline-none placeholder:text-[#90949C] placeholder:italic" />
                                     <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                                         <button onClick={handleGenerateTextAI} disabled={aiLoading}
-                                            className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold text-white bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] disabled:opacity-40 hover:opacity-90">
+                                            className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold text-white bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] disabled:opacity-40 hover:opacity-90">
                                             {aiLoading ? <><Loader2 size={11} className="animate-spin" /> Generando…</> : (content.trim() ? <>🔄 Otra versión</> : <><Sparkles size={11} /> Generar texto con IA</>)}
                                         </button>
                                         {content.trim() && (
                                             <>
-                                                <button onClick={() => handleAI('improve')} disabled={aiLoading} className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-semibold text-[#B735B8] bg-[#B735B8]/10 hover:bg-[#B735B8]/20 disabled:opacity-40"><Wand2 size={11} /> Mejorar</button>
+                                                <button onClick={() => handleAI('improve')} disabled={aiLoading} className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-semibold text-[#147e95] bg-[#147e95]/10 hover:bg-[#147e95]/20 disabled:opacity-40"><Wand2 size={11} /> Mejorar</button>
                                                 <button onClick={insertBold} title="Negrita" className="px-2 py-1 rounded-md text-[11px] font-bold text-[#65676B] bg-black/5 hover:bg-black/10">𝗕</button>
                                                 <button onClick={() => setContent('')} title="Borrar" className="px-2 py-1 rounded-md text-[11px] font-semibold text-[#65676B] bg-black/5 hover:bg-black/10"><Trash2 size={11} /></button>
                                             </>
@@ -854,19 +854,19 @@ export default function SocialPage() {
                                         <div key={n.id}>
                                             <button disabled={!isConnected}
                                                 onClick={() => toggleNetwork(n.id)}
-                                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all text-left ${isSelected ? 'border-[#FF096C]/50 bg-[#FF096C]/10' : 'border-white/10 bg-white/5'} ${!isConnected ? 'opacity-40 cursor-not-allowed' : 'hover:border-[#FF096C]/40'}`}>
+                                                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all text-left ${isSelected ? 'border-[#0a95a8]/50 bg-[#0a95a8]/10' : 'border-white/10 bg-white/5'} ${!isConnected ? 'opacity-40 cursor-not-allowed' : 'hover:border-[#0a95a8]/40'}`}>
                                                 <span className="text-lg">{n.icon}</span>
                                                 <div className="flex-1 min-w-0">
                                                     <span className="text-white text-sm font-medium">{n.label}</span>
                                                     {!isConnected && <p className="text-white/40 text-xs">No conectado</p>}
                                                     {isConnected && !isSelected && <p className="text-[#16A34A] text-xs">Conectado ✓</p>}
                                                     {isConnected && isSelected && (isFB || isIG) && pageSelections[n.id] && (
-                                                        <p className="text-[#FF096C] text-xs truncate">
+                                                        <p className="text-[#0a95a8] text-xs truncate">
                                                             {isFB ? pageSelections[n.id].pageName : `@${pageSelections[n.id].username}`}
                                                         </p>
                                                     )}
                                                 </div>
-                                                {isSelected && <CheckCircle size={14} className="text-[#FF096C] flex-shrink-0" />}
+                                                {isSelected && <CheckCircle size={14} className="text-[#0a95a8] flex-shrink-0" />}
                                             </button>
 
                                             {/* Selector de página Facebook */}
@@ -885,7 +885,7 @@ export default function SocialPage() {
                                                                 const page = fbPages.find(p => p.pageId === e.target.value)
                                                                 if (page) setPageSelections(prev => ({ ...prev, FACEBOOK: { pageId: page.pageId, pageAccessToken: page.pageAccessToken, pageName: page.pageName } }))
                                                             }}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FF096C]/50 [&>option]:bg-[#081624]">
+                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#081624]">
                                                             <option value="">— Selecciona una página —</option>
                                                             {fbPages.map(p => (
                                                                 <option key={p.pageId} value={p.pageId}>{p.pageName}</option>
@@ -911,7 +911,7 @@ export default function SocialPage() {
                                                                 const page = igPages.find(p => p.instagram?.accountId === e.target.value)
                                                                 if (page) setPageSelections(prev => ({ ...prev, INSTAGRAM: { accountId: page.instagram.accountId, pageAccessToken: page.pageAccessToken, username: page.instagram.username } }))
                                                             }}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FF096C]/50 [&>option]:bg-[#081624]">
+                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#081624]">
                                                             <option value="">— Selecciona una cuenta —</option>
                                                             {igPages.map(p => (
                                                                 <option key={p.instagram.accountId} value={p.instagram.accountId}>@{p.instagram.username} ({p.pageName})</option>
@@ -931,11 +931,11 @@ export default function SocialPage() {
                             <p className="text-white text-sm font-medium mb-3">Tipo de publicación</p>
                             <div className="grid grid-cols-2 gap-2">
                                 <button onClick={() => setPostType('feed')}
-                                    className={`py-2 rounded-xl text-sm font-medium border transition-all ${postType === 'feed' ? 'bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white border-transparent hover:opacity-90' : 'border-white/10 text-white/55 hover:border-[#FF096C]/40'}`}>
+                                    className={`py-2 rounded-xl text-sm font-medium border transition-all ${postType === 'feed' ? 'bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white border-transparent hover:opacity-90' : 'border-white/10 text-white/55 hover:border-[#0a95a8]/40'}`}>
                                     Feed
                                 </button>
                                 <button onClick={() => setPostType('story')}
-                                    className={`py-2 rounded-xl text-sm font-medium border transition-all ${postType === 'story' ? 'bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white border-transparent hover:opacity-90' : 'border-white/10 text-white/55 hover:border-[#FF096C]/40'}`}>
+                                    className={`py-2 rounded-xl text-sm font-medium border transition-all ${postType === 'story' ? 'bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white border-transparent hover:opacity-90' : 'border-white/10 text-white/55 hover:border-[#0a95a8]/40'}`}>
                                     Story
                                 </button>
                             </div>
@@ -952,26 +952,26 @@ export default function SocialPage() {
                                     return d.toISOString().slice(0, 16)
                                 })()}
                                 onChange={e => setScheduledAt(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF096C]/50 [color-scheme:dark]" />
+                                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a95a8]/50 [color-scheme:dark]" />
                             {scheduledAt && <p className="text-white/55 text-xs mt-1">Se publicará automáticamente</p>}
                         </div>
 
                         {/* Publish button */}
                         <button onClick={handlePublish} disabled={loading || !content.trim() || !selectedNetworks.length}
-                            className="w-full py-3 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 hover:opacity-90 transition-all">
+                            className="w-full py-3 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 hover:opacity-90 transition-all">
                             {loading ? <><Loader2 size={16} className="animate-spin" /> Publicando...</>
                                 : scheduledAt ? <><Calendar size={16} /> Programar</> : <><Send size={16} /> Publicar ahora</>}
                         </button>
 
                         {/* Result */}
                         {publishResult && (
-                            <div className="dm-card-dark p-4 rounded-2xl border border-[#FF096C]/30">
-                                <p className="text-[#FF096C] text-sm font-medium mb-2">
+                            <div className="dm-card-dark p-4 rounded-2xl border border-[#0a95a8]/30">
+                                <p className="text-[#0a95a8] text-sm font-medium mb-2">
                                     {publishResult.scheduled ? '✅ Programado' : '✅ Publicado'}
                                 </p>
                                 {publishResult.results?.map((r: any) => (
                                     <div key={r.network} className="flex items-start gap-2 text-xs text-white/55 mt-1 min-w-0">
-                                        <span className="flex-shrink-0 mt-0.5">{r.success ? <CheckCircle size={11} className="text-[#FF096C]" /> : <XCircle size={11} className="text-red-400" />}</span>
+                                        <span className="flex-shrink-0 mt-0.5">{r.success ? <CheckCircle size={11} className="text-[#0a95a8]" /> : <XCircle size={11} className="text-red-400" />}</span>
                                         <span className="break-words min-w-0">{r.network}: {r.success ? 'OK' : r.error}</span>
                                     </div>
                                 ))}
@@ -1037,10 +1037,10 @@ export default function SocialPage() {
                                     onChange={e => setScriptTopic(e.target.value)}
                                     onKeyDown={e => e.key === 'Enter' && handleGenerateScript()}
                                     placeholder="Describe el tema de tu video..."
-                                    className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-[#FF096C]/50"
+                                    className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/35 focus:outline-none focus:border-[#0a95a8]/50"
                                 />
                                 <button onClick={handleGenerateScript} disabled={scriptLoading || !scriptTopic.trim()}
-                                    className="px-4 py-2.5 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white font-semibold rounded-xl text-sm disabled:opacity-40 hover:opacity-90 transition-colors whitespace-nowrap w-full sm:w-auto">
+                                    className="px-4 py-2.5 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-semibold rounded-xl text-sm disabled:opacity-40 hover:opacity-90 transition-colors whitespace-nowrap w-full sm:w-auto">
                                     {scriptLoading ? <Loader2 size={14} className="animate-spin" /> : 'Generar'}
                                 </button>
                             </div>
@@ -1051,7 +1051,7 @@ export default function SocialPage() {
                                     </div>
                                     <button
                                         onClick={() => navigator.clipboard.writeText(script)}
-                                        className="w-full py-2 rounded-xl border border-white/10 text-white/55 hover:text-white hover:border-[#FF096C]/40 text-sm transition-colors">
+                                        className="w-full py-2 rounded-xl border border-white/10 text-white/55 hover:text-white hover:border-[#0a95a8]/40 text-sm transition-colors">
                                         Copiar guión
                                     </button>
                                 </>
@@ -1086,7 +1086,7 @@ function PostCard({ post, onDelete }: { post: any; onDelete: (id: string) => voi
                         )}
                         <div className="flex gap-1">
                             {post.networks?.map((n: any) => (
-                                <span key={n.id} className={`text-xs px-1.5 py-0.5 rounded-md ${n.status === 'PUBLISHED' ? 'bg-[#FF096C]/10 text-[#FF096C]' : n.status === 'FAILED' ? 'bg-red-500/10 text-red-400' : 'bg-white/5 text-white/55'}`}>
+                                <span key={n.id} className={`text-xs px-1.5 py-0.5 rounded-md ${n.status === 'PUBLISHED' ? 'bg-[#0a95a8]/10 text-[#0a95a8]' : n.status === 'FAILED' ? 'bg-red-500/10 text-red-400' : 'bg-white/5 text-white/55'}`}>
                                     {n.network}
                                 </span>
                             ))}
@@ -1125,7 +1125,7 @@ function MetricsPanel({ metrics, onAiAnalyze, aiLoading }: { metrics: any; onAiA
             {/* Post stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                    { label: 'Publicados', value: postStats.PUBLISHED || 0, color: '#FF096C' },
+                    { label: 'Publicados', value: postStats.PUBLISHED || 0, color: '#0a95a8' },
                     { label: 'Programados', value: postStats.SCHEDULED || 0, color: '#00BFFF' },
                     { label: 'Fallidos', value: postStats.FAILED || 0, color: '#FF4444' },
                     { label: 'Total', value: Object.values(postStats).reduce((a, b) => a + b, 0), color: '#888' },
@@ -1157,7 +1157,7 @@ function MetricsPanel({ metrics, onAiAnalyze, aiLoading }: { metrics: any; onAiA
             ))}
 
             <button onClick={onAiAnalyze} disabled={aiLoading}
-                className="w-full py-3 border border-[#FF096C]/30 rounded-xl text-[#FF096C] text-sm flex items-center justify-center gap-2 hover:bg-[#FF096C]/10 disabled:opacity-40">
+                className="w-full py-3 border border-[#0a95a8]/30 rounded-xl text-[#0a95a8] text-sm flex items-center justify-center gap-2 hover:bg-[#0a95a8]/10 disabled:opacity-40">
                 {aiLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
                 Analizar con IA y obtener recomendaciones
             </button>
@@ -1228,7 +1228,7 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
                 <div className="mb-3">
                     <label className="text-white/55 text-xs mb-1.5 block">Modelo</label>
                     <select value={oaiModel} onChange={e => setOaiModel(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#FF096C]/50 [&>option]:bg-[#081624]">
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#081624]">
                         <option value="gpt-5.2">GPT-5.2 ⚡ Última generación — ⚠ Mayor costo</option>
                         <option value="gpt-5.1">GPT-5.1 ⭐ Más inteligente — ⚠ Mayor costo</option>
                         <option value="gpt-4.1">GPT-4.1 — Alta calidad — ⚠ Mayor costo</option>
@@ -1251,9 +1251,9 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
                         <input value={oaiKey} onChange={e => setOaiKey(e.target.value)}
                             placeholder="sk-proj-..."
                             type="password"
-                            className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/35 focus:outline-none focus:border-[#FF096C]/50" />
+                            className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/35 focus:outline-none focus:border-[#0a95a8]/50" />
                         <button onClick={saveOaiKey} disabled={oaiLoading || !oaiKey.trim()}
-                            className="px-3 py-2 bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] text-white border border-transparent rounded-xl text-sm disabled:opacity-40 hover:opacity-90 whitespace-nowrap w-full sm:w-auto">
+                            className="px-3 py-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white border border-transparent rounded-xl text-sm disabled:opacity-40 hover:opacity-90 whitespace-nowrap w-full sm:w-auto">
                             {oaiLoading ? <Loader2 size={13} className="animate-spin" /> : 'Guardar'}
                         </button>
                     </div>
@@ -1277,7 +1277,7 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
                     </div>
                     {connectedMap.FACEBOOK
                         ? <button onClick={() => disconnect('FACEBOOK')} className="flex-shrink-0 text-xs text-red-400 hover:text-red-300 px-3 py-1.5 rounded-lg border border-red-500/20 hover:bg-red-500/10">Desconectar</button>
-                        : <a href="/api/social/oauth/facebook" className="flex-shrink-0 text-xs bg-[#FF096C]/10 text-[#FF096C] border border-[#FF096C]/30 px-3 py-1.5 rounded-lg hover:bg-[#FF096C]/20 flex items-center gap-1"><ExternalLink size={11} /> Conectar</a>}
+                        : <a href="/api/social/oauth/facebook" className="flex-shrink-0 text-xs bg-[#0a95a8]/10 text-[#0a95a8] border border-[#0a95a8]/30 px-3 py-1.5 rounded-lg hover:bg-[#0a95a8]/20 flex items-center gap-1"><ExternalLink size={11} /> Conectar</a>}
                 </div>
             </div>
 
@@ -1295,7 +1295,7 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
                     </div>
                     {connectedMap.TIKTOK
                         ? <button onClick={() => disconnect('TIKTOK')} className="flex-shrink-0 text-xs text-red-400 hover:text-red-300 px-3 py-1.5 rounded-lg border border-red-500/20 hover:bg-red-500/10">Desconectar</button>
-                        : <a href="/api/social/oauth/tiktok" className="flex-shrink-0 text-xs bg-[#FF096C]/10 text-[#FF096C] border border-[#FF096C]/30 px-3 py-1.5 rounded-lg hover:bg-[#FF096C]/20 flex items-center gap-1"><ExternalLink size={11} /> Conectar</a>}
+                        : <a href="/api/social/oauth/tiktok" className="flex-shrink-0 text-xs bg-[#0a95a8]/10 text-[#0a95a8] border border-[#0a95a8]/30 px-3 py-1.5 rounded-lg hover:bg-[#0a95a8]/20 flex items-center gap-1"><ExternalLink size={11} /> Conectar</a>}
                 </div>
             </div>
 
@@ -1313,7 +1313,7 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
                     </div>
                     {connectedMap.YOUTUBE
                         ? <button onClick={() => disconnect('YOUTUBE')} className="flex-shrink-0 text-xs text-red-400 hover:text-red-300 px-3 py-1.5 rounded-lg border border-red-500/20 hover:bg-red-500/10">Desconectar</button>
-                        : <a href="/api/social/oauth/youtube" className="flex-shrink-0 text-xs bg-[#FF096C]/10 text-[#FF096C] border border-[#FF096C]/30 px-3 py-1.5 rounded-lg hover:bg-[#FF096C]/20 flex items-center gap-1"><ExternalLink size={11} /> Conectar</a>}
+                        : <a href="/api/social/oauth/youtube" className="flex-shrink-0 text-xs bg-[#0a95a8]/10 text-[#0a95a8] border border-[#0a95a8]/30 px-3 py-1.5 rounded-lg hover:bg-[#0a95a8]/20 flex items-center gap-1"><ExternalLink size={11} /> Conectar</a>}
                 </div>
             </div>
         </div>

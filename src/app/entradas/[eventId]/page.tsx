@@ -242,7 +242,7 @@ export default function PublicTicketPage() {
       <div className="max-w-lg mx-auto px-4 py-6">
       <div style={{
         position: 'relative', borderRadius: 26, padding: 1.5,
-        background: 'linear-gradient(160deg, #FF2D95 0%, #B735B8 45%, #233B8F 100%)',
+        background: 'linear-gradient(160deg, #1fb8bb 0%, #147e95 45%, #233B8F 100%)',
         boxShadow: '0 30px 60px -26px rgba(183,53,184,0.55)',
       }}>
 
@@ -424,7 +424,7 @@ export default function PublicTicketPage() {
                 <button
                   onClick={() => setStep('form')}
                   className="w-full py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-[0.98]"
-                  style={{ background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff', boxShadow: '0 8px 32px rgba(210,3,221,0.3)' }}
+                  style={{ background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', boxShadow: '0 8px 32px rgba(0,229,208,0.3)' }}
                 >
                   Comprar entrada →
                 </button>
@@ -464,7 +464,7 @@ export default function PublicTicketPage() {
                   setError(''); setStep('payment')
                 }}
                 className="flex-[2] py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-[0.98]"
-                style={{ background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff' }}
+                style={{ background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff' }}
               >Continuar →</button>
             </div>
           </div>
@@ -586,7 +586,7 @@ export default function PublicTicketPage() {
                   onClick={submit}
                   disabled={submitting || uploading}
                   className="flex-[2] py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg,#D203DD,#0D1E79)', color: '#fff', boxShadow: '0 8px 32px rgba(210,3,221,0.3)' }}
+                  style={{ background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', boxShadow: '0 8px 32px rgba(0,229,208,0.3)' }}
                 >
                   {submitting
                     ? <span className="flex items-center justify-center gap-2"><Loader2 size={15} className="animate-spin" /> Procesando...</span>
@@ -613,7 +613,7 @@ export default function PublicTicketPage() {
             {!isPending && ticketCodes.length > 0 && (
               <div className="space-y-3">
                 {ticketCodes.map((code, i) => (
-                  <div key={code} className="p-5 rounded-2xl border-2 text-center" style={{ borderColor: 'rgba(210,3,221,0.4)', background: 'rgba(210,3,221,0.06)' }}>
+                  <div key={code} className="p-5 rounded-2xl border-2 text-center" style={{ borderColor: 'rgba(0,229,208,0.4)', background: 'rgba(0,229,208,0.06)' }}>
                     {ticketCodes.length > 1 && (
                       <p className="text-xs text-slate-400 mb-1 uppercase tracking-widest">Entrada {i + 1} de {ticketCodes.length}</p>
                     )}

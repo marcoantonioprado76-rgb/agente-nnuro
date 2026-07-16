@@ -18,7 +18,7 @@ export default function RecursosTabs() {
         return (
           <Link key={t.href} href={t.href}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold border-b-2 -mb-px transition-all ${
-              active ? 'border-[#B735B8] text-[#111827]' : 'border-transparent text-[#9CA3AF] hover:text-[#6B7280]'
+              active ? 'border-[#147e95] text-[#111827]' : 'border-transparent text-[#9CA3AF] hover:text-[#6B7280]'
             }`}>
             <i className={`fa-solid ${t.icon} text-xs`}></i> {t.label}
           </Link>

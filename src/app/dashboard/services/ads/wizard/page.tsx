@@ -21,7 +21,7 @@ interface Strategy {
 
 const PLATFORM_LABELS: Record<string, { label: string; letter: string; color: string; bg: string }> = {
     META: { label: 'Meta Ads', letter: 'f', color: 'text-[#4C97D8]', bg: 'bg-[#4C97D8]/15 border-white/10' },
-    TIKTOK: { label: 'TikTok Ads', letter: 'T', color: 'text-[#FF2D95]', bg: 'bg-[#FF2D95]/15 border-white/10' },
+    TIKTOK: { label: 'TikTok Ads', letter: 'T', color: 'text-[#1fb8bb]', bg: 'bg-[#1fb8bb]/15 border-white/10' },
     GOOGLE_ADS: { label: 'Google Ads', letter: 'G', color: 'text-[#FBBF24]', bg: 'bg-[#FBBF24]/15 border-[#FBBF24]/25' },
 }
 
@@ -47,8 +47,8 @@ const OBJECTIVE_COLORS: Record<string, string> = {
     conversions: 'text-[#22C55E]',
     leads: 'text-[#4C97D8]',
     traffic: 'text-[#4C97D8]',
-    awareness: 'text-[#B735B8]',
-    engagement: 'text-[#FF2D95]',
+    awareness: 'text-[#147e95]',
+    engagement: 'text-[#1fb8bb]',
     app_promotion: 'text-[#FB923C]',
 }
 
@@ -343,13 +343,13 @@ function WizardContent() {
                     </div>
 
                     {loadingBriefs ? (
-                        <div className="flex items-center justify-center py-16"><Loader2 className="animate-spin text-[#B735B8]" size={24} /></div>
+                        <div className="flex items-center justify-center py-16"><Loader2 className="animate-spin text-[#147e95]" size={24} /></div>
                     ) : briefs.length === 0 ? (
                         <div className="text-center py-16 bg-white/[0.015] border border-dashed border-white/10 rounded-3xl">
                             <Building2 size={28} className="text-white/20 mx-auto mb-3" />
                             <p className="text-white/40 font-bold mb-1">Sin negocios</p>
                             <p className="text-white/20 text-xs mb-5">Crea primero el perfil de tu negocio</p>
-                            <Link href="/dashboard/services/ads/brief" className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#B735B8] text-white text-sm font-bold rounded-xl hover:bg-[#B735B8] transition-all">
+                            <Link href="/dashboard/services/ads/brief" className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#147e95] text-white text-sm font-bold rounded-xl hover:bg-[#147e95] transition-all">
                                 <Plus size={14} /> Crear negocio
                             </Link>
                         </div>
@@ -357,16 +357,16 @@ function WizardContent() {
                         <div className="space-y-3">
                             {briefs.map(brief => (
                                 <button key={brief.id} onClick={() => enterStrategies(brief)}
-                                    className="w-full text-left bg-white/3 border border-white/8 rounded-2xl p-4 hover:border-white/10 hover:bg-[#B735B8]/5 transition-all group">
+                                    className="w-full text-left bg-white/3 border border-white/8 rounded-2xl p-4 hover:border-white/10 hover:bg-[#147e95]/5 transition-all group">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-[#B735B8]/15 border border-white/10 flex items-center justify-center shrink-0">
-                                            <Building2 size={18} className="text-[#B735B8]" />
+                                        <div className="w-10 h-10 rounded-xl bg-[#147e95]/15 border border-white/10 flex items-center justify-center shrink-0">
+                                            <Building2 size={18} className="text-[#147e95]" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="font-bold text-sm">{brief.name}</p>
                                             <p className="text-xs text-white/40">{brief.industry}</p>
                                         </div>
-                                        <ArrowRight size={16} className="text-white/20 group-hover:text-[#B735B8] transition-all" />
+                                        <ArrowRight size={16} className="text-white/20 group-hover:text-[#147e95] transition-all" />
                                     </div>
                                 </button>
                             ))}
@@ -397,7 +397,7 @@ function WizardContent() {
                                     </span>
                                 )}
                             </div>
-                            {selectedBrief && <p className="text-xs text-white/30 mt-0.5">Para: <span className="text-[#B735B8]">{selectedBrief.name}</span></p>}
+                            {selectedBrief && <p className="text-xs text-white/30 mt-0.5">Para: <span className="text-[#147e95]">{selectedBrief.name}</span></p>}
                         </div>
                         {/* Selector de negocio integrado (merge del paso 1): cambiar de negocio sin salir */}
                         {!showAdTypePicker && briefs.length > 1 && (
@@ -475,11 +475,11 @@ function WizardContent() {
                             {selectedBrief && (
                                 <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-white/10"
                                     style={{ background: 'linear-gradient(135deg,rgba(183,53,184,0.12),rgba(37,99,235,0.05))' }}>
-                                    <div className="w-9 h-9 rounded-xl bg-[#B735B8]/15 border border-white/10 flex items-center justify-center shrink-0">
-                                        <Building2 size={16} className="text-[#B735B8]" />
+                                    <div className="w-9 h-9 rounded-xl bg-[#147e95]/15 border border-white/10 flex items-center justify-center shrink-0">
+                                        <Building2 size={16} className="text-[#147e95]" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[9px] font-black uppercase tracking-widest text-[#B735B8]/60">Negocio</p>
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-[#147e95]/60">Negocio</p>
                                         <p className="text-sm font-bold text-white truncate">{selectedBrief.name}</p>
                                     </div>
                                 </div>
@@ -493,7 +493,7 @@ function WizardContent() {
                             {/* Step 1 · Objective */}
                             <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-5 h-5 rounded-full bg-[#B735B8] text-white text-[10px] font-black flex items-center justify-center shrink-0">1</span>
+                                    <span className="w-5 h-5 rounded-full bg-[#147e95] text-white text-[10px] font-black flex items-center justify-center shrink-0">1</span>
                                     <p className="text-xs font-bold text-white/80">¿Cuál es tu objetivo?</p>
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -501,8 +501,8 @@ function WizardContent() {
                                         { id: 'conversions', label: 'Ventas', desc: 'Compras directas', icon: ShoppingCart, color: 'text-[#22C55E]', bg: 'bg-[#22C55E]/10 border-[#22C55E]/25' },
                                         { id: 'leads', label: 'Clientes potenciales', desc: 'Captación de contactos', icon: MessageCircle, color: 'text-[#4C97D8]', bg: 'bg-[#4C97D8]/10 border-white/10' },
                                         { id: 'traffic', label: 'Tráfico', desc: 'Visitas a tu sitio', icon: Globe, color: 'text-[#4C97D8]', bg: 'bg-[#4C97D8]/10 border-white/10' },
-                                        { id: 'awareness', label: 'Reconocimiento', desc: 'Dar a conocer tu marca', icon: Eye, color: 'text-[#B735B8]', bg: 'bg-[#B735B8]/10 border-white/10' },
-                                        { id: 'engagement', label: 'Interacción', desc: 'Likes, mensajes, chat', icon: Heart, color: 'text-[#FF2D95]', bg: 'bg-[#FF2D95]/10 border-white/10' },
+                                        { id: 'awareness', label: 'Reconocimiento', desc: 'Dar a conocer tu marca', icon: Eye, color: 'text-[#147e95]', bg: 'bg-[#147e95]/10 border-white/10' },
+                                        { id: 'engagement', label: 'Interacción', desc: 'Likes, mensajes, chat', icon: Heart, color: 'text-[#1fb8bb]', bg: 'bg-[#1fb8bb]/10 border-white/10' },
                                     ].map(obj => (
                                         <button key={obj.id} onClick={() => setSelectedObjective(selectedObjective === obj.id ? null : obj.id)}
                                             className={`flex flex-col items-start gap-1.5 p-3 rounded-xl border text-left transition-all ${selectedObjective === obj.id ? `${obj.bg} border-opacity-60` : 'bg-white/3 border-white/8 hover:border-white/20'}`}>
@@ -518,15 +518,15 @@ function WizardContent() {
                             {selectedPlatform === 'META' && (
                                 <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <span className="w-5 h-5 rounded-full bg-[#B735B8] text-white text-[10px] font-black flex items-center justify-center shrink-0">2</span>
+                                        <span className="w-5 h-5 rounded-full bg-[#147e95] text-white text-[10px] font-black flex items-center justify-center shrink-0">2</span>
                                         <p className="text-xs font-bold text-white/80">¿A dónde llevas al cliente?</p>
                                     </div>
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                         {[
                                             { id: 'whatsapp', label: 'WhatsApp', icon: '💬', color: 'text-[#22C55E]', bg: 'bg-[#22C55E]/10 border-[#22C55E]/25', hidden: selectedObjective === 'traffic' || selectedObjective === 'awareness' },
                                             { id: 'website', label: 'Sitio Web', icon: '🌐', color: 'text-[#4C97D8]', bg: 'bg-[#4C97D8]/10 border-white/10', hidden: selectedObjective === 'engagement' },
-                                            { id: 'instagram', label: 'Instagram', icon: '📷', color: 'text-[#FF2D95]', bg: 'bg-[#FF2D95]/10 border-white/10', hidden: false },
-                                            { id: 'messenger', label: 'Messenger', icon: '💬', color: 'text-[#B735B8]', bg: 'bg-[#B735B8]/10 border-white/10', hidden: selectedObjective === 'traffic' || selectedObjective === 'awareness' },
+                                            { id: 'instagram', label: 'Instagram', icon: '📷', color: 'text-[#1fb8bb]', bg: 'bg-[#1fb8bb]/10 border-white/10', hidden: false },
+                                            { id: 'messenger', label: 'Messenger', icon: '💬', color: 'text-[#147e95]', bg: 'bg-[#147e95]/10 border-white/10', hidden: selectedObjective === 'traffic' || selectedObjective === 'awareness' },
                                         ].filter(d => !d.hidden).map(dest => (
                                             <button key={dest.id} onClick={() => setSelectedDestination(selectedDestination === dest.id ? null : dest.id)}
                                                 className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${selectedDestination === dest.id ? `${dest.bg}` : 'bg-white/3 border-white/8 hover:border-white/20'}`}>
@@ -541,7 +541,7 @@ function WizardContent() {
                             {/* Step 3 · Media type */}
                             <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <span className="w-5 h-5 rounded-full bg-[#B735B8] text-white text-[10px] font-black flex items-center justify-center shrink-0">{selectedPlatform === 'META' ? '3' : '2'}</span>
+                                    <span className="w-5 h-5 rounded-full bg-[#147e95] text-white text-[10px] font-black flex items-center justify-center shrink-0">{selectedPlatform === 'META' ? '3' : '2'}</span>
                                     <p className="text-xs font-bold text-white/80">¿Tipo de creativo?</p>
                                 </div>
                                 <div className="flex gap-2">
@@ -550,7 +550,7 @@ function WizardContent() {
                                         { id: 'video', label: 'Video', icon: Video },
                                     ].map(m => (
                                         <button key={m.id} onClick={() => setSelectedMediaPref(selectedMediaPref === m.id ? null : m.id)}
-                                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${selectedMediaPref === m.id ? 'bg-[#B735B8]/15 border-white/10 text-[#B735B8]' : 'bg-white/3 border-white/8 text-white/40 hover:border-white/20'}`}>
+                                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${selectedMediaPref === m.id ? 'bg-[#147e95]/15 border-white/10 text-[#147e95]' : 'bg-white/3 border-white/8 text-white/40 hover:border-white/20'}`}>
                                             <m.icon size={14} /> {m.label}
                                         </button>
                                     ))}
@@ -563,9 +563,9 @@ function WizardContent() {
 
                             {/* Selected summary */}
                             {(selectedObjective || selectedDestination || selectedMediaPref) && (
-                                <div className="flex flex-wrap gap-2 p-3 bg-[#B735B8]/5 border border-white/10 rounded-xl">
-                                    <span className="text-[10px] text-[#B735B8]/60 font-bold uppercase tracking-widest w-full mb-0.5">La IA generará estrategias para:</span>
-                                    {selectedObjective && <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#B735B8]/15 border border-white/10 text-[#B735B8]">{OBJECTIVE_LABELS[selectedObjective]}</span>}
+                                <div className="flex flex-wrap gap-2 p-3 bg-[#147e95]/5 border border-white/10 rounded-xl">
+                                    <span className="text-[10px] text-[#147e95]/60 font-bold uppercase tracking-widest w-full mb-0.5">La IA generará estrategias para:</span>
+                                    {selectedObjective && <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#147e95]/15 border border-white/10 text-[#147e95]">{OBJECTIVE_LABELS[selectedObjective]}</span>}
                                     {selectedDestination && <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white/8 border border-white/15 text-white/60">{DESTINATION_LABELS[selectedDestination] || selectedDestination}</span>}
                                     {selectedMediaPref && <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white/8 border border-white/15 text-white/60">{selectedMediaPref === 'image' ? 'Imagen' : 'Video'}</span>}
                                 </div>
@@ -592,7 +592,7 @@ function WizardContent() {
                             {activeTab === 'ai' && aiStrategies.length > 0 && (selectedObjective || selectedDestination || selectedMediaPref) && (
                                 <div className="flex flex-wrap items-center gap-1.5 mb-4">
                                     <span className="text-[10px] text-white/30 font-bold uppercase tracking-widest">Generado para:</span>
-                                    {selectedObjective && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#B735B8]/15 border border-white/10 text-[#B735B8]">{OBJECTIVE_LABELS[selectedObjective] || selectedObjective}</span>}
+                                    {selectedObjective && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#147e95]/15 border border-white/10 text-[#147e95]">{OBJECTIVE_LABELS[selectedObjective] || selectedObjective}</span>}
                                     {selectedDestination && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/8 border border-white/15 text-white/60">{DESTINATION_LABELS[selectedDestination] || selectedDestination}</span>}
                                     {selectedMediaPref && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/8 border border-white/15 text-white/60">{selectedMediaPref === 'image' ? 'Imagen' : 'Video'}</span>}
                                 </div>
@@ -602,7 +602,7 @@ function WizardContent() {
                             <div className="flex items-center justify-between mb-4">
                                 <p className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-1.5">
                                     {activeTab === 'ai'
-                                        ? <><Brain size={12} className="text-[#B735B8]" /> Sugerencias{aiStrategies.length > 0 ? ` (${aiStrategies.length})` : ''}</>
+                                        ? <><Brain size={12} className="text-[#147e95]" /> Sugerencias{aiStrategies.length > 0 ? ` (${aiStrategies.length})` : ''}</>
                                         : <><BookMarked size={12} className="text-[#22C55E]" /> Guardadas{savedStrategies.length > 0 ? ` (${savedStrategies.length})` : ''}</>
                                     }
                                 </p>
@@ -645,7 +645,7 @@ function WizardContent() {
                                     <p className="text-[#F87171] font-bold text-sm mb-1">Error al generar estrategias</p>
                                     <p className="text-xs text-white/30 mb-5">{aiError}</p>
                                     <button onClick={retryAI}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#B735B8] rounded-xl text-sm font-bold hover:bg-[#B735B8] transition-all">
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#147e95] rounded-xl text-sm font-bold hover:bg-[#147e95] transition-all">
                                         <RefreshCw size={14} /> Reintentar
                                     </button>
                                 </div>
@@ -654,8 +654,8 @@ function WizardContent() {
                             {/* AI empty — opción de generar con IA */}
                             {!isLoadingStrategies && activeTab === 'ai' && !aiError && aiStrategies.length === 0 && (
                                 <div className="py-12 text-center">
-                                    <div className="w-12 h-12 rounded-2xl bg-[#B735B8]/10 border border-white/10 flex items-center justify-center mx-auto mb-3">
-                                        <Brain size={22} className="text-[#B735B8]" />
+                                    <div className="w-12 h-12 rounded-2xl bg-[#147e95]/10 border border-white/10 flex items-center justify-center mx-auto mb-3">
+                                        <Brain size={22} className="text-[#147e95]" />
                                     </div>
                                     <p className="text-white/70 font-bold text-sm mb-1">Genera estrategias con IA</p>
                                     <p className="text-xs text-white/30 mb-5">La IA analizará tu negocio y creará estrategias de anuncios a medida.</p>
@@ -673,7 +673,7 @@ function WizardContent() {
                                     <p className="text-white/40 font-bold text-sm mb-1">Sin estrategias guardadas</p>
                                     <p className="text-xs text-white/25 mb-4">Guarda una estrategia de IA para reutilizarla aquí</p>
                                     <button onClick={() => setShowAdTypePicker(true)}
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#B735B8]/80 rounded-xl text-sm font-bold hover:bg-[#B735B8] transition-all">
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#147e95]/80 rounded-xl text-sm font-bold hover:bg-[#147e95] transition-all">
                                         <Brain size={14} /> Generar con IA
                                     </button>
                                 </div>
@@ -700,7 +700,7 @@ function WizardContent() {
                                                             <div className="flex-1 min-w-0">
                                                                 <div className="flex items-start gap-2">
                                                                     <p className="font-bold text-sm flex-1 leading-snug">{strategy.name}</p>
-                                                                    {isSelected && !isEditing && <CheckCircle2 size={16} className="text-[#B735B8] shrink-0 mt-0.5" />}
+                                                                    {isSelected && !isEditing && <CheckCircle2 size={16} className="text-[#147e95] shrink-0 mt-0.5" />}
                                                                 </div>
                                                                 {!isEditing && (
                                                                     <>
@@ -708,7 +708,7 @@ function WizardContent() {
                                                                         {strategy.reason && (
                                                                             <div className="mt-2.5 flex items-start gap-1.5 px-3 py-2 rounded-lg"
                                                                                 style={{ background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                                                                                <Sparkles size={11} className="text-[#B735B8] shrink-0 mt-0.5" />
+                                                                                <Sparkles size={11} className="text-[#147e95] shrink-0 mt-0.5" />
                                                                                 <p className="text-[11px] text-purple-100/90 leading-relaxed">{strategy.reason}</p>
                                                                             </div>
                                                                         )}
@@ -805,7 +805,7 @@ function WizardContent() {
                                                                     </div>
                                                                 </div>
                                                                 <button onClick={() => saveEdit(strategy.id)} disabled={saving}
-                                                                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#B735B8] hover:bg-[#B735B8] disabled:opacity-50 text-white text-sm font-bold transition-all">
+                                                                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#147e95] hover:bg-[#147e95] disabled:opacity-50 text-white text-sm font-bold transition-all">
                                                                     {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                                                                     Guardar cambios
                                                                 </button>
@@ -818,7 +818,7 @@ function WizardContent() {
                                                                 <button
                                                                     onClick={() => createCampaign(strategy)}
                                                                     disabled={creating}
-                                                                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#FF2D95] via-[#B735B8] to-[#233B8F] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_18px_rgba(183,53,184,0.18)]"
+                                                                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_18px_rgba(183,53,184,0.18)]"
                                                                 >
                                                                     {creatingId === strategy.id
                                                                         ? <><Loader2 size={13} className="animate-spin" /> Creando anuncio…</>
@@ -873,7 +873,7 @@ export default function WizardPage() {
     return (
         <Suspense fallback={
             <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="animate-spin text-[#B735B8]" size={28} />
+                <Loader2 className="animate-spin text-[#147e95]" size={28} />
             </div>
         }>
             <WizardContent />

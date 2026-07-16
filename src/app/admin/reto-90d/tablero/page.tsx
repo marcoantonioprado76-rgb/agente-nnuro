@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { LayoutGrid, Loader2, RefreshCw, AlertTriangle, Users } from 'lucide-react'
 
 // ── Paleta MY DIAMOND ──────────────────────────────────────────────
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 const BG = '#F5F7FA'
 const BORDER = '#E4E9F0'
 const TEXT = '#111827'
@@ -22,7 +22,7 @@ interface StatusMeta {
 const STATUS_META: Record<string, StatusMeta> = {
   APPROVED: { label: 'Aprobado', color: '#16A34A', icon: '✅', tint: 'rgba(22,163,74,0.12)' },
   REVIEW: { label: 'En revisión', color: '#233B8F', icon: '⏳', tint: 'rgba(35,59,143,0.12)' },
-  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#B735B8', icon: '✨', tint: 'rgba(183,53,184,0.12)' },
+  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#147e95', icon: '✨', tint: 'rgba(183,53,184,0.12)' },
   PENDING: { label: 'Pendiente', color: '#D97706', icon: '●', tint: 'rgba(217,119,6,0.12)' },
   REJECTED: { label: 'Rechazado', color: '#DC2626', icon: '✕', tint: 'rgba(220,38,38,0.12)' },
   DUPLICATED: { label: 'Duplicado', color: '#6B7280', icon: '⧉', tint: 'rgba(107,114,128,0.12)' },

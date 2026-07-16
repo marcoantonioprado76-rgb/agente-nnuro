@@ -14,7 +14,7 @@ interface Podcast {
   createdAt: string
 }
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 const AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.aac', '.m4a']
 const isDirectAudio = (url: string) => AUDIO_EXTS.some(ext => url.toLowerCase().includes(ext))
 const fmt = (t: number) => {
@@ -81,7 +81,7 @@ export default function PodcastsPage() {
 
   if (loading) return (
     <div className="px-4 sm:px-6 pt-6 max-w-screen-xl mx-auto min-h-[60vh] flex items-center justify-center">
-      <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#B735B8', borderTopColor: 'transparent' }} />
+      <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#147e95', borderTopColor: 'transparent' }} />
     </div>
   )
   if (error) return <div className="px-4 sm:px-6 pt-6 max-w-screen-xl mx-auto"><p className="text-red-500 text-sm">{error}</p></div>
@@ -155,7 +155,7 @@ export default function PodcastsPage() {
                     <div onClick={seekAt} style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', gap: 2, height: 42, cursor: 'pointer', minWidth: 70 }}>
                       {BARS.map((h, i) => {
                         const on = i / BARS.length <= frac
-                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#E779FF,#B735B8)' : 'rgba(255,255,255,0.16)', minWidth: 2 }} />
+                        return <div key={i} style={{ flex: 1, height: `${h * 100}%`, borderRadius: 2, background: on ? 'linear-gradient(180deg,#E779FF,#147e95)' : 'rgba(255,255,255,0.16)', minWidth: 2 }} />
                       })}
                       <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${frac * 100}%`, width: 2, background: '#fff', borderRadius: 2, opacity: 0.9, pointerEvents: 'none' }} />
                     </div>
@@ -201,7 +201,7 @@ export default function PodcastsPage() {
                   color: active ? '#fff' : '#374151',
                   transform: active ? 'translateY(-1px)' : 'none',
                   boxShadow: active ? '0 12px 28px -8px rgba(183,53,184,0.65)' : '0 6px 16px -10px rgba(15,23,42,0.35)' }}>
-                <i className={`fa-solid ${icon}`} style={{ fontSize: 13, color: active ? '#fff' : '#B735B8' }} />
+                <i className={`fa-solid ${icon}`} style={{ fontSize: 13, color: active ? '#fff' : '#147e95' }} />
                 {c}
               </button>
             )
@@ -229,7 +229,7 @@ export default function PodcastsPage() {
                     <p style={{ fontSize: 12.5, color: '#8A93A2', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>{p.description ?? 'Episodio exclusivo de MY DIAMOND.'}</p>
                   </div>
                   <button onClick={e => { e.stopPropagation(); choose(p, true) }}
-                    style={{ flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 10, border: '1px solid #E3D4F0', background: active ? DG : '#fff', color: active ? '#fff' : '#B735B8', fontWeight: 800, fontSize: 13, cursor: 'pointer' }}>
+                    style={{ flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 10, border: '1px solid #E3D4F0', background: active ? DG : '#fff', color: active ? '#fff' : '#147e95', fontWeight: 800, fontSize: 13, cursor: 'pointer' }}>
                     <i className="fa-solid fa-headphones" /> Escuchar
                   </button>
                 </div>

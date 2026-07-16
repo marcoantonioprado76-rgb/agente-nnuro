@@ -39,7 +39,7 @@
   }
 
   ::selection {
-    background-color: rgba(210, 3, 221, 0.35);
+    background-color: rgba(0, 229, 208, 0.35);
     color: #ffffff;
   }
 }
@@ -72,10 +72,10 @@
     position: relative;
     overflow: hidden;
     border-radius: 1.5rem;
-    border: 1px solid rgba(210, 3, 221, 0.12);
+    border: 1px solid rgba(0, 229, 208, 0.12);
     backdrop-filter: blur(40px) saturate(180%);
     background:
-      linear-gradient(135deg, rgba(210, 3, 221, 0.07) 0%, rgba(13, 30, 121, 0.08) 50%, rgba(232, 85, 240, 0.04) 100%);
+      linear-gradient(135deg, rgba(0, 229, 208, 0.07) 0%, rgba(13, 30, 121, 0.08) 50%, rgba(0, 229, 208, 0.04) 100%);
   }
 
   /* Reflejo superior tipo cristal */
@@ -85,9 +85,9 @@
     inset: 0;
     background: linear-gradient(180deg,
         rgba(255, 255, 255, 0.05) 0%,
-        rgba(210, 3, 221, 0.04) 30%,
+        rgba(0, 229, 208, 0.04) 30%,
         transparent 60%);
-    border-top: 1px solid rgba(210, 3, 221, 0.20);
+    border-top: 1px solid rgba(0, 229, 208, 0.20);
     border-radius: 1.5rem 1.5rem 0 0;
     pointer-events: none;
     z-index: 1;
@@ -104,14 +104,14 @@
     background: linear-gradient(180deg,
         transparent 0%,
         rgba(13, 30, 121, 0.08) 40%,
-        rgba(210, 3, 221, 0.08) 100%);
+        rgba(0, 229, 208, 0.08) 100%);
     border-radius: 60% 60% 0 0 / 40% 40% 0 0;
     pointer-events: none;
     z-index: 0;
   }
 
   .btn-liquid {
-    @apply relative overflow-hidden bg-gradient-to-r from-[#0D1E79] via-[#D203DD] to-[#e855f0] text-white font-black px-12 py-5 rounded-[2.5rem] transition-all duration-500 hover:scale-[1.08] hover:shadow-btn-liquid active:scale-[0.98] border-t border-white/20 uppercase tracking-[0.2em] not-italic;
+    @apply relative overflow-hidden bg-gradient-to-r from-[#0D1E79] via-[#00E5D0] to-[#4dfae8] text-white font-black px-12 py-5 rounded-[2.5rem] transition-all duration-500 hover:scale-[1.08] hover:shadow-btn-liquid active:scale-[0.98] border-t border-white/20 uppercase tracking-[0.2em] not-italic;
     background-size: 200% auto;
   }
 
@@ -120,7 +120,7 @@
   }
 
   .btn-outline-water {
-    @apply bg-transparent border-2 border-[#D203DD]/40 text-[#e855f0] font-black px-10 py-4 rounded-[2.5rem] transition-all duration-300 hover:bg-[#D203DD]/10 hover:border-[#D203DD] hover:shadow-btn-outline uppercase tracking-[0.2em] not-italic;
+    @apply bg-transparent border-2 border-[#00E5D0]/40 text-[#4dfae8] font-black px-10 py-4 rounded-[2.5rem] transition-all duration-300 hover:bg-[#00E5D0]/10 hover:border-[#00E5D0] hover:shadow-btn-outline uppercase tracking-[0.2em] not-italic;
   }
 
   /* Clases heredadas necesarias para el resto de la app, adaptadas al estilo Water */
@@ -135,7 +135,7 @@
   /* Botón primario de IA — gradiente de marca (rosa → morado → azul), como el botón "+ Crear".
      Antes era una clase inexistente → los botones salían transparentes/sin fondo. */
   .btn-ai-glass {
-    background: linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%);
+    background: linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%);
     background-size: 170% auto;
     border: none;
     box-shadow: 0 12px 30px -10px rgba(183, 53, 184, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
@@ -157,7 +157,7 @@
   }
 
   .input-field {
-    @apply w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#D203DD]/50 focus:ring-1 focus:ring-[#D203DD]/20;
+    @apply w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder-white/30 focus:outline-none focus:border-[#00E5D0]/50 focus:ring-1 focus:ring-[#00E5D0]/20;
   }
 }
 /* Recursos — lienzo del editor responsivo y compacto, sin distorsión.
@@ -183,17 +183,17 @@
 .dm-login-btn {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 16px 36px rgba(255, 9, 108, 0.32);
+  box-shadow: 0 16px 36px rgba(0, 229, 208, 0.32);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 .dm-login-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 26px 56px rgba(255, 9, 108, 0.5);
+  box-shadow: 0 26px 56px rgba(0, 229, 208, 0.5);
   filter: brightness(1.05);
 }
 .dm-login-btn:active {
   transform: translateY(0) scale(0.96);
-  box-shadow: 0 8px 20px rgba(255, 9, 108, 0.45);
+  box-shadow: 0 8px 20px rgba(0, 229, 208, 0.45);
 }
 .dm-login-btn::after {
   content: '';
@@ -257,7 +257,7 @@
 .dm-vol::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #B735B8 var(--pct, 100%), rgba(255,255,255,0.18) var(--pct, 100%));
+  background: linear-gradient(90deg, #147e95 var(--pct, 100%), rgba(255,255,255,0.18) var(--pct, 100%));
 }
 .dm-vol::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -267,7 +267,7 @@
   margin-top: -4px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #B735B8;
+  border: 2px solid #147e95;
   box-shadow: 0 1px 3px rgba(0,0,0,0.45);
 }
 .dm-vol::-moz-range-track {
@@ -278,12 +278,12 @@
 .dm-vol::-moz-range-progress {
   height: 4px;
   border-radius: 999px;
-  background: #B735B8;
+  background: #147e95;
 }
 .dm-vol::-moz-range-thumb {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #B735B8;
+  border: 2px solid #147e95;
 }

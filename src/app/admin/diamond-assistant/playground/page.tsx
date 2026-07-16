@@ -237,7 +237,7 @@ export default function DiamondAssistantPlayground() {
       {/* ── Estados de carga / error / vacío de agentes ───────────────── */}
       {loadingAgents ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : agentsError ? (
         <ErrorBlock message={agentsError} />
@@ -383,7 +383,7 @@ export default function DiamondAssistantPlayground() {
                       background: 'rgba(183,53,184,0.10)',
                     }}
                   >
-                    <Sparkles size={24} style={{ color: '#B735B8' }} />
+                    <Sparkles size={24} style={{ color: '#147e95' }} />
                   </div>
                   <p style={{ fontSize: 14.5, fontWeight: 800, margin: 0 }}>
                     Empieza la conversación
@@ -617,7 +617,7 @@ function TypingBubble() {
                 width: 6,
                 height: 6,
                 borderRadius: 999,
-                background: '#B735B8',
+                background: '#147e95',
                 animationDelay: `${n * 0.15}s`,
               }}
             />
@@ -696,7 +696,7 @@ function EmptyAgents() {
           background: 'rgba(183,53,184,0.10)',
         }}
       >
-        <ShieldAlert size={26} style={{ color: '#B735B8' }} />
+        <ShieldAlert size={26} style={{ color: '#147e95' }} />
       </div>
       <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>Todavía no hay agentes para probar</p>
       <p style={{ fontSize: 13, color: MUTED, margin: '6px 0 16px', lineHeight: 1.55 }}>

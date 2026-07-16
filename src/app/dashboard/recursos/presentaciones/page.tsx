@@ -42,7 +42,7 @@ export default function PresentacionesPage() {
           {categorias.map(c => (
             <button key={c} onClick={() => setCat(c)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border ${
-                cat === c ? 'bg-[#B735B8]/20 border-[#B735B8]/50 text-[#111827]' : 'bg-[#F4F6FA] border-[#E4E9F0] text-[#111827]/50 hover:text-[#111827]/80'
+                cat === c ? 'bg-[#147e95]/20 border-[#147e95]/50 text-[#111827]' : 'bg-[#F4F6FA] border-[#E4E9F0] text-[#111827]/50 hover:text-[#111827]/80'
               }`}>
               {c === 'todas' ? 'Todas' : c}
             </button>
@@ -63,7 +63,7 @@ export default function PresentacionesPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {visibles.map(t => (
           <Link key={t.id} href={`/dashboard/recursos/presentaciones/${t.id}`}
-            className="group rounded-2xl overflow-hidden border border-white/10 hover:border-[#B735B8]/40 transition-all active:scale-[0.98]"
+            className="group rounded-2xl overflow-hidden border border-white/10 hover:border-[#147e95]/40 transition-all active:scale-[0.98]"
             style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
             <div className="relative w-full bg-black/30 flex items-center justify-center" style={{ aspectRatio: '3 / 4' }}>
               {t.portadaUrl
@@ -71,7 +71,7 @@ export default function PresentacionesPage() {
                 ? <img src={t.portadaUrl} alt={t.titulo} className="w-full h-full object-cover" loading="lazy" />
                 : <i className="fa-solid fa-file-pdf text-4xl text-white/20"></i>}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-3">
-                <span className="text-xs font-black text-white px-3 py-1.5 rounded-full" style={{ background: 'linear-gradient(135deg,#0D1E79,#B735B8)' }}>
+                <span className="text-xs font-black text-white px-3 py-1.5 rounded-full" style={{ background: 'linear-gradient(135deg,#0D1E79,#147e95)' }}>
                   <i className="fa-solid fa-eye mr-1"></i> Ver
                 </span>
               </div>

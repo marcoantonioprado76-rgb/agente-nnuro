@@ -49,7 +49,7 @@ export default function RegisterPage() {
   return (
     <Suspense fallback={
       <div style={{background:'linear-gradient(140deg, #0B1B2B 0%, #0A1320 52%, #050B14 100%)',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#FF096C]/30 border-t-[#FF096C] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#0a95a8]/30 border-t-[#0a95a8] rounded-full animate-spin" />
       </div>
     }>
       <RegisterForm />
@@ -152,17 +152,17 @@ function RegisterForm() {
 
             {/* Top neon line */}
             <div className="absolute top-0 left-0 right-0 h-px"
-              style={{ background: 'linear-gradient(90deg, transparent, #FF096C 40%, #D203DD 60%, transparent)' }} />
+              style={{ background: 'linear-gradient(90deg, transparent, #0a95a8 40%, #00E5D0 60%, transparent)' }} />
 
             {/* Icon + header */}
             <div className="flex flex-col items-center text-center mb-6">
               <div className="relative mb-4">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
                   style={{ background: 'rgba(0,255,157,0.08)', border: '1px solid rgba(0,255,157,0.25)', boxShadow: '0 0 40px rgba(0,255,157,0.1)' }}>
-                  <CheckCircle2 size={26} style={{ color: '#FF096C' }} />
+                  <CheckCircle2 size={26} style={{ color: '#0a95a8' }} />
                 </div>
               </div>
-              <p className="text-[9px] font-black uppercase tracking-[0.22em] mb-1" style={{ color: '#FF096C' }}>
+              <p className="text-[9px] font-black uppercase tracking-[0.22em] mb-1" style={{ color: '#0a95a8' }}>
                 ¡Cuenta creada!
               </p>
               <h1 className="text-lg font-black text-[#111827]">Bienvenido,</h1>
@@ -203,10 +203,10 @@ function RegisterForm() {
               onClick={() => { router.refresh(); router.push('/dashboard') }}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-[0.18em] transition-all active:scale-[0.97] hover:brightness-110"
               style={{
-                background: 'linear-gradient(135deg, #0D1E79, #D203DD)',
+                background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
                 color: '#fff',
                 border: '1px solid #E4E9F0',
-                boxShadow: '0 6px 24px rgba(210,3,221,0.30)',
+                boxShadow: '0 6px 24px rgba(0,229,208,0.30)',
               }}
             >
               Ir a mi panel <ArrowRight size={12} />
@@ -222,7 +222,7 @@ function RegisterForm() {
     <div style={{backgroundImage:'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)',backgroundColor:'#0A1320',backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-purple-600/20 blur-[120px]" />
-        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#FF096C]/16 blur-[120px]" />
+        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#0a95a8]/16 blur-[120px]" />
       </div>
 
       <div className="w-full max-w-sm relative z-10">
@@ -241,7 +241,7 @@ function RegisterForm() {
 
           {empresaName && (
             <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-4" style={{ background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.25)' }}>
-              <User size={14} style={{ color: '#B735B8' }} className="shrink-0" />
+              <User size={14} style={{ color: '#147e95' }} className="shrink-0" />
               <p className="text-xs" style={{ color: '#7A2E8A' }}>Te estás uniendo a <strong>{empresaName}</strong>. Al registrarte quedarás dentro de esta empresa.</p>
             </div>
           )}
@@ -420,9 +420,9 @@ function RegisterForm() {
               />
               <span className="text-[11px] text-[#6B7280] leading-relaxed">
                 Acepto los{' '}
-                <Link href="/terms" className="text-[#FF096C] hover:text-cyan-300 transition-colors">Términos</Link>
+                <Link href="/terms" className="text-[#0a95a8] hover:text-cyan-300 transition-colors">Términos</Link>
                 {' '}y la{' '}
-                <Link href="/privacy" className="text-[#FF096C] hover:text-cyan-300 transition-colors">Política de Privacidad</Link>
+                <Link href="/privacy" className="text-[#0a95a8] hover:text-cyan-300 transition-colors">Política de Privacidad</Link>
               </span>
             </label>
 
@@ -435,7 +435,7 @@ function RegisterForm() {
               disabled={loading}
               className="dm-login-btn w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest disabled:opacity-60 mt-1"
               style={{
-                background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                 color: '#fff',
                 border: 'none',
               }}

@@ -259,7 +259,7 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <div className="w-11 h-11 rounded-xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 4px 16px rgba(155,0,255,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 4px 16px rgba(155,0,255,0.3)' }}>
           <Settings className="w-5 h-5 text-white animate-spin" style={{ animationDuration: '8s' }} />
         </div>
         <div>
@@ -276,13 +276,13 @@ export default function SettingsPage() {
       <div className="relative rounded-2xl p-5 sm:p-7 overflow-hidden"
         style={{ background: CARD_BG, border: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, #D203DD60, #FF2DF740, transparent)' }} />
+          style={{ background: 'linear-gradient(90deg, transparent, #00E5D060, #FF2DF740, transparent)' }} />
 
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(210,3,221,0.14)', border: '1px solid rgba(210,3,221,0.3)' }}>
-              <User className="w-3.5 h-3.5" style={{ color: '#D203DD' }} />
+              style={{ background: 'rgba(0,229,208,0.14)', border: '1px solid rgba(0,229,208,0.3)' }}>
+              <User className="w-3.5 h-3.5" style={{ color: '#00E5D0' }} />
             </div>
             <h3 className="text-[10px] font-black uppercase tracking-[0.35em]" style={{ color: 'rgba(255,255,255,0.78)' }}>
               Mi Información
@@ -291,7 +291,7 @@ export default function SettingsPage() {
           {profile && !editingName && (
             <button onClick={startEditName}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.97] hover:brightness-110"
-              style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 4px 16px rgba(155,0,255,0.3)' }}>
+              style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 4px 16px rgba(155,0,255,0.3)' }}>
               <User className="w-3.5 h-3.5" /> Editar perfil
             </button>
           )}
@@ -310,7 +310,7 @@ export default function SettingsPage() {
               {/* Avatar */}
               <div className="relative shrink-0">
                 <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden flex items-center justify-center"
-                  style={{ background: 'rgba(8,22,36,0.96)', border: '3px solid rgba(210,3,221,0.5)', boxShadow: '0 0 30px rgba(210,3,221,0.35), inset 0 0 20px rgba(0,0,0,0.5)' }}>
+                  style={{ background: 'rgba(8,22,36,0.96)', border: '3px solid rgba(0,229,208,0.5)', boxShadow: '0 0 30px rgba(0,229,208,0.35), inset 0 0 20px rgba(0,0,0,0.5)' }}>
                   {profile.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={profile.avatarUrl} alt={profile.fullName} className="w-full h-full object-cover" />
@@ -322,7 +322,7 @@ export default function SettingsPage() {
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingAvatar}
                   className="absolute bottom-0 right-0 w-11 h-11 rounded-full flex items-center justify-center transition-all disabled:opacity-50 active:scale-95"
-                  style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', border: '3px solid #fff', boxShadow: '0 0 14px rgba(210,3,221,0.5)' }}
+                  style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', border: '3px solid #fff', boxShadow: '0 0 14px rgba(0,229,208,0.5)' }}
                   title="Cambiar foto de perfil">
                   {uploadingAvatar
                     ? <Loader2 className="w-4 h-4 text-white animate-spin" />
@@ -355,12 +355,12 @@ export default function SettingsPage() {
                       disabled={savingName}
                       maxLength={80}
                       className="w-full text-2xl font-bold text-white px-3 py-2 rounded-lg outline-none transition-all"
-                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(210,3,221,0.5)', boxShadow: '0 0 12px rgba(210,3,221,0.18)' }}
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(0,229,208,0.5)', boxShadow: '0 0 12px rgba(0,229,208,0.18)' }}
                     />
                     <div className="flex gap-2 justify-center sm:justify-start">
                       <button onClick={saveName} disabled={savingName}
                         className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-white transition-all disabled:opacity-50 hover:opacity-90"
-                        style={{ background: 'linear-gradient(to right, #FF2D95, #B735B8, #233B8F)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                        style={{ background: 'linear-gradient(to right, #1fb8bb, #147e95, #233B8F)', border: '1px solid rgba(255,255,255,0.12)' }}>
                         {savingName ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} Guardar
                       </button>
                       <button onClick={cancelEditName} disabled={savingName}
@@ -377,7 +377,7 @@ export default function SettingsPage() {
                       className="flex items-center justify-center w-8 h-8 rounded-lg transition-all hover:bg-white/10"
                       style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
                       title="Editar nombre">
-                      <Pencil className="w-3.5 h-3.5" style={{ color: '#D203DD' }} />
+                      <Pencil className="w-3.5 h-3.5" style={{ color: '#00E5D0' }} />
                     </button>
                   </div>
                 )}
@@ -385,11 +385,11 @@ export default function SettingsPage() {
                 {!editingName && (
                   <div className="flex items-center justify-center sm:justify-start gap-x-5 gap-y-1.5 flex-wrap mt-3">
                     <span className="inline-flex items-center gap-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.78)' }}>
-                      <AtSign className="w-3.5 h-3.5" style={{ color: '#D203DD' }} />
+                      <AtSign className="w-3.5 h-3.5" style={{ color: '#00E5D0' }} />
                       {profile.username}
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.78)' }}>
-                      <Mail className="w-3.5 h-3.5" style={{ color: '#D203DD' }} />
+                      <Mail className="w-3.5 h-3.5" style={{ color: '#00E5D0' }} />
                       {profile.email}
                     </span>
                   </div>
@@ -403,7 +403,7 @@ export default function SettingsPage() {
                 <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
                   <button onClick={() => fileInputRef.current?.click()} disabled={uploadingAvatar}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-[0.97] disabled:opacity-50 hover:bg-white/[0.04]"
-                    style={{ background: 'rgba(210,3,221,0.10)', border: '1px solid rgba(210,3,221,0.35)', color: '#E879F9' }}>
+                    style={{ background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.35)', color: '#E879F9' }}>
                     <Camera className="w-3.5 h-3.5" /> Cambiar foto
                   </button>
                   {profile.avatarUrl && (
@@ -424,13 +424,13 @@ export default function SettingsPage() {
       <div className="relative rounded-2xl p-5 sm:p-7 overflow-hidden"
         style={{ background: CARD_BG, border: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, #D203DD60, #FF2DF740, transparent)' }} />
+          style={{ background: 'linear-gradient(90deg, transparent, #00E5D060, #FF2DF740, transparent)' }} />
 
         {/* Cabecera */}
         <div className="flex items-center gap-3 mb-5">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(210,3,221,0.12)', border: '1px solid rgba(210,3,221,0.3)' }}>
-            <Gem className="w-5 h-5" style={{ color: '#D203DD' }} />
+            style={{ background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.3)' }}>
+            <Gem className="w-5 h-5" style={{ color: '#00E5D0' }} />
           </div>
           <div>
             <p className="text-sm font-bold text-white">Créditos IA</p>
@@ -446,7 +446,7 @@ export default function SettingsPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-                style={{ background: 'linear-gradient(135deg, rgba(210,3,221,0.2), rgba(155,0,255,0.15))', border: '1px solid rgba(210,3,221,0.35)' }}>
+                style={{ background: 'linear-gradient(135deg, rgba(0,229,208,0.2), rgba(155,0,255,0.15))', border: '1px solid rgba(0,229,208,0.35)' }}>
                 <Gem className="w-7 h-7" style={{ color: '#E879F9' }} />
               </div>
               <div>
@@ -462,7 +462,7 @@ export default function SettingsPage() {
             <div className="flex flex-wrap items-center gap-2.5">
               <Link href="/dashboard/wallet"
                 className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.97] hover:brightness-110"
-                style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', boxShadow: '0 4px 16px rgba(155,0,255,0.3)', textDecoration: 'none' }}>
+                style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 4px 16px rgba(155,0,255,0.3)', textDecoration: 'none' }}>
                 <Plus className="w-4 h-4" /> Recargar
               </Link>
               <button type="button" onClick={() => setModal('history')}
@@ -487,14 +487,14 @@ export default function SettingsPage() {
               <p className="text-[8px] font-black uppercase tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.55)' }}>Última recarga</p>
               <p className="text-xs font-bold text-white truncate">
                 {credits?.lastRecharge
-                  ? <>{fmtDate(credits.lastRecharge.date)} <span style={{ color: '#FF096C' }}>+${credits.lastRecharge.amountUsd.toFixed(0)}</span></>
+                  ? <>{fmtDate(credits.lastRecharge.date)} <span style={{ color: '#0a95a8' }}>+${credits.lastRecharge.amountUsd.toFixed(0)}</span></>
                   : 'Sin recargas'}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <Activity className="w-4 h-4 shrink-0" style={{ color: '#D203DD' }} />
+            <Activity className="w-4 h-4 shrink-0" style={{ color: '#00E5D0' }} />
             <div className="min-w-0">
               <p className="text-[8px] font-black uppercase tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.55)' }}>Uso últimos 30 días</p>
               <p className="text-xs font-bold text-white">
@@ -535,7 +535,7 @@ export default function SettingsPage() {
               }}>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(183,53,184,0.35)' }}>
-                <ShieldCheck className="w-4 h-4 text-[#B735B8]" />
+                <ShieldCheck className="w-4 h-4 text-[#147e95]" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -551,7 +551,7 @@ export default function SettingsPage() {
                     : 'El administrador aún no configuró una key global.'}
                 </p>
               </div>
-              <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${usingAdmin && canUseAdminKey ? 'border-[#B735B8] bg-[#B735B8]' : 'border-white/20'}`}>
+              <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${usingAdmin && canUseAdminKey ? 'border-[#147e95] bg-[#147e95]' : 'border-white/20'}`}>
                 {usingAdmin && canUseAdminKey && <CheckCircle className="w-3 h-3 text-white" />}
               </div>
             </button>
@@ -562,21 +562,21 @@ export default function SettingsPage() {
               disabled={!hasOwnKey || togglingPref}
               className="w-full flex items-center gap-3.5 p-4 rounded-xl transition-all text-left"
               style={{
-                background: !usingAdmin && hasOwnKey ? 'rgba(255,9,108,0.15)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${!usingAdmin && hasOwnKey ? 'rgba(255,9,108,0.45)' : 'rgba(255,255,255,0.10)'}`,
+                background: !usingAdmin && hasOwnKey ? 'rgba(0,229,208,0.15)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${!usingAdmin && hasOwnKey ? 'rgba(0,229,208,0.45)' : 'rgba(255,255,255,0.10)'}`,
                 opacity: !hasOwnKey ? 0.5 : 1,
                 cursor: !hasOwnKey ? 'not-allowed' : 'pointer',
-                boxShadow: !usingAdmin && hasOwnKey ? '0 0 18px -6px rgba(255,9,108,0.45)' : 'none',
+                boxShadow: !usingAdmin && hasOwnKey ? '0 0 18px -6px rgba(0,229,208,0.45)' : 'none',
               }}>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: 'rgba(255,9,108,0.15)', border: '1px solid rgba(255,9,108,0.35)' }}>
-                <Key className="w-4 h-4 text-[#FF096C]" />
+                style={{ background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.35)' }}>
+                <Key className="w-4 h-4 text-[#0a95a8]" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-sm font-black text-white">Mi Propia API Key</p>
                   <span className="text-[8.5px] font-black uppercase tracking-[0.14em] px-1.5 py-0.5 rounded-full"
-                    style={{ background: 'rgba(255,9,108,0.15)', border: '1px solid rgba(255,9,108,0.30)', color: '#FF096C' }}>
+                    style={{ background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.30)', color: '#0a95a8' }}>
                     No usa saldo
                   </span>
                 </div>
@@ -586,7 +586,7 @@ export default function SettingsPage() {
                     : 'Configurá tu key de OpenAI abajo (cifrada AES-256). Los costos van a tu cuenta de OpenAI.'}
                 </p>
               </div>
-              <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${!usingAdmin && hasOwnKey ? 'border-[#FF096C] bg-[#FF096C]' : 'border-white/20'}`}>
+              <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${!usingAdmin && hasOwnKey ? 'border-[#0a95a8] bg-[#0a95a8]' : 'border-white/20'}`}>
                 {!usingAdmin && hasOwnKey && <CheckCircle className="w-3 h-3 text-white" />}
               </div>
             </button>
@@ -602,7 +602,7 @@ export default function SettingsPage() {
         <div className="mt-3 rounded-xl p-4 space-y-3.5"
           style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="flex items-center gap-2">
-            <KeyRound className="w-4 h-4 text-[#FF096C]" />
+            <KeyRound className="w-4 h-4 text-[#0a95a8]" />
             <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Mi API Key de OpenAI
             </p>
@@ -674,7 +674,7 @@ export default function SettingsPage() {
 
             <button onClick={saveKey} disabled={savingKey || !apiKeyInput.trim()}
               className="w-full py-3 rounded-xl font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-40 hover:opacity-90"
-              style={{ background: 'linear-gradient(to right, #FF2D95, #B735B8, #233B8F)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}>
+              style={{ background: 'linear-gradient(to right, #1fb8bb, #147e95, #233B8F)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}>
               {savingKey
                 ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Validando y guardando...</span>
                 : (credits?.ownKey ? 'Actualizar API Key' : 'Guardar API Key')}
@@ -687,7 +687,7 @@ export default function SettingsPage() {
             <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'rgba(255,255,255,0.55)' }} />
             <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Tu API Key se guarda cifrada con AES-256. Conseguila en{' '}
-              <span className="text-[#FF096C]">platform.openai.com/api-keys</span>. Al usar tu propia key, los costos van directo a tu cuenta de OpenAI.
+              <span className="text-[#0a95a8]">platform.openai.com/api-keys</span>. Al usar tu propia key, los costos van directo a tu cuenta de OpenAI.
             </p>
           </div>
         </div>
@@ -702,7 +702,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: 'rgba(210,3,221,0.15)', border: '1px solid rgba(210,3,221,0.35)' }}>
+                  style={{ background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.35)' }}>
                   {modal === 'history' ? <History className="w-5 h-5" style={{ color: '#E879F9' }} /> : <BarChart3 className="w-5 h-5" style={{ color: '#E879F9' }} />}
                 </div>
                 <div>
@@ -777,7 +777,7 @@ export default function SettingsPage() {
           style={{
             background: msg.type === 'ok' ? 'rgba(0,255,136,0.10)' : 'rgba(239,68,68,0.10)',
             border: `1px solid ${msg.type === 'ok' ? 'rgba(0,255,136,0.30)' : 'rgba(239,68,68,0.30)'}`,
-            color: msg.type === 'ok' ? '#FF096C' : '#fca5a5',
+            color: msg.type === 'ok' ? '#0a95a8' : '#fca5a5',
           }}>
           {msg.text}
         </div>

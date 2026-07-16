@@ -250,12 +250,12 @@ export default function UserEditor({ templateId }: { templateId: string }) {
     'Playfair Display', 'Merriweather', 'Georgia', 'Lobster', 'Pacifico',
     'Dancing Script', 'Caveat', 'Righteous', 'Permanent Marker', 'Roboto Mono',
   ]
-  const SWATCHES = ['#ffffff', '#000000', '#B735B8', '#0D1E79', '#00FF9D', '#FFD500', '#FF2D55']
+  const SWATCHES = ['#ffffff', '#000000', '#147e95', '#0D1E79', '#00FF9D', '#FFD500', '#FF2D55']
   const renderTextToolbar = () => {
     if (!textSel) return null
     return (
-      <div className="w-full rounded-xl bg-[#F4F6FA] border border-[#B735B8]/30 p-3 space-y-2.5">
-        <p className="text-[11px] font-black text-[#374151] flex items-center gap-1.5"><i className="fa-solid fa-font text-[#B735B8]"></i> Texto seleccionado</p>
+      <div className="w-full rounded-xl bg-[#F4F6FA] border border-[#147e95]/30 p-3 space-y-2.5">
+        <p className="text-[11px] font-black text-[#374151] flex items-center gap-1.5"><i className="fa-solid fa-font text-[#147e95]"></i> Texto seleccionado</p>
         <div className="flex items-center gap-1.5 flex-wrap">
           {SWATCHES.map(c => (
             <button key={c} type="button" onClick={() => applyText({ fill: c })}
@@ -281,7 +281,7 @@ export default function UserEditor({ templateId }: { templateId: string }) {
           <div className="relative flex-1 min-w-0">
             <button type="button" onClick={() => setFontMenuOpen(o => !o)}
               style={{ fontFamily: textSel.fontFamily }}
-              className="w-full flex items-center justify-between gap-2 bg-white border border-[#E4E9F0] rounded-lg px-2.5 py-1.5 text-sm text-[#111827] outline-none hover:border-[#B735B8]/50">
+              className="w-full flex items-center justify-between gap-2 bg-white border border-[#E4E9F0] rounded-lg px-2.5 py-1.5 text-sm text-[#111827] outline-none hover:border-[#147e95]/50">
               <span className="truncate">{textSel.fontFamily}</span>
               <i className="fa-solid fa-chevron-down text-[10px] text-[#9CA3AF] shrink-0"></i>
             </button>
@@ -292,7 +292,7 @@ export default function UserEditor({ templateId }: { templateId: string }) {
                   {FONTS.map(f => (
                     <button key={f} type="button" onClick={() => pickFont(f)}
                       style={{ fontFamily: f }}
-                      className={`w-full text-left px-3 py-2 text-[15px] leading-tight hover:bg-[#EEF2F7] transition-colors ${textSel.fontFamily === f ? 'text-[#B735B8] bg-[#F4F6FA]' : 'text-[#111827]'}`}>
+                      className={`w-full text-left px-3 py-2 text-[15px] leading-tight hover:bg-[#EEF2F7] transition-colors ${textSel.fontFamily === f ? 'text-[#147e95] bg-[#F4F6FA]' : 'text-[#111827]'}`}>
                       {f}
                     </button>
                   ))}
@@ -312,7 +312,7 @@ export default function UserEditor({ templateId }: { templateId: string }) {
     return (
       <div className="max-w-md mx-auto text-center py-24">
         <p className="text-red-400 text-sm mb-4">{error}</p>
-        <Link href="/dashboard/recursos/flyers" className="text-[#B735B8] underline text-sm">Volver a Recursos</Link>
+        <Link href="/dashboard/recursos/flyers" className="text-[#147e95] underline text-sm">Volver a Recursos</Link>
       </div>
     )
   }
@@ -366,12 +366,12 @@ export default function UserEditor({ templateId }: { templateId: string }) {
             <div className="flex items-center gap-2 flex-wrap justify-center shrink-0">
               <button onClick={() => fileRef.current?.click()} disabled={!ready}
                 className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-[#111827] transition-all active:scale-95 disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}>
+                style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}>
                 <i className="fa-solid fa-image"></i> {hasPhoto ? 'Cambiar foto' : 'Subir foto'}
               </button>
               <button onClick={() => download('jpeg')} disabled={!ready}
                 className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black text-[#111827] transition-all active:scale-95 disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}>
+                style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}>
                 <i className="fa-solid fa-download"></i> JPG
               </button>
               <button onClick={() => download('png')} disabled={!ready}
@@ -386,7 +386,7 @@ export default function UserEditor({ templateId }: { templateId: string }) {
         <div className={`w-full md:w-64 md:shrink-0 space-y-3 ${expanded ? 'hidden' : ''}`}>
           <button onClick={() => fileRef.current?.click()} disabled={!ready}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-[#111827] transition-all active:scale-95 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}>
+            style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}>
             <i className="fa-solid fa-image"></i> {hasPhoto ? 'Cambiar foto' : 'Subir foto'}
           </button>
 
@@ -404,7 +404,7 @@ export default function UserEditor({ templateId }: { templateId: string }) {
           <div className="grid grid-cols-2 gap-2">
             <button onClick={() => download('jpeg')} disabled={!ready}
               className="flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs font-black text-[#111827] transition-all active:scale-95 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)' }}>
+              style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}>
               <i className="fa-solid fa-download"></i> JPG
             </button>
             <button onClick={() => download('png')} disabled={!ready}

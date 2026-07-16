@@ -27,7 +27,7 @@ export default function ImpersonationBanner() {
   return (
     <div
       className="sticky top-0 z-[60] flex items-center justify-center gap-3 px-4 py-2 text-white text-xs font-bold"
-      style={{ background: 'linear-gradient(90deg, #B735B8 0%, #233B8F 100%)', boxShadow: '0 6px 18px rgba(8,22,36,0.35)' }}
+      style={{ background: 'linear-gradient(90deg, #147e95 0%, #233B8F 100%)', boxShadow: '0 6px 18px rgba(8,22,36,0.35)' }}
     >
       <span>👁️ Estás viendo como <b>@{name}</b> — modo admin</span>
       <button

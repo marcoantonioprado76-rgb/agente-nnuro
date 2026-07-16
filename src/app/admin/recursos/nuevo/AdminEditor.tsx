@@ -117,8 +117,8 @@ export default function AdminEditor() {
     const w = Math.round(ancho * 0.6), h = Math.round(alto * 0.4)
     const rect = new fabric.Rect({
       left: (ancho - w) / 2, top: (alto - h) / 2, width: w, height: h,
-      fill: 'rgba(210,3,221,0.12)', stroke: '#D203DD', strokeDashArray: [12, 9], strokeWidth: 4,
-      rx: 10, ry: 10, cornerColor: '#D203DD', transparentCorners: false,
+      fill: 'rgba(0,229,208,0.12)', stroke: '#00E5D0', strokeDashArray: [12, 9], strokeWidth: 4,
+      rx: 10, ry: 10, cornerColor: '#00E5D0', transparentCorners: false,
     })
     ;(rect as any)._isPhoto = true
     fc.add(rect); fc.setActiveObject(rect); fc.renderAll(); setHasPhoto(true)
@@ -207,7 +207,7 @@ export default function AdminEditor() {
         </div>
         <input ref={baseFileRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={onBaseFile} className="hidden" />
         <button onClick={() => baseFileRef.current?.click()} disabled={uploading}
-          className="w-full rounded-2xl border-2 border-dashed border-[#E4E9F0] bg-white py-16 flex flex-col items-center gap-3 text-[#6B7280] hover:border-[#B735B8]/40 hover:text-[#111827] transition-all disabled:opacity-60">
+          className="w-full rounded-2xl border-2 border-dashed border-[#E4E9F0] bg-white py-16 flex flex-col items-center gap-3 text-[#6B7280] hover:border-[#147e95]/40 hover:text-[#111827] transition-all disabled:opacity-60">
           {uploading
             ? <><i className="fa-solid fa-spinner fa-spin text-3xl"></i><span className="text-sm">Subiendo…</span></>
             : <><i className="fa-solid fa-cloud-arrow-up text-3xl"></i><span className="text-sm font-bold">Subir el flyer (PNG recomendado)</span><span className="text-xs">El lienzo toma el tamaño real de la imagen</span></>}
@@ -243,9 +243,9 @@ export default function AdminEditor() {
         <div className="w-full space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <input value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre"
-              className="col-span-2 bg-white border border-[#E4E9F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#9CA3AF] outline-none focus:border-[#B735B8]/40" />
+              className="col-span-2 bg-white border border-[#E4E9F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#9CA3AF] outline-none focus:border-[#147e95]/40" />
             <select value={categoria} onChange={e => setCategoria(e.target.value)}
-              className="col-span-2 bg-white border border-[#E4E9F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#B735B8]/40">
+              className="col-span-2 bg-white border border-[#E4E9F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#147e95]/40">
               <option value="" className="bg-[#0d0d15] text-white">Elegí un área…</option>
               {(areas.length ? areas : (CATEGORIAS_RECURSOS as readonly string[])).map(c => <option key={c} value={c} className="bg-[#0d0d15] text-white">{c}</option>)}
             </select>
@@ -253,7 +253,7 @@ export default function AdminEditor() {
 
           <div className="flex gap-2">
             <button onClick={addPhotoHole} disabled={hasPhoto}
-              className="flex-1 py-2.5 rounded-xl text-xs font-bold text-[#B735B8] bg-[#B735B8]/15 border border-[#B735B8]/30 transition-all active:scale-95 disabled:opacity-40">
+              className="flex-1 py-2.5 rounded-xl text-xs font-bold text-[#147e95] bg-[#147e95]/15 border border-[#147e95]/30 transition-all active:scale-95 disabled:opacity-40">
               <i className="fa-solid fa-crop-simple mr-1"></i> Hueco de foto
             </button>
             <button onClick={addText}
@@ -304,7 +304,7 @@ export default function AdminEditor() {
 
           <button onClick={save} disabled={saving}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black text-white hover:opacity-90 transition-all active:scale-95 disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)' }}>
+            style={{ background: 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)' }}>
             {saving ? <><i className="fa-solid fa-spinner fa-spin"></i> Guardando…</> : <><i className="fa-solid fa-check"></i> Guardar plantilla</>}
           </button>
           {error && <p className="text-red-400 text-xs text-center">{error}</p>}

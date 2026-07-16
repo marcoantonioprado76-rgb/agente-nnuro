@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     instructions = '',
     openaiKey: bodyKey = '',
     businessType = '',
-    primaryColor = '#D203DD',
+    primaryColor = '#00E5D0',
     secondaryColor = '#00FF88',
     videoUrl = '',
     imageUrls = [] as string[],

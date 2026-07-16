@@ -14,10 +14,10 @@ function registerBlocks(editor: any) {
   const add = (id: string, label: string, content: string) =>
     bm.add(id, { label, category: '✨ Secciones', content, activate: true })
 
-  add('sec-hero', '🚀 Portada (Hero)', `<section style="padding:90px 24px;text-align:center;background:linear-gradient(135deg,#B735B8,#FF2D95);color:#fff;${F}">
+  add('sec-hero', '🚀 Portada (Hero)', `<section style="padding:90px 24px;text-align:center;background:linear-gradient(135deg,#147e95,#1fb8bb);color:#fff;${F}">
     <h1 style="font-size:46px;font-weight:900;margin:0 0 16px;line-height:1.1;">Transforma tu negocio hoy</h1>
     <p style="font-size:19px;opacity:.92;max-width:620px;margin:0 auto 30px;">Escribe aquí una frase potente que explique tu oferta y enganche al cliente en segundos.</p>
-    <a href="#" style="display:inline-block;background:#fff;color:#B735B8;font-weight:800;padding:16px 42px;border-radius:14px;text-decoration:none;font-size:16px;">QUIERO EMPEZAR</a>
+    <a href="#" style="display:inline-block;background:#fff;color:#147e95;font-weight:800;padding:16px 42px;border-radius:14px;text-decoration:none;font-size:16px;">QUIERO EMPEZAR</a>
   </section>`)
 
   add('sec-features', '⭐ Beneficios (3)', `<section style="padding:70px 24px;background:#0b0f1a;color:#fff;${F}">
@@ -41,7 +41,7 @@ function registerBlocks(editor: any) {
     </div>
   </section>`)
 
-  add('sec-cta', '📢 Llamado a la acción', `<section style="padding:70px 24px;text-align:center;background:linear-gradient(135deg,#233B8F,#B735B8);color:#fff;${F}">
+  add('sec-cta', '📢 Llamado a la acción', `<section style="padding:70px 24px;text-align:center;background:linear-gradient(135deg,#233B8F,#147e95);color:#fff;${F}">
     <h2 style="font-size:36px;font-weight:900;margin:0 0 14px;">¿Listo para empezar?</h2>
     <p style="font-size:18px;opacity:.92;margin:0 0 26px;">Únete hoy y transforma tu forma de vender.</p>
     <a href="#" style="display:inline-block;background:#04210f;color:#fff;font-weight:800;padding:16px 44px;border-radius:14px;text-decoration:none;font-size:16px;">EMPEZAR AHORA</a>
@@ -75,14 +75,14 @@ function registerBlocks(editor: any) {
     <p style="opacity:.7;font-size:15px;margin:0 0 22px;">Dejanos tu correo y no te pierdas nada.</p>
     <form data-lead style="max-width:460px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
       <input name="email" type="email" placeholder="Tu correo" style="flex:1;min-width:200px;box-sizing:border-box;background:#0b0f1a;border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:14px;color:#fff;font-size:14px;"/>
-      <button type="submit" style="background:linear-gradient(135deg,#B735B8,#8b5cf6);color:#fff;font-weight:800;padding:14px 26px;border:none;border-radius:12px;font-size:14px;cursor:pointer;">Suscribirme</button>
+      <button type="submit" style="background:linear-gradient(135deg,#147e95,#8b5cf6);color:#fff;font-weight:800;padding:14px 26px;border:none;border-radius:12px;font-size:14px;cursor:pointer;">Suscribirme</button>
     </form>
   </section>`)
 
   add('sec-imgtext', '🖼️ Imagen + Texto', `<section style="padding:60px 24px;background:#0b0f1a;color:#fff;${F}">
     <div style="max-width:1000px;margin:0 auto;display:flex;flex-wrap:wrap;gap:36px;align-items:center;">
       <div style="flex:1;min-width:280px;"><img src="https://placehold.co/560x360/1e293b/64748b?text=Tu+imagen" style="width:100%;border-radius:18px;display:block;"/></div>
-      <div style="flex:1;min-width:280px;"><h2 style="font-size:30px;font-weight:900;margin:0 0 14px;">Un titular que vende</h2><p style="opacity:.75;font-size:16px;line-height:1.6;margin:0 0 20px;">Explica aquí tu propuesta de valor con detalle. Sube tu propia imagen a la izquierda.</p><a href="#" style="display:inline-block;background:#B735B8;color:#fff;font-weight:800;padding:13px 30px;border-radius:12px;text-decoration:none;">Saber más</a></div>
+      <div style="flex:1;min-width:280px;"><h2 style="font-size:30px;font-weight:900;margin:0 0 14px;">Un titular que vende</h2><p style="opacity:.75;font-size:16px;line-height:1.6;margin:0 0 20px;">Explica aquí tu propuesta de valor con detalle. Sube tu propia imagen a la izquierda.</p><a href="#" style="display:inline-block;background:#147e95;color:#fff;font-weight:800;padding:13px 30px;border-radius:12px;text-decoration:none;">Saber más</a></div>
     </div>
   </section>`)
 
@@ -102,7 +102,7 @@ function registerBlocks(editor: any) {
 
   add('hero-split', '↔️ Hero dividido', `<section style="padding:70px 24px;background:#0b0f1a;color:#fff;${F}">
     <div style="max-width:1050px;margin:0 auto;display:flex;flex-wrap:wrap;gap:36px;align-items:center;">
-      <div style="flex:1;min-width:300px;"><h1 style="font-size:42px;font-weight:900;margin:0 0 16px;line-height:1.1;">Vende más con IA</h1><p style="opacity:.8;font-size:17px;line-height:1.6;margin:0 0 24px;">Tu asistente inteligente atiende y cierra ventas por ti, 24/7.</p><a href="#" style="display:inline-block;background:linear-gradient(135deg,#B735B8,#FF2D95);color:#fff;font-weight:800;padding:15px 38px;border-radius:14px;text-decoration:none;">Quiero probarlo</a></div>
+      <div style="flex:1;min-width:300px;"><h1 style="font-size:42px;font-weight:900;margin:0 0 16px;line-height:1.1;">Vende más con IA</h1><p style="opacity:.8;font-size:17px;line-height:1.6;margin:0 0 24px;">Tu asistente inteligente atiende y cierra ventas por ti, 24/7.</p><a href="#" style="display:inline-block;background:linear-gradient(135deg,#147e95,#1fb8bb);color:#fff;font-weight:800;padding:15px 38px;border-radius:14px;text-decoration:none;">Quiero probarlo</a></div>
       <div style="flex:1;min-width:300px;"><img src="https://placehold.co/560x420/1e293b/64748b?text=Imagen" style="width:100%;border-radius:20px;display:block;"/></div>
     </div>
   </section>`)
@@ -138,7 +138,7 @@ function registerBlocks(editor: any) {
   </section>`)
 
   // ── STATS / NÚMEROS ──
-  add('sec-stats', '📊 Números', `<section style="padding:56px 24px;background:linear-gradient(135deg,#B735B8,#FF2D95);color:#fff;${F}">
+  add('sec-stats', '📊 Números', `<section style="padding:56px 24px;background:linear-gradient(135deg,#147e95,#1fb8bb);color:#fff;${F}">
     <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;text-align:center;justify-content:center;">
       ${[['+5.000','Clientes'],['98%','Satisfacción'],['24/7','Soporte'],['+40%','Más ventas']].map(([n,l])=>`<div style=\"flex:1;min-width:150px;\"><div style=\"font-size:42px;font-weight:900;\">${n}</div><div style=\"opacity:.85;font-size:14px;\">${l}</div></div>`).join('')}
     </div>
@@ -194,7 +194,7 @@ function registerBlocks(editor: any) {
   // ── WIDGETS ──
   add('w-accordion', '🔽 Acordeón', `<section style="padding:56px 20px;background:#0b0f1a;${F}"><div style="max-width:680px;margin:0 auto;">${[['¿Pregunta 1?', 'Respuesta a la primera pregunta. Editá este texto.'], ['¿Pregunta 2?', 'Respuesta a la segunda pregunta.'], ['¿Pregunta 3?', 'Respuesta a la tercera pregunta.']].map(([q, a]) => `<details style="background:#141a2e;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 18px;margin-bottom:10px;color:#fff;"><summary style="cursor:pointer;font-weight:800;font-size:15px;">${q}</summary><p style="margin:10px 0 0;opacity:.7;font-size:14px;line-height:1.5;">${a}</p></details>`).join('')}</div></section>`)
 
-  add('w-progress', '📊 Barras de progreso', `<section style="padding:56px 20px;background:#0f1220;color:#fff;${F}"><div style="max-width:640px;margin:0 auto;">${[['Diseño', '90'], ['Marketing', '75'], ['Ventas', '85']].map(([l, v]) => `<div style="margin-bottom:18px;"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:6px;"><span>${l}</span><span>${v}%</span></div><div style="height:10px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;"><div style="width:${v}%;height:100%;background:linear-gradient(90deg,#B735B8,#8b5cf6);border-radius:6px;"></div></div></div>`).join('')}</div></section>`)
+  add('w-progress', '📊 Barras de progreso', `<section style="padding:56px 20px;background:#0f1220;color:#fff;${F}"><div style="max-width:640px;margin:0 auto;">${[['Diseño', '90'], ['Marketing', '75'], ['Ventas', '85']].map(([l, v]) => `<div style="margin-bottom:18px;"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:6px;"><span>${l}</span><span>${v}%</span></div><div style="height:10px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;"><div style="width:${v}%;height:100%;background:linear-gradient(90deg,#147e95,#8b5cf6);border-radius:6px;"></div></div></div>`).join('')}</div></section>`)
 
   add('w-iconlist', '✅ Lista con íconos', `<section style="padding:56px 20px;background:#0b0f1a;color:#fff;${F}"><div style="max-width:560px;margin:0 auto;">${['Beneficio uno incluido', 'Beneficio dos incluido', 'Beneficio tres incluido', 'Beneficio cuatro incluido'].map(t => `<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);"><span style="width:26px;height:26px;border-radius:50%;background:rgba(34,197,94,.2);color:#4ade80;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">✓</span><span style="font-size:15px;">${t}</span></div>`).join('')}</div></section>`)
 
@@ -224,7 +224,7 @@ const FX_CSS = [
 
 // Elementos sueltos que el usuario puede agregar dentro de una sección con un toque.
 const NEW_TEXT = '<p style="color:#e5e7eb;font-size:16px;line-height:1.6;margin:12px 0;">Texto nuevo — tocá para editar ✏️</p>'
-const NEW_BTN = '<a href="#" style="display:inline-block;background:linear-gradient(135deg,#B735B8,#8b5cf6);color:#fff;font-weight:800;padding:14px 26px;border-radius:10px;text-decoration:none;margin:10px 0;">Botón nuevo</a>'
+const NEW_BTN = '<a href="#" style="display:inline-block;background:linear-gradient(135deg,#147e95,#8b5cf6);color:#fff;font-weight:800;padding:14px 26px;border-radius:10px;text-decoration:none;margin:10px 0;">Botón nuevo</a>'
 const NEW_IMG = '<img src="https://placehold.co/600x360/141420/6d5cf5/png?text=Foto" style="width:100%;border-radius:14px;display:block;margin:12px 0;"/>'
 const NEW_ICON = '<span style="font-size:44px;display:inline-block;line-height:1;margin:10px 0;">⭐</span>'
 
@@ -283,7 +283,7 @@ export default function BuilderEditorPage() {
   const [fillLoading, setFillLoading] = useState(false)
   const [showLeads, setShowLeads] = useState(false)
   const [showColors, setShowColors] = useState(false)
-  const [themeColor, setThemeColor] = useState('#B735B8')
+  const [themeColor, setThemeColor] = useState('#147e95')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [leads, setLeads] = useState<any[]>([])
   const [leadsLoading, setLeadsLoading] = useState(false)
@@ -814,7 +814,7 @@ export default function BuilderEditorPage() {
   function applyTheme(to: string) {
     const ed = editorRef.current
     if (!ed) return
-    const ACCENTS = ['#B735B8', '#c4b5fd', '#8b5cf6', '#a855f7', '#7c3aed', '#FF2D95', '#a78bfa', '#c4b5fd', '#f59e0b', '#f97316', '#fb923c', '#fbbf24', '#22c55e', '#10b981', '#4ade80', '#B735B8', '#c4b5fd', '#ec4899', '#f43f5e']
+    const ACCENTS = ['#147e95', '#c4b5fd', '#8b5cf6', '#a855f7', '#7c3aed', '#1fb8bb', '#a78bfa', '#c4b5fd', '#f59e0b', '#f97316', '#fb923c', '#fbbf24', '#22c55e', '#10b981', '#4ade80', '#147e95', '#c4b5fd', '#ec4899', '#f43f5e']
     try {
       let html = ed.getHtml(); let css = ed.getCss() || ''
       ACCENTS.forEach(a => { const re = new RegExp(a, 'gi'); html = html.replace(re, to); css = css.replace(re, to) })
@@ -1067,7 +1067,7 @@ export default function BuilderEditorPage() {
         <span style={stepLbl}>Opacidad</span>
         <input type="range" min={0} max={100} value={Math.round(t.opacity * 100)}
           onChange={e => apply({ opacity: (parseInt(e.target.value) / 100).toString() })}
-          style={{ width: 72, accentColor: '#B735B8' }} />
+          style={{ width: 72, accentColor: '#147e95' }} />
       </div>
     </div>
   )
@@ -1101,7 +1101,7 @@ export default function BuilderEditorPage() {
         <button onClick={() => setShowFill(true)} disabled={loading} title="Rellenar esta plantilla con tu negocio"
           style={{ background: 'linear-gradient(135deg,#f59e0b,#ec4899,#8b5cf6)', border: 'none', color: '#fff', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>🪄 Rellenar IA</button>
         <button onClick={() => setShowAI(true)} disabled={loading} title="Generar una landing nueva desde cero"
-          style={{ background: 'linear-gradient(135deg,#233B8F,#B735B8,#FF2D95)', border: 'none', color: '#fff', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>✨ IA</button>
+          style={{ background: 'linear-gradient(135deg,#233B8F,#147e95,#1fb8bb)', border: 'none', color: '#fff', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>✨ IA</button>
         <button onClick={() => setShowTemplates(true)} disabled={loading}
           style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#cbd5e1', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>📄 Plantillas</button>
         <button onClick={() => setShowColors(true)} disabled={loading}
@@ -1110,7 +1110,7 @@ export default function BuilderEditorPage() {
           style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', color: '#4ade80', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>📥 Leads</button>
         {page?.published && (
           <a href={`/b/${page.slug}`} target="_blank" rel="noreferrer"
-            style={{ color: '#B735B8', fontSize: 13, textDecoration: 'none', padding: '7px 10px' }}>Ver publicada ↗</a>
+            style={{ color: '#147e95', fontSize: 13, textDecoration: 'none', padding: '7px 10px' }}>Ver publicada ↗</a>
         )}
         <button onClick={() => save()} disabled={saving || loading}
           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: saving || loading ? 0.5 : 1 }}>
@@ -1284,7 +1284,7 @@ export default function BuilderEditorPage() {
           )}
           {/* Degradados rápidos */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 3, background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', borderRadius: 9, padding: '3px 5px' }}>
-            {['linear-gradient(135deg,#B735B8,#8b5cf6)', 'linear-gradient(135deg,#f97316,#fb923c)', 'linear-gradient(135deg,#10b981,#22c55e)', 'linear-gradient(135deg,#ec4899,#f43f5e)', 'linear-gradient(160deg,#0f172a,#1e293b)'].map((g, i) => (
+            {['linear-gradient(135deg,#147e95,#8b5cf6)', 'linear-gradient(135deg,#f97316,#fb923c)', 'linear-gradient(135deg,#10b981,#22c55e)', 'linear-gradient(135deg,#ec4899,#f43f5e)', 'linear-gradient(160deg,#0f172a,#1e293b)'].map((g, i) => (
               <button key={i} title="Degradado" onClick={() => applyBoxStyle({ background: g, 'background-image': g })}
                 style={{ width: 22, height: 22, borderRadius: 6, border: '1px solid rgba(255,255,255,.25)', background: g, cursor: 'pointer', padding: 0 }} />
             ))}
@@ -1438,7 +1438,7 @@ export default function BuilderEditorPage() {
               style={{ width: '100%', boxSizing: 'border-box', background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', borderRadius: 12, padding: 12, color: '#fff', fontSize: 14, resize: 'vertical', marginBottom: 14 }} />
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowAI(false)} disabled={aiLoading} style={{ flex: 1, background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.1)', color: '#94a3b8', borderRadius: 12, padding: 12, cursor: 'pointer' }}>Cancelar</button>
-              <button onClick={generateAI} disabled={aiLoading || !aiDesc.trim()} style={{ flex: 2, background: 'linear-gradient(135deg,#233B8F,#B735B8,#FF2D95)', border: 'none', color: '#fff', fontWeight: 800, borderRadius: 12, padding: 12, cursor: 'pointer', opacity: aiLoading || !aiDesc.trim() ? .5 : 1 }}>{aiLoading ? 'Generando…' : '✨ Generar'}</button>
+              <button onClick={generateAI} disabled={aiLoading || !aiDesc.trim()} style={{ flex: 2, background: 'linear-gradient(135deg,#233B8F,#147e95,#1fb8bb)', border: 'none', color: '#fff', fontWeight: 800, borderRadius: 12, padding: 12, cursor: 'pointer', opacity: aiLoading || !aiDesc.trim() ? .5 : 1 }}>{aiLoading ? 'Generando…' : '✨ Generar'}</button>
             </div>
           </div>
         </div>
@@ -1474,14 +1474,14 @@ export default function BuilderEditorPage() {
               <input type="color" value={themeColor} onChange={e => setThemeColor(e.target.value)}
                 style={{ width: 54, height: 44, padding: 0, border: '1px solid rgba(255,255,255,.2)', borderRadius: 10, background: 'transparent', cursor: 'pointer' }} />
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                {['#B735B8', '#f97316', '#22c55e', '#ec4899', '#B735B8', '#eab308', '#ef4444', '#14b8a6'].map(c => (
+                {['#147e95', '#f97316', '#22c55e', '#ec4899', '#147e95', '#eab308', '#ef4444', '#14b8a6'].map(c => (
                   <button key={c} onClick={() => setThemeColor(c)} title={c}
                     style={{ width: 26, height: 26, borderRadius: 7, border: themeColor === c ? '2px solid #fff' : '1px solid rgba(255,255,255,.25)', background: c, cursor: 'pointer', padding: 0 }} />
                 ))}
               </div>
             </div>
             <button onClick={() => applyTheme(themeColor)}
-              style={{ width: '100%', background: 'linear-gradient(135deg,#7c3aed,#FF2D95)', border: 'none', color: '#fff', fontWeight: 900, fontSize: 14, padding: '12px', borderRadius: 12, cursor: 'pointer' }}>Aplicar a toda la página</button>
+              style={{ width: '100%', background: 'linear-gradient(135deg,#7c3aed,#1fb8bb)', border: 'none', color: '#fff', fontWeight: 900, fontSize: 14, padding: '12px', borderRadius: 12, cursor: 'pointer' }}>Aplicar a toda la página</button>
           </div>
         </div>
       )}

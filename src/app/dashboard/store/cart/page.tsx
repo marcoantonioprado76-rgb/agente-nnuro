@@ -207,7 +207,7 @@ export default function CartPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <Link href="/dashboard/store/my-orders" style={{ flex: 1, padding: '11px 16px', borderRadius: 10, fontWeight: 700, fontSize: 13, textAlign: 'center', textDecoration: 'none', background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Link href="/dashboard/store/my-orders" style={{ flex: 1, padding: '11px 16px', borderRadius: 10, fontWeight: 700, fontSize: 13, textAlign: 'center', textDecoration: 'none', background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
               Ver mis pedidos
             </Link>
             <Link href="/dashboard/store" style={{ flex: 1, padding: '11px 16px', borderRadius: 10, fontWeight: 700, fontSize: 13, textAlign: 'center', textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.55)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -226,7 +226,7 @@ export default function CartPage() {
         <div style={{ fontSize: 48, marginBottom: 16 }}>🛒</div>
         <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>Tu carrito está vacío</h2>
         <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 24 }}>Agrega productos desde la tienda para continuar.</p>
-        <Link href="/dashboard/store" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '11px 22px', borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: 'none', background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', color: '#fff' }}>
+        <Link href="/dashboard/store" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '11px 22px', borderRadius: 10, fontWeight: 700, fontSize: 13, textDecoration: 'none', background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', color: '#fff' }}>
           Ir a la tienda
         </Link>
       </div>
@@ -241,7 +241,7 @@ export default function CartPage() {
       </Link>
 
       <h1 style={{ fontSize: 20, fontWeight: 800, color: '#111827', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Carrito</h1>
-      <div className="h-px w-16 mb-6 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+      <div className="h-px w-16 mb-6 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
 
       {/* ── SECTION 1: CART ITEMS ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
@@ -330,8 +330,8 @@ export default function CartPage() {
               {cryptoEnabled && (
                 <button onClick={() => setPayTab('CRYPTO')}
                   style={{ flex: 1, padding: '8px 12px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: '1px solid', background: 'transparent',
-                    borderColor: payTab === 'CRYPTO' ? 'rgba(210,3,221,0.4)' : 'rgba(255,255,255,0.12)',
-                    color: payTab === 'CRYPTO' ? '#FF2D95' : 'rgba(255,255,255,0.55)' }}>
+                    borderColor: payTab === 'CRYPTO' ? 'rgba(0,229,208,0.4)' : 'rgba(255,255,255,0.12)',
+                    color: payTab === 'CRYPTO' ? '#1fb8bb' : 'rgba(255,255,255,0.55)' }}>
                   ₮ Cripto (USDT)
                 </button>
               )}
@@ -386,7 +386,7 @@ export default function CartPage() {
                 </div>
                 <button onClick={handleManualSubmit} disabled={submitting}
                   style={{ width: '100%', padding: '13px 0', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: submitting ? 'not-allowed' : 'pointer', border: 'none',
-                    background: submitting ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                    background: submitting ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                     color: submitting ? 'rgba(255,255,255,0.42)' : '#fff' }}>
                   {submitting ? 'Enviando pedido...' : 'Confirmar pedido'}
                 </button>

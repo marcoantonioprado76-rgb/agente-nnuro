@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { LayoutTemplate, Code2, Sparkles, ArrowRight } from 'lucide-react'
 
-const BRAND = 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)'
+const BRAND = 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)'
 const C = { ink: '#111827', muted: '#6B7280', border: '#E4E9F0', card: '#FFFFFF' }
 
 export default function NuevaLandingChooser() {
@@ -16,7 +16,7 @@ export default function NuevaLandingChooser() {
       desc: 'Arrastrá y soltá, sin tocar código. 15 plantillas listas, editor visual y también podés generar con IA.',
       bullets: ['Editor drag & drop', '15 plantillas con vista previa', 'Publicá en /b/tu-pagina'],
       cta: 'Abrir constructor',
-      accent: '#B735B8',
+      accent: '#147e95',
       tint: 'rgba(183,53,184,0.10)',
     },
     {
@@ -84,7 +84,7 @@ export default function NuevaLandingChooser() {
         </div>
 
         <p className="text-center text-[11.5px] mt-6" style={{ color: C.muted }}>
-          <Sparkles className="w-3.5 h-3.5 inline -mt-0.5 mr-1" style={{ color: '#B735B8' }} />
+          <Sparkles className="w-3.5 h-3.5 inline -mt-0.5 mr-1" style={{ color: '#147e95' }} />
           Todo lo que publiques (de cualquier tipo) aparece junto en tu galería principal.
         </p>
       </div>

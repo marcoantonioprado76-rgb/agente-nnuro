@@ -116,7 +116,7 @@ export default function StorePage() {
     <div className="px-4 sm:px-6 lg:px-8 pt-8 pb-10 max-w-screen-xl mx-auto">
       {/* Toast */}
       {toast && (
-        <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 9999, background: toast.startsWith('¡') ? 'rgba(0,255,136,0.15)' : 'rgba(239,68,68,0.15)', border: `1px solid ${toast.startsWith('¡') ? 'rgba(0,255,136,0.3)' : 'rgba(239,68,68,0.3)'}`, color: toast.startsWith('¡') ? '#FF096C' : '#ef4444', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 600 }}>
+        <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 9999, background: toast.startsWith('¡') ? 'rgba(0,255,136,0.15)' : 'rgba(239,68,68,0.15)', border: `1px solid ${toast.startsWith('¡') ? 'rgba(0,255,136,0.3)' : 'rgba(239,68,68,0.3)'}`, color: toast.startsWith('¡') ? '#0a95a8' : '#ef4444', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 600 }}>
           {toast}
         </div>
       )}
@@ -125,13 +125,13 @@ export default function StorePage() {
       <div className="mb-6 flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">🎟 Eventos</h1>
-          <div className="h-px w-24 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, #FF2D95, #B735B8, #233B8F, transparent)' }} />
+          <div className="h-px w-24 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, #1fb8bb, #147e95, #233B8F, transparent)' }} />
           <p className="text-xs text-[#6B7280] mt-2">Conseguí tu entrada para los eventos presenciales de MY DIAMOND.</p>
         </div>
         {/* El carrito/pedidos son de la TIENDA: solo se muestran si hay productos. */}
         {!loading && items.length > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Link href="/dashboard/store/my-orders" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#FF096C', background: 'rgba(255,9,108,0.1)', border: '1px solid #E4E9F0', borderRadius: 8, padding: '7px 14px', textDecoration: 'none' }}>
+            <Link href="/dashboard/store/my-orders" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#0a95a8', background: 'rgba(0,229,208,0.1)', border: '1px solid #E4E9F0', borderRadius: 8, padding: '7px 14px', textDecoration: 'none' }}>
               📦 Mis pedidos
             </Link>
             <Link href="/dashboard/store/cart" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#111827', background: '#F0F3F7', border: '1px solid #E4E9F0', borderRadius: 8, padding: '7px 14px', textDecoration: 'none' }}>
@@ -152,8 +152,8 @@ export default function StorePage() {
           {['Todas', ...categories].map(cat => (
             <button key={cat} onClick={() => handleCategory(cat)}
               style={{ padding: '5px 14px', borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: '1px solid', background: 'transparent',
-                borderColor: activeCategory === cat ? 'rgba(210,3,221,0.5)' : '#E4E9F0',
-                color: activeCategory === cat ? '#D203DD' : '#6B7280' }}>
+                borderColor: activeCategory === cat ? 'rgba(0,229,208,0.5)' : '#E4E9F0',
+                color: activeCategory === cat ? '#00E5D0' : '#6B7280' }}>
               {cat}
             </button>
           ))}
@@ -164,7 +164,7 @@ export default function StorePage() {
         <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0 14px' }}>
           <h2 style={{ fontSize: 13, fontWeight: 900, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>🛍 Tienda</h2>
-          <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(210,3,221,0.35), transparent)' }} />
+          <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(0,229,208,0.35), transparent)' }} />
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {items.map(item => {
@@ -174,12 +174,12 @@ export default function StorePage() {
               <div key={item.id} style={{ borderRadius: 14, overflow: 'hidden', background: 'radial-gradient(120% 75% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', opacity: outOfStock ? 0.6 : 1, transition: 'border-color 0.2s', display: 'flex', flexDirection: 'column' }}>
                 {/* Image — click goes to detail */}
                 <Link href={`/dashboard/store/${item.id}`} style={{ textDecoration: 'none', display: 'block' }}>
-                  <div style={{ aspectRatio: '1/1', background: 'rgba(210,3,221,0.04)', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ aspectRatio: '1/1', background: 'rgba(0,229,208,0.04)', position: 'relative', overflow: 'hidden' }}>
                     {img ? (
                       <img src={img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                     ) : (
                       <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg className="w-10 h-10 opacity-20" viewBox="0 0 24 24" fill="none" stroke="#D203DD" strokeWidth="1"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" /></svg>
+                        <svg className="w-10 h-10 opacity-20" viewBox="0 0 24 24" fill="none" stroke="#00E5D0" strokeWidth="1"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" /></svg>
                       </div>
                     )}
                     {outOfStock && (
@@ -209,7 +209,7 @@ export default function StorePage() {
                     <button
                       onClick={e => handleQuickAdd(e, item)}
                       disabled={outOfStock}
-                      style={{ flex: 2, padding: '5px 0', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: outOfStock ? 'not-allowed' : 'pointer', border: 'none', background: outOfStock ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', color: outOfStock ? 'rgba(255,255,255,0.42)' : '#fff' }}>
+                      style={{ flex: 2, padding: '5px 0', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: outOfStock ? 'not-allowed' : 'pointer', border: 'none', background: outOfStock ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', color: outOfStock ? 'rgba(255,255,255,0.42)' : '#fff' }}>
                       {outOfStock ? 'Agotado' : '🛒 Agregar'}
                     </button>
                   </div>
@@ -226,13 +226,13 @@ export default function StorePage() {
         {(!loading && items.length > 0) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
             <h2 style={{ fontSize: 13, fontWeight: 900, color: '#111827', margin: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>🎟 Entradas</h2>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(210,3,221,0.4), transparent)' }} />
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(0,229,208,0.4), transparent)' }} />
           </div>
         )}
         <div>
           {eventsLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '24px 0' }}>
-              <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#D203DD', borderTopColor: 'transparent' }} />
+              <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#00E5D0', borderTopColor: 'transparent' }} />
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -272,7 +272,7 @@ export default function StorePage() {
                       className="group"
                       style={{
                         position: 'relative', borderRadius: 24, padding: PAD,
-                        background: 'linear-gradient(160deg, #FF2D95 0%, #B735B8 45%, #233B8F 100%)',
+                        background: 'linear-gradient(160deg, #1fb8bb 0%, #147e95 45%, #233B8F 100%)',
                         boxShadow: allSoldOut ? '0 10px 24px -16px rgba(8,22,36,0.5)' : '0 26px 50px -22px rgba(183,53,184,0.55)',
                         opacity: allSoldOut ? 0.55 : 1,
                         transition: 'transform .22s ease, box-shadow .22s ease',
@@ -362,7 +362,7 @@ export default function StorePage() {
                           {/* Botón */}
                           <div style={{
                             padding: '14px 0', borderRadius: 999, textAlign: 'center', fontSize: 14.5, fontWeight: 900, letterSpacing: '0.01em',
-                            background: allSoldOut ? 'rgba(255,255,255,0.07)' : 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)',
+                            background: allSoldOut ? 'rgba(255,255,255,0.07)' : 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                             color: allSoldOut ? 'rgba(255,255,255,0.45)' : '#fff',
                             boxShadow: allSoldOut ? 'none' : '0 12px 28px -10px rgba(255,45,149,0.55)',
                           }}>
@@ -432,7 +432,7 @@ export default function StorePage() {
                 Cancelar
               </button>
               <button onClick={confirmQuickAdd}
-                style={{ flex: 2, padding: '10px 0', borderRadius: 9, border: 'none', background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 13 }}>
+                style={{ flex: 2, padding: '10px 0', borderRadius: 9, border: 'none', background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 13 }}>
                 🛒 Agregar al carrito
               </button>
             </div>

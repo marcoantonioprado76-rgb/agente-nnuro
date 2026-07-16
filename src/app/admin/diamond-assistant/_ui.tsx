@@ -4,7 +4,7 @@ import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
 
 // ── Paleta MY DIAMOND ──────────────────────────────────────────────
-export const BRAND = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+export const BRAND = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 export const BORDER = '#E4E9F0'
 export const TEXT = '#111827'
 export const MUTED = '#6B7280'
@@ -22,8 +22,8 @@ export interface Accent {
   color: string
 }
 export const ACCENTS: Accent[] = [
-  { tint: 'rgba(255,45,149,0.10)', color: '#FF2D95' },
-  { tint: 'rgba(183,53,184,0.10)', color: '#B735B8' },
+  { tint: 'rgba(255,45,149,0.10)', color: '#1fb8bb' },
+  { tint: 'rgba(183,53,184,0.10)', color: '#147e95' },
   { tint: 'rgba(35,59,143,0.10)', color: '#233B8F' },
   { tint: 'rgba(22,163,74,0.10)', color: '#16A34A' },
 ]

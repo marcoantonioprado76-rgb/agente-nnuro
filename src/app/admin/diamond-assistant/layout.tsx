@@ -7,11 +7,11 @@ import { Gem, LayoutDashboard, Bot, Brain, Users, Megaphone } from 'lucide-react
 import type { LucideIcon } from 'lucide-react'
 
 // ── Paleta MY DIAMOND ──────────────────────────────────────────────
-const BRAND = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 const BORDER = '#E4E9F0'
 const TEXT = '#111827'
 const MUTED = '#6B7280'
-const ACCENT = '#B735B8'
+const ACCENT = '#147e95'
 
 // ── Sub-navegación agrupada (2 niveles): 5 grupos, cada uno con sus secciones ──
 interface NavItem { href: string; label: string; exact?: boolean }

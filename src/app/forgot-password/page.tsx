@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
     <div style={{background:'linear-gradient(135deg,#F8FAFC,#F5F7FA 45%,#EEF2F7)',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
 
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-[450px] h-[450px] rounded-full bg-[#FF096C]/8 blur-[130px]" />
+        <div className="absolute -top-40 -left-40 w-[450px] h-[450px] rounded-full bg-[#0a95a8]/8 blur-[130px]" />
         <div className="absolute -bottom-40 -right-40 w-[450px] h-[450px] rounded-full bg-purple-600/8 blur-[130px]" />
       </div>
 
@@ -57,10 +57,10 @@ export default function ForgotPasswordPage() {
         <div className="dm-card" style={{ padding: '1.5rem' }}>
           {sent ? (
             <div className="text-center py-2">
-              <div className="w-14 h-14 rounded-2xl bg-[#FF096C]/10 border border-[#FF096C]/20 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 size={26} className="text-[#FF096C]" />
+              <div className="w-14 h-14 rounded-2xl bg-[#0a95a8]/10 border border-[#0a95a8]/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 size={26} className="text-[#0a95a8]" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#FF096C] mb-1">Correo enviado</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#0a95a8] mb-1">Correo enviado</p>
               <h2 className="text-base font-black text-[#111827] mb-2">Revisa tu bandeja</h2>
               <p className="text-xs text-[#6B7280] mb-5 leading-relaxed">
                 Si el correo <span className="text-[#111827] font-bold">{email}</span> está registrado, recibirás un enlace de recuperación.
@@ -69,10 +69,10 @@ export default function ForgotPasswordPage() {
                 href="/login"
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98]"
                 style={{
-                  background: 'linear-gradient(135deg, #0D1E79, #D203DD)',
+                  background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
                   color: '#fff',
                   border: '1px solid rgba(255,255,255,0.12)',
-                  boxShadow: '0 4px 20px rgba(210,3,221,0.25)',
+                  boxShadow: '0 4px 20px rgba(0,229,208,0.25)',
                 }}
               >
                 <ArrowLeft size={13} /> Volver al Login
@@ -116,10 +116,10 @@ export default function ForgotPasswordPage() {
                   disabled={loading}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-60 mt-1"
                   style={{
-                    background: 'linear-gradient(135deg, #0D1E79, #D203DD)',
+                    background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
                     color: '#fff',
                     border: '1px solid rgba(255,255,255,0.12)',
-                    boxShadow: '0 4px 20px rgba(210,3,221,0.25)',
+                    boxShadow: '0 4px 20px rgba(0,229,208,0.25)',
                   }}
                 >
                   {loading

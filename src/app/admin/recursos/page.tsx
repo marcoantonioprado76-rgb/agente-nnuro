@@ -69,7 +69,7 @@ export default function AdminRecursosPage() {
         <p className="text-xs text-[#111827]/40">{items.length} plantilla(s). Acá subís y administrás las plantillas editables (flyers).</p>
         <Link href="/admin/recursos/nuevo"
           className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white hover:opacity-90 transition-all"
-          style={{ background: 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)' }}>
+          style={{ background: 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)' }}>
           <Plus size={15} /> Nueva plantilla
         </Link>
       </div>

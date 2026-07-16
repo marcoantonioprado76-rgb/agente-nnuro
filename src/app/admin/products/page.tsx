@@ -204,7 +204,7 @@ function ProductFormModal({
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 16px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Package size={18} style={{ color: '#D203DD' }} />
+            <Package size={18} style={{ color: '#00E5D0' }} />
             <span style={{ fontWeight: 700, color: '#fff', fontSize: 16 }}>{isNew ? 'Nuevo producto' : 'Editar producto'}</span>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280', padding: 4 }}><X size={18} /></button>
@@ -216,7 +216,7 @@ function ProductFormModal({
           {/* User selector (create only) */}
           {isNew && (
             <div style={{ ...SECTION }}>
-              <div style={{ ...SEC_TITLE }}><span style={{ width: 3, height: 14, background: '#D203DD', borderRadius: 2, display: 'inline-block' }} />Asignar a usuario</div>
+              <div style={{ ...SEC_TITLE }}><span style={{ width: 3, height: 14, background: '#00E5D0', borderRadius: 2, display: 'inline-block' }} />Asignar a usuario</div>
               <div>
                 <label style={LABEL}>Usuario con plan activo *</label>
                 <select
@@ -381,7 +381,7 @@ function ProductFormModal({
             </button>
             <button onClick={handleSave} disabled={saving}
               style={{ flex: 2, padding: '12px 0', borderRadius: 12, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 700, fontSize: 14,
-                background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #D203DD, #00FF88)',
+                background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #00E5D0, #00FF88)',
                 color: saving ? '#6B7280' : '#000' }}>
               {saving ? 'Guardando...' : isNew ? 'Crear producto' : 'Guardar cambios'}
             </button>
@@ -457,7 +457,7 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Productos de Bots</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
         <p className="text-xs text-[#111827]/30 mt-1">Todos los productos añadidos por usuarios para sus agentes AI</p>
       </div>
 
@@ -470,7 +470,7 @@ export default function AdminProductsPage() {
               placeholder="Buscar por nombre, categoría, usuario..."
               style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 9, padding: '8px 10px 8px 32px', color: '#fff', fontSize: 13, outline: 'none' }} />
           </div>
-          <button onClick={handleSearch} style={{ padding: '0 14px', borderRadius: 9, background: 'rgba(210,3,221,0.12)', border: '1px solid rgba(210,3,221,0.25)', color: '#D203DD', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+          <button onClick={handleSearch} style={{ padding: '0 14px', borderRadius: 9, background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.25)', color: '#00E5D0', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
             Buscar
           </button>
         </div>
@@ -478,7 +478,7 @@ export default function AdminProductsPage() {
           <RefreshCw size={13} className="text-[#111827]/40" />
         </button>
         <button onClick={openCreate}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 14px', borderRadius: 9, border: 'none', background: 'linear-gradient(135deg, #D203DD, #00FF88)', color: '#000', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 14px', borderRadius: 9, border: 'none', background: 'linear-gradient(135deg, #00E5D0, #00FF88)', color: '#000', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
           <Plus size={14} /> Nuevo producto
         </button>
       </div>
@@ -536,7 +536,7 @@ export default function AdminProductsPage() {
                   </div>
 
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                    <button onClick={() => openEdit(p)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(210,3,221,0.07)', border: '1px solid rgba(210,3,221,0.15)', cursor: 'pointer', color: '#D203DD' }}>
+                    <button onClick={() => openEdit(p)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(0,229,208,0.07)', border: '1px solid rgba(0,229,208,0.15)', cursor: 'pointer', color: '#00E5D0' }}>
                       <Edit2 size={13} />
                     </button>
                     <button onClick={() => setDeleteConfirm(p)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer', color: '#ef4444' }}>

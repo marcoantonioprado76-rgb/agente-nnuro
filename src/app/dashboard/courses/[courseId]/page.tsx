@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { PaymentGateway } from '@/components/PaymentGateway'
 
-const DG = 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)'
+const DG = 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)'
 
 interface CourseVideo {
   id: string
@@ -352,7 +352,7 @@ export default function CourseDetailPage() {
   if (loading) {
     return (
       <div className="px-4 sm:px-6 pt-6 max-w-screen-2xl mx-auto min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#B735B8', borderTopColor: 'transparent' }} />
+        <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#147e95', borderTopColor: 'transparent' }} />
       </div>
     )
   }
@@ -422,7 +422,7 @@ export default function CourseDetailPage() {
           <p style={{ fontSize: 22, marginBottom: 8 }}>🔒</p>
           <p style={{ fontSize: 14, color: '#fff', fontWeight: 700, marginBottom: 6 }}>Curso no disponible</p>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>Necesitas un plan activo para acceder a los cursos.</p>
-          <Link href="/dashboard/planes" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #FF2D95 0%, #B735B8 48%, #233B8F 100%)', color: '#fff', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
+          <Link href="/dashboard/planes" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', color: '#fff', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
             Ver planes
           </Link>
         </div>
@@ -445,7 +445,7 @@ export default function CourseDetailPage() {
         <div style={{ padding: '12px 16px', borderRadius: 12, marginBottom: 20, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
           <p style={{ fontSize: 13, color: '#ef4444', fontWeight: 600 }}>✕ Solicitud rechazada</p>
           {enrollment.notes && <p style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>{enrollment.notes}</p>}
-          <button onClick={() => setShowModal(true)} style={{ marginTop: 8, fontSize: 12, color: '#FF096C', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>
+          <button onClick={() => setShowModal(true)} style={{ marginTop: 8, fontSize: 12, color: '#0a95a8', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>
             Volver a intentar
           </button>
         </div>
@@ -455,12 +455,12 @@ export default function CourseDetailPage() {
       {!isLocked && !enrollment && (
         course.freeForPlan ? (
           <button onClick={handleFreeEnroll} disabled={submitting}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, fontWeight: 700, fontSize: 14, background: submitting ? 'rgba(183,53,184,0.4)' : 'linear-gradient(90deg, #FF2D95 0%, #B735B8 50%, #233B8F 100%)', color: '#fff', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: 28 }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, fontWeight: 700, fontSize: 14, background: submitting ? 'rgba(183,53,184,0.4)' : 'linear-gradient(90deg, #1fb8bb 0%, #147e95 50%, #233B8F 100%)', color: '#fff', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: 28 }}>
             {submitting ? 'Activando...' : '✓ Acceder gratis con mi plan'}
           </button>
         ) : (
           <button onClick={() => setShowModal(true)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, fontWeight: 700, fontSize: 14, background: 'linear-gradient(90deg, #FF2D95 0%, #B735B8 50%, #233B8F 100%)', color: '#fff', border: 'none', cursor: 'pointer', marginBottom: 28 }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, fontWeight: 700, fontSize: 14, background: 'linear-gradient(90deg, #1fb8bb 0%, #147e95 50%, #233B8F 100%)', color: '#fff', border: 'none', cursor: 'pointer', marginBottom: 28 }}>
             ₮ Comprar con USDT — {course.price.toFixed(2)} USDT
           </button>
         )
@@ -478,16 +478,16 @@ export default function CourseDetailPage() {
               <span style={{ fontSize: 12, fontWeight: 800, background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{doneCount} de {course.videos.length} · {coursePct}%</span>
             </div>
             <div style={{ height: 7, borderRadius: 7, background: 'rgba(8,22,36,0.1)', overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${coursePct}%`, borderRadius: 7, background: 'linear-gradient(90deg,#FF2D95,#B735B8,#233B8F)', transition: 'width 0.3s' }} />
+              <div style={{ height: '100%', width: `${coursePct}%`, borderRadius: 7, background: 'linear-gradient(90deg,#1fb8bb,#147e95,#12303a)', transition: 'width 0.3s' }} />
             </div>
             {coursePct === 100 && (
               <div style={{ marginTop: 12, padding: '14px 16px', borderRadius: 14, background: 'rgba(99,102,190,0.07)', border: '1px solid rgba(99,102,190,0.22)', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 22 }}>🎓</span>
                 <div style={{ flex: 1, minWidth: 160 }}>
-                  <p style={{ fontSize: 14, fontWeight: 800, background: 'linear-gradient(135deg, #B735B8 0%, #233B8F 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>¡Completaste el curso!</p>
+                  <p style={{ fontSize: 14, fontWeight: 800, background: 'linear-gradient(135deg, #147e95 0%, #233B8F 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>¡Completaste el curso!</p>
                   <p style={{ fontSize: 12, color: '#6B7280', margin: '2px 0 0' }}>Descargá tu certificado de finalización.</p>
                 </div>
-                <button onClick={downloadCertificate} style={{ padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg,#FF2D95,#B735B8,#233B8F)', border: 'none', cursor: 'pointer' }}>
+                <button onClick={downloadCertificate} style={{ padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 700, color: '#fff', background: 'linear-gradient(90deg,#1fb8bb,#147e95,#12303a)', border: 'none', cursor: 'pointer' }}>
                   🎓 Descargar certificado
                 </button>
               </div>
@@ -503,7 +503,7 @@ export default function CourseDetailPage() {
             <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
               {/* Título del video activo */}
               <div style={{ background: 'rgba(255,255,255,0.04)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#FF096C', background: 'rgba(255,9,108,0.12)', border: '1px solid rgba(255,9,108,0.25)', padding: '2px 8px', borderRadius: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#0a95a8', background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.25)', padding: '2px 8px', borderRadius: 6 }}>
                   {selectedIdx + 1} / {course.videos.length}
                 </span>
                 <p style={{ fontSize: 13, fontWeight: 700, color: '#fff', margin: 0, flex: 1 }}>{selectedVideo.title}</p>
@@ -515,7 +515,7 @@ export default function CourseDetailPage() {
               </div>
               {/* Aviso "continuá donde quedaste" (video propio, con posición guardada) */}
               {player?.kind === 'supabase' && (player.pos || 0) > 3 && !(completedVideos.has(selectedVideo.id) || selectedVideo.completed) && (
-                <div style={{ background: 'rgba(255,9,108,0.1)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '6px 16px', fontSize: 11, color: '#FF096C', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ background: 'rgba(0,229,208,0.1)', borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '6px 16px', fontSize: 11, color: '#0a95a8', display: 'flex', alignItems: 'center', gap: 6 }}>
                   ▶ Continuás donde quedaste — {fmtTime(player.pos)}
                 </div>
               )}
@@ -565,12 +565,12 @@ export default function CourseDetailPage() {
               </button>
               {isApproved && !isVideoDone(selectedVideo) && (
                 <button onClick={markWatched}
-                  style={{ padding: '10px 14px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: 'rgba(255,45,149,0.1)', border: '1px solid rgba(255,45,149,0.25)', color: '#FF2D95', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  style={{ padding: '10px 14px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: 'rgba(255,45,149,0.1)', border: '1px solid rgba(255,45,149,0.25)', color: '#1fb8bb', cursor: 'pointer', whiteSpace: 'nowrap' }}>
                   ✓ Marcar visto
                 </button>
               )}
               <button onClick={() => nextVideo && nextVideo.unlocked && selectVideo(nextVideo)} disabled={!nextVideo || !nextVideo.unlocked}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: (nextVideo && nextVideo.unlocked) ? 'linear-gradient(90deg,#FF2D95,#B735B8,#233B8F)' : 'linear-gradient(180deg, #0B1B2B 0%, #050B14 100%)', border: (nextVideo && nextVideo.unlocked) ? 'none' : '1px solid rgba(255,255,255,0.1)', color: (nextVideo && nextVideo.unlocked) ? '#fff' : 'rgba(255,255,255,0.42)', cursor: (nextVideo && nextVideo.unlocked) ? 'pointer' : 'default' }}>
+                style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: (nextVideo && nextVideo.unlocked) ? 'linear-gradient(90deg,#1fb8bb,#147e95,#12303a)' : 'linear-gradient(180deg, #0B1B2B 0%, #050B14 100%)', border: (nextVideo && nextVideo.unlocked) ? 'none' : '1px solid rgba(255,255,255,0.1)', color: (nextVideo && nextVideo.unlocked) ? '#fff' : 'rgba(255,255,255,0.42)', cursor: (nextVideo && nextVideo.unlocked) ? 'pointer' : 'default' }}>
                 {nextVideo && !nextVideo.unlocked ? '🔒 Siguiente' : 'Siguiente →'}
               </button>
             </div>
@@ -591,8 +591,8 @@ export default function CourseDetailPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {selectedVideo.recursos.map(r => (
                       <a key={r.id} href={r.archivoUrl} target="_blank" rel="noreferrer" download
-                        style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#fff', textDecoration: 'none', background: 'rgba(255,9,108,0.1)', border: '1px solid rgba(255,9,108,0.25)', borderRadius: 10, padding: '10px 12px' }}>
-                        <span>📎</span><span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.titulo}</span><span style={{ fontSize: 11, color: '#FF096C', whiteSpace: 'nowrap' }}>Descargar ↓</span>
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#fff', textDecoration: 'none', background: 'rgba(0,229,208,0.1)', border: '1px solid rgba(0,229,208,0.25)', borderRadius: 10, padding: '10px 12px' }}>
+                        <span>📎</span><span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.titulo}</span><span style={{ fontSize: 11, color: '#0a95a8', whiteSpace: 'nowrap' }}>Descargar ↓</span>
                       </a>
                     ))}
                   </div>
@@ -620,7 +620,7 @@ export default function CourseDetailPage() {
                 return (
                   <Fragment key={video.id}>
                   {showHeader && (
-                    <div style={{ padding: '11px 16px 7px', fontSize: 11, fontWeight: 800, color: '#FF096C', textTransform: 'uppercase', letterSpacing: '0.06em', background: 'rgba(255,9,108,0.06)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div style={{ padding: '11px 16px 7px', fontSize: 11, fontWeight: 800, color: '#0a95a8', textTransform: 'uppercase', letterSpacing: '0.06em', background: 'rgba(0,229,208,0.06)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                       {video.moduloTitulo}
                     </div>
                   )}
@@ -630,8 +630,8 @@ export default function CourseDetailPage() {
                     style={{
                       display: 'flex', alignItems: 'center', gap: 12,
                       padding: '12px 16px',
-                      background: isActive ? 'rgba(255,9,108,0.12)' : 'transparent',
-                      borderLeft: isActive ? '3px solid #FF096C' : '3px solid transparent',
+                      background: isActive ? 'rgba(0,229,208,0.12)' : 'transparent',
+                      borderLeft: isActive ? '3px solid #0a95a8' : '3px solid transparent',
                       borderRight: 'none', borderTop: 'none',
                       borderBottom: idx < course.videos.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
                       cursor: isUnlocked ? 'pointer' : 'default',
@@ -644,10 +644,10 @@ export default function CourseDetailPage() {
                     <div style={{
                       width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: isDone ? DG : isActive ? 'rgba(255,9,108,0.15)' : 'rgba(255,255,255,0.06)',
-                      border: `1px solid ${isDone ? 'transparent' : isActive ? 'rgba(255,9,108,0.4)' : 'rgba(255,255,255,0.1)'}`,
+                      background: isDone ? DG : isActive ? 'rgba(0,229,208,0.15)' : 'rgba(255,255,255,0.06)',
+                      border: `1px solid ${isDone ? 'transparent' : isActive ? 'rgba(0,229,208,0.4)' : 'rgba(255,255,255,0.1)'}`,
                       fontSize: 11, fontWeight: 700,
-                      color: isDone ? '#fff' : isActive ? '#FF096C' : 'rgba(255,255,255,0.55)',
+                      color: isDone ? '#fff' : isActive ? '#0a95a8' : 'rgba(255,255,255,0.55)',
                     }}>
                       {isDone ? '✓' : !isUnlocked ? '🔒' : idx + 1}
                     </div>
@@ -659,20 +659,20 @@ export default function CourseDetailPage() {
                       </span>
                       {(video.isPreview || video.duracionSegundos) && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                          {video.isPreview && <span style={{ fontSize: 9, fontWeight: 800, color: '#FF2D95', letterSpacing: '0.05em' }}>GRATIS</span>}
+                          {video.isPreview && <span style={{ fontSize: 9, fontWeight: 800, color: '#1fb8bb', letterSpacing: '0.05em' }}>GRATIS</span>}
                           {video.duracionSegundos ? <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.42)' }}>{fmtTime(video.duracionSegundos)}</span> : null}
                         </div>
                       )}
                       {isUnlocked && !isDone && (video.percent ?? 0) > 0 && (
                         <div style={{ height: 3, borderRadius: 3, background: 'rgba(255,255,255,0.1)', marginTop: 5, overflow: 'hidden' }}>
-                          <div style={{ height: '100%', width: `${video.percent}%`, background: '#FF096C', borderRadius: 3 }} />
+                          <div style={{ height: '100%', width: `${video.percent}%`, background: '#0a95a8', borderRadius: 3 }} />
                         </div>
                       )}
                     </div>
 
                     {/* Play icon si está activo */}
                     {isActive && (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#FF096C" style={{ flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#0a95a8" style={{ flexShrink: 0 }}>
                         <path d="M8 5v14l11-7z" />
                       </svg>
                     )}
@@ -707,7 +707,7 @@ export default function CourseDetailPage() {
               <button onClick={() => setPayTab('CRYPTO')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'CRYPTO' ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'CRYPTO' ? 'rgba(245,166,35,0.4)' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'CRYPTO' ? '#C9A7FF' : '#6B7280' }}>
                 ₮ Cripto (USDT)
               </button>
-              <button onClick={() => setPayTab('MANUAL')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'MANUAL' ? 'rgba(183,53,184,0.1)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'MANUAL' ? '#E4E9F0' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'MANUAL' ? '#B735B8' : '#6B7280' }}>
+              <button onClick={() => setPayTab('MANUAL')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'MANUAL' ? 'rgba(183,53,184,0.1)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'MANUAL' ? '#E4E9F0' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'MANUAL' ? '#147e95' : '#6B7280' }}>
                 📎 Comprobante
               </button>
             </div>
@@ -717,7 +717,7 @@ export default function CourseDetailPage() {
             {payTab === 'MANUAL' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <p style={{ fontSize: 12, color: '#6B7280', lineHeight: 1.5, margin: 0 }}>
-                  Escanea el QR y transfiere <strong style={{ color: '#B735B8' }}>{course.price.toFixed(2)} USDT</strong>, luego sube la captura del comprobante.
+                  Escanea el QR y transfiere <strong style={{ color: '#147e95' }}>{course.price.toFixed(2)} USDT</strong>, luego sube la captura del comprobante.
                 </p>
                 {paymentQrUrl && (
                   <div style={{ textAlign: 'center' }}>
@@ -746,7 +746,7 @@ export default function CourseDetailPage() {
                     Cancelar
                   </button>
                   <button onClick={handleManualEnroll} disabled={submitting}
-                    style={{ flex: 2, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, background: submitting ? '#E4E9F0' : 'linear-gradient(135deg, #B735B8 0%, #FF2D95 100%)', border: 'none', color: '#000', cursor: submitting ? 'not-allowed' : 'pointer' }}>
+                    style={{ flex: 2, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, background: submitting ? '#E4E9F0' : 'linear-gradient(135deg, #147e95 0%, #1fb8bb 100%)', border: 'none', color: '#000', cursor: submitting ? 'not-allowed' : 'pointer' }}>
                     {submitting ? 'Enviando...' : 'Enviar comprobante'}
                   </button>
                 </div>

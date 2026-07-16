@@ -19,7 +19,7 @@ interface TiltCardProps {
 
 export default function TiltCard({
   children,
-  glowColor = 'rgba(210, 3, 221, 0.55)',
+  glowColor = 'rgba(0, 229, 208, 0.55)',
   shineOpacity = 0.35,
   className = '',
   style,

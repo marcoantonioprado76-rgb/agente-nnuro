@@ -181,7 +181,7 @@ export default function NotificationBell() {
           borderRadius: '8px',
           transition: 'color 0.2s',
         }}
-        onMouseEnter={e => (e.currentTarget.style.color = '#D203DD')}
+        onMouseEnter={e => (e.currentTarget.style.color = '#00E5D0')}
         onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
       >
         <i className="fa-solid fa-bell" style={{ fontSize: '16px' }}></i>
@@ -245,7 +245,7 @@ export default function NotificationBell() {
                   onClick={() => handleClickNotification(n)}
                   style={{
                     width: '100%',
-                    background: n.read ? 'transparent' : 'rgba(210,3,221,0.04)',
+                    background: n.read ? 'transparent' : 'rgba(0,229,208,0.04)',
                     border: 'none',
                     borderBottom: '1px solid rgba(255,255,255,0.04)',
                     cursor: 'pointer',
@@ -261,7 +261,7 @@ export default function NotificationBell() {
                     width: '7px',
                     height: '7px',
                     borderRadius: '50%',
-                    background: n.read ? 'rgba(255,255,255,0.15)' : '#D203DD',
+                    background: n.read ? 'rgba(255,255,255,0.15)' : '#00E5D0',
                     flexShrink: 0,
                     marginTop: '4px',
                   }} />

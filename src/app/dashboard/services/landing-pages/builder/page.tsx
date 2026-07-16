@@ -92,7 +92,7 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
               <div className="w-full h-full rounded-2xl overflow-hidden relative"
                 style={{
                   background: '#fff',
-                  border: centered ? '2px solid #B735B8' : '1px solid rgba(17,24,39,0.10)',
+                  border: centered ? '2px solid #147e95' : '1px solid rgba(17,24,39,0.10)',
                   boxShadow: centered ? '0 34px 64px -22px rgba(183,53,184,0.45), 0 12px 28px -14px rgba(17,24,39,0.4)' : '0 16px 34px -18px rgba(17,24,39,0.35)',
                 }}>
                 <div className="flex items-center gap-1.5 px-2.5 h-6 shrink-0" style={{ background: '#20242E' }}>
@@ -114,12 +114,12 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
         {/* Flechas */}
         <button onPointerDown={e => e.stopPropagation()} onClick={() => go(-1)} aria-label="Anterior"
           className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
-          style={{ background: '#fff', border: '1px solid rgba(17,24,39,0.12)', boxShadow: '0 8px 20px -8px rgba(17,24,39,0.3)', color: '#B735B8' }}>
+          style={{ background: '#fff', border: '1px solid rgba(17,24,39,0.12)', boxShadow: '0 8px 20px -8px rgba(17,24,39,0.3)', color: '#147e95' }}>
           <ChevronLeft size={22} />
         </button>
         <button onPointerDown={e => e.stopPropagation()} onClick={() => go(1)} aria-label="Siguiente"
           className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 z-50 w-11 h-11 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
-          style={{ background: '#fff', border: '1px solid rgba(17,24,39,0.12)', boxShadow: '0 8px 20px -8px rgba(17,24,39,0.3)', color: '#B735B8' }}>
+          style={{ background: '#fff', border: '1px solid rgba(17,24,39,0.12)', boxShadow: '0 8px 20px -8px rgba(17,24,39,0.3)', color: '#147e95' }}>
           <ChevronRight size={22} />
         </button>
       </div>
@@ -134,7 +134,7 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
       <div className="flex flex-col items-center gap-3 mt-3">
         <button onClick={() => onPick(activeT.id, activeT.name)} disabled={disabled}
           className="py-2.5 px-7 rounded-xl text-sm font-black text-white transition-all active:scale-[0.98] disabled:opacity-60"
-          style={{ background: 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)', boxShadow: '0 12px 28px -10px rgba(183,53,184,0.55)' }}>
+          style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 12px 28px -10px rgba(183,53,184,0.55)' }}>
           Usar esta plantilla
         </button>
         <div className="flex items-center gap-1.5">
@@ -143,7 +143,7 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
               className="rounded-full transition-all"
               style={{
                 width: i === active ? 20 : 7, height: 7,
-                background: i === active ? 'linear-gradient(90deg,#FF2D95,#B735B8)' : 'rgba(17,24,39,0.18)',
+                background: i === active ? 'linear-gradient(90deg,#1fb8bb,#147e95)' : 'rgba(17,24,39,0.18)',
               }} />
           ))}
         </div>
@@ -241,7 +241,7 @@ export default function BuilderIndexPage() {
     <div className="px-4 sm:px-6 pt-6 max-w-screen-xl mx-auto pb-24 text-app">
       {importing && (
         <div className="fixed inset-0 z-[130] flex flex-col items-center justify-center gap-3 bg-black/75 backdrop-blur-sm">
-          <Loader2 className="animate-spin text-[#B735B8]" size={30} />
+          <Loader2 className="animate-spin text-[#147e95]" size={30} />
           <p className="text-sm text-app/70 font-bold">Importando la página compartida…</p>
         </div>
       )}
@@ -256,16 +256,16 @@ export default function BuilderIndexPage() {
       <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(183,53,184,0.25)' }}>
-            <Sparkles size={20} className="text-[#B735B8]" />
+            <Sparkles size={20} className="text-[#147e95]" />
           </div>
           <div>
-            <h1 className="text-xl font-black uppercase tracking-tighter">Constructor Visual <span className="text-[10px] align-top text-[#B735B8] font-bold">NUEVO</span></h1>
+            <h1 className="text-xl font-black uppercase tracking-tighter">Constructor Visual <span className="text-[10px] align-top text-[#147e95] font-bold">NUEVO</span></h1>
             <p className="text-xs text-app/40">Arrastra y suelta, elige colores, sube imágenes y publica — como Elementor.</p>
           </div>
         </div>
         <button onClick={() => setShowChooser(true)} disabled={creating}
           className="flex items-center gap-2 py-2.5 px-4 rounded-xl text-sm font-black text-white transition-all active:scale-[0.98] disabled:opacity-60"
-          style={{ background: 'linear-gradient(135deg,#233B8F,#B735B8,#FF2D95)' }}>
+          style={{ background: 'linear-gradient(135deg,#233B8F,#147e95,#1fb8bb)' }}>
           {creating ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />} Crear página
         </button>
       </div>
@@ -284,13 +284,13 @@ export default function BuilderIndexPage() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-[#B735B8]" size={24} /></div>
+        <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-[#147e95]" size={24} /></div>
       ) : pages.length === 0 ? (
         <div className="rounded-2xl border border-line/8 bg-surface/[0.02] p-10 text-center">
           <Sparkles size={30} className="text-app/20 mx-auto mb-3" />
           <p className="text-app/60 font-bold">Todavía no tienes páginas</p>
           <p className="text-xs text-app/30 mt-1 mb-4">Crea tu primera página con el constructor visual.</p>
-          <button onClick={() => setShowChooser(true)} disabled={creating} className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-white" style={{ background: 'linear-gradient(135deg,#233B8F,#B735B8)' }}>
+          <button onClick={() => setShowChooser(true)} disabled={creating} className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl text-sm font-bold text-white" style={{ background: 'linear-gradient(135deg,#233B8F,#147e95)' }}>
             {creating ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />} Crear la primera
           </button>
         </div>
@@ -307,7 +307,7 @@ export default function BuilderIndexPage() {
               <p className="text-[11px] text-app/30 -mt-1">/b/{p.slug}</p>
               <div className="flex items-center gap-2 mt-auto">
                 <Link href={`/dashboard/services/landing-pages/builder/${p.id}`}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg,#B735B8,#7c3aed)' }}>
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg,#147e95,#7c3aed)' }}>
                   <Pencil size={12} /> Editar
                 </Link>
                 <button onClick={() => shareLink(p.id)} title="Compartir (crea una copia editable a otro usuario)" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-purple-400"><Share2 size={14} /></button>
@@ -315,7 +315,7 @@ export default function BuilderIndexPage() {
                   <button onClick={() => copyPublicLink(p.slug)} title="Copiar enlace público" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-emerald-400"><Link2 size={14} /></button>
                 )}
                 {p.published && (
-                  <a href={`/b/${p.slug}`} target="_blank" rel="noreferrer" title="Ver publicada" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-[#B735B8]"><ExternalLink size={14} /></a>
+                  <a href={`/b/${p.slug}`} target="_blank" rel="noreferrer" title="Ver publicada" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/50 hover:text-[#147e95]"><ExternalLink size={14} /></a>
                 )}
                 <button onClick={() => remove(p.id)} title="Eliminar" className="p-2 rounded-lg bg-surface/5 border border-line/10 text-app/40 hover:text-red-400"><Trash2 size={14} /></button>
               </div>
@@ -336,7 +336,7 @@ export default function BuilderIndexPage() {
 
             {creating ? (
               <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <Loader2 className="animate-spin text-[#B735B8]" size={28} />
+                <Loader2 className="animate-spin text-[#147e95]" size={28} />
                 <p className="text-sm text-app/60 font-bold">Creando tu página…</p>
               </div>
             ) : (
@@ -345,7 +345,7 @@ export default function BuilderIndexPage() {
                   <button onClick={() => createWith('?ai=1')}
                     className="text-left rounded-2xl p-4 border border-purple-400/30 transition-all hover:border-purple-400/60"
                     style={{ background: 'linear-gradient(135deg,rgba(35,59,143,.1),rgba(192,38,211,.12))' }}>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2.5" style={{ background: 'linear-gradient(135deg,#233B8F,#B735B8,#FF2D95)' }}><Wand2 size={18} className="text-white" /></div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2.5" style={{ background: 'linear-gradient(135deg,#233B8F,#147e95,#1fb8bb)' }}><Wand2 size={18} className="text-white" /></div>
                     <p className="font-black text-sm text-app">Generar con IA</p>
                     <p className="text-[11px] text-app/50 mt-0.5">Describí tu negocio y la IA arma la landing.</p>
                   </button>
@@ -361,7 +361,7 @@ export default function BuilderIndexPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   {TEMPLATE_META.map(t => (
                     <button key={t.id} onClick={() => createWith(`?tpl=${t.id}`, t.name)}
-                      className="text-left rounded-2xl p-3.5 border border-line/10 bg-surface/[0.03] transition-all hover:border-[#B735B8]/40 hover:bg-[#B735B8]/[0.04]">
+                      className="text-left rounded-2xl p-3.5 border border-line/10 bg-surface/[0.03] transition-all hover:border-[#147e95]/40 hover:bg-[#147e95]/[0.04]">
                       <div className="text-2xl mb-1.5">{t.emoji}</div>
                       <p className="font-bold text-[13px] text-app leading-tight">{t.name}</p>
                       <p className="text-[10px] text-app/45 mt-1 leading-snug">{t.desc}</p>

@@ -357,7 +357,7 @@ export default function DiamondAssistantBiblioteca() {
       {/* ── Estados: carga / error / vacío / grilla ───────────────── */}
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-          <Loader2 size={24} className="animate-spin" style={{ color: '#B735B8' }} />
+          <Loader2 size={24} className="animate-spin" style={{ color: '#147e95' }} />
         </div>
       ) : listError ? (
         <div
@@ -387,7 +387,7 @@ export default function DiamondAssistantBiblioteca() {
               background: 'rgba(183,53,184,0.10)',
             }}
           >
-            <FolderOpen size={26} style={{ color: '#B735B8' }} />
+            <FolderOpen size={26} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>
             {filter === 'ALL'
@@ -641,7 +641,7 @@ export default function DiamondAssistantBiblioteca() {
                   <button
                     type="button"
                     onClick={() => setForm((p) => ({ ...p, tags: addTags(p.tags, ['testimonio', 'negocio']) }))}
-                    style={{ fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: `1px solid rgba(183,53,184,0.35)`, background: 'rgba(183,53,184,0.08)', color: '#B735B8', cursor: 'pointer' }}
+                    style={{ fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: `1px solid rgba(183,53,184,0.35)`, background: 'rgba(183,53,184,0.08)', color: '#147e95', cursor: 'pointer' }}
                   >
                     💼 Testimonio de negocio
                   </button>

@@ -27,8 +27,8 @@
     --clr-amber-bg: rgba(251, 191, 36, 0.12);
     --clr-rose: #fb7185;
     --clr-rose-bg: rgba(251, 113, 133, 0.12);
-    --clr-pink: #e855f0;
-    --clr-pink-bg: rgba(232, 85, 240, 0.12);
+    --clr-pink: #4dfae8;
+    --clr-pink-bg: rgba(0, 229, 208, 0.12);
 
     --clr-text: #eef0fb;
     --clr-muted: #7c82a8;
@@ -56,7 +56,7 @@
 
     /* shadows */
     --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.50);
-    --shadow-glow: 0 0 24px rgba(210, 3, 221, 0.30);
+    --shadow-glow: 0 0 24px rgba(0, 229, 208, 0.30);
 
     /* transitions */
     --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -190,7 +190,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(210, 3, 221, 0.10) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 229, 208, 0.10) 0%, transparent 70%);
     animation: pulse-aura 4s ease-in-out infinite alternate;
 }
 
@@ -201,15 +201,15 @@
     border-radius: 50%;
     background: conic-gradient(from 0deg,
         transparent 10%,
-        #D203DD 30%,
+        #00E5D0 30%,
         #0D1E79 50%,
         #7b1fa2 70%,
-        #e855f0 90%,
+        #4dfae8 90%,
         #ffffff 100%);
     -webkit-mask: radial-gradient(transparent 47px, #000 48px);
     mask: radial-gradient(transparent 47px, #000 48px);
     animation: spin-prism 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-    filter: drop-shadow(0 0 15px rgba(210, 3, 221, 0.45));
+    filter: drop-shadow(0 0 15px rgba(0, 229, 208, 0.45));
 }
 
 .prism-echo {
@@ -217,7 +217,7 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 40%, rgba(210, 3, 221, 0.15) 80%, rgba(210, 3, 221, 0.20) 100%);
+    background: conic-gradient(from 0deg, transparent 40%, rgba(0, 229, 208, 0.15) 80%, rgba(0, 229, 208, 0.20) 100%);
     -webkit-mask: radial-gradient(transparent 47px, #000 48px);
     mask: radial-gradient(transparent 47px, #000 48px);
     animation: spin-prism 2s linear infinite reverse;
@@ -355,12 +355,12 @@
 }
 
 .card--accent {
-    background: linear-gradient(140deg, rgba(210, 3, 221, 0.18) 0%, var(--clr-card) 55%);
+    background: linear-gradient(140deg, rgba(0, 229, 208, 0.18) 0%, var(--clr-card) 55%);
     border-color: var(--clr-accent-bd);
 }
 
 .card--accent:hover {
-    border-color: rgba(210, 3, 221, 0.45);
+    border-color: rgba(0, 229, 208, 0.45);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -443,7 +443,7 @@
     position: absolute;
     inset: -3px;
     border-radius: 50%;
-    background: conic-gradient(from 0deg, var(--clr-accent), var(--clr-accent-lt), #D203DD, var(--clr-accent));
+    background: conic-gradient(from 0deg, var(--clr-accent), var(--clr-accent-lt), #00E5D0, var(--clr-accent));
     animation: spin 6s linear infinite;
 }
 
@@ -545,11 +545,11 @@
     left: 20px;
     right: 20px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(210, 3, 221, 0.40), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0, 229, 208, 0.40), transparent);
 }
 
 .metric--hero {
-    background: linear-gradient(130deg, rgba(210, 3, 221, 0.20) 0%, rgba(210, 3, 221, 0.06) 100%);
+    background: linear-gradient(130deg, rgba(0, 229, 208, 0.20) 0%, rgba(0, 229, 208, 0.06) 100%);
     border-color: var(--clr-accent-bd);
 }
 
@@ -1241,7 +1241,7 @@
 .period-btn--active {
     background: var(--clr-accent);
     color: #fff;
-    box-shadow: 0 2px 14px rgba(210, 3, 221, 0.45);
+    box-shadow: 0 2px 14px rgba(0, 229, 208, 0.45);
 }
 
 /* desktop grid system */
@@ -1337,7 +1337,7 @@
     font-size: 0.875rem;
     font-weight: 700;
     border: none;
-    box-shadow: 0 4px 20px rgba(210, 3, 221, 0.45);
+    box-shadow: 0 4px 20px rgba(0, 229, 208, 0.45);
     transition: all var(--dur) var(--ease);
     text-decoration: none;
 }
@@ -1345,7 +1345,7 @@
 .renew-btn:hover {
     background: #a800b5;
     transform: translateY(-2px);
-    box-shadow: 0 7px 28px rgba(210, 3, 221, 0.55);
+    box-shadow: 0 7px 28px rgba(0, 229, 208, 0.55);
 }
 
 /* desktop metric card */
@@ -1594,7 +1594,7 @@
     top: 0; left: 24px; right: 24px;
     height: 3px;
     border-radius: 999px;
-    background: linear-gradient(90deg, #FF2D95, #B735B8, #233B8F);
+    background: linear-gradient(90deg, #1fb8bb, #147e95, #12303a);
 }
 
 /* Card oscura premium */
@@ -1709,7 +1709,7 @@
 
 /* Barra de progreso */
 .dm-progress { height: 6px; background: #E5E7EB; border-radius: 999px; overflow: hidden; }
-.dm-progress > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #00E5D0 0%, #B735B8 55%, #233B8F 100%); }
+.dm-progress > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #00E5D0 0%, #147e95 55%, #233B8F 100%); }
 
 /* Tabs */
 .dm-tabs { display: inline-flex; gap: 4px; background: rgba(255,255,255,0.75); border: 1px solid #E4E9F0; border-radius: 18px; padding: 6px; }

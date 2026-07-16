@@ -149,7 +149,7 @@ export default function AdminBotTemplatesPage() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest">Plantillas AI</h1>
-        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #D203DD, #FF2DF7, transparent)' }} />
+        <div className="h-px w-20 mt-2 rounded-full" style={{ background: 'linear-gradient(90deg, transparent, #00E5D0, #FF2DF7, transparent)' }} />
         <p className="text-xs text-[#111827]/30 mt-1">Plantillas de prompts que los usuarios pueden aplicar a sus agentes AI</p>
       </div>
 
@@ -158,7 +158,7 @@ export default function AdminBotTemplatesPage() {
         <button onClick={fetchTemplates} style={{ padding: '7px 10px', borderRadius: 9, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', cursor: 'pointer' }}>
           <RefreshCw size={13} className="text-[#111827]/40" />
         </button>
-        <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 9, background: 'linear-gradient(135deg, #D203DD, #00FF88)', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13, color: '#000' }}>
+        <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 9, background: 'linear-gradient(135deg, #00E5D0, #00FF88)', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13, color: '#000' }}>
           <Plus size={14} /> Nueva plantilla
         </button>
       </div>
@@ -194,7 +194,7 @@ export default function AdminBotTemplatesPage() {
                 </p>
               </div>
               <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                <button onClick={() => openEdit(t)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(210,3,221,0.07)', border: '1px solid rgba(210,3,221,0.15)', cursor: 'pointer', color: '#D203DD' }}>
+                <button onClick={() => openEdit(t)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(0,229,208,0.07)', border: '1px solid rgba(0,229,208,0.15)', cursor: 'pointer', color: '#00E5D0' }}>
                   <Edit2 size={13} />
                 </button>
                 <button onClick={() => setDeleteConfirm(t)} style={{ padding: '6px 8px', borderRadius: 7, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer', color: '#ef4444' }}>
@@ -271,7 +271,7 @@ export default function AdminBotTemplatesPage() {
 
               <button onClick={save} disabled={saving}
                 style={{ padding: '12px 0', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer', border: 'none',
-                  background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #D203DD, #00FF88)', color: saving ? '#6B7280' : '#000' }}>
+                  background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #00E5D0, #00FF88)', color: saving ? '#6B7280' : '#000' }}>
                 {saving ? 'Guardando...' : (editing ? 'Guardar cambios' : 'Crear plantilla')}
               </button>
             </div>

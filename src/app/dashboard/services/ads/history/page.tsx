@@ -132,12 +132,12 @@ export default function HistoryPage() {
                 </div>
                 <div className="flex items-center gap-2">
                     <Link href="/dashboard/services/ads/wizard"
-                        className="hidden sm:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-[#B735B8] text-white hover:bg-[#B735B8] transition-all">
+                        className="hidden sm:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-[#147e95] text-white hover:bg-[#147e95] transition-all">
                         <Plus size={13} /> Nueva
                     </Link>
                     <button onClick={() => fetchCampaigns(true)}
                         className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all shrink-0">
-                        <RefreshCw size={14} className={refreshing ? 'animate-spin text-[#B735B8]' : ''} />
+                        <RefreshCw size={14} className={refreshing ? 'animate-spin text-[#147e95]' : ''} />
                     </button>
                 </div>
             </div>
@@ -149,7 +149,7 @@ export default function HistoryPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                     {[
                         { icon: <Eye size={14} />, label: 'Impresiones', value: fmt(totalImpressions), color: 'text-[#4C97D8]' },
-                        { icon: <MousePointerClick size={14} />, label: 'Clics', value: fmt(totalClicks), color: 'text-[#B735B8]' },
+                        { icon: <MousePointerClick size={14} />, label: 'Clics', value: fmt(totalClicks), color: 'text-[#147e95]' },
                         { icon: <DollarSign size={14} />, label: 'Gasto', value: `$${totalSpend.toFixed(2)}`, color: 'text-[#22C55E]' },
                         { icon: <Users size={14} />, label: 'Alcance', value: fmt(totalReach), color: 'text-[#FB923C]' },
                     ].map(({ icon, label, value, color }) => (
@@ -187,7 +187,7 @@ export default function HistoryPage() {
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-24 gap-3">
-                    <Loader2 className="animate-spin text-[#B735B8]" size={28} />
+                    <Loader2 className="animate-spin text-[#147e95]" size={28} />
                     <p className="text-white/30 text-sm">Cargando campañas...</p>
                 </div>
             ) : filtered.length === 0 ? (
@@ -196,7 +196,7 @@ export default function HistoryPage() {
                     <p className="text-white/30 text-sm font-bold">Sin campañas</p>
                     <p className="text-white/20 text-xs mt-1 mb-6">No hay campañas con este filtro</p>
                     <Link href="/dashboard/services/ads/wizard"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#B735B8] text-white text-sm font-bold rounded-xl hover:bg-[#B735B8] transition-all">
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#147e95] text-white text-sm font-bold rounded-xl hover:bg-[#147e95] transition-all">
                         <Sparkles size={14} /> Crear primera campaña
                     </Link>
                 </div>
@@ -262,7 +262,7 @@ export default function HistoryPage() {
                                                 <div className="grid grid-cols-4 gap-2">
                                                     {[
                                                         { label: 'Impresiones', value: fmt(campaignMetrics!.impressions), color: 'text-[#4C97D8]' },
-                                                        { label: 'Clics', value: fmt(campaignMetrics!.clicks), color: 'text-[#B735B8]' },
+                                                        { label: 'Clics', value: fmt(campaignMetrics!.clicks), color: 'text-[#147e95]' },
                                                         { label: 'Gasto', value: `$${campaignMetrics!.spend.toFixed(2)}`, color: 'text-[#22C55E]' },
                                                         { label: 'Alcance', value: fmt(campaignMetrics!.reach), color: 'text-[#FB923C]' },
                                                     ].map(({ label, value, color }) => (
@@ -322,7 +322,7 @@ export default function HistoryPage() {
                                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
                                     {campaign.status === 'READY' && (
                                         <Link href={`/dashboard/services/ads/preview/${campaign.id}`}
-                                            className="flex-1 sm:flex-none text-center text-xs font-bold px-4 py-2 rounded-xl bg-[#B735B8] text-white hover:bg-[#B735B8] transition-all">
+                                            className="flex-1 sm:flex-none text-center text-xs font-bold px-4 py-2 rounded-xl bg-[#147e95] text-white hover:bg-[#147e95] transition-all">
                                             Publicar →
                                         </Link>
                                     )}

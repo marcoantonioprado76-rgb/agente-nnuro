@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 // ── Paleta de marca ───────────────────────────────────────────────────────────
-const BRAND_GRADIENT = 'linear-gradient(135deg,#FF2D95,#B735B8,#233B8F)'
+const BRAND_GRADIENT = 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)'
 
 // ── Sub-navegación del módulo Reto 90D ────────────────────────────────────────
 const NAV = [
@@ -145,7 +145,7 @@ export default function RetoReportesPage() {
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
           <h1 className="text-xl font-bold text-[#111827] uppercase tracking-widest flex items-center gap-2">
-            <BarChart3 size={18} className="text-[#B735B8]" /> Reto 90D — Reportes
+            <BarChart3 size={18} className="text-[#147e95]" /> Reto 90D — Reportes
           </h1>
           <div className="h-px w-16 mt-2 rounded-full" style={{ background: BRAND_GRADIENT }} />
         </div>
@@ -206,7 +206,7 @@ export default function RetoReportesPage() {
         {/* Estados */}
         {loading ? (
           <div className="flex justify-center py-16">
-            <Loader2 size={22} className="animate-spin text-[#B735B8]" />
+            <Loader2 size={22} className="animate-spin text-[#147e95]" />
           </div>
         ) : error ? (
           <div
@@ -254,7 +254,7 @@ export default function RetoReportesPage() {
             {/* Ranking */}
             <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 16, overflow: 'hidden' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '16px 20px', borderBottom: '1px solid #E4E9F0' }}>
-                <Trophy size={15} className="text-[#B735B8]" />
+                <Trophy size={15} className="text-[#147e95]" />
                 <p style={{ fontSize: 14, fontWeight: 800, color: '#111827', margin: 0 }}>Ranking del día</p>
                 <span style={{ marginLeft: 'auto', fontSize: 12, color: '#6B7280' }}>
                   {data.ranking.length} participante{data.ranking.length !== 1 ? 's' : ''}
@@ -285,7 +285,7 @@ export default function RetoReportesPage() {
                             <div style={{ fontSize: 11, color: '#9CA3AF' }}>{row.phone}</div>
                           </td>
                           <td style={{ padding: '11px 16px', textAlign: 'right', color: '#111827' }}>{row.completed}</td>
-                          <td style={{ padding: '11px 16px', textAlign: 'right', fontWeight: 800, color: '#B735B8' }}>{row.points}</td>
+                          <td style={{ padding: '11px 16px', textAlign: 'right', fontWeight: 800, color: '#147e95' }}>{row.points}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 
 type Tab = 'courses' | 'podcasts' | 'store' | 'recursos' | 'flyers'
 
@@ -49,7 +49,7 @@ export default function ContenidoEmpresaPage() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: 9, alignItems: 'center', background: 'rgba(35,59,143,0.06)', border: '1px solid rgba(35,59,143,0.15)', borderRadius: 12, padding: '11px 15px', marginBottom: 18, fontSize: 13, color: '#33405A' }}>
-          <i className="fa-solid fa-lock" style={{ color: '#B735B8' }} />
+          <i className="fa-solid fa-lock" style={{ color: '#147e95' }} />
           Todo lo que cargues acá es <strong>&nbsp;privado de tu empresa</strong>: solo tus usuarios lo verán.
         </div>
 
@@ -128,7 +128,7 @@ function CoursesTab() {
                 </div>
                 <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
                   <input style={{ ...inp, flex: 1 }} placeholder="https://youtube.com/… o subí un video →" value={v.youtubeUrl} onChange={e => upd({ youtubeUrl: e.target.value })} />
-                  <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#B735B8' }} title="Subir archivo de video (mp4)">
+                  <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#147e95' }} title="Subir archivo de video (mp4)">
                     {upVideo === i ? <i className="fa-solid fa-spinner fa-spin" /> : <i className="fa-solid fa-film" />}
                     <input type="file" accept="video/mp4,video/quicktime,video/*" style={{ display: 'none' }} onChange={async e => { const f = e.target.files?.[0]; if (!f) return; setUpVideo(i); const u = await uploadFile(f); setUpVideo(-1); if (u) upd({ videoUrl: u }) }} />
                   </label>
@@ -149,7 +149,7 @@ function CoursesTab() {
               </div>
             )
           })}
-          <button onClick={() => setModal({ ...modal, data: { ...modal.data, videos: [...modal.data.videos, { title: '', youtubeUrl: '' }] } })} style={{ fontSize: 12, color: '#B735B8', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>+ Agregar video</button>
+          <button onClick={() => setModal({ ...modal, data: { ...modal.data, videos: [...modal.data.videos, { title: '', youtubeUrl: '' }] } })} style={{ fontSize: 12, color: '#147e95', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>+ Agregar video</button>
           {err && <p style={errP}>{err}</p>}
           <Actions onCancel={() => setModal(null)} onSave={save} busy={busy} />
         </Modal>
@@ -206,7 +206,7 @@ function PodcastsTab() {
           <Field label="Audio / embed (YouTube, Spotify, o subí un mp3)">
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <input style={{ ...inp, flex: 1 }} value={modal.data.embedUrl} onChange={e => setModal({ ...modal, data: { ...modal.data, embedUrl: e.target.value } })} placeholder="https://… o subí →" />
-              <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#B735B8' }}>
+              <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#147e95' }}>
                 {upAudio ? <i className="fa-solid fa-spinner fa-spin" /> : <i className="fa-solid fa-music" />}
                 <input type="file" accept="audio/*,.mp3,.wav,.m4a" style={{ display: 'none' }} onChange={async e => { const f = e.target.files?.[0]; if (!f) return; setUpAudio(true); const u = await uploadFile(f); setUpAudio(false); if (u) setModal(m => m ? { ...m, data: { ...m.data, embedUrl: u } } : m) }} />
               </label>
@@ -339,7 +339,7 @@ function RecursosTab() {
           <Field label="Archivo PDF">
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <input style={{ ...inp, flex: 1 }} value={modal.data.archivoUrl} onChange={e => setModal({ ...modal, data: { ...modal.data, archivoUrl: e.target.value } })} placeholder="URL del PDF o subí →" />
-              <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#B735B8' }}>
+              <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#147e95' }}>
                 {upPdf ? <i className="fa-solid fa-spinner fa-spin" /> : <i className="fa-solid fa-upload" />}
                 <input type="file" accept="application/pdf,.pdf" style={{ display: 'none' }} onChange={async e => { const f = e.target.files?.[0]; if (!f) return; setUpPdf(true); const u = await uploadFile(f); setUpPdf(false); if (u) setModal(m => m ? { ...m, data: { ...m.data, archivoUrl: u } } : m) }} />
               </label>
@@ -426,7 +426,7 @@ function CoverField({ value, onChange, label = 'Portada' }: { value: string; onC
     <Field label={label}>
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <input style={{ ...inp, flex: 1 }} value={value} onChange={e => onChange(e.target.value)} placeholder="URL o subí una imagen →" />
-        <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#B735B8' }}>
+        <label style={{ ...iconBtn, width: 'auto', padding: '0 12px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#147e95' }}>
           {up ? <i className="fa-solid fa-spinner fa-spin" /> : <i className="fa-solid fa-upload" />}
           <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const f = e.target.files?.[0]; if (!f) return; setUp(true); const u = await uploadFile(f); setUp(false); if (u) onChange(u) }} />
         </label>
@@ -446,14 +446,14 @@ function ImagesField({ images, onChange }: { images: string[]; onChange: (v: str
           <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {img ? <img src={img} alt="" style={{ width: 38, height: 38, borderRadius: 8, objectFit: 'cover' }} /> : <div style={{ width: 38, height: 38, borderRadius: 8, background: '#F1F3F8', display: 'grid', placeItems: 'center', color: '#C4CCD8' }}><i className="fa-solid fa-image" /></div>}
             <input style={{ ...inp, flex: 1 }} value={img} onChange={e => set(i, e.target.value)} placeholder="URL o subí →" />
-            <label style={{ ...iconBtn, width: 'auto', padding: '0 11px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#B735B8' }}>
+            <label style={{ ...iconBtn, width: 'auto', padding: '0 11px', display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#147e95' }}>
               {up === i ? <i className="fa-solid fa-spinner fa-spin" /> : <i className="fa-solid fa-upload" />}
               <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => { const f = e.target.files?.[0]; if (!f) return; setUp(i); const u = await uploadFile(f); setUp(-1); if (u) set(i, u) }} />
             </label>
             <button onClick={() => { const a = list.filter((_, ix) => ix !== i); onChange(a.length ? a : ['']) }} style={{ ...iconBtn, color: '#ef4444' }}><i className="fa-solid fa-xmark" /></button>
           </div>
         ))}
-        <button onClick={() => onChange([...list, ''])} style={{ fontSize: 12, color: '#B735B8', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, textAlign: 'left' }}>+ Agregar imagen</button>
+        <button onClick={() => onChange([...list, ''])} style={{ fontSize: 12, color: '#147e95', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, textAlign: 'left' }}>+ Agregar imagen</button>
       </div>
     </Field>
   )
@@ -471,7 +471,7 @@ function VariantsField({ variants, onChange }: { variants: { name: string; optio
             <button onClick={() => onChange(variants.filter((_, ix) => ix !== i))} style={{ ...iconBtn, color: '#ef4444' }}><i className="fa-solid fa-xmark" /></button>
           </div>
         ))}
-        <button onClick={() => onChange([...variants, { name: '', options: '' }])} style={{ fontSize: 12, color: '#B735B8', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, textAlign: 'left' }}>+ Agregar variante</button>
+        <button onClick={() => onChange([...variants, { name: '', options: '' }])} style={{ fontSize: 12, color: '#147e95', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, textAlign: 'left' }}>+ Agregar variante</button>
       </div>
     </Field>
   )

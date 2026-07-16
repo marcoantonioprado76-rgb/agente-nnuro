@@ -322,8 +322,8 @@ export default function CountryMapSelector({ selected, onChange }: Props) {
                                             onMouseEnter={() => setTooltip(info?.name || null)}
                                             onMouseLeave={() => setTooltip(null)}
                                             style={{
-                                                default: { fill: isSel ? '#B735B8' : '#0B1B2B', stroke: '#050B14', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
-                                                hover: { fill: isSel ? '#B735B8' : '#102A55', stroke: '#050B14', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
+                                                default: { fill: isSel ? '#147e95' : '#0B1B2B', stroke: '#050B14', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
+                                                hover: { fill: isSel ? '#147e95' : '#102A55', stroke: '#050B14', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
                                                 pressed: { fill: '#5b21b6', outline: 'none' }
                                             }}
                                         />
@@ -354,7 +354,7 @@ export default function CountryMapSelector({ selected, onChange }: Props) {
                                     {/* Visible dot */}
                                     <circle
                                         r={dotR}
-                                        fill={isSel ? '#4C97D8' : countrySelected ? '#B735B8' : '#64748b'}
+                                        fill={isSel ? '#4C97D8' : countrySelected ? '#147e95' : '#64748b'}
                                         stroke={isSel ? '#4C97D8' : '#081624'}
                                         strokeWidth={isSel ? 1.5 : 0.8}
                                         style={{ pointerEvents: 'none', transition: 'all 0.15s' }}
@@ -415,7 +415,7 @@ export default function CountryMapSelector({ selected, onChange }: Props) {
             {selected.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
                     {selectedCountries.map(code => (
-                        <span key={code} className="flex items-center gap-1 text-xs bg-[#B735B8]/10 border border-white/10 text-[#B735B8] px-2.5 py-1 rounded-full">
+                        <span key={code} className="flex items-center gap-1 text-xs bg-[#147e95]/10 border border-white/10 text-[#147e95] px-2.5 py-1 rounded-full">
                             {CODE_TO_NAME[code] || code}
                             <button onClick={() => toggle(code)} className="hover:text-[#F87171] ml-0.5"><X size={9} /></button>
                         </span>

@@ -139,7 +139,7 @@ export default function DiamondAssistantHistorial() {
       <div style={{ background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 16, overflow: 'hidden', boxShadow: '0 1px 3px rgba(17,24,39,0.04)' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '64px 0' }}>
-            <Loader2 size={22} className="animate-spin" style={{ color: '#B735B8' }} />
+            <Loader2 size={22} className="animate-spin" style={{ color: '#147e95' }} />
           </div>
         ) : error ? (
           <div style={{ textAlign: 'center', padding: '56px 16px' }}>
@@ -155,7 +155,7 @@ export default function DiamondAssistantHistorial() {
         ) : logs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '56px 16px' }}>
             <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-              <Inbox size={24} style={{ color: '#B735B8' }} />
+              <Inbox size={24} style={{ color: '#147e95' }} />
             </div>
             <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>
               {statusFilter ? 'Sin resultados' : 'Aún no hay mensajes'}
@@ -188,14 +188,14 @@ export default function DiamondAssistantHistorial() {
                       <td style={{ ...tdStyle, color: MUTED, whiteSpace: 'nowrap' }}>{fmtDateTime(log.createdAt)}</td>
                       <td style={{ ...tdStyle, fontFamily: 'ui-monospace, monospace', fontSize: 12.5, whiteSpace: 'nowrap' }}>{log.contactPhone}</td>
                       <td style={tdStyle}>
-                        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#B735B8', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)', whiteSpace: 'nowrap' }}>
                           {MSG_TYPE_LABEL[log.messageType] ?? log.messageType}
                         </span>
                       </td>
                       <td style={{ ...tdStyle, textAlign: 'center' }}>
                         <span
                           title={isOut ? 'Saliente' : 'Entrante'}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, fontWeight: 700, color: isOut ? '#233B8F' : '#B735B8' }}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, fontWeight: 700, color: isOut ? '#233B8F' : '#147e95' }}
                         >
                           {isOut ? <ArrowUpRight size={14} /> : <ArrowDownLeft size={14} />}
                           {isOut ? 'OUT' : 'IN'}

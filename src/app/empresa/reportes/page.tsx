@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const DG = 'linear-gradient(135deg,#FF2D95 0%,#B735B8 48%,#233B8F 100%)'
+const DG = 'linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%)'
 
 interface Reporte {
   empresa: { name: string }
@@ -88,7 +88,7 @@ function Stat({ label, value, icon, color, gradient }: { label: string; value: n
   return (
     <div style={{ background: '#fff', border: '1px solid #E4E9F0', borderRadius: 14, padding: '16px 18px', boxShadow: '0 6px 18px -14px rgba(11,27,43,0.35)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <i className={`fa-solid ${icon}`} style={{ color: color || '#B735B8', fontSize: 14 }} />
+        <i className={`fa-solid ${icon}`} style={{ color: color || '#147e95', fontSize: 14 }} />
         <span style={{ fontSize: 12, fontWeight: 700, color: '#9AA3B2', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
       </div>
       <p style={{ fontSize: 26, fontWeight: 900, ...(gradient ? { background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: color || '#0B1B2B' }) }}>{value}</p>
