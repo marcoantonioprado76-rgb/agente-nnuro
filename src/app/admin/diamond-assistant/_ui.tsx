@@ -22,8 +22,8 @@ export interface Accent {
   color: string
 }
 export const ACCENTS: Accent[] = [
-  { tint: 'rgba(255,45,149,0.10)', color: '#1fb8bb' },
-  { tint: 'rgba(183,53,184,0.10)', color: '#147e95' },
+  { tint: 'rgba(0,229,208,0.10)', color: '#1fb8bb' },
+  { tint: 'rgba(0,229,208,0.10)', color: '#147e95' },
   { tint: 'rgba(35,59,143,0.10)', color: '#233B8F' },
   { tint: 'rgba(22,163,74,0.10)', color: '#16A34A' },
 ]
@@ -45,7 +45,7 @@ export function PageHeader({
     <>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND, boxShadow: '0 10px 24px rgba(255,45,149,0.28)' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND, boxShadow: '0 10px 24px rgba(0,229,208,0.28)' }}>
             <Icon size={19} className="text-white" />
           </div>
           <div>
@@ -63,8 +63,8 @@ export function PageHeader({
 // ── Aviso "En construcción — Fase X" ───────────────────────────────
 export function ConstructionBanner({ phase, children }: { phase: string; children: ReactNode }) {
   return (
-    <div style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255,45,149,0.06), rgba(35,59,143,0.06))', display: 'flex', alignItems: 'center', gap: 13, marginBottom: 18 }}>
-      <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: 'rgba(183,53,184,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🔨</div>
+    <div style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(35,59,143,0.06))', display: 'flex', alignItems: 'center', gap: 13, marginBottom: 18 }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: 'rgba(0,229,208,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🔨</div>
       <div style={{ minWidth: 0 }}>
         <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>En construcción — {phase}</p>
         <p style={{ fontSize: 12.5, color: MUTED, margin: '3px 0 0', lineHeight: 1.5 }}>{children}</p>
@@ -134,7 +134,7 @@ export function PlaceholderButton({ icon: Icon, children }: { icon?: LucideIcon;
   return (
     <span
       title="Disponible pronto"
-      style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#fff', background: BRAND, opacity: 0.55, cursor: 'not-allowed', boxShadow: '0 8px 20px rgba(183,53,184,0.18)', userSelect: 'none' }}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#fff', background: BRAND, opacity: 0.55, cursor: 'not-allowed', boxShadow: '0 8px 20px rgba(0,229,208,0.18)', userSelect: 'none' }}
     >
       {Icon ? <Icon size={15} /> : null}
       {children}

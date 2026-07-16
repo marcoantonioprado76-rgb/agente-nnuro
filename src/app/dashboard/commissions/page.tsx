@@ -106,15 +106,15 @@ function CommissionsContent() {
             border: '1px solid rgba(255,255,255,0.1)',
           }}>
           <div className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, #C9A7FF50, transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, #4dfae850, transparent)' }} />
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center"
               style={{ background: 'rgba(201,167,255,0.12)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <Gift className="w-4 h-4" style={{ color: '#C9A7FF' }} />
+              <Gift className="w-4 h-4" style={{ color: '#4dfae8' }} />
             </div>
             <span className="text-xs font-light text-white/75">Bono de Patrocinio</span>
           </div>
-          <p className="text-2xl font-black tracking-tighter" style={{ color: '#C9A7FF' }}>${sponsorTotal.toFixed(2)}</p>
+          <p className="text-2xl font-black tracking-tighter" style={{ color: '#4dfae8' }}>${sponsorTotal.toFixed(2)}</p>
           <p className="text-[9px] font-black uppercase tracking-widest mt-1 text-white/40">20% por activación de plan</p>
         </div>
 
@@ -125,15 +125,15 @@ function CommissionsContent() {
             border: '1px solid rgba(255,255,255,0.1)',
           }}>
           <div className="absolute top-0 left-0 right-0 h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, #C9A7FF50, transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, #4dfae850, transparent)' }} />
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center"
               style={{ background: 'rgba(201,167,255,0.12)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <Users className="w-4 h-4" style={{ color: '#C9A7FF' }} />
+              <Users className="w-4 h-4" style={{ color: '#4dfae8' }} />
             </div>
             <span className="text-xs font-light text-white/75">Bono Directo</span>
           </div>
-          <p className="text-2xl font-black tracking-tighter" style={{ color: '#C9A7FF' }}>${directTotal.toFixed(2)}</p>
+          <p className="text-2xl font-black tracking-tighter" style={{ color: '#4dfae8' }}>${directTotal.toFixed(2)}</p>
           <p className="text-[9px] font-black uppercase tracking-widest mt-1 text-white/40">Por referido registrado</p>
         </div>
       </div>
@@ -142,7 +142,7 @@ function CommissionsContent() {
       <div className="relative rounded-2xl overflow-hidden"
         style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
         <div className="absolute top-0 left-0 right-0 h-px"
-          style={{ background: 'linear-gradient(90deg, transparent, #00FF8840, #C9A7FF30, transparent)' }} />
+          style={{ background: 'linear-gradient(90deg, transparent, #00FF8840, #4dfae830, transparent)' }} />
 
         <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <h3 className="text-xs font-black uppercase tracking-widest text-white/55">
@@ -164,7 +164,7 @@ function CommissionsContent() {
           <div>
             {commissions.map((c) => {
               const isSponsor = c.type === 'SPONSORSHIP_BONUS'
-              const color = '#C9A7FF'
+              const color = '#4dfae8'
               const label = isSponsor ? 'Bono de Patrocinio' : 'Bono Directo'
               const Icon = isSponsor ? Gift : Users
               return (

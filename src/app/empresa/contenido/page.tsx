@@ -397,7 +397,7 @@ function ListHeader({ title, onCreate }: { title: string; onCreate: () => void }
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
       <h2 style={{ fontSize: 16, fontWeight: 800 }}>{title}</h2>
-      <button onClick={onCreate} style={{ background: DG, color: '#fff', border: 'none', borderRadius: 11, padding: '10px 18px', fontWeight: 800, fontSize: 13, cursor: 'pointer', boxShadow: '0 8px 22px -10px rgba(183,53,184,0.7)' }}>
+      <button onClick={onCreate} style={{ background: DG, color: '#fff', border: 'none', borderRadius: 11, padding: '10px 18px', fontWeight: 800, fontSize: 13, cursor: 'pointer', boxShadow: '0 8px 22px -10px rgba(0,229,208,0.7)' }}>
         <i className="fa-solid fa-plus" style={{ marginRight: 7 }} />Crear
       </button>
     </div>
@@ -516,4 +516,4 @@ const inp: React.CSSProperties = { width: '100%', padding: '10px 12px', borderRa
 const iconBtn: React.CSSProperties = { width: 34, height: 34, borderRadius: 9, border: '1px solid #E4E9F0', background: '#fff', color: '#5B6472', cursor: 'pointer', fontSize: 13 }
 const errP: React.CSSProperties = { color: '#dc2626', fontSize: 12, marginTop: 8 }
 const btnGhost: React.CSSProperties = { padding: '10px 16px', borderRadius: 10, border: '1px solid #E4E9F0', background: '#fff', color: '#5B6472', fontWeight: 700, cursor: 'pointer', fontSize: 13 }
-const btnPrimary: React.CSSProperties = { padding: '10px 18px', borderRadius: 10, border: 'none', background: DG, color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 13, boxShadow: '0 8px 22px -10px rgba(183,53,184,0.7)' }
+const btnPrimary: React.CSSProperties = { padding: '10px 18px', borderRadius: 10, border: 'none', background: DG, color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 13, boxShadow: '0 8px 22px -10px rgba(0,229,208,0.7)' }

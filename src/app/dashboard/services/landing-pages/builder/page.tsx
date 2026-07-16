@@ -66,7 +66,7 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
         {/* glow detrás de la tarjeta central */}
         <div className="absolute left-1/2 top-1/2 pointer-events-none" aria-hidden
           style={{ width: 640, height: 460, marginLeft: -320, marginTop: -240, borderRadius: '50%', zIndex: 0,
-            background: 'radial-gradient(ellipse, rgba(183,53,184,0.16), rgba(255,45,149,0.09) 45%, transparent 70%)', filter: 'blur(24px)' }} />
+            background: 'radial-gradient(ellipse, rgba(0,229,208,0.16), rgba(0,229,208,0.09) 45%, transparent 70%)', filter: 'blur(24px)' }} />
         {BUILDER_TEMPLATES.map((t, i) => {
           let off = i - active
           if (off > n / 2) off -= n
@@ -93,7 +93,7 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
                 style={{
                   background: '#fff',
                   border: centered ? '2px solid #147e95' : '1px solid rgba(17,24,39,0.10)',
-                  boxShadow: centered ? '0 34px 64px -22px rgba(183,53,184,0.45), 0 12px 28px -14px rgba(17,24,39,0.4)' : '0 16px 34px -18px rgba(17,24,39,0.35)',
+                  boxShadow: centered ? '0 34px 64px -22px rgba(0,229,208,0.45), 0 12px 28px -14px rgba(17,24,39,0.4)' : '0 16px 34px -18px rgba(17,24,39,0.35)',
                 }}>
                 <div className="flex items-center gap-1.5 px-2.5 h-6 shrink-0" style={{ background: '#20242E' }}>
                   <span className="w-2 h-2 rounded-full" style={{ background: '#F45B4B' }} />
@@ -134,7 +134,7 @@ function TemplateCarousel({ onPick, disabled }: { onPick: (id: string, name: str
       <div className="flex flex-col items-center gap-3 mt-3">
         <button onClick={() => onPick(activeT.id, activeT.name)} disabled={disabled}
           className="py-2.5 px-7 rounded-xl text-sm font-black text-white transition-all active:scale-[0.98] disabled:opacity-60"
-          style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 12px 28px -10px rgba(183,53,184,0.55)' }}>
+          style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 12px 28px -10px rgba(0,229,208,0.55)' }}>
           Usar esta plantilla
         </button>
         <div className="flex items-center gap-1.5">
@@ -255,7 +255,7 @@ export default function BuilderIndexPage() {
 
       <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(183,53,184,0.25)' }}>
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.25)' }}>
             <Sparkles size={20} className="text-[#147e95]" />
           </div>
           <div>

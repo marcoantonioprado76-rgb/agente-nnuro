@@ -109,7 +109,7 @@ function SubNav() {
               border: active ? 'none' : `1px solid ${BORDER}`,
               background: active ? BRAND_GRADIENT : '#fff',
               color: active ? '#fff' : MUTED,
-              boxShadow: active ? '0 8px 20px rgba(183,53,184,0.22)' : 'none',
+              boxShadow: active ? '0 8px 20px rgba(0,229,208,0.22)' : 'none',
             }}
           >
             {item.label}
@@ -361,7 +361,7 @@ export default function AdminReto90dTasksPage() {
     <div className="font-ui" style={{ color: TEXT }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND_GRADIENT, boxShadow: '0 10px 24px rgba(255,45,149,0.28)' }}>
+        <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND_GRADIENT, boxShadow: '0 10px 24px rgba(0,229,208,0.28)' }}>
           <Trophy size={19} className="text-white" />
         </div>
         <div>
@@ -381,7 +381,7 @@ export default function AdminReto90dTasksPage() {
         <button
           onClick={openCreate}
           disabled={loading || !challengeId}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: BRAND_GRADIENT, color: '#fff', border: 'none', cursor: loading || !challengeId ? 'not-allowed' : 'pointer', opacity: loading || !challengeId ? 0.5 : 1, boxShadow: '0 8px 20px rgba(255,45,149,0.24)' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: BRAND_GRADIENT, color: '#fff', border: 'none', cursor: loading || !challengeId ? 'not-allowed' : 'pointer', opacity: loading || !challengeId ? 0.5 : 1, boxShadow: '0 8px 20px rgba(0,229,208,0.24)' }}
         >
           <Plus size={15} /> Nueva tarea
         </button>
@@ -457,7 +457,7 @@ export default function AdminReto90dTasksPage() {
                   {t.expectedKeywords?.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {t.expectedKeywords.map((k, i) => (
-                        <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.16)' }}>
+                        <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.16)' }}>
                           {k}
                         </span>
                       ))}
@@ -570,7 +570,7 @@ export default function AdminReto90dTasksPage() {
                 {splitList(modal.data.expectedKeywords).length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                     {splitList(modal.data.expectedKeywords).map((k, i) => (
-                      <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.16)' }}>{k}</span>
+                      <span key={i} style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.16)' }}>{k}</span>
                     ))}
                   </div>
                 )}
@@ -605,7 +605,7 @@ export default function AdminReto90dTasksPage() {
                     color: uploadingCount > 0 ? MUTED : '#fff',
                     border: uploadingCount > 0 ? `1px solid ${BORDER}` : 'none',
                     cursor: uploadingCount > 0 ? 'not-allowed' : 'pointer',
-                    boxShadow: uploadingCount > 0 ? 'none' : '0 8px 20px rgba(255,45,149,0.20)',
+                    boxShadow: uploadingCount > 0 ? 'none' : '0 8px 20px rgba(0,229,208,0.20)',
                   }}
                 >
                   {uploadingCount > 0
@@ -689,7 +689,7 @@ export default function AdminReto90dTasksPage() {
 
               <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
                 <button onClick={() => setModal(null)} style={{ flex: 1, padding: '11px 0', borderRadius: 10, fontSize: 13, fontWeight: 600, background: '#F0F3F7', border: `1px solid ${BORDER}`, color: MUTED, cursor: 'pointer' }}>Cancelar</button>
-                <button onClick={handleSave} disabled={saving} style={{ flex: 2, padding: '11px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, background: saving ? 'rgba(183,53,184,0.4)' : BRAND_GRADIENT, border: 'none', color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+                <button onClick={handleSave} disabled={saving} style={{ flex: 2, padding: '11px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, background: saving ? 'rgba(0,229,208,0.4)' : BRAND_GRADIENT, border: 'none', color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
                   {saving ? <><Loader2 size={14} className="animate-spin" /> Guardando…</> : <><Check size={15} /> {modal.mode === 'create' ? 'Crear tarea' : 'Guardar cambios'}</>}
                 </button>
               </div>

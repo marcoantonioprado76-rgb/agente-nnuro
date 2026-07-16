@@ -55,9 +55,9 @@ export default function DiamondAssistantLayout({ children }: { children: React.R
   return (
     <div className="font-ui" style={{ color: TEXT }}>
       {/* ── Barra de contexto del módulo ──────────────────────────────── */}
-      <div style={{ background: 'linear-gradient(135deg, rgba(255,45,149,0.05), rgba(35,59,143,0.05))', border: `1px solid ${BORDER}`, borderRadius: 16, padding: 16, marginBottom: 14 }}>
+      <div style={{ background: 'linear-gradient(135deg, rgba(0,229,208,0.05), rgba(35,59,143,0.05))', border: `1px solid ${BORDER}`, borderRadius: 16, padding: 16, marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 10px 24px rgba(255,45,149,0.28)' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 10px 24px rgba(0,229,208,0.28)' }}>
             <Gem size={19} className="text-white" />
           </div>
           <div style={{ minWidth: 0 }}>
@@ -90,7 +90,7 @@ export default function DiamondAssistantLayout({ children }: { children: React.R
                 border: on ? 'none' : `1px solid ${BORDER}`,
                 background: on ? BRAND : '#fff',
                 color: on ? '#fff' : TEXT,
-                boxShadow: on ? '0 8px 20px rgba(183,53,184,0.22)' : 'none',
+                boxShadow: on ? '0 8px 20px rgba(0,229,208,0.22)' : 'none',
               }}
             >
               <Icon size={15} style={{ color: on ? '#fff' : ACCENT }} />
@@ -116,8 +116,8 @@ export default function DiamondAssistantLayout({ children }: { children: React.R
                 fontWeight: 700,
                 textDecoration: 'none',
                 whiteSpace: 'nowrap',
-                border: `1px solid ${on ? 'rgba(183,53,184,0.25)' : 'transparent'}`,
-                background: on ? 'rgba(183,53,184,0.10)' : 'transparent',
+                border: `1px solid ${on ? 'rgba(0,229,208,0.25)' : 'transparent'}`,
+                background: on ? 'rgba(0,229,208,0.10)' : 'transparent',
                 color: on ? ACCENT : MUTED,
               }}
             >

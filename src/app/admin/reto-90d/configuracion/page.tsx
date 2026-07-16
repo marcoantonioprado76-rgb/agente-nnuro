@@ -205,7 +205,7 @@ function RetoConnection() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '4px 0' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(0,229,208,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <QrCode size={19} style={{ color: '#147e95' }} />
             </div>
             <p style={{ fontSize: 12.5, color: '#6B7280', margin: 0, textAlign: 'center' }}>El número del reto no está conectado.</p>
@@ -445,7 +445,7 @@ export default function RetoConfiguracionPage() {
             <div
               style={{
                 display: 'flex', gap: 10, padding: '14px 16px', borderRadius: 14,
-                background: 'rgba(183,53,184,0.06)', border: '1px solid rgba(183,53,184,0.2)',
+                background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(0,229,208,0.2)',
               }}
             >
               <Info size={16} className="text-[#147e95]" style={{ flexShrink: 0, marginTop: 1 }} />

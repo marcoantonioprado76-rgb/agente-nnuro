@@ -157,7 +157,7 @@ export default function LandingPagesGallery() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-              style={{ background: BRAND, boxShadow: '0 8px 20px -8px rgba(183,53,184,0.55)' }}>
+              style={{ background: BRAND, boxShadow: '0 8px 20px -8px rgba(0,229,208,0.55)' }}>
               <Layout className="w-5 h-5 text-white" />
             </div>
             <div className="min-w-0">
@@ -186,7 +186,7 @@ export default function LandingPagesGallery() {
           <div className="rounded-3xl p-16 text-center"
             style={{ background: C.card, border: `1px solid ${C.border}`, boxShadow: '0 18px 44px -30px rgba(17,24,39,0.28)' }}>
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-              style={{ background: BRAND, boxShadow: '0 12px 28px -10px rgba(183,53,184,0.5)' }}>
+              style={{ background: BRAND, boxShadow: '0 12px 28px -10px rgba(0,229,208,0.5)' }}>
               <Layout className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-xl font-bold mb-2" style={{ color: C.ink }}>Aún no tienes páginas</h2>

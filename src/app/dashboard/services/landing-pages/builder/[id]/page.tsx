@@ -1010,7 +1010,7 @@ export default function BuilderEditorPage() {
   )
 
   const Toggle = (label: string, active: boolean, onClick: () => void) => (
-    <button onClick={onClick} style={{ background: active ? 'rgba(183,53,184,.35)' : '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#fff', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>{label}</button>
+    <button onClick={onClick} style={{ background: active ? 'rgba(0,229,208,.35)' : '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#fff', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>{label}</button>
   )
 
   const MoreBtn = (
@@ -1089,7 +1089,7 @@ export default function BuilderEditorPage() {
         <div style={{ display: 'flex', gap: 2, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, padding: 2 }}>
           {([['Escritorio', '💻'], ['Móvil', '📱']] as [string, string][]).map(([d, ic]) => (
             <button key={d} onClick={() => switchDevice(d)} title={d} disabled={loading}
-              style={{ background: device === d ? 'rgba(183,53,184,0.35)' : 'transparent', border: 'none', color: '#fff', borderRadius: 8, padding: '5px 9px', fontSize: 14, cursor: 'pointer' }}>{ic}</button>
+              style={{ background: device === d ? 'rgba(0,229,208,0.35)' : 'transparent', border: 'none', color: '#fff', borderRadius: 8, padding: '5px 9px', fontSize: 14, cursor: 'pointer' }}>{ic}</button>
           ))}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -1097,7 +1097,7 @@ export default function BuilderEditorPage() {
           <p className="bld-hint" style={{ color: '#64748b', fontSize: 11, margin: 0 }}>Tocá un texto para cambiar tamaño/estilo · doble clic para escribir · 📱/💻 arriba a la derecha</p>
         </div>
         <button onClick={() => setShowBlocks(v => !v)} disabled={loading}
-          style={{ background: showBlocks ? 'rgba(183,53,184,0.35)' : 'rgba(183,53,184,0.15)', border: '1px solid rgba(183,53,184,0.4)', color: '#4dfae8', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>➕ Elementos</button>
+          style={{ background: showBlocks ? 'rgba(0,229,208,0.35)' : 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.4)', color: '#4dfae8', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>➕ Elementos</button>
         <button onClick={() => setShowFill(true)} disabled={loading} title="Rellenar esta plantilla con tu negocio"
           style={{ background: 'linear-gradient(135deg,#f59e0b,#ec4899,#8b5cf6)', border: 'none', color: '#fff', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 800, cursor: 'pointer', opacity: loading ? 0.5 : 1 }}>🪄 Rellenar IA</button>
         <button onClick={() => setShowAI(true)} disabled={loading} title="Generar una landing nueva desde cero"
@@ -1127,7 +1127,7 @@ export default function BuilderEditorPage() {
       <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '8px 10px', background: '#0d0f1a', borderBottom: '1px solid rgba(255,255,255,0.08)', maxHeight: '42vh', overflowY: 'auto' }}>
       {/* Campo de ENLACE (aparece al seleccionar un botón o video) */}
       {linkEditor && (
-        <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(183,53,184,.6)', borderRadius: 12, padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap' }}>
+        <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(0,229,208,.6)', borderRadius: 12, padding: '9px 12px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap' }}>
           <span style={{ color: '#fff', fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>{linkEditor.type === 'video' ? '▶️ Enlace del video (YouTube):' : '🔗 Enlace del botón:'}</span>
           <input autoFocus value={linkEditor.url}
             onChange={e => { const v = e.target.value; setLinkEditor({ ...linkEditor, url: v }); if (linkEditor.type === 'link') applyToComp(v) }}
@@ -1141,7 +1141,7 @@ export default function BuilderEditorPage() {
 
       {/* Barra de TEXTO (aparece al tocar un título/párrafo/botón): tamaño, estilo, color */}
       {textTools && !previewMode && (
-        <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(183,53,184,.6)', borderRadius: 12, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(0,229,208,.6)', borderRadius: 12, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap', justifyContent: 'center' }}>
           <span style={{ color: '#4dfae8', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>Aa Texto</span>
           {/* Tamaño */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', borderRadius: 9, padding: '2px 4px' }}>
@@ -1156,14 +1156,14 @@ export default function BuilderEditorPage() {
           </div>
           {/* Negrita / Cursiva */}
           <button title="Negrita" onClick={() => applyTextStyle({ 'font-weight': textTools.bold ? '400' : '800' })}
-            style={{ background: textTools.bold ? 'rgba(183,53,184,.35)' : '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#fff', fontWeight: 900, fontSize: 15, width: 34, height: 34, borderRadius: 9, cursor: 'pointer' }}>B</button>
+            style={{ background: textTools.bold ? 'rgba(0,229,208,.35)' : '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#fff', fontWeight: 900, fontSize: 15, width: 34, height: 34, borderRadius: 9, cursor: 'pointer' }}>B</button>
           <button title="Cursiva" onClick={() => applyTextStyle({ 'font-style': textTools.italic ? 'normal' : 'italic' })}
-            style={{ background: textTools.italic ? 'rgba(183,53,184,.35)' : '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#fff', fontStyle: 'italic', fontSize: 15, width: 34, height: 34, borderRadius: 9, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>i</button>
+            style={{ background: textTools.italic ? 'rgba(0,229,208,.35)' : '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#fff', fontStyle: 'italic', fontSize: 15, width: 34, height: 34, borderRadius: 9, cursor: 'pointer', fontFamily: 'Georgia,serif' }}>i</button>
           {/* Alineación */}
           <div style={{ display: 'flex', gap: 2, background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', borderRadius: 9, padding: 2 }}>
             {([['left', '⬅'], ['center', '⬌'], ['right', '➡']] as const).map(([al, ic]) => (
               <button key={al} title={`Alinear ${al}`} onClick={() => applyTextStyle({ 'text-align': al })}
-                style={{ background: textTools.align === al ? 'rgba(183,53,184,.35)' : 'transparent', border: 'none', color: '#fff', fontSize: 13, width: 30, height: 28, borderRadius: 7, cursor: 'pointer' }}>{ic}</button>
+                style={{ background: textTools.align === al ? 'rgba(0,229,208,.35)' : 'transparent', border: 'none', color: '#fff', fontSize: 13, width: 30, height: 28, borderRadius: 7, cursor: 'pointer' }}>{ic}</button>
             ))}
           </div>
           {/* Color */}
@@ -1223,10 +1223,10 @@ export default function BuilderEditorPage() {
 
       {/* Barra de IMAGEN (aparece al tocar una foto): ancho, esquinas, sombra, borde */}
       {imgTools && !previewMode && (
-        <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(183,53,184,.5)', borderRadius: 12, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', zIndex: 55, maxWidth: '100%',background: '#111426', border: '1px solid rgba(0,229,208,.5)', borderRadius: 12, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 10px 30px rgba(0,0,0,.5)', flexWrap: 'wrap', justifyContent: 'center' }}>
           <span style={{ color: '#4dfae8', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap' }}>🖼️ Imagen</span>
           <button title="Cambiar / subir foto" onClick={pickImage}
-            style={{ background: 'rgba(183,53,184,.15)', border: '1px solid rgba(183,53,184,.4)', color: '#4dfae8', fontWeight: 800, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>🖼️ Cambiar</button>
+            style={{ background: 'rgba(0,229,208,.15)', border: '1px solid rgba(0,229,208,.4)', color: '#4dfae8', fontWeight: 800, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>🖼️ Cambiar</button>
           <button title="Duplicar (añadir otra foto al riel)" onClick={dupImage}
             style={{ background: '#0b0f1a', border: '1px solid rgba(255,255,255,.12)', color: '#cbd5e1', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>➕ Foto</button>
           {Stepper('Ancho %', imgTools.widthPct, 10, 100, 5, n => applyImgStyle({ width: n + '%', height: 'auto' }))}
@@ -1294,7 +1294,7 @@ export default function BuilderEditorPage() {
             style={{ background: 'rgba(34,197,94,.18)', border: '1px solid rgba(34,197,94,.4)', color: '#86efac', fontWeight: 800, fontSize: 12, padding: '8px 12px', borderRadius: 9, cursor: 'pointer', whiteSpace: 'nowrap' }}>⬍ Compactar</button>
           {/* Campos de formulario — solo cuando la sección seleccionada ES un <form> */}
           {boxTools.isForm && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3, background: '#0b0f1a', border: '1px solid rgba(183,53,184,.4)', borderRadius: 9, padding: '3px 5px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3, background: '#0b0f1a', border: '1px solid rgba(0,229,208,.4)', borderRadius: 9, padding: '3px 5px' }}>
               <span style={{ color: '#4dfae8', fontSize: 12, fontWeight: 800, padding: '0 3px' }}>📋</span>
               {([['Campo', NEW_FLD_TEXT], ['Email', NEW_FLD_EMAIL], ['WhatsApp', NEW_FLD_PHONE], ['Mensaje', NEW_FLD_MSG], ['Enviar', NEW_FLD_SUBMIT]] as [string, string][]).map(([lbl, html]) => (
                 <button key={lbl} title={`Agregar ${lbl}`} onClick={() => addInside(html)}
@@ -1388,7 +1388,7 @@ export default function BuilderEditorPage() {
                         return (
                           <button key={b.id} onClick={() => insertBlock(b.get('content'))} title={`Agregar ${text}`}
                             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 12, padding: '14px 8px', color: '#e5e7eb', cursor: 'pointer', textAlign: 'center', transition: 'all .15s' }}
-                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(183,53,184,.18)'; e.currentTarget.style.borderColor = 'rgba(183,53,184,.5)' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,229,208,.18)'; e.currentTarget.style.borderColor = 'rgba(0,229,208,.5)' }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.1)' }}>
                             <span style={{ fontSize: 26, lineHeight: 1 }}>{emoji}</span>
                             <span style={{ fontSize: 11, fontWeight: 700, lineHeight: 1.25 }}>{text}</span>
@@ -1430,7 +1430,7 @@ export default function BuilderEditorPage() {
       {/* Modal Generar con IA */}
       {showAI && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.7)', zIndex: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => !aiLoading && setShowAI(false)}>
-          <div style={{ background: '#111426', border: '1px solid rgba(183,53,184,.4)', borderRadius: 20, width: '100%', maxWidth: 520, padding: 24 }} onClick={e => e.stopPropagation()}>
+          <div style={{ background: '#111426', border: '1px solid rgba(0,229,208,.4)', borderRadius: 20, width: '100%', maxWidth: 520, padding: 24 }} onClick={e => e.stopPropagation()}>
             <p style={{ color: '#fff', fontWeight: 900, fontSize: 18, margin: '0 0 4px' }}>✨ Generar con IA</p>
             <p style={{ color: '#64748b', fontSize: 13, margin: '0 0 16px' }}>Describí tu negocio y la IA arma la landing. Después la editás acá.</p>
             <textarea value={aiDesc} onChange={e => setAiDesc(e.target.value)} rows={4}

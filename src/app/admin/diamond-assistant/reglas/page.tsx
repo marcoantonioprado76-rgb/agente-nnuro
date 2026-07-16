@@ -317,7 +317,7 @@ export default function DiamondAssistantReglas() {
               border: 'none',
               cursor: selectedAgentId ? 'pointer' : 'not-allowed',
               opacity: selectedAgentId ? 1 : 0.5,
-              boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+              boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
             }}
           >
             <Plus size={15} /> Agregar regla
@@ -344,7 +344,7 @@ export default function DiamondAssistantReglas() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(183,53,184,0.10)',
+              background: 'rgba(0,229,208,0.10)',
             }}
           >
             <Bot size={26} style={{ color: '#147e95' }} />
@@ -366,7 +366,7 @@ export default function DiamondAssistantReglas() {
               color: '#fff',
               background: BRAND,
               textDecoration: 'none',
-              boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+              boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
             }}
           >
             <Plus size={15} /> Ir a crear un agente
@@ -441,7 +441,7 @@ export default function DiamondAssistantReglas() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: 'rgba(183,53,184,0.10)',
+                  background: 'rgba(0,229,208,0.10)',
                 }}
               >
                 <ShieldCheck size={26} style={{ color: '#147e95' }} />
@@ -488,7 +488,7 @@ export default function DiamondAssistantReglas() {
                     background: BRAND,
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                    boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                   }}
                 >
                   <Plus size={15} /> Agregar regla
@@ -754,7 +754,7 @@ export default function DiamondAssistantReglas() {
                   border: 'none',
                   cursor: saving ? 'default' : 'pointer',
                   opacity: saving ? 0.6 : 1,
-                  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                 }}
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={14} />}

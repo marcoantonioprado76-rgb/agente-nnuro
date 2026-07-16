@@ -148,7 +148,7 @@ export default function PodcastsPage() {
                     onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onEnded={() => setPlaying(false)}
                     onTimeUpdate={e => setCur(e.currentTarget.currentTime)} onLoadedMetadata={e => setDur(e.currentTarget.duration)} />
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <button onClick={toggle} aria-label={playing ? 'Pausar' : 'Reproducir'} style={{ flex: '0 0 auto', width: 54, height: 54, borderRadius: '50%', border: 'none', cursor: 'pointer', background: DG, color: '#fff', display: 'grid', placeItems: 'center', fontSize: 19, boxShadow: '0 10px 26px -8px rgba(183,53,184,0.85)' }}>
+                    <button onClick={toggle} aria-label={playing ? 'Pausar' : 'Reproducir'} style={{ flex: '0 0 auto', width: 54, height: 54, borderRadius: '50%', border: 'none', cursor: 'pointer', background: DG, color: '#fff', display: 'grid', placeItems: 'center', fontSize: 19, boxShadow: '0 10px 26px -8px rgba(0,229,208,0.85)' }}>
                       <i className={`fa-solid ${playing ? 'fa-pause' : 'fa-play'}`} style={{ marginLeft: playing ? 0 : 3 }} />
                     </button>
                     <button onClick={() => skip(-15)} title="-15s" style={ctrlBtn}><i className="fa-solid fa-rotate-left" /><span style={{ position: 'absolute', fontSize: 8.5, fontWeight: 800 }}>15</span></button>
@@ -200,7 +200,7 @@ export default function PodcastsPage() {
                   background: active ? DG : '#fff',
                   color: active ? '#fff' : '#374151',
                   transform: active ? 'translateY(-1px)' : 'none',
-                  boxShadow: active ? '0 12px 28px -8px rgba(183,53,184,0.65)' : '0 6px 16px -10px rgba(15,23,42,0.35)' }}>
+                  boxShadow: active ? '0 12px 28px -8px rgba(0,229,208,0.65)' : '0 6px 16px -10px rgba(15,23,42,0.35)' }}>
                 <i className={`fa-solid ${icon}`} style={{ fontSize: 13, color: active ? '#fff' : '#147e95' }} />
                 {c}
               </button>
@@ -219,10 +219,10 @@ export default function PodcastsPage() {
               const active = selected?.id === p.id
               return (
                 <div key={p.id} onClick={() => choose(p)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', cursor: 'pointer', borderTop: i === 0 ? 'none' : '1px solid #F0F2F7', background: active ? 'rgba(183,53,184,0.05)' : 'transparent', transition: 'background .15s' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', cursor: 'pointer', borderTop: i === 0 ? 'none' : '1px solid #F0F2F7', background: active ? 'rgba(0,229,208,0.05)' : 'transparent', transition: 'background .15s' }}>
                   <div style={{ flex: '0 0 auto', width: 52, height: 52, borderRadius: 12, overflow: 'hidden', background: '#1a262f', position: 'relative' }}>
                     {p.coverUrl ? <img src={p.coverUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,0.3)' }}><i className="fa-solid fa-microphone" style={{ fontSize: 16 }} /></div>}
-                    {active && playing && <div style={{ position: 'absolute', inset: 0, background: 'rgba(183,53,184,0.35)', display: 'grid', placeItems: 'center', color: '#fff' }}><i className="fa-solid fa-volume-high" style={{ fontSize: 14 }} /></div>}
+                    {active && playing && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,229,208,0.35)', display: 'grid', placeItems: 'center', color: '#fff' }}><i className="fa-solid fa-volume-high" style={{ fontSize: 14 }} /></div>}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontWeight: 800, fontSize: 14, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.title}</p>

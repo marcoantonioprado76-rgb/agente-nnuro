@@ -26,7 +26,7 @@ interface Course {
 
 const NIVEL_COLOR: Record<string, string> = {
   Principiante: '#7DD3FC',
-  Intermedio: '#C9A7FF',
+  Intermedio: '#4dfae8',
   Avanzado: '#1fb8bb',
 }
 
@@ -37,7 +37,7 @@ const STATUS_BADGE: Record<string, { label: string; style: React.CSSProperties }
   },
   PENDING_VERIFICATION: {
     label: 'Verificando cripto',
-    style: { color: '#C9A7FF', background: 'rgba(201,167,255,0.1)', border: '1px solid rgba(201,167,255,0.3)' },
+    style: { color: '#4dfae8', background: 'rgba(201,167,255,0.1)', border: '1px solid rgba(201,167,255,0.3)' },
   },
   APPROVED: {
     label: 'Acceso completo',
@@ -117,7 +117,7 @@ export default function CoursesPage() {
                 <b style={{ color: '#111827' }}>{courses.length}</b> curso{courses.length !== 1 ? 's' : ''}
               </span>
               {courses.some(c => c.enrollment?.status === 'APPROVED') && (
-                <span style={{ fontSize: 11, color: 'rgba(255,45,149,0.7)' }}>
+                <span style={{ fontSize: 11, color: 'rgba(0,229,208,0.7)' }}>
                   <b style={{ background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{courses.filter(c => c.enrollment?.status === 'APPROVED').length}</b> con acceso
                 </span>
               )}
@@ -135,7 +135,7 @@ export default function CoursesPage() {
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             fontSize: 12, fontWeight: 600, color: '#147e95',
-            background: 'rgba(183,53,184,0.07)', border: '1px solid #E4E9F0',
+            background: 'rgba(0,229,208,0.07)', border: '1px solid #E4E9F0',
             borderRadius: 8, padding: '7px 14px', textDecoration: 'none',
           }}>
           📋 Mis inscripciones
@@ -196,7 +196,7 @@ export default function CoursesPage() {
       {courses.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
-            style={{ background: 'rgba(183,53,184,0.06)', border: '1px solid #E4E9F0' }}>
+            style={{ background: 'rgba(0,229,208,0.06)', border: '1px solid #E4E9F0' }}>
             <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#147e95" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
             </svg>
@@ -223,7 +223,7 @@ export default function CoursesPage() {
                   borderRadius: 16,
                   overflow: 'hidden',
                   background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
-                  border: `1px solid ${isLocked ? 'rgba(183,53,184,0.18)' : 'rgba(255,255,255,0.1)'}`,
+                  border: `1px solid ${isLocked ? 'rgba(0,229,208,0.18)' : 'rgba(255,255,255,0.1)'}`,
                   opacity: isLocked ? 0.7 : 1,
                   cursor: isLocked ? 'default' : 'pointer',
                   transition: 'border-color 0.2s, transform 0.15s',
@@ -233,7 +233,7 @@ export default function CoursesPage() {
                 }}
               >
                 {/* Cover — fixed aspect ratio */}
-                <div style={{ aspectRatio: '16/9', background: 'rgba(183,53,184,0.05)', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+                <div style={{ aspectRatio: '16/9', background: 'rgba(0,229,208,0.05)', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
                   {course.coverUrl ? (
                     <img src={course.coverUrl} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: isLocked ? 'brightness(0.5)' : 'none' }} />
                   ) : (
@@ -307,7 +307,7 @@ export default function CoursesPage() {
                         Ver plan →
                       </Link>
                     ) : (
-                      <span style={{ fontWeight: 800, fontSize: 13, ...(course.freeForPlan ? { color: '#fff', background: DG, padding: '3px 10px', borderRadius: 999 } : { color: '#C9A7FF' }) }}>
+                      <span style={{ fontWeight: 800, fontSize: 13, ...(course.freeForPlan ? { color: '#fff', background: DG, padding: '3px 10px', borderRadius: 999 } : { color: '#4dfae8' }) }}>
                         {course.freeForPlan ? 'GRATIS' : `${course.price.toFixed(2)} USDT`}
                       </span>
                     )}

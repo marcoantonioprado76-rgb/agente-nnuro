@@ -17,7 +17,7 @@ export default function NuevaLandingChooser() {
       bullets: ['Editor drag & drop', '15 plantillas con vista previa', 'Publicá en /b/tu-pagina'],
       cta: 'Abrir constructor',
       accent: '#147e95',
-      tint: 'rgba(183,53,184,0.10)',
+      tint: 'rgba(0,229,208,0.10)',
     },
     {
       href: '/dashboard/services/landing-pages/create?modo=html',

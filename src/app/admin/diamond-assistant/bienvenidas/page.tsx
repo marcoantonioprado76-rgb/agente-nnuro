@@ -488,7 +488,7 @@ export default function DiamondAssistantBienvenidas() {
       ) : !hasAgents ? (
         // Sin agentes: guiar a crear uno primero.
         <div style={{ ...cardStyle, textAlign: 'center', padding: '48px 24px' }}>
-          <div style={emptyIconWrap('rgba(183,53,184,0.10)')}>
+          <div style={emptyIconWrap('rgba(0,229,208,0.10)')}>
             <Bot size={26} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>Aún no hay agentes</p>
@@ -573,7 +573,7 @@ export default function DiamondAssistantBienvenidas() {
             <ErrorBox message={itemsError} />
           ) : visibleItems.length === 0 ? (
             <div style={{ ...cardStyle, textAlign: 'center', padding: '48px 24px' }}>
-              <div style={emptyIconWrap('rgba(255,45,149,0.10)')}>
+              <div style={emptyIconWrap('rgba(0,229,208,0.10)')}>
                 <PartyPopper size={26} style={{ color: '#1fb8bb' }} />
               </div>
               <p style={{ fontSize: 15, fontWeight: 800, margin: 0 }}>
@@ -979,13 +979,13 @@ const primaryBtnStyle: CSSProperties = {
   background: BRAND,
   border: 'none',
   cursor: 'pointer',
-  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
 }
 const codeChip: CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
   color: '#147e95',
-  background: 'rgba(183,53,184,0.10)',
+  background: 'rgba(0,229,208,0.10)',
   padding: '1px 6px',
   borderRadius: 6,
 }
@@ -1057,7 +1057,7 @@ const deleteBtnStyle: CSSProperties = {
   cursor: 'pointer',
 }
 const previewWrapStyle: CSSProperties = {
-  background: 'linear-gradient(135deg, rgba(255,45,149,0.05), rgba(35,59,143,0.05))',
+  background: 'linear-gradient(135deg, rgba(0,229,208,0.05), rgba(35,59,143,0.05))',
   border: `1px solid ${BORDER}`,
   borderRadius: 12,
   padding: 14,

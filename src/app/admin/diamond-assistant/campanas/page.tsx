@@ -150,7 +150,7 @@ const STATUS_META: Record<
   DRAFT: { label: 'Borrador', color: '#6B7280', bg: 'rgba(107,114,128,0.10)', border: 'rgba(107,114,128,0.22)' },
   PENDING_APPROVAL: { label: 'Pendiente de aprobación', color: '#B45309', bg: 'rgba(245,158,11,0.13)', border: 'rgba(245,158,11,0.32)' },
   SCHEDULED: { label: 'Aprobada · lista para enviar', color: '#233B8F', bg: 'rgba(35,59,143,0.10)', border: 'rgba(35,59,143,0.24)' },
-  SENDING: { label: 'Enviando…', color: '#147e95', bg: 'rgba(183,53,184,0.10)', border: 'rgba(183,53,184,0.24)' },
+  SENDING: { label: 'Enviando…', color: '#147e95', bg: 'rgba(0,229,208,0.10)', border: 'rgba(0,229,208,0.24)' },
   SENT: { label: 'Enviada', color: '#16A34A', bg: 'rgba(22,163,74,0.10)', border: 'rgba(22,163,74,0.25)' },
   FAILED: { label: 'Fallida', color: '#DC2626', bg: 'rgba(220,38,38,0.10)', border: 'rgba(220,38,38,0.25)' },
   CANCELLED: { label: 'Cancelada', color: '#6B7280', bg: 'rgba(107,114,128,0.10)', border: 'rgba(107,114,128,0.22)' },
@@ -204,7 +204,7 @@ const primaryBtn: CSSProperties = {
   background: BRAND,
   border: 'none',
   cursor: 'pointer',
-  boxShadow: '0 8px 20px rgba(183,53,184,0.22)',
+  boxShadow: '0 8px 20px rgba(0,229,208,0.22)',
 }
 
 // ── Utilidades ─────────────────────────────────────────────────────
@@ -719,7 +719,7 @@ export default function DiamondAssistantCampanas() {
           display: 'flex',
           alignItems: 'flex-start',
           gap: 11,
-          background: 'linear-gradient(135deg, rgba(255,45,149,0.06), rgba(35,59,143,0.06))',
+          background: 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(35,59,143,0.06))',
           border: `1px solid ${BORDER}`,
           borderRadius: 14,
           padding: '12px 14px',
@@ -791,7 +791,7 @@ export default function DiamondAssistantCampanas() {
         </div>
       ) : campaigns.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '56px 16px', background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 16 }}>
-          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(0,229,208,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
             <Megaphone size={24} style={{ color: '#147e95' }} />
           </div>
           <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>{statusFilter ? 'Sin campañas en este estado' : 'Aún no hay campañas'}</p>
@@ -858,13 +858,13 @@ export default function DiamondAssistantCampanas() {
                     {canRun && (
                       <button
                         onClick={() => setRunTarget(c)}
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 13px', borderRadius: 9, fontSize: 12, fontWeight: 800, color: '#fff', background: BRAND, border: 'none', cursor: 'pointer', boxShadow: '0 6px 16px rgba(183,53,184,0.22)' }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 13px', borderRadius: 9, fontSize: 12, fontWeight: 800, color: '#fff', background: BRAND, border: 'none', cursor: 'pointer', boxShadow: '0 6px 16px rgba(0,229,208,0.22)' }}
                       >
                         <Send size={13} /> Ejecutar
                       </button>
                     )}
                     {busy && (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 13px', borderRadius: 9, fontSize: 12, fontWeight: 800, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.24)' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 13px', borderRadius: 9, fontSize: 12, fontWeight: 800, color: '#147e95', background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.24)' }}>
                         <Loader2 size={13} className="animate-spin" /> Enviando…
                       </span>
                     )}
@@ -905,7 +905,7 @@ export default function DiamondAssistantCampanas() {
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '16px 20px', borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11, minWidth: 0 }}>
-                <div style={{ width: 38, height: 38, borderRadius: 11, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 8px 18px rgba(255,45,149,0.24)' }}>
+                <div style={{ width: 38, height: 38, borderRadius: 11, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 8px 18px rgba(0,229,208,0.24)' }}>
                   {editingId ? <Pencil size={17} className="text-white" /> : <Megaphone size={17} className="text-white" />}
                 </div>
                 <div style={{ minWidth: 0 }}>
@@ -1013,7 +1013,7 @@ export default function DiamondAssistantCampanas() {
                       type="button"
                       onClick={() => campaignFileRef.current?.click()}
                       disabled={uploadingMedia}
-                      style={{ fontSize: 13, fontWeight: 800, padding: '9px 14px', borderRadius: 10, border: `1px solid ${BRAND}`, background: 'rgba(183,53,184,0.08)', color: BRAND, cursor: uploadingMedia ? 'default' : 'pointer', opacity: uploadingMedia ? 0.6 : 1 }}
+                      style={{ fontSize: 13, fontWeight: 800, padding: '9px 14px', borderRadius: 10, border: `1px solid ${BRAND}`, background: 'rgba(0,229,208,0.08)', color: BRAND, cursor: uploadingMedia ? 'default' : 'pointer', opacity: uploadingMedia ? 0.6 : 1 }}
                     >
                       {uploadingMedia ? '⏳ Subiendo…' : '📎 Subir imagen o video'}
                     </button>
@@ -1094,7 +1094,7 @@ export default function DiamondAssistantCampanas() {
                       {selectedContacts.length > 0 && (
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
                           {selectedContacts.map((c) => (
-                            <span key={c.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)' }}>
+                            <span key={c.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 999, color: '#147e95', background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.20)' }}>
                               {c.name || c.phone}
                               <button type="button" onClick={() => toggleContact(c)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', padding: 0 }}>
                                 <X size={11} style={{ color: '#147e95' }} />
@@ -1118,7 +1118,7 @@ export default function DiamondAssistantCampanas() {
                                 key={c.id}
                                 type="button"
                                 onClick={() => toggleContact(c)}
-                                style={{ display: 'flex', alignItems: 'center', gap: 9, width: '100%', textAlign: 'left', padding: '8px 11px', background: on ? 'rgba(183,53,184,0.06)' : 'transparent', border: 'none', borderBottom: `1px solid ${BORDER}`, cursor: 'pointer' }}
+                                style={{ display: 'flex', alignItems: 'center', gap: 9, width: '100%', textAlign: 'left', padding: '8px 11px', background: on ? 'rgba(0,229,208,0.06)' : 'transparent', border: 'none', borderBottom: `1px solid ${BORDER}`, cursor: 'pointer' }}
                               >
                                 <span style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: on ? BRAND : '#fff', border: on ? 'none' : `1px solid ${BORDER}` }}>
                                   {on && <Check size={12} style={{ color: '#fff' }} />}
@@ -1296,7 +1296,7 @@ export default function DiamondAssistantCampanas() {
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(2px)' }} onClick={() => !running && setRunTarget(null)} />
           <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: 440, background: '#fff', border: `1px solid ${BORDER}`, borderRadius: 18, padding: 24, boxShadow: '0 24px 60px rgba(17,24,39,0.28)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-              <div style={{ width: 54, height: 54, borderRadius: 15, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, boxShadow: '0 10px 24px rgba(183,53,184,0.28)' }}>
+              <div style={{ width: 54, height: 54, borderRadius: 15, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, boxShadow: '0 10px 24px rgba(0,229,208,0.28)' }}>
                 <Send size={22} className="text-white" />
               </div>
               <h3 style={{ fontSize: 16, fontWeight: 800, margin: '0 0 4px' }}>Ejecutar campaña</h3>

@@ -36,7 +36,7 @@ const services = [
     title: 'Landing Pages IA',
     description: 'Genera páginas de venta profesionales en segundos con inteligencia artificial.',
     icon: Layout,
-    from: '#6A35D9', to: '#FF2DF7',
+    from: '#147e95', to: '#FF2DF7',
     features: ['Generación con IA', 'Editor HTML', 'Publicación 1 clic'],
     link: '/dashboard/services/landing-pages',
     requiredPlan: 'BASIC' as UserPlan,
@@ -108,7 +108,7 @@ function SkeletonCard() {
   return (
     <div className="rounded-card p-6 animate-pulse"
       style={{ padding: 24,
-        background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.18), rgba(255,255,255,0) 58%), radial-gradient(90% 70% at 100% 110%, rgba(106,53,217,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
+        background: 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.18), rgba(255,255,255,0) 58%), radial-gradient(90% 70% at 100% 110%, rgba(106,53,217,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
         border: '1px solid rgba(255,255,255,0.08)',
         boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
       <div className="flex items-start justify-between mb-6">
@@ -213,7 +213,7 @@ export default function ServicesPage() {
               return (
                 <div key={service.id} className={`rounded-card ${unlocked ? 'dm-card--hover' : ''}`}
                   style={{ padding: 24, display: 'flex', flexDirection: 'column', opacity: unlocked ? 1 : 0.72,
-                    background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.18), rgba(255,255,255,0) 58%), radial-gradient(90% 70% at 100% 110%, rgba(106,53,217,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
+                    background: 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.18), rgba(255,255,255,0) 58%), radial-gradient(90% 70% at 100% 110%, rgba(106,53,217,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
                     border: '1px solid rgba(255,255,255,0.08)',
                     boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
                   <div className="flex items-start justify-between mb-5">

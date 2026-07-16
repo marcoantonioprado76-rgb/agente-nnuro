@@ -74,7 +74,7 @@ export default function SetupPage() {
     }
 
     return (
-        <div className="px-4 md:px-6 pt-6 max-w-3xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 pt-6 max-w-3xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(0,229,208,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-7">
@@ -149,15 +149,15 @@ export default function SetupPage() {
                     {credits.enabled && (
                         <Link href="/dashboard/ai-credits"
                             className="flex items-center gap-3 p-4 rounded-2xl transition-all hover:brightness-110"
-                            style={{ background: 'linear-gradient(135deg,rgba(183,53,184,0.14),rgba(37,99,235,0.06))', border: '1px solid rgba(255,255,255,0.08)' }}>
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                            style={{ background: 'linear-gradient(135deg,rgba(0,229,208,0.14),rgba(37,99,235,0.06))', border: '1px solid rgba(255,255,255,0.08)' }}>
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(0,229,208,0.18)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                 <Sparkles size={18} className="text-[#147e95]" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-black text-white">¿No querés usar tu propia API Key?</p>
                                 <p className="text-[11px] text-white/45">Comprá créditos de IA y usá nuestra clave. Saldo: <b className="text-[#147e95]">${credits.balance.toFixed(2)}</b></p>
                             </div>
-                            <span className="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl" style={{ background: 'rgba(183,53,184,0.22)', border: '1px solid rgba(255,255,255,0.08)', color: '#d6c8ff' }}>
+                            <span className="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl" style={{ background: 'rgba(0,229,208,0.22)', border: '1px solid rgba(255,255,255,0.08)', color: '#d6c8ff' }}>
                                 Comprar
                             </span>
                         </Link>

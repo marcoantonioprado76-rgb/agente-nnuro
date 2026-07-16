@@ -126,7 +126,7 @@ export default function DiamondAssistantHistorial() {
                 color: active ? '#fff' : MUTED,
                 background: active ? BRAND : '#F4F6FA',
                 border: active ? '1px solid transparent' : `1px solid ${BORDER}`,
-                boxShadow: active ? '0 6px 16px rgba(183,53,184,0.22)' : 'none',
+                boxShadow: active ? '0 6px 16px rgba(0,229,208,0.22)' : 'none',
               }}
             >
               {chip.label}
@@ -154,7 +154,7 @@ export default function DiamondAssistantHistorial() {
           </div>
         ) : logs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '56px 16px' }}>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(0,229,208,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
               <Inbox size={24} style={{ color: '#147e95' }} />
             </div>
             <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>
@@ -188,7 +188,7 @@ export default function DiamondAssistantHistorial() {
                       <td style={{ ...tdStyle, color: MUTED, whiteSpace: 'nowrap' }}>{fmtDateTime(log.createdAt)}</td>
                       <td style={{ ...tdStyle, fontFamily: 'ui-monospace, monospace', fontSize: 12.5, whiteSpace: 'nowrap' }}>{log.contactPhone}</td>
                       <td style={tdStyle}>
-                        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.20)', whiteSpace: 'nowrap' }}>
                           {MSG_TYPE_LABEL[log.messageType] ?? log.messageType}
                         </span>
                       </td>

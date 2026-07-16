@@ -527,21 +527,21 @@ export default function SettingsPage() {
               disabled={!canUseAdminKey || togglingPref}
               className="w-full flex items-center gap-3.5 p-4 rounded-xl transition-all text-left"
               style={{
-                background: usingAdmin && canUseAdminKey ? 'rgba(183,53,184,0.18)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${usingAdmin && canUseAdminKey ? 'rgba(183,53,184,0.50)' : 'rgba(255,255,255,0.10)'}`,
+                background: usingAdmin && canUseAdminKey ? 'rgba(0,229,208,0.18)' : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${usingAdmin && canUseAdminKey ? 'rgba(0,229,208,0.50)' : 'rgba(255,255,255,0.10)'}`,
                 opacity: !canUseAdminKey ? 0.5 : 1,
                 cursor: !canUseAdminKey ? 'not-allowed' : 'pointer',
-                boxShadow: usingAdmin && canUseAdminKey ? '0 0 18px -6px rgba(183,53,184,0.45)' : 'none',
+                boxShadow: usingAdmin && canUseAdminKey ? '0 0 18px -6px rgba(0,229,208,0.45)' : 'none',
               }}>
               <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(183,53,184,0.35)' }}>
+                style={{ background: 'rgba(0,229,208,0.18)', border: '1px solid rgba(0,229,208,0.35)' }}>
                 <ShieldCheck className="w-4 h-4 text-[#147e95]" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-sm font-black text-white">Key del Administrador</p>
                   <span className="text-[8.5px] font-black uppercase tracking-[0.14em] px-1.5 py-0.5 rounded-full"
-                    style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(183,53,184,0.30)', color: '#D9A4FF' }}>
+                    style={{ background: 'rgba(0,229,208,0.18)', border: '1px solid rgba(0,229,208,0.30)', color: '#D9A4FF' }}>
                     Pagás con saldo
                   </span>
                 </div>

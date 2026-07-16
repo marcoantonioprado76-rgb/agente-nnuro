@@ -130,7 +130,7 @@ export default function RetoLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="font-ui" style={{ color: TEXT }}>
       {/* ── Barra de contexto del reto (dueño de todo) ─────────────────────── */}
-      <div style={{ background: 'linear-gradient(135deg, rgba(255,45,149,0.05), rgba(35,59,143,0.05))', border: `1px solid ${BORDER}`, borderRadius: 16, padding: 16, marginBottom: 18 }}>
+      <div style={{ background: 'linear-gradient(135deg, rgba(0,229,208,0.05), rgba(35,59,143,0.05))', border: `1px solid ${BORDER}`, borderRadius: 16, padding: 16, marginBottom: 18 }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}><Loader2 size={18} className="animate-spin" style={{ color: MUTED }} /></div>
         ) : active ? (

@@ -553,24 +553,24 @@ export default function SocialPage() {
                     <div className="lg:col-span-2 space-y-4">
                         {/* Perfil de Contenido — el equivalente del brief, pero para contenido orgánico */}
                         <div className="dm-card-dark p-4 rounded-2xl border border-white/10 space-y-2">
-                            <p className="text-white text-sm font-medium flex items-center gap-1"><FileText size={13} className="text-[#C9A7FF]" /> Perfil de contenido de tu página</p>
+                            <p className="text-white text-sm font-medium flex items-center gap-1"><FileText size={13} className="text-[#4dfae8]" /> Perfil de contenido de tu página</p>
                             <p className="text-white/50 text-[11px]">Para que la IA genere <b>contenido real de tu página</b> (no publicidad). Uno por página/negocio.</p>
                             {contentProfiles.length > 0 ? (
                                 <div className="flex flex-wrap items-center gap-2">
                                     <select value={selectedProfileId} onChange={e => setSelectedProfileId(e.target.value)}
-                                        className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50 [&>option]:bg-[#273842]">
+                                        className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#4dfae8]/50 [&>option]:bg-[#273842]">
                                         <option value="">— Elegí un perfil —</option>
                                         {contentProfiles.map(p => <option key={p.id} value={p.id}>{p.pageName}</option>)}
                                     </select>
-                                    <button onClick={openNewProfile} className="px-3 py-2 rounded-xl bg-[#C9A7FF]/10 text-[#C9A7FF] text-xs font-semibold hover:bg-[#C9A7FF]/20 flex items-center gap-1"><Plus size={12} /> Nuevo</button>
+                                    <button onClick={openNewProfile} className="px-3 py-2 rounded-xl bg-[#4dfae8]/10 text-[#4dfae8] text-xs font-semibold hover:bg-[#4dfae8]/20 flex items-center gap-1"><Plus size={12} /> Nuevo</button>
                                     {selectedProfileId && !profileFormOpen && (
                                         <button onClick={handleDeleteProfile} title="Borrar perfil" className="px-2 py-2 rounded-xl bg-white/5 text-white/50 hover:text-red-400 hover:bg-red-500/10"><Trash2 size={12} /></button>
                                     )}
                                 </div>
                             ) : !profileFormOpen && (
-                                <div className="rounded-xl border border-[#C9A7FF]/25 bg-[#C9A7FF]/5 p-2.5 flex items-center justify-between gap-2">
-                                    <span className="text-[#C9A7FF] text-xs">Todavía no tenés un perfil. Creá el primero 👇</span>
-                                    <button onClick={openNewProfile} className="px-3 py-1.5 rounded-lg bg-[#C9A7FF]/15 text-[#C9A7FF] text-xs font-semibold hover:bg-[#C9A7FF]/25 flex items-center gap-1 whitespace-nowrap"><Plus size={12} /> Crear</button>
+                                <div className="rounded-xl border border-[#4dfae8]/25 bg-[#4dfae8]/5 p-2.5 flex items-center justify-between gap-2">
+                                    <span className="text-[#4dfae8] text-xs">Todavía no tenés un perfil. Creá el primero 👇</span>
+                                    <button onClick={openNewProfile} className="px-3 py-1.5 rounded-lg bg-[#4dfae8]/15 text-[#4dfae8] text-xs font-semibold hover:bg-[#4dfae8]/25 flex items-center gap-1 whitespace-nowrap"><Plus size={12} /> Crear</button>
                                 </div>
                             )}
 
@@ -595,10 +595,10 @@ export default function SocialPage() {
                                             </div>
                                             <textarea value={profileDesc} onChange={e => setProfileDesc(e.target.value)} rows={3}
                                                 placeholder="Describí tu página: de qué trata, a quién le hablás, tu estilo… (o pegá acá lo que te dio ChatGPT)"
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-white/35 resize-none focus:outline-none focus:border-[#C9A7FF]/50 leading-relaxed" />
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-white/35 resize-none focus:outline-none focus:border-[#4dfae8]/50 leading-relaxed" />
                                             <div className="flex gap-2">
                                                 <button onClick={handleGenerateProfile} disabled={profileGenLoading}
-                                                    className="flex-1 px-3 py-2 bg-gradient-to-r from-[#C9A7FF] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl text-xs disabled:opacity-40 flex items-center justify-center gap-2">
+                                                    className="flex-1 px-3 py-2 bg-gradient-to-r from-[#4dfae8] via-[#147e95] to-[#233B8F] text-white font-bold rounded-xl text-xs disabled:opacity-40 flex items-center justify-center gap-2">
                                                     {profileGenLoading ? <><Loader2 size={13} className="animate-spin" /> Armando…</> : <><Sparkles size={13} /> Generar perfil con IA</>}
                                                 </button>
                                                 {contentProfiles.length > 0 && (
@@ -623,9 +623,9 @@ export default function SocialPage() {
                                                     <label className="text-white/55 text-[10px]">{f.label}</label>
                                                     {f.ta
                                                         ? <textarea value={draft[f.k] || ''} onChange={e => setDraft({ ...draft, [f.k]: e.target.value })} rows={2}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white resize-none focus:outline-none focus:border-[#C9A7FF]/50" />
+                                                            className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white resize-none focus:outline-none focus:border-[#4dfae8]/50" />
                                                         : <input value={draft[f.k] || ''} onChange={e => setDraft({ ...draft, [f.k]: e.target.value })}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50" />}
+                                                            className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#4dfae8]/50" />}
                                                 </div>
                                             ))}
                                             <div className="flex gap-2 pt-1">
@@ -649,18 +649,18 @@ export default function SocialPage() {
                             {/* Estilo: Natural (el recomendado) vs Marca Personal (agencia) */}
                             <div className="flex rounded-xl overflow-hidden border border-white/10">
                                 <button type="button" onClick={() => setImgMode('natural')}
-                                    className={`flex-1 px-3 py-2 text-xs font-bold transition-all ${imgMode === 'natural' ? 'bg-[#C9A7FF]/20 text-white' : 'bg-white/5 text-white/45'}`}>Natural</button>
+                                    className={`flex-1 px-3 py-2 text-xs font-bold transition-all ${imgMode === 'natural' ? 'bg-[#4dfae8]/20 text-white' : 'bg-white/5 text-white/45'}`}>Natural</button>
                                 <button type="button" onClick={() => setImgMode('personal')}
-                                    className={`flex-1 px-3 py-2 text-xs font-bold transition-all ${imgMode === 'personal' ? 'bg-[#C9A7FF]/20 text-white' : 'bg-white/5 text-white/45'}`}>Marca Personal</button>
+                                    className={`flex-1 px-3 py-2 text-xs font-bold transition-all ${imgMode === 'personal' ? 'bg-[#4dfae8]/20 text-white' : 'bg-white/5 text-white/45'}`}>Marca Personal</button>
                             </div>
                             {imgMode === 'personal' && (
-                                <p className="text-[10px] text-[#C9A7FF]/70 -mt-1">Estilo agencia (glow, paneles flotantes). Subí tus fotos abajo para ser el protagonista. La cara sale parecida, no clon exacto. El texto se pone aparte.</p>
+                                <p className="text-[10px] text-[#4dfae8]/70 -mt-1">Estilo agencia (glow, paneles flotantes). Subí tus fotos abajo para ser el protagonista. La cara sale parecida, no clon exacto. El texto se pone aparte.</p>
                             )}
 
                             {/* Estilo + formato */}
                             <div className="flex flex-wrap items-center gap-2">
                                 <select value={imgStyle} onChange={e => setImgStyle(e.target.value)}
-                                    className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50 [&>option]:bg-[#273842]">
+                                    className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#4dfae8]/50 [&>option]:bg-[#273842]">
                                     <option value="natural">Estilo: Natural</option>
                                     <option value="elegante">Estilo: Elegante</option>
                                     <option value="colorido">Estilo: Colorido</option>
@@ -669,15 +669,15 @@ export default function SocialPage() {
                                 </select>
                                 <div className="flex rounded-xl overflow-hidden border border-white/10">
                                     <button type="button" onClick={() => setImgFormat('feed')}
-                                        className={`px-3 py-2 text-xs font-medium ${imgFormat === 'feed' ? 'bg-[#C9A7FF]/20 text-white' : 'bg-white/5 text-white/50'}`}>Cuadrado</button>
+                                        className={`px-3 py-2 text-xs font-medium ${imgFormat === 'feed' ? 'bg-[#4dfae8]/20 text-white' : 'bg-white/5 text-white/50'}`}>Cuadrado</button>
                                     <button type="button" onClick={() => setImgFormat('story')}
-                                        className={`px-3 py-2 text-xs font-medium ${imgFormat === 'story' ? 'bg-[#C9A7FF]/20 text-white' : 'bg-white/5 text-white/50'}`}>Vertical</button>
+                                        className={`px-3 py-2 text-xs font-medium ${imgFormat === 'story' ? 'bg-[#4dfae8]/20 text-white' : 'bg-white/5 text-white/50'}`}>Vertical</button>
                                 </div>
                                 <div className="flex rounded-xl overflow-hidden border border-white/10">
                                     <button type="button" onClick={() => setImgQuality('alta')}
-                                        className={`px-3 py-2 text-xs font-medium ${imgQuality === 'alta' ? 'bg-[#C9A7FF]/20 text-white' : 'bg-white/5 text-white/50'}`} title="Mejor calidad (~1-2 min)">Alta</button>
+                                        className={`px-3 py-2 text-xs font-medium ${imgQuality === 'alta' ? 'bg-[#4dfae8]/20 text-white' : 'bg-white/5 text-white/50'}`} title="Mejor calidad (~1-2 min)">Alta</button>
                                     <button type="button" onClick={() => setImgQuality('rapida')}
-                                        className={`px-3 py-2 text-xs font-medium ${imgQuality === 'rapida' ? 'bg-[#C9A7FF]/20 text-white' : 'bg-white/5 text-white/50'}`} title="Más rápida, sin distorsión (~30-60s)">Rápida</button>
+                                        className={`px-3 py-2 text-xs font-medium ${imgQuality === 'rapida' ? 'bg-[#4dfae8]/20 text-white' : 'bg-white/5 text-white/50'}`} title="Más rápida, sin distorsión (~30-60s)">Rápida</button>
                                 </div>
                             </div>
 
@@ -718,13 +718,13 @@ export default function SocialPage() {
                                         <FileText size={14} /> <span>Manual</span>
                                     </button>
                                 </div>
-                                <p className="text-[9px] text-white/35 mt-1.5 leading-snug">Cada post con un <b className="text-[#C9A7FF]/90">ángulo de contenido</b> (tip · motivación · detrás de escena · lifestyle).</p>
+                                <p className="text-[9px] text-white/35 mt-1.5 leading-snug">Cada post con un <b className="text-[#4dfae8]/90">ángulo de contenido</b> (tip · motivación · detrás de escena · lifestyle).</p>
 
                                 {/* El prompt SOLO aparece (y se ilumina) cuando ya está generado, o en modo Manual */}
                                 {(imgPrompt || showImgManual) && (
                                     <textarea value={imgPrompt} onChange={e => setImgPrompt(e.target.value)} rows={3}
                                         placeholder={showImgManual ? 'Escribí tu propio prompt…' : 'El prompt aparece acá…'}
-                                        className={`mt-2 w-full bg-white/5 border rounded-xl px-3 py-2 text-xs text-white placeholder-white/35 resize-none focus:outline-none leading-relaxed transition-all ${imgPrompt ? 'border-[#C9A7FF]/60 ring-1 ring-[#C9A7FF]/25 focus:border-[#C9A7FF]' : 'border-white/10 focus:border-[#C9A7FF]/50'}`} />
+                                        className={`mt-2 w-full bg-white/5 border rounded-xl px-3 py-2 text-xs text-white placeholder-white/35 resize-none focus:outline-none leading-relaxed transition-all ${imgPrompt ? 'border-[#4dfae8]/60 ring-1 ring-[#4dfae8]/25 focus:border-[#4dfae8]' : 'border-white/10 focus:border-[#4dfae8]/50'}`} />
                                 )}
                             </div>
 
@@ -733,7 +733,7 @@ export default function SocialPage() {
                                 <p className="text-[10px] text-[#FBBF24]/80 text-center flex items-center justify-center gap-1.5"><FileText size={11} /> Paso 1: elegí (o creá) tu perfil de contenido arriba</p>
                             )}
                             {selectedProfileId && !imgPrompt.trim() && (
-                                <p className="text-[10px] text-[#C9A7FF]/80 text-center flex items-center justify-center gap-1.5"><Sparkles size={11} /> Paso 2: armá el prompt para continuar</p>
+                                <p className="text-[10px] text-[#4dfae8]/80 text-center flex items-center justify-center gap-1.5"><Sparkles size={11} /> Paso 2: armá el prompt para continuar</p>
                             )}
 
                             {/* PASO 3: generar imagen — SOLO aparece cuando el prompt ya está listo (como Meta Ads) */}
@@ -749,7 +749,7 @@ export default function SocialPage() {
                                 <div className="rounded-xl border border-[#22C55E]/30 bg-[#22C55E]/5 p-2">
                                     <p className="text-[#22C55E] text-xs font-medium mb-1 flex items-center gap-1"><CheckCircle size={12} /> ¡Imagen generada! Ya quedó en tu post (abajo en Media).</p>
                                     {imgPreviewErr ? (
-                                        <a href={imgResultUrl} target="_blank" rel="noreferrer" className="text-[#C9A7FF] text-xs underline">No se pudo mostrar la vista previa — abrir imagen</a>
+                                        <a href={imgResultUrl} target="_blank" rel="noreferrer" className="text-[#4dfae8] text-xs underline">No se pudo mostrar la vista previa — abrir imagen</a>
                                     ) : (
                                         <img src={imgResultUrl} onError={() => setImgPreviewErr(true)} alt="imagen generada"
                                             className="w-full rounded-lg object-contain bg-black/20 max-h-72" />
@@ -762,12 +762,12 @@ export default function SocialPage() {
 
                         {/* Vista previa del post — SOLO el post de Facebook (sin recuadro alrededor) */}
                         <div className="space-y-2">
-                            <p className="text-white/60 text-[11px] font-medium px-1 flex items-center gap-1.5"><Image size={12} className="text-[#C9A7FF]" /> Así se va a ver tu post</p>
+                            <p className="text-white/60 text-[11px] font-medium px-1 flex items-center gap-1.5"><Image size={12} className="text-[#4dfae8]" /> Así se va a ver tu post</p>
 
                             <div className="bg-white rounded-xl overflow-hidden w-full max-w-[420px] mx-auto shadow-[0_2px_14px_rgba(0,0,0,0.28)]">
                                 {/* Encabezado */}
                                 <div className="flex items-center gap-2.5 px-3 pt-3 pb-1.5">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C9A7FF] to-[#147e95] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4dfae8] to-[#147e95] flex items-center justify-center text-white font-bold text-sm shrink-0">
                                         {previewName.replace('@', '').charAt(0).toUpperCase()}
                                     </div>
                                     <div className="min-w-0">
@@ -1219,7 +1219,7 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
             {/* OpenAI API Key */}
             <div className="dm-card-dark p-4 rounded-2xl border border-white/10">
                 <div className="flex items-center gap-2 mb-3">
-                    <Sparkles size={15} className="text-[#C9A7FF]" />
+                    <Sparkles size={15} className="text-[#4dfae8]" />
                     <p className="text-white font-medium text-sm">API Key de OpenAI (IA)</p>
                     {oaiConfig?.isValid && <span className="text-xs text-[#16A34A] bg-[#16A34A]/10 px-2 py-0.5 rounded-full">Activa ✓</span>}
                 </div>

@@ -258,7 +258,7 @@ export default function DiamondAssistantPlayground() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 8px 18px rgba(183,53,184,0.22)',
+                  boxShadow: '0 8px 18px rgba(0,229,208,0.22)',
                 }}
               >
                 <Bot size={19} className="text-white" />
@@ -359,7 +359,7 @@ export default function DiamondAssistantPlayground() {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 12,
-                background: 'linear-gradient(180deg, rgba(255,45,149,0.03), rgba(35,59,143,0.02))',
+                background: 'linear-gradient(180deg, rgba(0,229,208,0.03), rgba(35,59,143,0.02))',
               }}
             >
               {messages.length === 0 && !sending ? (
@@ -380,7 +380,7 @@ export default function DiamondAssistantPlayground() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      background: 'rgba(183,53,184,0.10)',
+                      background: 'rgba(0,229,208,0.10)',
                     }}
                   >
                     <Sparkles size={24} style={{ color: '#147e95' }} />
@@ -467,7 +467,7 @@ export default function DiamondAssistantPlayground() {
                   border: 'none',
                   cursor: !canChat || sending || !input.trim() ? 'not-allowed' : 'pointer',
                   opacity: !canChat || sending || !input.trim() ? 0.5 : 1,
-                  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                   flexShrink: 0,
                 }}
               >
@@ -529,7 +529,7 @@ function Bubble({ message }: { message: ChatMessage }) {
               : message.escalated
                 ? '1px solid rgba(220,38,38,0.35)'
                 : `1px solid ${BORDER}`,
-            boxShadow: isUser ? '0 8px 20px rgba(183,53,184,0.20)' : '0 1px 3px rgba(17,24,39,0.05)',
+            boxShadow: isUser ? '0 8px 20px rgba(0,229,208,0.20)' : '0 1px 3px rgba(17,24,39,0.05)',
             borderTopRightRadius: isUser ? 4 : 14,
             borderTopLeftRadius: isUser ? 14 : 4,
           }}
@@ -693,7 +693,7 @@ function EmptyAgents() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'rgba(183,53,184,0.10)',
+          background: 'rgba(0,229,208,0.10)',
         }}
       >
         <ShieldAlert size={26} style={{ color: '#147e95' }} />
@@ -715,7 +715,7 @@ function EmptyAgents() {
           color: '#fff',
           background: BRAND,
           textDecoration: 'none',
-          boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+          boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
         }}
       >
         <Plus size={15} /> Crear agente

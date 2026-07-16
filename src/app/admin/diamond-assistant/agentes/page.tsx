@@ -72,7 +72,7 @@ const PROVIDER_OPTIONS: { value: Agent['provider']; label: string }[] = [
 const PROVIDER_STYLE: Record<Agent['provider'], { color: string; tint: string }> = {
   BAILEYS: { color: '#16A34A', tint: 'rgba(22,163,74,0.10)' },
   YCLOUD: { color: '#233B8F', tint: 'rgba(35,59,143,0.10)' },
-  META: { color: '#147e95', tint: 'rgba(183,53,184,0.10)' },
+  META: { color: '#147e95', tint: 'rgba(0,229,208,0.10)' },
 }
 
 // Etiquetas de los campos de credenciales por proveedor (solo API-based).
@@ -308,7 +308,7 @@ export default function DiamondAssistantAgentes() {
               background: BRAND,
               border: 'none',
               cursor: 'pointer',
-              boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+              boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
             }}
           >
             <Plus size={15} /> Nuevo agente
@@ -346,7 +346,7 @@ export default function DiamondAssistantAgentes() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(183,53,184,0.10)',
+              background: 'rgba(0,229,208,0.10)',
             }}
           >
             <Sparkles size={26} style={{ color: '#147e95' }} />
@@ -369,7 +369,7 @@ export default function DiamondAssistantAgentes() {
               background: BRAND,
               border: 'none',
               cursor: 'pointer',
-              boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+              boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
             }}
           >
             <Plus size={15} /> Crear agente
@@ -393,7 +393,7 @@ export default function DiamondAssistantAgentes() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 8px 18px rgba(183,53,184,0.22)',
+                      boxShadow: '0 8px 18px rgba(0,229,208,0.22)',
                     }}
                   >
                     <Bot size={20} className="text-white" />
@@ -467,7 +467,7 @@ export default function DiamondAssistantAgentes() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 'auto' }}>
                   <Badge icon={Cpu} label={agent.model} color="#233B8F" tint="rgba(35,59,143,0.08)" />
                   <Badge icon={Radio} label={PROVIDER_OPTIONS.find((p) => p.value === agent.provider)?.label ?? agent.provider} color={prov.color} tint={prov.tint} />
-                  <Badge icon={Zap} label={`temp ${agent.temperature}`} color="#147e95" tint="rgba(183,53,184,0.08)" />
+                  <Badge icon={Zap} label={`temp ${agent.temperature}`} color="#147e95" tint="rgba(0,229,208,0.08)" />
                   {agent.hasOpenaiKey && (
                     <Badge icon={KeyRound} label="API key" color="#16A34A" tint="rgba(22,163,74,0.10)" />
                   )}
@@ -714,7 +714,7 @@ export default function DiamondAssistantAgentes() {
               </div>
 
               {/* Voz (nota de voz) */}
-              <div style={{ marginBottom: 16, padding: 14, borderRadius: 12, background: 'rgba(183,53,184,0.05)', border: '1px solid rgba(183,53,184,0.18)' }}>
+              <div style={{ marginBottom: 16, padding: 14, borderRadius: 12, background: 'rgba(0,229,208,0.05)', border: '1px solid rgba(0,229,208,0.18)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 13, fontWeight: 800, color: '#111827' }}>
                     <Mic size={15} style={{ color: '#147e95' }} /> Responder con voz
@@ -838,7 +838,7 @@ export default function DiamondAssistantAgentes() {
                   border: 'none',
                   cursor: saving ? 'default' : 'pointer',
                   opacity: saving ? 0.6 : 1,
-                  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                 }}
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={14} />}

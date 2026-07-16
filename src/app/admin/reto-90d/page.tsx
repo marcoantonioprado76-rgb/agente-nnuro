@@ -104,7 +104,7 @@ function SubNav() {
               border: active ? 'none' : `1px solid ${BORDER}`,
               background: active ? BRAND_GRADIENT : '#fff',
               color: active ? '#fff' : MUTED,
-              boxShadow: active ? '0 8px 20px rgba(183,53,184,0.22)' : 'none',
+              boxShadow: active ? '0 8px 20px rgba(0,229,208,0.22)' : 'none',
             }}
           >
             {item.label}
@@ -169,8 +169,8 @@ export default function AdminReto90dDashboard() {
 
   const kpiCards = [
     { label: 'Usuarios inscritos', value: enrolled, icon: Users, tint: 'rgba(35,59,143,0.10)', color: '#233B8F' },
-    { label: 'Tareas del día', value: tasksToday, icon: ListChecks, tint: 'rgba(183,53,184,0.10)', color: '#147e95' },
-    { label: 'Evidencias hoy', value: evidencesToday, icon: Camera, tint: 'rgba(255,45,149,0.10)', color: '#1fb8bb' },
+    { label: 'Tareas del día', value: tasksToday, icon: ListChecks, tint: 'rgba(0,229,208,0.10)', color: '#147e95' },
+    { label: 'Evidencias hoy', value: evidencesToday, icon: Camera, tint: 'rgba(0,229,208,0.10)', color: '#1fb8bb' },
   ]
 
   return (
@@ -178,7 +178,7 @@ export default function AdminReto90dDashboard() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND_GRADIENT, boxShadow: '0 10px 24px rgba(255,45,149,0.28)' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND_GRADIENT, boxShadow: '0 10px 24px rgba(0,229,208,0.28)' }}>
             <Trophy size={19} className="text-white" />
           </div>
           <div>
@@ -210,7 +210,7 @@ export default function AdminReto90dDashboard() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           {/* Reto activo / aviso */}
           {challenge ? (
-            <div style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(255,45,149,0.06), rgba(35,59,143,0.06))' }}>
+            <div style={{ ...cardStyle, background: 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(35,59,143,0.06))' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#16A34A', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 999, background: '#16A34A', display: 'inline-block' }} /> Reto activo
@@ -284,7 +284,7 @@ export default function AdminReto90dDashboard() {
                   {ranking.slice(0, 10).map((r, i) => {
                     const medal = i === 0 ? '#F59E0B' : i === 1 ? '#94A3B8' : i === 2 ? '#B45309' : null
                     return (
-                      <div key={(r.phone ?? '') + i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 10px', borderRadius: 10, background: i < 3 ? 'rgba(183,53,184,0.04)' : 'transparent', border: `1px solid ${i < 3 ? 'rgba(183,53,184,0.12)' : 'transparent'}` }}>
+                      <div key={(r.phone ?? '') + i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 10px', borderRadius: 10, background: i < 3 ? 'rgba(0,229,208,0.04)' : 'transparent', border: `1px solid ${i < 3 ? 'rgba(0,229,208,0.12)' : 'transparent'}` }}>
                         <div style={{ width: 26, height: 26, borderRadius: 999, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: medal ? '#fff' : MUTED, background: medal ?? '#F0F3F7' }}>
                           {i + 1}
                         </div>

@@ -354,12 +354,12 @@ export default function CreateLandingPage() {
                         className="group border border-white/10 hover:border-white/20 rounded-3xl p-8 text-left transition-all hover:shadow-[0_0_40px_rgba(8,22,36,0.4)]"
                         style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}
                     >
-                        <div className="w-12 h-12 rounded-2xl bg-[#C9A7FF]/10 border border-[#C9A7FF]/20 flex items-center justify-center mb-5 group-hover:bg-[#C9A7FF]/20 transition-colors">
-                            <Code size={22} className="text-[#C9A7FF]" />
+                        <div className="w-12 h-12 rounded-2xl bg-[#4dfae8]/10 border border-[#4dfae8]/20 flex items-center justify-center mb-5 group-hover:bg-[#4dfae8]/20 transition-colors">
+                            <Code size={22} className="text-[#4dfae8]" />
                         </div>
                         <h2 className="text-lg font-black text-white mb-2">Pegar mi HTML</h2>
                         <p className="text-white/55 text-sm leading-relaxed">Tienes tu propio código HTML listo. Pégalo aquí y publícalo al instante.</p>
-                        <div className="mt-5 text-xs font-bold uppercase tracking-widest text-[#C9A7FF]/80 flex items-center gap-1.5">
+                        <div className="mt-5 text-xs font-bold uppercase tracking-widest text-[#4dfae8]/80 flex items-center gap-1.5">
                             Usar → <ArrowRight size={12} />
                         </div>
                     </button>

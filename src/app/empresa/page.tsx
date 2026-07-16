@@ -165,7 +165,7 @@ export default function EmpresaPage() {
               {org?.active ? 'Empresa activa' : 'Empresa inactiva'}
             </p>
           </div>
-          <div style={{ textAlign: 'center', background: 'linear-gradient(135deg,rgba(255,45,149,0.08),rgba(35,59,143,0.08))', border: '1px solid #E4E9F0', borderRadius: 14, padding: '12px 22px' }}>
+          <div style={{ textAlign: 'center', background: 'linear-gradient(135deg,rgba(0,229,208,0.08),rgba(35,59,143,0.08))', border: '1px solid #E4E9F0', borderRadius: 14, padding: '12px 22px' }}>
             <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#9AA3B2' }}>Usuarios / Cupo</p>
             <p style={{ fontSize: 26, fontWeight: 900, background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               {org?.memberCount} <span style={{ color: '#C4CCD8', WebkitTextFillColor: '#C4CCD8' }}>/ {org?.maxUsers || '∞'}</span>
@@ -202,7 +202,7 @@ export default function EmpresaPage() {
             onClick={() => { setShowAdd(true); setAddError(''); setAddUsername('') }}
             disabled={!!full}
             title={full ? 'Cupo alcanzado' : ''}
-            style={{ background: full ? '#C4CCD8' : DG, color: '#fff', border: 'none', borderRadius: 11, padding: '10px 18px', fontWeight: 800, fontSize: 13, cursor: full ? 'not-allowed' : 'pointer', boxShadow: full ? 'none' : '0 8px 22px -10px rgba(183,53,184,0.7)' }}
+            style={{ background: full ? '#C4CCD8' : DG, color: '#fff', border: 'none', borderRadius: 11, padding: '10px 18px', fontWeight: 800, fontSize: 13, cursor: full ? 'not-allowed' : 'pointer', boxShadow: full ? 'none' : '0 8px 22px -10px rgba(0,229,208,0.7)' }}
           >
             <i className="fa-solid fa-user-plus" style={{ marginRight: 7 }} />Agregar usuario
           </button>
@@ -241,7 +241,7 @@ export default function EmpresaPage() {
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 9px', borderRadius: 999, background: u.plan === 'NONE' ? '#F1F3F8' : 'rgba(183,53,184,0.1)', color: u.plan === 'NONE' ? '#9AA3B2' : '#147e95', border: '1px solid #E4E9F0' }}>{u.plan}</span>
+                    <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 9px', borderRadius: 999, background: u.plan === 'NONE' ? '#F1F3F8' : 'rgba(0,229,208,0.1)', color: u.plan === 'NONE' ? '#9AA3B2' : '#147e95', border: '1px solid #E4E9F0' }}>{u.plan}</span>
                     <span style={{ fontSize: 12, fontWeight: 800, color: dCls }}>{dTxt}</span>
                     <span style={{ fontSize: 11, fontWeight: 700, color: u.isActive ? '#16a34a' : '#ef4444' }}>{u.isActive ? 'Activo' : 'Inactivo'}</span>
                     <div style={{ display: 'flex', gap: 6 }}>
@@ -283,7 +283,7 @@ export default function EmpresaPage() {
           <p style={{ fontSize: 13, color: '#5B6472', marginBottom: 12 }}>Elegí el plan a activar (30 días). Recordá cobrarle con tu factura.</p>
           <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
             {['BASIC', 'PRO', 'ELITE'].map(p => (
-              <button key={p} onClick={() => setPlanChoice(p)} style={{ flex: 1, padding: '12px 0', borderRadius: 11, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: planChoice === p ? '2px solid #147e95' : '1px solid #E4E9F0', background: planChoice === p ? 'rgba(183,53,184,0.08)' : '#fff', color: planChoice === p ? '#147e95' : '#5B6472' }}>{p}</button>
+              <button key={p} onClick={() => setPlanChoice(p)} style={{ flex: 1, padding: '12px 0', borderRadius: 11, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: planChoice === p ? '2px solid #147e95' : '1px solid #E4E9F0', background: planChoice === p ? 'rgba(0,229,208,0.08)' : '#fff', color: planChoice === p ? '#147e95' : '#5B6472' }}>{p}</button>
             ))}
           </div>
           <div style={modalActions}>
@@ -327,7 +327,7 @@ const iconBtn: React.CSSProperties = { width: 34, height: 34, borderRadius: 9, b
 const inputStyle: React.CSSProperties = { width: '100%', padding: '11px 14px', borderRadius: 11, border: '1px solid #D5DCE6', fontSize: 14, marginTop: 4, outline: 'none' }
 const modalActions: React.CSSProperties = { display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 18 }
 const btnGhost: React.CSSProperties = { padding: '10px 16px', borderRadius: 10, border: '1px solid #E4E9F0', background: '#fff', color: '#5B6472', fontWeight: 700, cursor: 'pointer', fontSize: 13 }
-const btnPrimary: React.CSSProperties = { padding: '10px 18px', borderRadius: 10, border: 'none', background: DG, color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 13, boxShadow: '0 8px 22px -10px rgba(183,53,184,0.7)' }
+const btnPrimary: React.CSSProperties = { padding: '10px 18px', borderRadius: 10, border: 'none', background: DG, color: '#fff', fontWeight: 800, cursor: 'pointer', fontSize: 13, boxShadow: '0 8px 22px -10px rgba(0,229,208,0.7)' }
 
 function Modal({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
   return (

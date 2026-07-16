@@ -214,7 +214,7 @@ export default function DiamondAssistantDashboard() {
                           borderBottom: i < data.recent.length - 1 ? `1px solid ${BORDER}` : 'none',
                         }}
                       >
-                        <div style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isOut ? 'rgba(35,59,143,0.10)' : 'rgba(183,53,184,0.10)' }}>
+                        <div style={{ width: 28, height: 28, borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isOut ? 'rgba(35,59,143,0.10)' : 'rgba(0,229,208,0.10)' }}>
                           {isOut ? <ArrowUpRight size={14} style={{ color: '#233B8F' }} /> : <ArrowDownLeft size={14} style={{ color: '#147e95' }} />}
                         </div>
                         <div style={{ minWidth: 0, flex: 1 }}>

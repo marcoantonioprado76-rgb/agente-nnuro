@@ -224,7 +224,7 @@ export default function AdminOrganizationsPage() {
         <button
           onClick={() => { setCreateErr(null); setForm({ name: '', maxUsers: '10', adminUsername: '' }); setCreateOpen(true) }}
           className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-black text-white transition-all active:scale-95 shrink-0"
-          style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 8px 18px rgba(183,53,184,0.28)' }}
+          style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 8px 18px rgba(0,229,208,0.28)' }}
         >
           <Plus size={15} /> Crear empresa
         </button>
@@ -358,7 +358,7 @@ export default function AdminOrganizationsPage() {
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => !creating && setCreateOpen(false)} />
           <div className="relative bg-[#1a262f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,208,0.7), transparent)' }} />
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
@@ -447,7 +447,7 @@ export default function AdminOrganizationsPage() {
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => updating !== quotaModal.id && setQuotaModal(null)} />
           <div className="relative bg-[#1a262f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-xs z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,208,0.7), transparent)' }} />
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5 min-w-0">

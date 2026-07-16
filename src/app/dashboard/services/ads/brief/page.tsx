@@ -218,7 +218,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
     const fmtTime = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`
 
     return (
-        <div className="px-4 md:px-6 xl:px-10 pt-6 max-w-screen-xl 2xl:max-w-screen-2xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 xl:px-10 pt-6 max-w-screen-xl 2xl:max-w-screen-2xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(0,229,208,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
             <div className="flex items-center gap-4 mb-8">
                 <button onClick={onCancel} className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
                     <ArrowLeft size={16} />
@@ -312,7 +312,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
                             {!audioBlob ? (
                                 <div className="flex flex-col items-center gap-6">
                                     <button onClick={recording ? stopRecording : startRecording}
-                                        className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all ${recording ? 'bg-[#F87171] shadow-[0_0_60px_rgba(239,68,68,0.5)]' : 'bg-[#147e95] shadow-[0_0_60px_rgba(183,53,184,0.4)]'}`}>
+                                        className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all ${recording ? 'bg-[#F87171] shadow-[0_0_60px_rgba(239,68,68,0.5)]' : 'bg-[#147e95] shadow-[0_0_60px_rgba(0,229,208,0.4)]'}`}>
                                         {recording && <span className="absolute inset-0 rounded-full bg-[#F87171] animate-ping opacity-25" />}
                                         {recording ? <Square size={32} className="text-white" /> : <Mic size={32} className="text-white" />}
                                     </button>
@@ -351,7 +351,7 @@ function CreateBriefView({ onSaved, onCancel }: { onSaved: (b: Brief) => void; o
 
                     {/* Lo nuevo que generó la IA según la categoría (orientado a los anuncios) */}
                     {(() => { const b = brief as any; const cat = AD_CATEGORIES.find(c => c.id === b.category); return (
-                        <div className="p-4 rounded-2xl space-y-3" style={{ background: 'rgba(183,53,184,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <div className="p-4 rounded-2xl space-y-3" style={{ background: 'rgba(0,229,208,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
                             <p className="text-[11px] font-bold text-[#147e95] flex items-center gap-1.5">
                                 <Sparkles size={12} /> Enfoque del anuncio {cat && <span className="text-white/30 font-normal">· {cat.emoji} {cat.label}</span>}
                             </p>

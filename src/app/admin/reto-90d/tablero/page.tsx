@@ -22,7 +22,7 @@ interface StatusMeta {
 const STATUS_META: Record<string, StatusMeta> = {
   APPROVED: { label: 'Aprobado', color: '#16A34A', icon: '✅', tint: 'rgba(22,163,74,0.12)' },
   REVIEW: { label: 'En revisión', color: '#233B8F', icon: '⏳', tint: 'rgba(35,59,143,0.12)' },
-  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#147e95', icon: '✨', tint: 'rgba(183,53,184,0.12)' },
+  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#147e95', icon: '✨', tint: 'rgba(0,229,208,0.12)' },
   PENDING: { label: 'Pendiente', color: '#D97706', icon: '●', tint: 'rgba(217,119,6,0.12)' },
   REJECTED: { label: 'Rechazado', color: '#DC2626', icon: '✕', tint: 'rgba(220,38,38,0.12)' },
   DUPLICATED: { label: 'Duplicado', color: '#6B7280', icon: '⧉', tint: 'rgba(107,114,128,0.12)' },
@@ -62,7 +62,7 @@ function SubNav() {
               border: active ? 'none' : `1px solid ${BORDER}`,
               background: active ? BRAND_GRADIENT : '#fff',
               color: active ? '#fff' : MUTED,
-              boxShadow: active ? '0 8px 20px rgba(183,53,184,0.22)' : 'none',
+              boxShadow: active ? '0 8px 20px rgba(0,229,208,0.22)' : 'none',
             }}
           >
             {item.label}
@@ -166,7 +166,7 @@ export default function AdminReto90dTablero() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND_GRADIENT, boxShadow: '0 10px 24px rgba(255,45,149,0.28)' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: BRAND_GRADIENT, boxShadow: '0 10px 24px rgba(0,229,208,0.28)' }}>
             <LayoutGrid size={19} className="text-white" />
           </div>
           <div>

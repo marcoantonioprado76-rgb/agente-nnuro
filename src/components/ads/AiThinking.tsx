@@ -41,7 +41,7 @@ export function AiThinking({ messages, className = '', variant = 'full' }:
         return (
             <div className={`absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-[#1a262f]/85 backdrop-blur-sm px-3 ${className}`}>
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: GRAD, boxShadow: '0 0 22px -2px rgba(183,53,184,0.55)' }}>
+                    style={{ background: GRAD, boxShadow: '0 0 22px -2px rgba(0,229,208,0.55)' }}>
                     <Sparkles size={15} className="text-white animate-pulse" />
                 </div>
                 <p className="text-[10px] font-bold text-center text-white/90 transition-all duration-300 leading-snug"
@@ -55,10 +55,10 @@ export function AiThinking({ messages, className = '', variant = 'full' }:
         <div className={`flex flex-col items-center justify-center gap-5 py-14 ${className}`}>
             {/* Ícono de marca con glow y anillo pulsante */}
             <div className="relative w-16 h-16 flex items-center justify-center">
-                <span className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(183,53,184,0.18)' }} />
-                <span className="absolute -inset-1 rounded-3xl blur-xl" style={{ background: 'rgba(255,45,149,0.25)' }} />
+                <span className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(0,229,208,0.18)' }} />
+                <span className="absolute -inset-1 rounded-3xl blur-xl" style={{ background: 'rgba(0,229,208,0.25)' }} />
                 <div className="relative w-14 h-14 rounded-3xl flex items-center justify-center"
-                    style={{ background: GRAD, boxShadow: '0 12px 30px -8px rgba(183,53,184,0.7), inset 0 1px 0 rgba(255,255,255,0.25)' }}>
+                    style={{ background: GRAD, boxShadow: '0 12px 30px -8px rgba(0,229,208,0.7), inset 0 1px 0 rgba(255,255,255,0.25)' }}>
                     <Sparkles size={24} className="text-white animate-pulse" />
                 </div>
             </div>

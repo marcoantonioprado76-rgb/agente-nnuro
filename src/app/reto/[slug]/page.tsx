@@ -98,7 +98,7 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
       {/* Logo oficial MY DIAMOND */}
       <div style={{ position: 'relative', zIndex: 10, marginBottom: 24, display: 'flex', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 210, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(183,53,184,0.30))' }} />
+        <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 210, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
       </div>
 
       <div style={{
@@ -210,7 +210,7 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
                   width: '100%', padding: '16px', borderRadius: 14, border: 'none', color: '#fff',
                   fontSize: 15, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase',
                   background: BRAND, cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.8 : 1,
-                  boxShadow: '0 14px 30px rgba(183,53,184,0.32)', marginTop: 4,
+                  boxShadow: '0 14px 30px rgba(0,229,208,0.32)', marginTop: 4,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 }}
               >

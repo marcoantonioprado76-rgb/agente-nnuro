@@ -125,7 +125,7 @@ export default function CobroEmpresaPage() {
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 18, alignItems: 'center' }}>
               {saved && <span style={{ color: '#16a34a', fontSize: 13, fontWeight: 700 }}><i className="fa-solid fa-check" /> Guardado</span>}
-              <button onClick={save} disabled={saving} style={{ background: DG, color: '#fff', border: 'none', borderRadius: 11, padding: '12px 26px', fontWeight: 800, fontSize: 14, cursor: 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 8px 22px -10px rgba(183,53,184,0.7)' }}>
+              <button onClick={save} disabled={saving} style={{ background: DG, color: '#fff', border: 'none', borderRadius: 11, padding: '12px 26px', fontWeight: 800, fontSize: 14, cursor: 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 8px 22px -10px rgba(0,229,208,0.7)' }}>
                 {saving ? 'Guardando…' : 'Guardar cambios'}
               </button>
             </div>

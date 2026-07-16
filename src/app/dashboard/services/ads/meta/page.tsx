@@ -159,10 +159,10 @@ function AdsDashboardInner() {
 
             {/* ── HEADER ─────────────────────────────── */}
             <div className="relative rounded-3xl overflow-hidden mb-7 p-6 md:p-8"
-                style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), #212e38 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.16), #212e38 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
 
                 {/* glow orbs */}
-                <div className="pointer-events-none absolute -top-10 -left-10 w-56 h-56 rounded-full blur-[80px]" style={{ background: 'rgba(183,53,184,0.18)' }} />
+                <div className="pointer-events-none absolute -top-10 -left-10 w-56 h-56 rounded-full blur-[80px]" style={{ background: 'rgba(0,229,208,0.18)' }} />
                 <div className="pointer-events-none absolute -bottom-10 right-20 w-40 h-40 rounded-full blur-[70px]" style={{ background: 'rgba(35,59,143,0.12)' }} />
 
                 <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-5">
@@ -193,7 +193,7 @@ function AdsDashboardInner() {
 
                     <div className="flex items-center gap-2 flex-nowrap overflow-x-auto scrollbar-hide -mx-1 px-1">
                         <Link href="/dashboard/services/ads/wizard"
-                            className="shrink-0 flex items-center gap-2 text-white text-sm font-bold px-3 sm:px-5 py-2.5 rounded-xl transition-all active:scale-[0.97] shadow-[0_0_30px_rgba(183,53,184,0.35)]"
+                            className="shrink-0 flex items-center gap-2 text-white text-sm font-bold px-3 sm:px-5 py-2.5 rounded-xl transition-all active:scale-[0.97] shadow-[0_0_30px_rgba(0,229,208,0.35)]"
                             style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' }}>
                             <Plus size={15} />
                             <span className="hidden sm:inline">Nueva&nbsp;</span>Campaña
@@ -243,7 +243,7 @@ function AdsDashboardInner() {
                 <div className="flex flex-col items-center justify-center py-36 gap-4">
                     <div className="relative">
                         <div className="w-12 h-12 rounded-full border-2 border-[#E4E9F0] border-t-[#147e95] animate-spin" />
-                        <div className="absolute inset-0 rounded-full blur-md" style={{ background: 'rgba(183,53,184,0.1)' }} />
+                        <div className="absolute inset-0 rounded-full blur-md" style={{ background: 'rgba(0,229,208,0.1)' }} />
                     </div>
                     <p className="text-[#64748B] text-xs font-medium tracking-widest uppercase">Cargando</p>
                 </div>
@@ -314,7 +314,7 @@ function AdsDashboardInner() {
                             </p>
                         </div>
                         <span className="text-[10px] font-bold px-3 py-1.5 rounded-xl shrink-0"
-                            style={{ background: 'rgba(183,53,184,0.15)', border: '1px solid rgba(255,255,255,0.08)', color: '#4dfae8' }}>
+                            style={{ background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(255,255,255,0.08)', color: '#4dfae8' }}>
                             {hasOpenAI ? 'Reconfigurar' : 'Configurar'}
                         </span>
                     </Link>
@@ -323,7 +323,7 @@ function AdsDashboardInner() {
                     {campaigns.length > 0 && (
                         <div className="grid grid-cols-4 gap-2 sm:gap-3">
                             {[
-                                { label: 'Total', value: campaigns.length, icon: Target, color: 'text-white', accent: '#212e38', border: 'rgba(183,53,184,0.2)', iconColor: 'text-[#147e95]' },
+                                { label: 'Total', value: campaigns.length, icon: Target, color: 'text-white', accent: '#212e38', border: 'rgba(0,229,208,0.2)', iconColor: 'text-[#147e95]' },
                                 { label: 'Publicadas', value: published, icon: Flame, color: 'text-[#22C55E]', accent: '#212e38', border: 'rgba(52,211,153,0.18)', iconColor: 'text-[#22C55E]' },
                                 { label: 'Borradores', value: drafts, icon: Clock, color: 'text-[#4C97D8]', accent: '#212e38', border: 'rgba(35,59,143,0.18)', iconColor: 'text-[#4C97D8]' },
                                 { label: 'Fallidas', value: failed, icon: XCircle, color: 'text-[#F87171]', accent: '#212e38', border: 'rgba(248,113,113,0.18)', iconColor: 'text-[#F87171]' },
@@ -407,7 +407,7 @@ function AdsDashboardInner() {
                                                 : <button onClick={() => handleConnect(platform.id)}
                                                     className="text-[10px] font-bold py-1.5 px-3 rounded-xl shrink-0 transition-all active:scale-[0.97]"
                                                     style={{
-                                                        background: isConnected ? 'rgba(255,255,255,0.14)' : 'rgba(183,53,184,0.15)',
+                                                        background: isConnected ? 'rgba(255,255,255,0.14)' : 'rgba(0,229,208,0.15)',
                                                         border: isConnected ? '1px solid rgba(255,255,255,0.22)' : '1px solid rgba(255,255,255,0.08)',
                                                         color: isConnected ? '#fff' : '#4dfae8'
                                                     }}>
@@ -473,7 +473,7 @@ function AdsDashboardInner() {
                                     className="flex flex-col items-center justify-center rounded-2xl py-10 gap-3 group transition-all"
                                     style={{ background: '#212e38', border: '1px dashed rgba(255,255,255,0.07)' }}>
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                                        style={{ background: 'rgba(183,53,184,0.1)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                        style={{ background: 'rgba(0,229,208,0.1)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                         <FileText size={16} className="text-[#147e95]" />
                                     </div>
                                     <p className="text-xs text-white/30 font-medium">Crear perfil de negocio</p>
@@ -492,10 +492,10 @@ function AdsDashboardInner() {
                                         <div key={b.id}
                                             onClick={() => setSelectedBriefId(sel ? null : b.id)}
                                             className="flex flex-wrap lg:flex-nowrap items-center gap-2 lg:gap-3 rounded-2xl px-3 py-2.5 lg:px-3.5 lg:py-3 group cursor-pointer transition-all"
-                                            style={{ background: sel ? 'rgba(183,53,184,0.14)' : '#212e38', border: sel ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(255,255,255,0.07)' }}>
+                                            style={{ background: sel ? 'rgba(0,229,208,0.14)' : '#212e38', border: sel ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(255,255,255,0.07)' }}>
                                             <div className="flex items-center gap-2 min-w-0 w-full lg:w-auto lg:flex-1">
                                                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                                                    style={{ background: sel ? 'rgba(183,53,184,0.25)' : 'rgba(183,53,184,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                                    style={{ background: sel ? 'rgba(0,229,208,0.25)' : 'rgba(0,229,208,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                     <FileText size={13} className="text-[#147e95]" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -515,7 +515,7 @@ function AdsDashboardInner() {
                                                 <Link href={`/dashboard/services/ads/wizard?briefId=${b.id}`}
                                                     onClick={e => e.stopPropagation()}
                                                     className="flex items-center justify-center gap-1 text-[10px] font-bold px-3 py-1.5 rounded-xl flex-1 lg:flex-none transition-all active:scale-[0.97]"
-                                                    style={{ background: 'rgba(183,53,184,0.7)', color: '#e9d5ff', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                                    style={{ background: 'rgba(0,229,208,0.7)', color: '#e9d5ff', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                     Campaña <ArrowRight size={9} />
                                                 </Link>
                                             </div>
@@ -548,7 +548,7 @@ function AdsDashboardInner() {
                             <div className="flex flex-col items-center justify-center py-20 gap-4 rounded-3xl text-center px-4"
                                 style={{ background: '#212e38', border: '1px dashed rgba(255,255,255,0.07)' }}>
                                 <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                                    style={{ background: 'rgba(183,53,184,0.1)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                    style={{ background: 'rgba(0,229,208,0.1)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                     <Sparkles className="text-[#147e95]" size={22} />
                                 </div>
                                 <div>
@@ -596,7 +596,7 @@ function AdsDashboardInner() {
                                                 {campaign.status === 'READY' && (
                                                     <Link href={`/dashboard/services/ads/preview/${campaign.id}`}
                                                         className="text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all"
-                                                        style={{ background: 'rgba(183,53,184,0.7)', color: '#e9d5ff', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                                        style={{ background: 'rgba(0,229,208,0.7)', color: '#e9d5ff', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                         Publicar →
                                                     </Link>
                                                 )}

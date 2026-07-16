@@ -399,7 +399,7 @@ export default function CourseDetailPage() {
         <h1 style={{ fontSize: 22, fontWeight: 800, color: '#111827', marginBottom: 8 }}>{course.title}</h1>
         <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.6, marginBottom: 16 }}>{course.description}</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 24, fontWeight: 900, ...(course.freeForPlan ? { background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: '#C9A7FF' }) }}>
+          <span style={{ fontSize: 24, fontWeight: 900, ...(course.freeForPlan ? { background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: '#4dfae8' }) }}>
             {course.freeForPlan ? 'GRATIS' : `${course.price.toFixed(2)} USDT`}
           </span>
           {course.freeForPlan && (
@@ -408,7 +408,7 @@ export default function CourseDetailPage() {
             </span>
           )}
           {!course.freeForPlan && (
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#C9A7FF', background: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.2)', padding: '3px 8px', borderRadius: 6 }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#4dfae8', background: 'rgba(245,166,35,0.1)', border: '1px solid rgba(245,166,35,0.2)', padding: '3px 8px', borderRadius: 6 }}>
               BEP-20 · BSC
             </span>
           )}
@@ -437,7 +437,7 @@ export default function CourseDetailPage() {
       )}
       {!isLocked && isPendingVerification && (
         <div style={{ padding: '12px 16px', borderRadius: 12, marginBottom: 20, background: 'rgba(245,166,35,0.08)', border: '1px solid rgba(245,166,35,0.25)' }}>
-          <p style={{ fontSize: 13, color: '#C9A7FF', fontWeight: 600 }}>⛓️ Verificando en blockchain...</p>
+          <p style={{ fontSize: 13, color: '#4dfae8', fontWeight: 600 }}>⛓️ Verificando en blockchain...</p>
           <p style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>Tu transacción fue enviada. Estamos confirmando los bloques en la red BSC. Se activará en minutos.</p>
         </div>
       )}
@@ -455,7 +455,7 @@ export default function CourseDetailPage() {
       {!isLocked && !enrollment && (
         course.freeForPlan ? (
           <button onClick={handleFreeEnroll} disabled={submitting}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, fontWeight: 700, fontSize: 14, background: submitting ? 'rgba(183,53,184,0.4)' : 'linear-gradient(90deg, #1fb8bb 0%, #147e95 50%, #233B8F 100%)', color: '#fff', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: 28 }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, fontWeight: 700, fontSize: 14, background: submitting ? 'rgba(0,229,208,0.4)' : 'linear-gradient(90deg, #1fb8bb 0%, #147e95 50%, #233B8F 100%)', color: '#fff', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', marginBottom: 28 }}>
             {submitting ? 'Activando...' : '✓ Acceder gratis con mi plan'}
           </button>
         ) : (
@@ -565,7 +565,7 @@ export default function CourseDetailPage() {
               </button>
               {isApproved && !isVideoDone(selectedVideo) && (
                 <button onClick={markWatched}
-                  style={{ padding: '10px 14px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: 'rgba(255,45,149,0.1)', border: '1px solid rgba(255,45,149,0.25)', color: '#1fb8bb', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  style={{ padding: '10px 14px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: 'rgba(0,229,208,0.1)', border: '1px solid rgba(0,229,208,0.25)', color: '#1fb8bb', cursor: 'pointer', whiteSpace: 'nowrap' }}>
                   ✓ Marcar visto
                 </button>
               )}
@@ -604,7 +604,7 @@ export default function CourseDetailPage() {
 
           {/* Playlist (columna derecha) */}
           <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }} className="lg:sticky lg:top-4">
-            <div style={{ background: 'linear-gradient(135deg, rgba(255,45,149,0.16) 0%, rgba(183,53,184,0.16) 50%, rgba(35,59,143,0.16) 100%)', padding: '10px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ background: 'linear-gradient(135deg, rgba(0,229,208,0.16) 0%, rgba(0,229,208,0.16) 50%, rgba(35,59,143,0.16) 100%)', padding: '10px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Contenido del curso
               </p>
@@ -704,10 +704,10 @@ export default function CourseDetailPage() {
               <button onClick={closeModal} style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 18 }}>✕</button>
             </div>
             <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-              <button onClick={() => setPayTab('CRYPTO')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'CRYPTO' ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'CRYPTO' ? 'rgba(245,166,35,0.4)' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'CRYPTO' ? '#C9A7FF' : '#6B7280' }}>
+              <button onClick={() => setPayTab('CRYPTO')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'CRYPTO' ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'CRYPTO' ? 'rgba(245,166,35,0.4)' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'CRYPTO' ? '#4dfae8' : '#6B7280' }}>
                 ₮ Cripto (USDT)
               </button>
-              <button onClick={() => setPayTab('MANUAL')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'MANUAL' ? 'rgba(183,53,184,0.1)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'MANUAL' ? '#E4E9F0' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'MANUAL' ? '#147e95' : '#6B7280' }}>
+              <button onClick={() => setPayTab('MANUAL')} style={{ flex: 1, padding: '9px 0', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', background: payTab === 'MANUAL' ? 'rgba(0,229,208,0.1)' : 'rgba(255,255,255,0.04)', border: `1px solid ${payTab === 'MANUAL' ? '#E4E9F0' : 'rgba(255,255,255,0.08)'}`, color: payTab === 'MANUAL' ? '#147e95' : '#6B7280' }}>
                 📎 Comprobante
               </button>
             </div>

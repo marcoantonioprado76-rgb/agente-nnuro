@@ -109,7 +109,7 @@ function PublishProgress({ active, failed }: { active: boolean; failed: boolean 
                 <span aria-hidden className="pointer-events-none absolute" style={{ top: -44, bottom: -28, left: -90, right: -90, zIndex: -1, background: 'radial-gradient(62% 58% at 50% 58%, rgba(5,11,20,0.94), rgba(5,11,20,0.55) 42%, rgba(5,11,20,0) 78%)', filter: 'blur(6px)' }} />
                 {/* ── Escena del cohete: humo + chispas + temblor y despegue al 100% ── */}
                 <div className="relative w-full flex items-end justify-center" style={{ height: 176 }}>
-                    <span className="absolute rounded-full blur-3xl" style={{ bottom: 30, width: 160, height: 160, background: 'rgba(255,45,149,0.20)' }} />
+                    <span className="absolute rounded-full blur-3xl" style={{ bottom: 30, width: 160, height: 160, background: 'rgba(0,229,208,0.20)' }} />
                     {!launched && <RocketFX />}
                     <div className="relative" style={{
                         marginBottom: 26,
@@ -142,7 +142,7 @@ function PublishProgress({ active, failed }: { active: boolean; failed: boolean 
                             <span className="absolute inset-y-0 w-1/2 ai-shimmer-bar" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)' }} />
                         </div>
                         <span className="absolute top-1/2 rounded-full pointer-events-none animate-pulse"
-                            style={{ left: `${pct}%`, width: 10, height: 10, transform: 'translate(-50%,-50%)', transition: 'left .3s ease-out', background: '#fff', boxShadow: '0 0 10px 3px rgba(255,255,255,0.95), 0 0 20px 7px rgba(255,45,149,0.7)' }} />
+                            style={{ left: `${pct}%`, width: 10, height: 10, transform: 'translate(-50%,-50%)', transition: 'left .3s ease-out', background: '#fff', boxShadow: '0 0 10px 3px rgba(255,255,255,0.95), 0 0 20px 7px rgba(0,229,208,0.7)' }} />
                     </div>
                     <p className="text-center text-white/55 text-[11px] mt-4 font-semibold"
                         style={{ textShadow: '0 2px 8px rgba(5,11,20,0.95)' }}>Esto puede tardar un momento. No cierres esta ventana.</p>
@@ -934,14 +934,14 @@ function CampaignPageInner() {
     // ── Render ──────────────────────────────────────────────────────────────
 
     return (
-        <div className="px-4 md:px-6 xl:px-10 pt-6 max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-36 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 xl:px-10 pt-6 max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-36 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(0,229,208,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Overlay de publicación: cohete + barra de progreso */}
             <PublishProgress active={publishing} failed={!!error} />
 
             {/* ── Header ── */}
             <div className="flex items-center gap-3 mb-6"
-                style={{ background: 'linear-gradient(135deg,rgba(183,53,184,0.1) 0%,rgba(35,59,143,0.05) 100%)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.5rem', padding: '1rem 1.25rem' }}>
+                style={{ background: 'linear-gradient(135deg,rgba(0,229,208,0.1) 0%,rgba(35,59,143,0.05) 100%)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.5rem', padding: '1rem 1.25rem' }}>
                 <button
                     onClick={() => { if (typeof window !== 'undefined' && window.history.length > 1) router.back(); else router.push('/dashboard/services/ads/meta') }}
                     className="w-9 h-9 shrink-0 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all"
@@ -965,7 +965,7 @@ function CampaignPageInner() {
                         <button key={t.id}
                             onClick={() => { if (!t.locked) setTab(t.id) }}
                             disabled={t.locked}
-                            className={`flex-1 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold px-3 py-2.5 rounded-xl transition-all ${active ? 'bg-gradient-to-br from-[#1fb8bb]/90 via-[#147e95]/90 to-[#233B8F]/80 text-white shadow-[0_0_18px_rgba(183,53,184,0.3)]' : t.locked ? 'text-white/20 cursor-not-allowed' : 'text-white/45 hover:text-white/70 hover:bg-white/5'}`}>
+                            className={`flex-1 flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold px-3 py-2.5 rounded-xl transition-all ${active ? 'bg-gradient-to-br from-[#1fb8bb]/90 via-[#147e95]/90 to-[#233B8F]/80 text-white shadow-[0_0_18px_rgba(0,229,208,0.3)]' : t.locked ? 'text-white/20 cursor-not-allowed' : 'text-white/45 hover:text-white/70 hover:bg-white/5'}`}>
                             {t.done ? <CheckCircle2 size={12} className={active ? 'text-white' : 'text-[#22C55E]'} /> : <t.icon size={12} />}
                             {t.label}
                             {t.locked && <span className="text-[9px] opacity-60">🔒</span>}
@@ -1019,7 +1019,7 @@ function CampaignPageInner() {
                 {/* Section header */}
                 <div className="flex items-center gap-3 px-5 pt-5 pb-4 border-b border-white/5">
                     <div className="w-7 h-7 rounded-xl flex items-center justify-center text-[11px] font-black"
-                        style={{ background: configSaved ? 'rgba(16,185,129,0.15)' : 'rgba(183,53,184,0.15)', color: configSaved ? '#22C55E' : '#147e95' }}>1</div>
+                        style={{ background: configSaved ? 'rgba(16,185,129,0.15)' : 'rgba(0,229,208,0.15)', color: configSaved ? '#22C55E' : '#147e95' }}>1</div>
                     <div className="flex-1">
                         <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 flex items-center gap-1.5">
                             <Settings2 size={10} /> Configuración
@@ -1377,7 +1377,7 @@ function CampaignPageInner() {
                     {/* Save button */}
                     <button onClick={saveConfig} disabled={savingConfig || !form.providerAccountId || !form.name.trim()}
                         className="w-full flex items-center justify-center gap-2 font-bold py-3.5 rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                        style={{ background: 'linear-gradient(135deg,#147e95,#233B8F)', boxShadow: '0 0 24px rgba(183,53,184,0.3)' }}>
+                        style={{ background: 'linear-gradient(135deg,#147e95,#233B8F)', boxShadow: '0 0 24px rgba(0,229,208,0.3)' }}>
                         {savingConfig
                             ? <><Loader2 size={15} className="animate-spin" /> Guardando...</>
                             : configSaved
@@ -1407,7 +1407,7 @@ function CampaignPageInner() {
                     {/* Section header */}
                     <div className="flex items-center gap-3 px-5 pt-5 pb-4 border-b border-white/5">
                         <div className="w-7 h-7 rounded-xl flex items-center justify-center text-[11px] font-black"
-                            style={{ background: 'rgba(183,53,184,0.15)', color: '#147e95' }}>2</div>
+                            style={{ background: 'rgba(0,229,208,0.15)', color: '#147e95' }}>2</div>
                         <div className="flex-1">
                             <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 flex items-center gap-1.5">
                                 <LayoutGrid size={10} /> Creativos & Textos
@@ -1861,7 +1861,7 @@ function CampaignPageInner() {
                         {configSaved && (
                             <button onClick={generateCopies} disabled={generatingCopies}
                                 className="w-full flex items-center justify-center gap-2 font-bold py-3.5 rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                                style={{ background: copiesGenerated ? 'rgba(183,53,184,0.12)' : 'linear-gradient(135deg,#147e95,#233B8F)', border: copiesGenerated ? '1px solid rgba(255,255,255,0.08)' : 'none', color: copiesGenerated ? '#4dfae8' : '#fff', boxShadow: copiesGenerated ? 'none' : '0 0 24px rgba(183,53,184,0.25)' }}>
+                                style={{ background: copiesGenerated ? 'rgba(0,229,208,0.12)' : 'linear-gradient(135deg,#147e95,#233B8F)', border: copiesGenerated ? '1px solid rgba(255,255,255,0.08)' : 'none', color: copiesGenerated ? '#4dfae8' : '#fff', boxShadow: copiesGenerated ? 'none' : '0 0 24px rgba(0,229,208,0.25)' }}>
                                 {generatingCopies
                                     ? <><Loader2 size={15} className="animate-spin" /> Generando textos con IA...</>
                                     : copiesGenerated
@@ -1879,7 +1879,7 @@ function CampaignPageInner() {
                 <div className="fixed bottom-[65px] left-0 right-0 z-50 px-4 pb-3 pt-4 lg:bottom-0 lg:left-[240px]"
                     style={{ background: 'linear-gradient(to top,rgba(6,6,16,1) 60%,transparent)' }}>
                     <div className="max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto flex items-center gap-3 px-4 py-3 rounded-2xl"
-                        style={{ background: 'rgba(8,8,20,0.92)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', boxShadow: '0 -4px 30px rgba(0,0,0,0.5),0 0 20px rgba(183,53,184,0.06)' }}>
+                        style={{ background: 'rgba(8,8,20,0.92)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', boxShadow: '0 -4px 30px rgba(0,0,0,0.5),0 0 20px rgba(0,229,208,0.06)' }}>
                         <div className="flex-1 min-w-0 hidden sm:block">
                             <p className="text-xs font-bold text-white/60 truncate">{form.name}</p>
                             <p className="text-[11px] text-white/25">

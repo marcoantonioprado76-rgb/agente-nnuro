@@ -320,7 +320,7 @@ export default function DiamondAssistantConocimiento() {
                 background: BRAND,
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
               }}
             >
               <Plus size={15} /> Agregar conocimiento
@@ -348,7 +348,7 @@ export default function DiamondAssistantConocimiento() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(183,53,184,0.10)',
+              background: 'rgba(0,229,208,0.10)',
             }}
           >
             <Bot size={26} style={{ color: '#147e95' }} />
@@ -433,7 +433,7 @@ export default function DiamondAssistantConocimiento() {
                   background: BRAND,
                   border: 'none',
                   cursor: 'pointer',
-                  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                 }}
               >
                 <Plus size={15} /> Agregar conocimiento
@@ -734,7 +734,7 @@ export default function DiamondAssistantConocimiento() {
                   border: 'none',
                   cursor: saving ? 'default' : 'pointer',
                   opacity: saving ? 0.6 : 1,
-                  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                 }}
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : editingId ? <Save size={14} /> : <Sparkles size={14} />}

@@ -384,7 +384,7 @@ export default function DiamondAssistantBiblioteca() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(183,53,184,0.10)',
+              background: 'rgba(0,229,208,0.10)',
             }}
           >
             <FolderOpen size={26} style={{ color: '#147e95' }} />
@@ -641,7 +641,7 @@ export default function DiamondAssistantBiblioteca() {
                   <button
                     type="button"
                     onClick={() => setForm((p) => ({ ...p, tags: addTags(p.tags, ['testimonio', 'negocio']) }))}
-                    style={{ fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: `1px solid rgba(183,53,184,0.35)`, background: 'rgba(183,53,184,0.08)', color: '#147e95', cursor: 'pointer' }}
+                    style={{ fontSize: 12, fontWeight: 700, padding: '6px 10px', borderRadius: 8, border: `1px solid rgba(0,229,208,0.35)`, background: 'rgba(0,229,208,0.08)', color: '#147e95', cursor: 'pointer' }}
                   >
                     💼 Testimonio de negocio
                   </button>
@@ -679,7 +679,7 @@ export default function DiamondAssistantBiblioteca() {
                   border: 'none',
                   cursor: saving ? 'default' : 'pointer',
                   opacity: saving ? 0.6 : 1,
-                  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
                 }}
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Plus size={14} />}
@@ -1012,7 +1012,7 @@ function FilterChip({
         color: active ? '#fff' : '#6B7280',
         background: active ? BRAND : '#F4F6FA',
         border: active ? 'none' : `1px solid ${BORDER}`,
-        boxShadow: active ? '0 6px 16px rgba(183,53,184,0.22)' : 'none',
+        boxShadow: active ? '0 6px 16px rgba(0,229,208,0.22)' : 'none',
         transition: 'all 0.12s',
       }}
     >
@@ -1054,7 +1054,7 @@ const primaryBtnStyle: CSSProperties = {
   background: BRAND,
   border: 'none',
   cursor: 'pointer',
-  boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+  boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
 }
 
 // ── Estilos de modal compartidos ───────────────────────────────────

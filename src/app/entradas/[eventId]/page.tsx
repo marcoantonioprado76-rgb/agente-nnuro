@@ -243,7 +243,7 @@ export default function PublicTicketPage() {
       <div style={{
         position: 'relative', borderRadius: 26, padding: 1.5,
         background: 'linear-gradient(160deg, #1fb8bb 0%, #147e95 45%, #233B8F 100%)',
-        boxShadow: '0 30px 60px -26px rgba(183,53,184,0.55)',
+        boxShadow: '0 30px 60px -26px rgba(0,229,208,0.55)',
       }}>
 
         {/* FLYER completo (proporción natural: no se recorta ni deja espacios) */}
@@ -252,7 +252,7 @@ export default function PublicTicketPage() {
             ? <img src={event.image} alt={event.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
             : <div style={{ width: '100%', aspectRatio: '4/3', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 46 }}>🎟️</div>}
           <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #1a262f 100%)', pointerEvents: 'none' }} />
-          <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(255,45,149,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
+          <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(0,229,208,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
             📍 PRESENCIAL
           </span>
         </div>

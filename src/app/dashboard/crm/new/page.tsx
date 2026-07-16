@@ -258,7 +258,7 @@ export default function NewCrmCampaignPage() {
                     <ArrowLeft size={16} />
                 </Link>
                 <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-                    style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 4px 16px rgba(183,53,184,0.3)' }}>
+                    style={{ background: 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)', boxShadow: '0 4px 16px rgba(0,229,208,0.3)' }}>
                     <MessageCircle size={20} className="text-white" />
                 </div>
                 <div>

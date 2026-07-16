@@ -108,7 +108,7 @@ export default function SolicitudesPage() {
               <label style={{ fontSize: 12, color: '#6B7280', display: 'block', marginBottom: 5 }}>Plan</label>
               <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
                 {['BASIC', 'PRO', 'ELITE'].map(p => (
-                  <button key={p} onClick={() => setPlan(p)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: plan === p ? '2px solid #147e95' : '1px solid #E4E9F0', background: plan === p ? 'rgba(183,53,184,0.08)' : '#fff', color: plan === p ? '#147e95' : '#5B6472' }}>{p}</button>
+                  <button key={p} onClick={() => setPlan(p)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, fontWeight: 800, fontSize: 13, cursor: 'pointer', border: plan === p ? '2px solid #147e95' : '1px solid #E4E9F0', background: plan === p ? 'rgba(0,229,208,0.08)' : '#fff', color: plan === p ? '#147e95' : '#5B6472' }}>{p}</button>
                 ))}
               </div>
               <label style={{ fontSize: 12, color: '#6B7280', display: 'block', marginBottom: 5 }}>Días</label>

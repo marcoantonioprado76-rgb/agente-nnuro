@@ -229,7 +229,7 @@ function RegisterForm() {
 
         {/* Logo oficial */}
         <div className="flex flex-col items-center mb-6">
-          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 200, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(183,53,184,0.30))' }} />
+          <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 200, height: 'auto', display: 'block', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,0.85)) drop-shadow(0 22px 46px rgba(0,0,0,0.68)) drop-shadow(0 0 28px rgba(0,229,208,0.30))' }} />
           <p className="text-xs text-[#6B7280] mt-3">Crea tu cuenta gratuita</p>
         </div>
 
@@ -240,7 +240,7 @@ function RegisterForm() {
           <p className="text-[11px] text-[#6B7280] mb-5">Completa los datos para unirte a la plataforma.</p>
 
           {empresaName && (
-            <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-4" style={{ background: 'rgba(183,53,184,0.08)', border: '1px solid rgba(183,53,184,0.25)' }}>
+            <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 mb-4" style={{ background: 'rgba(0,229,208,0.08)', border: '1px solid rgba(0,229,208,0.25)' }}>
               <User size={14} style={{ color: '#147e95' }} className="shrink-0" />
               <p className="text-xs" style={{ color: '#7A2E8A' }}>Te estás uniendo a <strong>{empresaName}</strong>. Al registrarte quedarás dentro de esta empresa.</p>
             </div>

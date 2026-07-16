@@ -171,7 +171,7 @@ export default function StorePage() {
             const img = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null
             const outOfStock = item.stock === 0
             return (
-              <div key={item.id} style={{ borderRadius: 14, overflow: 'hidden', background: 'radial-gradient(120% 75% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', opacity: outOfStock ? 0.6 : 1, transition: 'border-color 0.2s', display: 'flex', flexDirection: 'column' }}>
+              <div key={item.id} style={{ borderRadius: 14, overflow: 'hidden', background: 'radial-gradient(120% 75% at 50% -10%, rgba(0,229,208,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', opacity: outOfStock ? 0.6 : 1, transition: 'border-color 0.2s', display: 'flex', flexDirection: 'column' }}>
                 {/* Image — click goes to detail */}
                 <Link href={`/dashboard/store/${item.id}`} style={{ textDecoration: 'none', display: 'block' }}>
                   <div style={{ aspectRatio: '1/1', background: 'rgba(0,229,208,0.04)', position: 'relative', overflow: 'hidden' }}>
@@ -273,12 +273,12 @@ export default function StorePage() {
                       style={{
                         position: 'relative', borderRadius: 24, padding: PAD,
                         background: 'linear-gradient(160deg, #1fb8bb 0%, #147e95 45%, #233B8F 100%)',
-                        boxShadow: allSoldOut ? '0 10px 24px -16px rgba(8,22,36,0.5)' : '0 26px 50px -22px rgba(183,53,184,0.55)',
+                        boxShadow: allSoldOut ? '0 10px 24px -16px rgba(8,22,36,0.5)' : '0 26px 50px -22px rgba(0,229,208,0.55)',
                         opacity: allSoldOut ? 0.55 : 1,
                         transition: 'transform .22s ease, box-shadow .22s ease',
                       }}
-                      onMouseEnter={e => { if (!allSoldOut) { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 34px 60px -20px rgba(183,53,184,0.7)' } }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = allSoldOut ? '0 10px 24px -16px rgba(8,22,36,0.5)' : '0 26px 50px -22px rgba(183,53,184,0.55)' }}
+                      onMouseEnter={e => { if (!allSoldOut) { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 34px 60px -20px rgba(0,229,208,0.7)' } }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = allSoldOut ? '0 10px 24px -16px rgba(8,22,36,0.5)' : '0 26px 50px -22px rgba(0,229,208,0.55)' }}
                     >
                       {/* ── FLYER: en su PROPORCIÓN NATURAL ───────────────────────
                           El alto es automático (height:auto), así el flyer llena el
@@ -300,7 +300,7 @@ export default function StorePage() {
                         <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #1a262f 100%)', pointerEvents: 'none' }} />
 
                         {/* Chip PRESENCIAL (NO es virtual) */}
-                        <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(255,45,149,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
+                        <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(0,229,208,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
                           📍 PRESENCIAL
                         </span>
 
@@ -364,7 +364,7 @@ export default function StorePage() {
                             padding: '14px 0', borderRadius: 999, textAlign: 'center', fontSize: 14.5, fontWeight: 900, letterSpacing: '0.01em',
                             background: allSoldOut ? 'rgba(255,255,255,0.07)' : 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)',
                             color: allSoldOut ? 'rgba(255,255,255,0.45)' : '#fff',
-                            boxShadow: allSoldOut ? 'none' : '0 12px 28px -10px rgba(255,45,149,0.55)',
+                            boxShadow: allSoldOut ? 'none' : '0 12px 28px -10px rgba(0,229,208,0.55)',
                           }}>
                             {allSoldOut ? 'Agotado' : '🎟️  Comprar entrada'}
                           </div>
@@ -396,7 +396,7 @@ export default function StorePage() {
       {quickItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,11,20,0.55)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
           onClick={() => setQuickItem(null)}>
-          <div style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 60px -24px rgba(8,22,36,0.7), inset 0 1px 0 rgba(255,255,255,0.05)', borderRadius: 18, width: '100%', maxWidth: 360, padding: 24 }}
+          <div style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 60px -24px rgba(8,22,36,0.7), inset 0 1px 0 rgba(255,255,255,0.05)', borderRadius: 18, width: '100%', maxWidth: 360, padding: 24 }}
             onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', gap: 14, marginBottom: 18 }}>
               {quickItem.images[0] && (

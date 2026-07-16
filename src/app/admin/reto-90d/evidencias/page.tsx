@@ -29,7 +29,7 @@ const SUB_STATUS: Record<SubStatus, { label: string; color: string; bg: string }
   REVIEW: { label: 'Revisión', color: '#233B8F', bg: 'rgba(35,59,143,0.1)' },
   REJECTED: { label: 'Rechazado', color: '#DC2626', bg: 'rgba(220,38,38,0.1)' },
   DUPLICATED: { label: 'Duplicado', color: '#6B7280', bg: 'rgba(107,114,128,0.12)' },
-  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#147e95', bg: 'rgba(183,53,184,0.1)' },
+  NEEDS_CLARIFICATION: { label: 'Aclaración', color: '#147e95', bg: 'rgba(0,229,208,0.1)' },
 }
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [

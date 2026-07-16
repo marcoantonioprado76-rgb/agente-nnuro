@@ -300,7 +300,7 @@ function WizardContent() {
     const plat = selectedPlatform ? PLATFORM_LABELS[selectedPlatform] : null
 
     return (
-        <div className="px-4 md:px-6 xl:px-8 pt-6 max-w-3xl xl:max-w-4xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 xl:px-8 pt-6 max-w-3xl xl:max-w-4xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(0,229,208,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Overlay animado al crear el anuncio (antes de ir al editor) */}
             {creating && (
@@ -474,7 +474,7 @@ function WizardContent() {
                             {/* Business context */}
                             {selectedBrief && (
                                 <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-white/10"
-                                    style={{ background: 'linear-gradient(135deg,rgba(183,53,184,0.12),rgba(37,99,235,0.05))' }}>
+                                    style={{ background: 'linear-gradient(135deg,rgba(0,229,208,0.12),rgba(37,99,235,0.05))' }}>
                                     <div className="w-9 h-9 rounded-xl bg-[#147e95]/15 border border-white/10 flex items-center justify-center shrink-0">
                                         <Building2 size={16} className="text-[#147e95]" />
                                     </div>
@@ -689,8 +689,8 @@ function WizardContent() {
                                             const stratPlat = PLATFORM_LABELS[strategy.platform]
                                             return (
                                                 <div key={strategy.id}
-                                                    className={`rounded-2xl border transition-all ${isSelected ? 'border-white/10 shadow-[0_0_24px_rgba(183,53,184,0.22)]' : 'border-white/12 hover:border-white/10'}`}
-                                                    style={{ background: isSelected ? 'linear-gradient(160deg, rgba(183,53,184,0.16), rgba(37,99,235,0.06))' : 'linear-gradient(160deg, rgba(255,255,255,0.055), #212e38)' }}>
+                                                    className={`rounded-2xl border transition-all ${isSelected ? 'border-white/10 shadow-[0_0_24px_rgba(0,229,208,0.22)]' : 'border-white/12 hover:border-white/10'}`}
+                                                    style={{ background: isSelected ? 'linear-gradient(160deg, rgba(0,229,208,0.16), rgba(37,99,235,0.06))' : 'linear-gradient(160deg, rgba(255,255,255,0.055), #212e38)' }}>
 
                                                     <div className="p-4">
                                                         <div className="flex items-start gap-3">
@@ -707,7 +707,7 @@ function WizardContent() {
                                                                         <p className="text-xs text-white/70 mt-1.5 leading-relaxed">{strategy.description}</p>
                                                                         {strategy.reason && (
                                                                             <div className="mt-2.5 flex items-start gap-1.5 px-3 py-2 rounded-lg"
-                                                                                style={{ background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                                                                style={{ background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                                                                 <Sparkles size={11} className="text-[#147e95] shrink-0 mt-0.5" />
                                                                                 <p className="text-[11px] text-purple-100/90 leading-relaxed">{strategy.reason}</p>
                                                                             </div>
@@ -818,7 +818,7 @@ function WizardContent() {
                                                                 <button
                                                                     onClick={() => createCampaign(strategy)}
                                                                     disabled={creating}
-                                                                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_18px_rgba(183,53,184,0.18)]"
+                                                                    className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_18px_rgba(0,229,208,0.18)]"
                                                                 >
                                                                     {creatingId === strategy.id
                                                                         ? <><Loader2 size={13} className="animate-spin" /> Creando anuncio…</>

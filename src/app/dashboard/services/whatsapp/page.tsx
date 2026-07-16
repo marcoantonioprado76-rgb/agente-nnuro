@@ -176,9 +176,9 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
 
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl p-4"
-      style={{ background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(183,53,184,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
+      style={{ background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(0,229,208,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 6px 14px -6px rgba(183,53,184,0.5)' }}>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)', boxShadow: '0 6px 14px -6px rgba(0,229,208,0.5)' }}>
           <Plus className="w-3.5 h-3.5" style={{ color: '#fff' }} />
         </div>
         <h3 className="text-sm font-bold text-[#111827]" style={{ letterSpacing: '-0.01em' }}>Crear nuevo agente</h3>
@@ -188,8 +188,8 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
       <div className="grid grid-cols-3 gap-2 mb-3">
         {([
           { t: 'YCLOUD', icon: Webhook, label: 'YCloud', sub: 'WhatsApp API', c: '#7DD3FC' },
-          { t: 'BAILEYS', icon: Smartphone, label: 'WA Web', sub: 'Escanear QR', c: '#C9A7FF' },
-          { t: 'META', icon: MessageSquare, label: 'Messenger', sub: 'FB / IG', c: '#FF6FA8' },
+          { t: 'BAILEYS', icon: Smartphone, label: 'WA Web', sub: 'Escanear QR', c: '#4dfae8' },
+          { t: 'META', icon: MessageSquare, label: 'Messenger', sub: 'FB / IG', c: '#35d0c8' },
         ] as const).map(o => {
           const sel = type === o.t
           return (
@@ -198,7 +198,7 @@ function CreateBotForm({ onCreated }: { onCreated: (bot: Bot, webhookUrl: string
               style={{
                 background: sel ? 'linear-gradient(135deg, #1fb8bb 0%, #147e95 52%, #12303a 100%)' : 'rgba(17,24,39,0.04)',
                 border: `1px solid ${sel ? 'transparent' : 'rgba(17,24,39,0.10)'}`,
-                boxShadow: sel ? '0 8px 18px -8px rgba(183,53,184,0.5)' : 'none',
+                boxShadow: sel ? '0 8px 18px -8px rgba(0,229,208,0.5)' : 'none',
               }}>
               <o.icon className="w-4 h-4 shrink-0" style={{ color: sel ? '#fff' : '#6B7280' }} />
               <div className="min-w-0 text-left">
@@ -339,7 +339,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
   const yVals = [0, Math.round(maxVal / 2), maxVal]
 
   return (
-    <div className="rounded-2xl" style={{ padding: '14px 16px 10px', background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(183,53,184,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
+    <div className="rounded-2xl" style={{ padding: '14px 16px 10px', background: 'linear-gradient(135deg, #FAF6FB 0%, #F2F0FA 45%, #E7E9F5 100%)', border: '1px solid #C9CFE0', boxShadow: '0 2px 6px rgba(17,24,39,0.05), 0 20px 40px -14px rgba(17,24,39,0.28), 0 44px 82px -34px rgba(17,24,39,0.46), 0 0 52px -16px rgba(0,229,208,0.12), inset 0 1px 0 rgba(255,255,255,0.95)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
         <div>
@@ -374,7 +374,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
                 background: selectedBotId === b.id ? 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)' : 'rgba(17,24,39,0.04)',
                 borderColor: selectedBotId === b.id ? 'transparent' : 'rgba(17,24,39,0.12)',
                 color: selectedBotId === b.id ? '#fff' : '#6B7280',
-                boxShadow: selectedBotId === b.id ? '0 8px 18px -8px rgba(183,53,184,0.55)' : 'none',
+                boxShadow: selectedBotId === b.id ? '0 8px 18px -8px rgba(0,229,208,0.55)' : 'none',
               }}>
               🤖 {b.name}
               {(b.salesCount ?? 0) > 0 && (
@@ -426,12 +426,12 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
             </linearGradient>
             {/* Sales — purple */}
             <linearGradient id="gc-sales-area" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor="#6A35D9" stopOpacity="0.20" />
-              <stop offset="100%" stopColor="#6A35D9" stopOpacity="0" />
+              <stop offset="0%"   stopColor="#147e95" stopOpacity="0.20" />
+              <stop offset="100%" stopColor="#147e95" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="gc-sales-line" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%"   stopColor="#35d0c8" />
-              <stop offset="100%" stopColor="#6A35D9" />
+              <stop offset="100%" stopColor="#147e95" />
             </linearGradient>
             <filter id="gc-glow-conv" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="2" result="blur"/>
@@ -477,11 +477,11 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
             if (p.val === 0) return null
             return (
               <g key={i} filter="url(#gc-dot-glow)">
-                <circle cx={p.x} cy={p.y} r="10" fill="#6A35D9" opacity="0.07" />
-                <rect x={p.x - 11} y={p.y - 30} width="22" height="15" rx="5" fill="#6A35D9" opacity="0.92" />
+                <circle cx={p.x} cy={p.y} r="10" fill="#147e95" opacity="0.07" />
+                <rect x={p.x - 11} y={p.y - 30} width="22" height="15" rx="5" fill="#147e95" opacity="0.92" />
                 <text x={p.x} y={p.y - 19} textAnchor="middle" fontSize="8" fontWeight="800" fill="#fff">{p.val}</text>
-                <line x1={p.x} y1={p.y - 15} x2={p.x} y2={p.y - 5} stroke="#6A35D9" strokeWidth="1" opacity="0.4" />
-                <circle cx={p.x} cy={p.y} r="4" fill="#6A35D9" stroke="rgba(15,23,42,0.10)" strokeWidth="1.5" />
+                <line x1={p.x} y1={p.y - 15} x2={p.x} y2={p.y - 5} stroke="#147e95" strokeWidth="1" opacity="0.4" />
+                <circle cx={p.x} cy={p.y} r="4" fill="#147e95" stroke="rgba(15,23,42,0.10)" strokeWidth="1.5" />
                 <circle cx={p.x} cy={p.y} r="2" fill="#fff" opacity="0.5" />
               </g>
             )
@@ -508,7 +508,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
               fontWeight: 700, color: '#fff',
               background: 'linear-gradient(135deg,#1fb8bb,#147e95,#12303a)',
               border: '1px solid transparent',
-              boxShadow: '0 8px 20px -10px rgba(183,53,184,0.6)',
+              boxShadow: '0 8px 20px -10px rgba(0,229,208,0.6)',
               borderRadius: 10, padding: '7px 16px',
               cursor: 'pointer', transition: 'all 0.15s',
             }}
@@ -1778,7 +1778,7 @@ function PromptTab({ bot, onSaved }: { bot: Bot; onSaved: (updated: Partial<Bot>
               <button
                 type="button"
                 onClick={() => loadTemplate(EXAMPLE_PROMPT_PRO)}
-                className="text-[10px] px-2.5 py-1 rounded-lg bg-[#147e95]/15 border border-[#147e95]/35 text-[#C9A7FF] hover:bg-[#147e95]/25 transition-colors font-medium"
+                className="text-[10px] px-2.5 py-1 rounded-lg bg-[#147e95]/15 border border-[#147e95]/35 text-[#4dfae8] hover:bg-[#147e95]/25 transition-colors font-medium"
               >
                 Completa (Pro)
               </button>
@@ -4004,7 +4004,7 @@ export default function WhatsAppPage() {
           <div className="min-w-0">
             <h1 className="text-lg font-bold text-[#111827] flex items-center gap-2 leading-tight" style={{ letterSpacing: '-0.02em' }}>
               <span className="truncate">WhatsApp Bots</span>
-              <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md shrink-0" style={{ background: 'rgba(183,53,184,0.12)', color: '#147e95', border: '1px solid rgba(183,53,184,0.28)' }}>
+              <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md shrink-0" style={{ background: 'rgba(0,229,208,0.12)', color: '#147e95', border: '1px solid rgba(0,229,208,0.28)' }}>
                 Multi-Tenant
               </span>
             </h1>
@@ -4034,12 +4034,12 @@ export default function WhatsAppPage() {
                 <div className="text-[10px] text-white/50 mt-0.5 truncate">Total agentes</div>
               </div>
             </div>
-            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(183,53,184,0.28)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(183,53,184,0.4)' }}>
-                <Zap className="w-4 h-4" style={{ color: '#C9A7FF' }} />
+            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(0,229,208,0.28)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(0,229,208,0.18)', border: '1px solid rgba(0,229,208,0.4)' }}>
+                <Zap className="w-4 h-4" style={{ color: '#4dfae8' }} />
               </div>
               <div className="min-w-0">
-                <div className="text-lg font-bold leading-none" style={{ color: '#C9A7FF' }}>{activeBots}</div>
+                <div className="text-lg font-bold leading-none" style={{ color: '#4dfae8' }}>{activeBots}</div>
                 <div className="text-[10px] text-white/50 mt-0.5 truncate">Activos ahora</div>
               </div>
             </div>
@@ -4088,17 +4088,17 @@ export default function WhatsAppPage() {
           {/* How it works — compact onboarding strip */}
           <div className="rounded-2xl px-4 py-3.5"
             style={{
-              background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
+              background: 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
               border: '1px solid rgba(255,255,255,0.08)',
               boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
             }}>
             <h3 className="text-[11px] font-bold uppercase tracking-[0.18em] mb-3 flex items-center gap-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
-              <Zap className="w-3 h-3" style={{ color: '#C9A7FF' }} />
+              <Zap className="w-3 h-3" style={{ color: '#4dfae8' }} />
               ¿Cómo funciona?
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
               {([
-                { Icon: Plus,        title: 'Crea el agente',         desc: 'Nombre + URL webhook.',  c: '#C9A7FF' },
+                { Icon: Plus,        title: 'Crea el agente',         desc: 'Nombre + URL webhook.',  c: '#4dfae8' },
                 { Icon: Key,         title: 'Configura credenciales', desc: 'API keys YCloud / OpenAI.', c: '#35d0c8' },
                 { Icon: ShoppingBag, title: 'Agrega productos',       desc: 'Base de conocimiento.',  c: '#7DD3FC' },
                 { Icon: Webhook,     title: 'Conecta YCloud',         desc: 'Apunta el webhook.',     c: '#35d0c8' },

@@ -438,19 +438,19 @@ export default function PlanesPage() {
         <div className="mb-8 p-4 rounded-2xl border flex items-center gap-4"
           style={{
             background: isFaseGlobal
-              ? 'linear-gradient(135deg, rgba(183,53,184,0.06), rgba(159,46,160,0.03))'
+              ? 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(159,46,160,0.03))'
               : '#FFFFFF',
-            borderColor: isFaseGlobal ? 'rgba(183,53,184,0.2)' : '#E4E9F0',
+            borderColor: isFaseGlobal ? 'rgba(0,229,208,0.2)' : '#E4E9F0',
           }}>
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
             style={{
-              background: isFaseGlobal ? 'rgba(183,53,184,0.08)' : 'rgba(183,53,184,0.08)',
-              border: isFaseGlobal ? '1px solid rgba(183,53,184,0.2)' : '1px solid #E4E9F0',
+              background: isFaseGlobal ? 'rgba(0,229,208,0.08)' : 'rgba(0,229,208,0.08)',
+              border: isFaseGlobal ? '1px solid rgba(0,229,208,0.2)' : '1px solid #E4E9F0',
             }}>
             {isFaseGlobal ? <span className="text-lg">🌐</span> : <Timer size={18} style={{ color: '#147e95' }} />}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: isFaseGlobal ? 'rgba(183,53,184,0.5)' : '#6B7280' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: isFaseGlobal ? 'rgba(0,229,208,0.5)' : '#6B7280' }}>
               {isFaseGlobal ? 'Pack Básico · Fase Global · Vence en' : 'Tu plan vence en'}
             </p>
             <div className="flex items-center gap-3">
@@ -530,7 +530,7 @@ export default function PlanesPage() {
                   </div>
                   <p className="text-[10px] text-[#9CA3AF] mt-0.5">30 días de acceso · renovable</p>
                   {!pack.locked && (credits[pack.planId] ?? 0) > 0 && (
-                    <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full" style={{ background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.25)' }}>
+                    <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.25)' }}>
                       <Sparkles size={11} className="text-[#147e95]" />
                       <span className="text-[10px] font-black text-[#147e95]">+ ${credits[pack.planId]} en créditos IA incluidos</span>
                     </div>
@@ -650,8 +650,8 @@ export default function PlanesPage() {
 
       {/* Empresarial card */}
       <div className="mt-6 relative rounded-3xl border border-[#147e95]/20 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, rgba(183,53,184,0.06), rgba(183,53,184,0.02))' }}>
-        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.5), transparent)' }} />
+        style={{ background: 'linear-gradient(135deg, rgba(0,229,208,0.06), rgba(0,229,208,0.02))' }}>
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,208,0.5), transparent)' }} />
         <div className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6">
           <div className="flex items-center gap-4 flex-1">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-[#147e95]/10 border border-[#147e95]/25">

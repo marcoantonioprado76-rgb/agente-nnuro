@@ -728,7 +728,7 @@ export default function AdminUsersPage() {
           <div className="relative bg-[#1a262f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-lg z-10 shadow-2xl shadow-black/60 max-h-[85vh] overflow-y-auto">
 
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,208,0.7), transparent)' }} />
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">

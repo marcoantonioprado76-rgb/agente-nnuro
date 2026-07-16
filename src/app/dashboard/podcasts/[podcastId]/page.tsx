@@ -92,7 +92,7 @@ export default function PodcastDetailPage() {
           boxShadow: '0 40px 90px -40px rgba(10,14,36,0.9), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}>
           {/* glow decorativo */}
-          <div style={{ position: 'absolute', top: -80, right: -60, width: 260, height: 260, borderRadius: '50%', background: 'radial-gradient(circle, rgba(183,53,184,0.35), transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: -80, right: -60, width: 260, height: 260, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,229,208,0.35), transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none' }} />
 
           <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap', gap: 26, padding: 26, alignItems: 'center' }}>
             {/* Portada */}
@@ -131,7 +131,7 @@ export default function PodcastDetailPage() {
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                     {/* Play */}
-                    <button onClick={toggle} aria-label={playing ? 'Pausar' : 'Reproducir'} style={{ flex: '0 0 auto', width: 56, height: 56, borderRadius: '50%', border: 'none', cursor: 'pointer', background: DG, color: '#fff', display: 'grid', placeItems: 'center', fontSize: 20, boxShadow: '0 10px 26px -8px rgba(183,53,184,0.8)' }}>
+                    <button onClick={toggle} aria-label={playing ? 'Pausar' : 'Reproducir'} style={{ flex: '0 0 auto', width: 56, height: 56, borderRadius: '50%', border: 'none', cursor: 'pointer', background: DG, color: '#fff', display: 'grid', placeItems: 'center', fontSize: 20, boxShadow: '0 10px 26px -8px rgba(0,229,208,0.8)' }}>
                       <i className={`fa-solid ${playing ? 'fa-pause' : 'fa-play'}`} style={{ marginLeft: playing ? 0 : 3 }} />
                     </button>
                     {/* Saltos */}

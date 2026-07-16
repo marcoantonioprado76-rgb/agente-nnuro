@@ -94,7 +94,7 @@ export default function PreviewPage() {
     const isPublished = campaign.status === 'PUBLISHED'
 
     return (
-        <div className="px-4 md:px-6 pt-6 max-w-screen-xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 pt-6 max-w-screen-xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(0,229,208,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
             {/* Header */}
             <div className="flex items-center gap-4 mb-6">
                 <Link href="/dashboard/services/ads/meta" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
@@ -111,7 +111,7 @@ export default function PreviewPage() {
                     <button
                         onClick={publish}
                         disabled={publishing || campaign.status === 'PUBLISHING'}
-                        className="flex items-center gap-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm shadow-[0_0_30px_rgba(183,53,184,0.3)]"
+                        className="flex items-center gap-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm shadow-[0_0_30px_rgba(0,229,208,0.3)]"
                     >
                         {publishing ? <><Loader2 size={15} className="animate-spin" /> Publicando...</> : <><Rocket size={15} /> Publicar Campaña</>}
                     </button>
@@ -330,7 +330,7 @@ export default function PreviewPage() {
                             <button
                                 onClick={publish}
                                 disabled={publishing || campaign.status === 'PUBLISHING'}
-                                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold py-4 rounded-2xl hover:opacity-90 disabled:opacity-50 transition-all mt-4 shadow-[0_0_30px_rgba(183,53,184,0.3)]"
+                                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] text-white font-bold py-4 rounded-2xl hover:opacity-90 disabled:opacity-50 transition-all mt-4 shadow-[0_0_30px_rgba(0,229,208,0.3)]"
                             >
                                 {publishing
                                     ? <><Loader2 size={18} className="animate-spin" /> Publicando en Meta Ads...</>

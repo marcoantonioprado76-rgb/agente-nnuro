@@ -268,7 +268,7 @@ export default function DiamondAssistantContactos() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px',
               borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#fff', background: BRAND,
-              border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(183,53,184,0.22)',
+              border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0,229,208,0.22)',
             }}
           >
             <UserPlus size={15} /> Nuevo contacto
@@ -338,7 +338,7 @@ export default function DiamondAssistantContactos() {
           </div>
         ) : contacts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '56px 16px' }}>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(183,53,184,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(0,229,208,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
               <ContactIcon size={24} style={{ color: '#147e95' }} />
             </div>
             <p style={{ fontSize: 14, fontWeight: 800, margin: 0 }}>
@@ -352,7 +352,7 @@ export default function DiamondAssistantContactos() {
             {!hasFilters && (
               <button
                 onClick={openCreate}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#fff', background: BRAND, border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(183,53,184,0.22)' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 800, color: '#fff', background: BRAND, border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0,229,208,0.22)' }}
               >
                 <UserPlus size={15} /> Nuevo contacto
               </button>
@@ -381,7 +381,7 @@ export default function DiamondAssistantContactos() {
                     <tr key={c.id} style={{ borderBottom: `1px solid ${BORDER}` }}>
                       <td style={tdStyle}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-                          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(183,53,184,0.12)', border: '1px solid rgba(183,53,184,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#147e95', flexShrink: 0 }}>
+                          <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#147e95', flexShrink: 0 }}>
                             {(c.name?.trim()?.charAt(0) ?? '#').toUpperCase()}
                           </div>
                           <span style={{ fontWeight: 700, color: c.name ? TEXT : '#9CA3AF' }}>
@@ -403,7 +403,7 @@ export default function DiamondAssistantContactos() {
                       <td style={{ ...tdStyle, color: c.sponsor ? TEXT : '#9CA3AF' }}>{c.sponsor ?? '—'}</td>
                       <td style={tdStyle}>
                         {c.tag ? (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(183,53,184,0.10)', border: '1px solid rgba(183,53,184,0.20)' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 999, color: '#147e95', background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.20)' }}>
                             <Tag size={10} /> {c.tag}
                           </span>
                         ) : (
@@ -488,7 +488,7 @@ export default function DiamondAssistantContactos() {
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '16px 20px', borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11, minWidth: 0 }}>
-                <div style={{ width: 38, height: 38, borderRadius: 11, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 8px 18px rgba(255,45,149,0.24)' }}>
+                <div style={{ width: 38, height: 38, borderRadius: 11, background: BRAND, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 8px 18px rgba(0,229,208,0.24)' }}>
                   {editingId ? <Pencil size={17} className="text-white" /> : <UserPlus size={17} className="text-white" />}
                 </div>
                 <div style={{ minWidth: 0 }}>
@@ -577,7 +577,7 @@ export default function DiamondAssistantContactos() {
               <button
                 onClick={submitForm}
                 disabled={saving}
-                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 0', borderRadius: 11, background: BRAND, border: 'none', fontSize: 13, fontWeight: 800, color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 8px 20px rgba(183,53,184,0.22)' }}
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 0', borderRadius: 11, background: BRAND, border: 'none', fontSize: 13, fontWeight: 800, color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 8px 20px rgba(0,229,208,0.22)' }}
               >
                 {saving ? <Loader2 size={15} className="animate-spin" /> : (editingId ? <><Pencil size={14} /> Guardar cambios</> : <><UserPlus size={14} /> Crear contacto</>)}
               </button>

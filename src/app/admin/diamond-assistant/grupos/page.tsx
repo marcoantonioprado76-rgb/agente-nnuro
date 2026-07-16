@@ -418,7 +418,7 @@ export default function DiamondAssistantGrupos() {
                 border: 'none',
                 cursor: loadingGroups ? 'default' : 'pointer',
                 opacity: loadingGroups ? 0.6 : 1,
-                boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+                boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
               }}
             >
               {loadingGroups ? <Loader2 size={15} className="animate-spin" /> : <RefreshCw size={15} />}
@@ -504,7 +504,7 @@ export default function DiamondAssistantGrupos() {
                   <ToggleRow
                     icon={Zap}
                     color="#147e95"
-                    tint="rgba(183,53,184,0.10)"
+                    tint="rgba(0,229,208,0.10)"
                     title="Automatización"
                     desc="El agente actúa en este grupo"
                     checked={v.automationEnabled}
@@ -534,7 +534,7 @@ export default function DiamondAssistantGrupos() {
                   <ToggleRow
                     icon={UserPlus}
                     color="#147e95"
-                    tint="rgba(183,53,184,0.10)"
+                    tint="rgba(0,229,208,0.10)"
                     title="Bienvenida al privado"
                     desc="Le escribe presentándose (1:1)"
                     checked={v.privateWelcomeEnabled}
@@ -787,7 +787,7 @@ function NotConnected({ provider }: { provider: string }) {
           color: '#fff',
           background: BRAND,
           textDecoration: 'none',
-          boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+          boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
         }}
       >
         <PlugZap size={15} /> Ir a Configuración
@@ -1166,7 +1166,7 @@ function SchedulerModal({
                 type="button"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                style={{ fontSize: 13, fontWeight: 800, padding: '9px 14px', borderRadius: 10, border: `1px solid ${BRAND}`, background: 'rgba(183,53,184,0.08)', color: BRAND, cursor: uploading ? 'default' : 'pointer', opacity: uploading ? 0.6 : 1 }}
+                style={{ fontSize: 13, fontWeight: 800, padding: '9px 14px', borderRadius: 10, border: `1px solid ${BRAND}`, background: 'rgba(0,229,208,0.08)', color: BRAND, cursor: uploading ? 'default' : 'pointer', opacity: uploading ? 0.6 : 1 }}
               >
                 {uploading ? '⏳ Subiendo…' : '📎 Subir imagen o video'}
               </button>
@@ -1320,7 +1320,7 @@ function SchedulerModal({
           <button
             onClick={submit}
             disabled={saving}
-            style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 16px', borderRadius: 12, fontSize: 13.5, fontWeight: 800, color: '#fff', background: BRAND, border: 'none', cursor: saving ? 'default' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 8px 20px rgba(183,53,184,0.24)' }}
+            style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 16px', borderRadius: 12, fontSize: 13.5, fontWeight: 800, color: '#fff', background: BRAND, border: 'none', cursor: saving ? 'default' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 8px 20px rgba(0,229,208,0.24)' }}
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <CalendarPlus size={15} />}
             {saving ? 'Guardando…' : isEditing ? 'Guardar cambios' : 'Programar publicación'}

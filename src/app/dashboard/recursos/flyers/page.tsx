@@ -65,9 +65,9 @@ export default function RecursosGaleriaPage() {
         } ${empty ? 'opacity-45' : ''}`}
         style={{
           background: active
-            ? 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.22), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)'
+            ? 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.22), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)'
             : 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
-          border: active ? '1px solid rgba(183,53,184,0.5)' : '1px solid rgba(255,255,255,0.08)',
+          border: active ? '1px solid rgba(0,229,208,0.5)' : '1px solid rgba(255,255,255,0.08)',
           boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)',
         }}
       >
@@ -127,7 +127,7 @@ export default function RecursosGaleriaPage() {
           {gridItems.map(t => (
             <Link key={t.id} href={`/dashboard/recursos/flyers/${t.id}`}
               className="group rounded-2xl overflow-hidden hover:border-[#147e95]/40 transition-all active:scale-[0.98]"
-              style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.18), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 55%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 22px 50px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+              style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(0,229,208,0.18), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 55%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 22px 50px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
               <div className="relative w-full bg-black/30" style={{ aspectRatio: `${t.ancho} / ${t.alto}` }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={t.thumbUrl || t.fondoUrl} alt={t.nombre} className="w-full h-full object-cover" loading="lazy" />

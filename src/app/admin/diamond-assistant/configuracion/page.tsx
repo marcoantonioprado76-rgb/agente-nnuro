@@ -559,7 +559,7 @@ function QrConnectionCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 8px 18px rgba(183,53,184,0.22)',
+            boxShadow: '0 8px 18px rgba(0,229,208,0.22)',
           }}
         >
           <QrCode size={19} className="text-white" />
@@ -732,7 +732,7 @@ function ProviderConnectionCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 8px 18px rgba(183,53,184,0.22)',
+            boxShadow: '0 8px 18px rgba(0,229,208,0.22)',
           }}
         >
           <Cloud size={19} className="text-white" />
@@ -907,7 +907,7 @@ function CopyButton({ value, disabled }: { value: string; disabled?: boolean }) 
         border: copied ? '1px solid rgba(22,163,74,0.30)' : 'none',
         cursor: off ? 'default' : 'pointer',
         opacity: off ? 0.5 : 1,
-        boxShadow: copied ? 'none' : '0 6px 16px rgba(183,53,184,0.22)',
+        boxShadow: copied ? 'none' : '0 6px 16px rgba(0,229,208,0.22)',
         transition: 'background 0.15s, color 0.15s',
       }}
     >
@@ -955,7 +955,7 @@ function WebhookCards({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 8px 18px rgba(183,53,184,0.22)',
+              boxShadow: '0 8px 18px rgba(0,229,208,0.22)',
             }}
           >
             <Webhook size={19} className="text-white" />
@@ -997,7 +997,7 @@ function WebhookCards({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 8px 18px rgba(183,53,184,0.22)',
+              boxShadow: '0 8px 18px rgba(0,229,208,0.22)',
             }}
           >
             <KeyRound size={19} className="text-white" />
@@ -1043,7 +1043,7 @@ function primaryBtnStyle(busy: boolean): CSSProperties {
     border: 'none',
     cursor: busy ? 'default' : 'pointer',
     opacity: busy ? 0.6 : 1,
-    boxShadow: '0 8px 20px rgba(183,53,184,0.24)',
+    boxShadow: '0 8px 20px rgba(0,229,208,0.24)',
   }
 }
 

@@ -416,7 +416,7 @@ function ClippingPageInner() {
                         <div className="p-4 space-y-2"
                           style={{ background: 'rgba(255,255,255,0.03)', borderBottom: '1px solid rgba(255,255,255,0.10)' }}>
                           <div className="flex items-center gap-2 mb-2">
-                            <Images className="w-3.5 h-3.5" style={{ color: '#C9A7FF' }} />
+                            <Images className="w-3.5 h-3.5" style={{ color: '#4dfae8' }} />
                             <p className="text-[11px] font-semibold uppercase tracking-widest text-white/55">
                               Material de la campaña
                             </p>

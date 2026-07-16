@@ -199,7 +199,7 @@ export default function CartPage() {
               <div style={{ marginTop: 10 }}>
                 <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>Hash de transacción</p>
                 <a href={`https://bscscan.com/tx/${success.txHash}`} target="_blank" rel="noreferrer"
-                  style={{ fontSize: 11, color: '#C9A7FF', wordBreak: 'break-all', textDecoration: 'none' }}>
+                  style={{ fontSize: 11, color: '#4dfae8', wordBreak: 'break-all', textDecoration: 'none' }}>
                   {success.txHash} ↗
                 </a>
               </div>

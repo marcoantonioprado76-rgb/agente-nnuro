@@ -964,8 +964,8 @@ export default function CrmCampaignDetailPage() {
                                     <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
                                         {img.type === 'VIDEO' ? (
                                             <div className="w-full h-full bg-[#147e95]/10 flex flex-col items-center justify-center">
-                                                <Film size={24} className="text-[#C9A7FF]" />
-                                                <span className="text-[9px] text-[#C9A7FF] mt-1">Video</span>
+                                                <Film size={24} className="text-[#4dfae8]" />
+                                                <span className="text-[9px] text-[#4dfae8] mt-1">Video</span>
                                             </div>
                                         ) : (
                                             <img src={img.url} alt="" className="w-full h-full object-cover" />

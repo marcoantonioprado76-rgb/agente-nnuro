@@ -189,7 +189,7 @@ export default function ScanPage() {
         {/* Cámara */}
         <div style={{ position: 'relative', borderRadius: 18, overflow: 'hidden', background: '#000', aspectRatio: '1/1', marginBottom: 12, display: scanning ? 'block' : 'none', border: `1px solid ${BORDER}`, boxShadow: '0 6px 24px rgba(17,24,39,0.10)' }}>
           <video ref={videoRef} playsInline muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', inset: '18%', border: '3px solid #1fb8bb', borderRadius: 18, boxShadow: '0 0 0 9999px rgba(0,0,0,0.42), 0 0 24px rgba(255,45,149,0.5)' }} />
+          <div style={{ position: 'absolute', inset: '18%', border: '3px solid #1fb8bb', borderRadius: 18, boxShadow: '0 0 0 9999px rgba(0,0,0,0.42), 0 0 24px rgba(0,229,208,0.5)' }} />
           <p style={{ position: 'absolute', bottom: 12, left: 0, right: 0, textAlign: 'center', fontSize: 13, fontWeight: 700, color: '#fff', margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.85)' }}>
             Apuntá al QR de la entrada
           </p>
