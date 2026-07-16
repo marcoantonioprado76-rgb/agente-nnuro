@@ -102,13 +102,13 @@ export default function NuevoFlyerPage() {
     window.location.href = '/empresa/contenido'
   }
 
-  if (!guardOk) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#0B1B2B', color: '#fff' }}><p style={{ opacity: 0.7 }}>Cargando…</p></div>
+  if (!guardOk) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#212e38', color: '#fff' }}><p style={{ opacity: 0.7 }}>Cargando…</p></div>
 
   const sel = selected && selected !== 'photo' ? texts.find(t => t.id === selected) : null
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB,#EEF1F8)', color: '#0B1B2B' }}>
-      <header style={{ background: 'linear-gradient(135deg,#0B1B2B,#050B14)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB,#EEF1F8)', color: '#212e38' }}>
+      <header style={{ background: 'linear-gradient(135deg,#212e38,#1a262f)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <p style={{ fontWeight: 800, fontSize: 15 }}>{editId ? 'Editar flyer' : 'Nuevo flyer'}</p>
         <a href="/empresa/contenido" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}><i className="fa-solid fa-arrow-left" style={{ marginRight: 6 }} />Volver</a>
       </header>

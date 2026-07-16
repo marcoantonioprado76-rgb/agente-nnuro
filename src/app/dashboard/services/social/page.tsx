@@ -558,7 +558,7 @@ export default function SocialPage() {
                             {contentProfiles.length > 0 ? (
                                 <div className="flex flex-wrap items-center gap-2">
                                     <select value={selectedProfileId} onChange={e => setSelectedProfileId(e.target.value)}
-                                        className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50 [&>option]:bg-[#081624]">
+                                        className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50 [&>option]:bg-[#273842]">
                                         <option value="">— Elegí un perfil —</option>
                                         {contentProfiles.map(p => <option key={p.id} value={p.id}>{p.pageName}</option>)}
                                     </select>
@@ -660,7 +660,7 @@ export default function SocialPage() {
                             {/* Estilo + formato */}
                             <div className="flex flex-wrap items-center gap-2">
                                 <select value={imgStyle} onChange={e => setImgStyle(e.target.value)}
-                                    className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50 [&>option]:bg-[#081624]">
+                                    className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A7FF]/50 [&>option]:bg-[#273842]">
                                     <option value="natural">Estilo: Natural</option>
                                     <option value="elegante">Estilo: Elegante</option>
                                     <option value="colorido">Estilo: Colorido</option>
@@ -771,7 +771,7 @@ export default function SocialPage() {
                                         {previewName.replace('@', '').charAt(0).toUpperCase()}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[#050505] text-[13px] font-semibold leading-tight truncate">{previewName}</p>
+                                        <p className="text-[#1a262f] text-[13px] font-semibold leading-tight truncate">{previewName}</p>
                                         <p className="text-[#65676B] text-[11px] flex items-center gap-1">hace un momento · <span>🌐</span></p>
                                     </div>
                                 </div>
@@ -781,7 +781,7 @@ export default function SocialPage() {
                                     <textarea ref={textareaRef} value={content} onChange={e => setContent(e.target.value)}
                                         rows={content.trim() ? Math.min(16, Math.max(3, content.split('\n').length + 1)) : 3}
                                         placeholder="Escribí tu post acá, o generalo con IA 👇"
-                                        className="w-full bg-transparent text-[#050505] text-[13px] whitespace-pre-wrap break-words leading-snug resize-none focus:outline-none placeholder:text-[#90949C] placeholder:italic" />
+                                        className="w-full bg-transparent text-[#1a262f] text-[13px] whitespace-pre-wrap break-words leading-snug resize-none focus:outline-none placeholder:text-[#90949C] placeholder:italic" />
                                     <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                                         <button onClick={handleGenerateTextAI} disabled={aiLoading}
                                             className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold text-white bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] disabled:opacity-40 hover:opacity-90">
@@ -885,7 +885,7 @@ export default function SocialPage() {
                                                                 const page = fbPages.find(p => p.pageId === e.target.value)
                                                                 if (page) setPageSelections(prev => ({ ...prev, FACEBOOK: { pageId: page.pageId, pageAccessToken: page.pageAccessToken, pageName: page.pageName } }))
                                                             }}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#081624]">
+                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#273842]">
                                                             <option value="">— Selecciona una página —</option>
                                                             {fbPages.map(p => (
                                                                 <option key={p.pageId} value={p.pageId}>{p.pageName}</option>
@@ -911,7 +911,7 @@ export default function SocialPage() {
                                                                 const page = igPages.find(p => p.instagram?.accountId === e.target.value)
                                                                 if (page) setPageSelections(prev => ({ ...prev, INSTAGRAM: { accountId: page.instagram.accountId, pageAccessToken: page.pageAccessToken, username: page.instagram.username } }))
                                                             }}
-                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#081624]">
+                                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#273842]">
                                                             <option value="">— Selecciona una cuenta —</option>
                                                             {igPages.map(p => (
                                                                 <option key={p.instagram.accountId} value={p.instagram.accountId}>@{p.instagram.username} ({p.pageName})</option>
@@ -1228,7 +1228,7 @@ function ConnectionsPanel({ connections, onRefresh }: { connections: any[]; onRe
                 <div className="mb-3">
                     <label className="text-white/55 text-xs mb-1.5 block">Modelo</label>
                     <select value={oaiModel} onChange={e => setOaiModel(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#081624]">
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[#0a95a8]/50 [&>option]:bg-[#273842]">
                         <option value="gpt-5.2">GPT-5.2 ⚡ Última generación — ⚠ Mayor costo</option>
                         <option value="gpt-5.1">GPT-5.1 ⭐ Más inteligente — ⚠ Mayor costo</option>
                         <option value="gpt-4.1">GPT-4.1 — Alta calidad — ⚠ Mayor costo</option>

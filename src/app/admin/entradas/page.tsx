@@ -198,7 +198,7 @@ export default function AdminEntradasPage() {
 
   return (
   <div className="dm-page font-ui">
-    <div style={{ minHeight: '100vh', background: '#07080F', color: '#fff' }}>
+    <div style={{ minHeight: '100vh', background: '#1a262f', color: '#fff' }}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px 16px' }}>
 
         {/* Header */}
@@ -214,7 +214,7 @@ export default function AdminEntradasPage() {
             <a href="/admin/validar" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'rgba(74,222,128,0.12)', border: '1px solid rgba(74,222,128,0.25)', color: '#4ade80', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
               ✓ Validar en puerta
             </a>
-            <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer' }}>
+            <button onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer' }}>
               <Plus size={15} /> Nuevo evento
             </button>
           </div>
@@ -291,7 +291,7 @@ export default function AdminEntradasPage() {
                         />
                         <button
                           onClick={() => copyLink(ev.id)}
-                          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: 800, color: '#fff', background: copied === ev.id ? '#22c55e' : 'linear-gradient(135deg,#00E5D0,#0D1E79)' }}
+                          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: 800, color: '#fff', background: copied === ev.id ? '#22c55e' : 'linear-gradient(135deg,#00E5D0,#12303a)' }}
                         >
                           {copied === ev.id ? <><Check size={14} /> ¡Copiado!</> : <><Copy size={14} /> Copiar</>}
                         </button>
@@ -356,7 +356,7 @@ export default function AdminEntradasPage() {
                         {/* Descarga el reporte COMPLETO (abre en Excel) */}
                         <a
                           href={`/api/admin/entradas/${ev.id}/report`}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 9, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none' }}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 9, background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none' }}
                         >
                           ⬇ Descargar reporte
                         </a>
@@ -575,7 +575,7 @@ export default function AdminEntradasPage() {
       {/* Event modal */}
       {modal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'rgba(15,23,42,0.10)', backdropFilter: 'blur(8px)' }}>
-          <div style={{ width: '100%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto', background: '#0D0E1A', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24 }}>
+          <div style={{ width: '100%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto', background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontWeight: 900, fontSize: 16, margin: 0 }}>{editing ? 'Editar evento' : 'Nuevo evento'}</h2>
               <button onClick={() => setModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}><X size={18} /></button>
@@ -619,7 +619,7 @@ export default function AdminEntradasPage() {
             {formError && <p style={{ fontSize: 12, color: '#f87171', marginTop: 10 }}>{formError}</p>}
             <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
               <button onClick={() => setModal(false)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, border: '1px solid #E4E9F0', background: 'none', color: '#6B7280', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>Cancelar</button>
-              <button onClick={saveEvent} disabled={saving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={saveEvent} disabled={saving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 {saving ? <><Loader2 size={14} className="animate-spin" /> Guardando...</> : editing ? 'Guardar cambios' : 'Crear evento'}
               </button>
             </div>
@@ -630,7 +630,7 @@ export default function AdminEntradasPage() {
       {/* Ticket type modal */}
       {typeModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'rgba(15,23,42,0.10)', backdropFilter: 'blur(8px)' }}>
-          <div style={{ width: '100%', maxWidth: 380, background: '#0D0E1A', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24 }}>
+          <div style={{ width: '100%', maxWidth: 380, background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
               <h2 style={{ fontWeight: 900, fontSize: 15, margin: 0 }}>{typeModal.editing ? 'Editar tipo' : 'Nuevo tipo de entrada'}</h2>
               <button onClick={() => setTypeModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}><X size={18} /></button>
@@ -727,7 +727,7 @@ export default function AdminEntradasPage() {
             {typeError && <p style={{ fontSize: 12, color: '#f87171', marginTop: 10 }}>{typeError}</p>}
             <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
               <button onClick={() => setTypeModal(null)} style={{ flex: 1, padding: '10px 0', borderRadius: 10, border: '1px solid #E4E9F0', background: 'none', color: '#6B7280', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>Cancelar</button>
-              <button onClick={saveType} disabled={typeSaving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={saveType} disabled={typeSaving} style={{ flex: 2, padding: '10px 0', borderRadius: 10, background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 {typeSaving ? <><Loader2 size={14} className="animate-spin" /> Guardando...</> : typeModal.editing ? 'Guardar' : 'Crear tipo'}
               </button>
             </div>
@@ -738,7 +738,7 @@ export default function AdminEntradasPage() {
       {/* Delete confirm */}
       {deleteConfirm && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'rgba(15,23,42,0.10)', backdropFilter: 'blur(8px)' }}>
-          <div style={{ background: '#0D0E1A', border: '1px solid #E4E9F0', borderRadius: 16, padding: 24, maxWidth: 320, width: '100%', textAlign: 'center' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 16, padding: 24, maxWidth: 320, width: '100%', textAlign: 'center' }}>
             <p style={{ fontWeight: 800, fontSize: 15, marginBottom: 8 }}>¿Eliminar evento?</p>
             <p style={{ fontSize: 12, color: '#6B7280', marginBottom: 20 }}>Se eliminarán todos los tipos y ventas. No se puede deshacer.</p>
             <div style={{ display: 'flex', gap: 8 }}>
@@ -752,7 +752,7 @@ export default function AdminEntradasPage() {
       {/* Reject modal */}
       {rejectModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'rgba(15,23,42,0.10)', backdropFilter: 'blur(8px)' }}>
-          <div style={{ background: '#0D0E1A', border: '1px solid #E4E9F0', borderRadius: 16, padding: 24, maxWidth: 360, width: '100%' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 16, padding: 24, maxWidth: 360, width: '100%' }}>
             <p style={{ fontWeight: 800, fontSize: 15, marginBottom: 12 }}>Rechazar ticket</p>
             <textarea value={rejectNotes} onChange={e => setRejectNotes(e.target.value)} placeholder="Motivo (opcional)" rows={3} style={{ width: '100%', background: '#F0F3F7', border: '1px solid #E4E9F0', borderRadius: 10, padding: '10px 12px', color: '#fff', fontSize: 12, outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
             <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>

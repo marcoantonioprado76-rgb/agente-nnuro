@@ -266,7 +266,7 @@ function ClippingPageInner() {
           { label: 'Total vistas', value: totalViews.toLocaleString(), Icon: Eye, color: '#00E5D0' },
         ].map(({ label, value, Icon, color }) => (
           <div key={label} className="rounded-xl p-4"
-            style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
+            style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
             <Icon className="w-4 h-4 mb-2" style={{ color }} />
             <p className="text-lg font-semibold text-white">{value}</p>
             <p className="text-[11px] text-white/55">{label}</p>
@@ -276,7 +276,7 @@ function ClippingPageInner() {
 
       {/* Connect Accounts */}
       <div className="rounded-2xl p-6 space-y-4"
-        style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
+        style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
         <h2 className="text-sm font-semibold text-white uppercase tracking-widest">Cuentas conectadas</h2>
 
         {(['YOUTUBE', 'TIKTOK', 'FACEBOOK'] as Platform[]).map(platform => {
@@ -343,7 +343,7 @@ function ClippingPageInner() {
 
       {/* Campaigns + Submit */}
       <div className="rounded-2xl p-6 space-y-4"
-        style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
+        style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
         <h2 className="text-sm font-semibold text-white uppercase tracking-widest">Campañas activas</h2>
 
         {campaigns.length === 0 ? (
@@ -492,7 +492,7 @@ function ClippingPageInner() {
       {/* My Submissions */}
       {submissions.length > 0 && (
         <div className="rounded-2xl p-6 space-y-4"
-          style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
+          style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.10)' }}>
           <h2 className="text-sm font-semibold text-white uppercase tracking-widest">Mis videos enviados</h2>
 
           <div className="space-y-3">

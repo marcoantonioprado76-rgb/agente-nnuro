@@ -393,7 +393,7 @@ export const NDTHeroBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     }
 
     return (
-        <section className="relative pt-16 pb-32 px-6 overflow-visible bg-[#050505] text-white font-inter group/block">
+        <section className="relative pt-16 pb-32 px-6 overflow-visible bg-[#1a262f] text-white font-inter group/block">
             <HexPattern />
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
@@ -417,7 +417,7 @@ export const NDTResultsBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { accentColor = '#00F0FF' } = data.styles
 
     return (
-        <section className="relative py-32 px-6 bg-[#050505] overflow-hidden">
+        <section className="relative py-32 px-6 bg-[#1a262f] overflow-hidden">
             <HexPattern />
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
@@ -613,7 +613,7 @@ export const HeroBlock = ({ data, isEditing, onEdit }: BlockProps) => {
                         className={layout === 'side' ? 'flex-1' : 'w-full'}
                     >
                         <div className="w-full relative group">
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10 pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#1a262f] via-transparent to-transparent z-10 pointer-events-none" />
                             <div className={`absolute -inset-1 rounded-[32px] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity bg-${accentColor}`} style={{ backgroundColor: accentColor }} />
                             <div className="relative rounded-[32px] overflow-hidden border border-white/10 bg-dark-900 aspect-video shadow-2xl">
                                 {videoId ? (
@@ -642,7 +642,7 @@ export const HeroBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     }
 
     return (
-        <section className="relative py-24 px-6 overflow-visible bg-[#050505] text-white font-inter group/block">
+        <section className="relative py-24 px-6 overflow-visible bg-[#1a262f] text-white font-inter group/block">
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
                     <button onClick={() => onEdit?.(data.id, 'moveUp', true)} className="bg-white/10 p-2 rounded-lg text-white"><ArrowUp size={14} /></button>
@@ -674,7 +674,7 @@ export const HeroBlock = ({ data, isEditing, onEdit }: BlockProps) => {
 export const LogoCloudBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { logos = [] } = data.content
     return (
-        <section className="py-12 border-y border-white/5 bg-[#050505] group/block relative">
+        <section className="py-12 border-y border-white/5 bg-[#1a262f] group/block relative">
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
                     <button
@@ -754,7 +754,7 @@ export const FeaturesBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { accentColor = '#00FF88' } = data.styles
 
     return (
-        <section className="relative py-32 px-6 bg-[#050505] overflow-hidden group/block">
+        <section className="relative py-32 px-6 bg-[#1a262f] overflow-hidden group/block">
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
                     <button
@@ -831,7 +831,7 @@ export const TeamBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { title, members = [] } = data.content
     const { accentColor = '#9B00FF' } = data.styles
     return (
-        <section className="py-32 px-6 bg-[#050505] relative group/block">
+        <section className="py-32 px-6 bg-[#1a262f] relative group/block">
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
                     <button
@@ -951,7 +951,7 @@ export const PricingBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { accentColor = '#00FF88' } = data.styles
 
     return (
-        <section className="py-32 px-6 bg-[#050505] relative group/block">
+        <section className="py-32 px-6 bg-[#1a262f] relative group/block">
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
                     <button
@@ -1057,7 +1057,7 @@ export const PricingBlock = ({ data, isEditing, onEdit }: BlockProps) => {
 export const FaqBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { title, items = [] } = data.content
     return (
-        <section className="py-32 px-6 bg-[#050505] relative group/block">
+        <section className="py-32 px-6 bg-[#1a262f] relative group/block">
             {isEditing && (
                 <div className="absolute top-4 right-4 z-50 opacity-0 group-hover/block:opacity-100 transition-opacity flex gap-2">
                     <button
@@ -1126,7 +1126,7 @@ export const NDTFeaturesBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { accentColor = '#00F0FF' } = data.styles
 
     return (
-        <section className="relative py-32 px-6 bg-[#050505] overflow-hidden">
+        <section className="relative py-32 px-6 bg-[#1a262f] overflow-hidden">
             <HexPattern />
             <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row gap-20">
                 {/* Lado izquierdo: Gráfico visual */}
@@ -1210,7 +1210,7 @@ export const NDTSkinBlock = ({ data, isEditing, onEdit }: BlockProps) => {
     const { accentColor = '#00F0FF' } = data.styles
 
     return (
-        <section className="relative pt-32 pb-10 px-6 bg-[#050505] overflow-hidden">
+        <section className="relative pt-32 pb-10 px-6 bg-[#1a262f] overflow-hidden">
             <HexPattern />
             <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row items-center gap-20">
                 <div className="flex-1">
@@ -1318,7 +1318,7 @@ const blockComponents: Record<string, React.FC<BlockProps>> = {
 
 export const BlocksRenderer = ({ blocks, isEditing, onEdit }: { blocks: BlockData[], isEditing?: boolean, onEdit?: (id: string, field: string, value: any) => void }) => {
     return (
-        <div className="w-full bg-[#050505]">
+        <div className="w-full bg-[#1a262f]">
             {blocks.map((block) => {
                 const BlockComponent = blockComponents[block.type]
                 if (!BlockComponent) return null

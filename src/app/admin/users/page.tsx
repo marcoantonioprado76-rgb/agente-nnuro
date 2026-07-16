@@ -548,7 +548,7 @@ export default function AdminUsersPage() {
       {devicesModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => setDevicesModal(null)} />
-          <div className="relative bg-[#13131f] border border-amber-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#1a262f] border border-amber-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
 
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.7), transparent)' }} />
@@ -725,7 +725,7 @@ export default function AdminUsersPage() {
       {infoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => setInfoModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-lg z-10 shadow-2xl shadow-black/60 max-h-[85vh] overflow-y-auto">
+          <div className="relative bg-[#1a262f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-lg z-10 shadow-2xl shadow-black/60 max-h-[85vh] overflow-y-auto">
 
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
@@ -882,7 +882,7 @@ export default function AdminUsersPage() {
       {deleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => !deleting && setDeleteModal(null)} />
-          <div className="relative bg-[#13131f] border border-red-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#1a262f] border border-red-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
 
             {/* Top red line */}
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"

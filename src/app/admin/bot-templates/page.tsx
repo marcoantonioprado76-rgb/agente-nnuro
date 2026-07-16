@@ -209,7 +209,7 @@ export default function AdminBotTemplatesPage() {
       {/* ═══ CREATE / EDIT MODAL ═══ */}
       {modal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.78)', zIndex: 50, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', overflowY: 'auto', padding: '40px 16px' }}>
-          <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 18, width: '100%', maxWidth: 620, padding: 28 }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 18, width: '100%', maxWidth: 620, padding: 28 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{editing ? 'Editar plantilla' : 'Nueva plantilla AI'}</h2>
               <button onClick={() => setModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}><X size={18} /></button>
@@ -228,7 +228,7 @@ export default function AdminBotTemplatesPage() {
               <div>
                 <label className={LABEL}>Modelo AI</label>
                 <select className={INPUT} value={form.aiModel} onChange={e => setF('aiModel', e.target.value)} style={{ cursor: 'pointer' }}>
-                  {AI_MODELS.map(m => <option key={m} value={m} style={{ background: '#0d1117' }}>{m}</option>)}
+                  {AI_MODELS.map(m => <option key={m} value={m} style={{ background: '#1a262f' }}>{m}</option>)}
                 </select>
               </div>
 
@@ -282,7 +282,7 @@ export default function AdminBotTemplatesPage() {
       {/* ═══ DELETE CONFIRM ═══ */}
       {deleteConfirm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 380, width: '100%' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 380, width: '100%' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>¿Eliminar plantilla?</p>
             <p style={{ fontSize: 13, color: '#6B7280', fontWeight: 600, marginBottom: 4 }}>{deleteConfirm.name}</p>
             <p style={{ fontSize: 12, color: '#6B7280', marginBottom: 20 }}>Esta acción no se puede deshacer.</p>

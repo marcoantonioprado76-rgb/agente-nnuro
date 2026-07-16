@@ -27,7 +27,7 @@ interface CreditsInfo {
   movements: Array<{ reason: string; model: string; costUsd: number; createdAt: string }>
 }
 
-const CARD_BG = 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)'
+const CARD_BG = 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)'
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<ProfileData | null>(null)
@@ -697,7 +697,7 @@ export default function SettingsPage() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={() => setModal(null)}>
           <div className="w-full max-w-md max-h-[85vh] overflow-y-auto rounded-3xl p-5 sm:p-6 space-y-4 relative"
-            style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 60px -22px rgba(0,0,0,0.82)' }}
+            style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 60px -22px rgba(0,0,0,0.82)' }}
             onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

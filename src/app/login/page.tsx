@@ -49,7 +49,7 @@ export default function LoginPage() {
 
   return (
     <div className="font-ui min-h-screen flex items-center justify-center px-4 relative overflow-hidden"
-      style={{ backgroundColor: '#0A1320', backgroundImage: 'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+      style={{ backgroundColor: '#1a262f', backgroundImage: 'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
 
       {/* Glows suaves */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">

@@ -67,7 +67,7 @@ export default function AIKeySelector({ onChange, compact = false }: Props) {
         className="flex items-center gap-2 rounded-xl transition-all max-w-full"
         style={{
           padding: compact ? '5px 10px' : '7px 14px',
-          background: 'linear-gradient(135deg, #0B1B2B 0%, #081624 100%)',
+          background: 'linear-gradient(135deg, #212e38 0%, #273842 100%)',
           border: '1px solid rgba(255,255,255,0.12)',
           color: 'rgba(255,255,255,0.88)',
           boxShadow: '0 8px 20px -10px rgba(8,22,36,0.6)',

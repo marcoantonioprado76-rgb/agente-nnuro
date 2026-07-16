@@ -237,7 +237,7 @@ export default function ResourcesAdmin({ tipo }: { tipo: 'presentacion' | 'libro
                   // eslint-disable-next-line @next/next/no-img-element
                   ? <img src={t.portadaUrl} alt={t.titulo} className="w-full h-full object-cover" loading="lazy" />
                   : <FileText className="text-[#C4CCD8]" size={30} />}
-                {!t.activo && <span className="absolute top-2 left-2 text-[9px] font-black px-2 py-0.5 rounded-full bg-[#0B1B2B]/80 text-white">OCULTO</span>}
+                {!t.activo && <span className="absolute top-2 left-2 text-[9px] font-black px-2 py-0.5 rounded-full bg-[#212e38]/80 text-white">OCULTO</span>}
               </div>
               <div className="p-2.5">
                 <p className="text-xs font-bold text-[#111827] truncate">{t.titulo}</p>

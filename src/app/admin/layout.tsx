@@ -76,7 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a262f] flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -88,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const Sidebar = () => (
-    <div className="flex flex-col h-full" style={{ background: 'radial-gradient(circle at top left, rgba(0,229,208,0.12), transparent 26%), linear-gradient(180deg, #071522 0%, #0B1B2B 55%, #050B14 100%)' }}>
+    <div className="flex flex-col h-full" style={{ background: 'radial-gradient(circle at top left, rgba(0,229,208,0.12), transparent 26%), linear-gradient(180deg, #1a262f 0%, #212e38 55%, #1a262f 100%)' }}>
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/5">
         <div className="flex items-center gap-2.5">
@@ -153,7 +153,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="relative w-56 border-r border-white/5 flex flex-col z-10" style={{ background: '#050B14' }}>
+          <aside className="relative w-56 border-r border-white/5 flex flex-col z-10" style={{ background: '#1a262f' }}>
             <Sidebar />
           </aside>
         </div>

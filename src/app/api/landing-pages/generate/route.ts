@@ -120,7 +120,7 @@ ${mainImage ? `Imagen principal: ${mainImage}` : ''}
 ${videoId ? `Video YouTube ID: ${videoId}` : ''}
 
 ESTILO VISUAL:
-- Fondo: #07080F
+- Fondo: #1a262f
 - Texto: #ffffff
 - Acentos/botones: ${primaryColor}
 - Highlights: ${secondaryColor}

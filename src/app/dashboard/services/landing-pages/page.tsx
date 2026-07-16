@@ -80,7 +80,7 @@ function LandingPreview({ url }: { url: string }) {
     <div ref={boxRef} className="absolute inset-0 overflow-hidden" style={{ background: '#0c0c0e' }}>
       {!loaded && (
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(110deg, #141416 30%, #1d1d21 50%, #141416 70%)',
+          background: 'linear-gradient(110deg, #1a262f 30%, #1d1d21 50%, #1a262f 70%)',
           backgroundSize: '200% 100%', animation: 'lpShimmer 1.4s ease-in-out infinite',
         }} />
       )}

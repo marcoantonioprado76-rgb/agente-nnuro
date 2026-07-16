@@ -200,7 +200,7 @@ function ProductFormModal({
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.82)', zIndex: 50, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', overflowY: 'auto', padding: '32px 16px 60px' }}>
-      <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 20, width: '100%', maxWidth: 660 }}>
+      <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20, width: '100%', maxWidth: 660 }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 16px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -611,7 +611,7 @@ export default function AdminProductsPage() {
       {/* Delete Confirm */}
       {deleteConfirm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 380, width: '100%' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 380, width: '100%' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>¿Eliminar producto?</p>
             <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 4 }}>
               <span style={{ color: '#fff', fontWeight: 600 }}>{deleteConfirm.name}</span>

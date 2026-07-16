@@ -501,7 +501,7 @@ export default function AdminCoursesPage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'flex-start', justifyContent: 'center', zIndex: 50, padding: '24px 16px', overflowY: 'auto' }}
           onClick={e => { if (e.target === e.currentTarget) setCourseModal(null) }}>
-          <div style={{ background: '#0d0d15', border: '1px solid #E4E9F0', borderRadius: 20,
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20,
             padding: 'clamp(16px, 5vw, 28px)', width: '100%', maxWidth: 540, boxSizing: 'border-box' }}>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 20 }}>
               {courseModal.mode === 'create' ? 'Nuevo curso' : 'Editar curso'}
@@ -744,7 +744,7 @@ export default function AdminCoursesPage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '0 16px' }}
           onClick={e => { if (e.target === e.currentTarget) setRejectModal(null) }}>
-          <div style={{ background: '#0d0d15', border: '1px solid #E4E9F0', borderRadius: 18, padding: 24, width: '100%', maxWidth: 400 }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 18, padding: 24, width: '100%', maxWidth: 400 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Rechazar inscripción</h3>
             <label style={{ fontSize: 12, color: '#6B7280', display: 'block', marginBottom: 6 }}>Motivo (opcional)</label>
             <textarea value={rejectNotes} onChange={e => setRejectNotes(e.target.value)} rows={3} placeholder="Ej: Comprobante no válido"
@@ -772,7 +772,7 @@ export default function AdminCoursesPage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '0 16px' }}
           onClick={e => { if (e.target === e.currentTarget) setDeleteId(null) }}>
-          <div style={{ background: '#0d0d15', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 18, padding: 24, width: '100%', maxWidth: 360, textAlign: 'center' }}>
+          <div style={{ background: '#1a262f', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 18, padding: 24, width: '100%', maxWidth: 360, textAlign: 'center' }}>
             <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 8 }}>¿Eliminar curso?</p>
             <p style={{ fontSize: 12, color: '#6B7280', marginBottom: 20 }}>
               Se eliminarán todos sus videos e inscripciones. Esta acción no se puede deshacer.

@@ -29,7 +29,7 @@ export async function GET(_req: NextRequest, { params }: { params: { code: strin
       width: 512,
       margin: 2,
       errorCorrectionLevel: 'M',
-      color: { dark: '#0D1E79', light: '#FFFFFF' }, // azul de marca sobre blanco
+      color: { dark: '#12303a', light: '#FFFFFF' }, // azul de marca sobre blanco
     })
 
     return new NextResponse(png as unknown as BodyInit, {

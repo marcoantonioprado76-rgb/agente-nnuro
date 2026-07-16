@@ -21,8 +21,8 @@
 
     --clr-green: #22c55e;
     --clr-green-bg: rgba(34, 197, 94, 0.12);
-    --clr-cyan: #a855f7;
-    --clr-cyan-bg: rgba(168, 85, 247, 0.12);
+    --clr-cyan: #1fb8bb;
+    --clr-cyan-bg: rgba(0, 229, 208, 0.12);
     --clr-amber: #fbbf24;
     --clr-amber-bg: rgba(251, 191, 36, 0.12);
     --clr-rose: #fb7185;
@@ -202,8 +202,8 @@
     background: conic-gradient(from 0deg,
         transparent 10%,
         #00E5D0 30%,
-        #0D1E79 50%,
-        #7b1fa2 70%,
+        #12303a 50%,
+        #147e95 70%,
         #4dfae8 90%,
         #ffffff 100%);
     -webkit-mask: radial-gradient(transparent 47px, #000 48px);
@@ -1660,7 +1660,7 @@
 /* Botón secundario oscuro */
 .dm-btn-dark {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    background: #0B1726; color: #fff; font-weight: 600;
+    background: #1a262f; color: #fff; font-weight: 600;
     border: 1px solid rgba(255,255,255,0.10); border-radius: 14px; padding: 12px 20px;
     transition: background .18s ease; cursor: pointer;
 }

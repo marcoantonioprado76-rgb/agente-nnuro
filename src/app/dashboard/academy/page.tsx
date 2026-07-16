@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 
-const CARD_BG = 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)'
-const CARD_BG_SOLID = '#050B14'
+const CARD_BG = 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)'
+const CARD_BG_SOLID = '#1a262f'
 const CARD_BORDER = '1px solid rgba(255,255,255,0.08)'
 const CARD_SHADOW = '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)'
 

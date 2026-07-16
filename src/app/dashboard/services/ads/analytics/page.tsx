@@ -194,7 +194,7 @@ function MultiLineChart({ days, activeMetrics }: { days: DailyAgg[]; activeMetri
                 <div style={{
                     position: 'absolute', top: 0,
                     left: `clamp(8px, calc(${(hoverIdx / Math.max(days.length - 1, 1)) * 100}% - 80px), calc(100% - 168px))`,
-                    background: '#0D0F1E', border: '1px solid rgba(255,255,255,0.1)',
+                    background: '#1a262f', border: '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '10px', padding: '8px 12px', pointerEvents: 'none', zIndex: 10, minWidth: '160px',
                 }}>
                     <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '10px', fontWeight: 700, marginBottom: '6px' }}>
@@ -330,7 +330,7 @@ export default function AnalyticsPage() {
     ]
 
     return (
-        <div className="px-4 md:px-6 pt-6 max-w-5xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #081624 0%, #050B14 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 pt-6 max-w-5xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-6">
@@ -369,7 +369,7 @@ export default function AnalyticsPage() {
                 </div>
                 {campaigns.length > 1 && (
                     <select value={selectedCampaign} onChange={e => setSelectedCampaign(e.target.value)}
-                        className="bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]">
+                        className="bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]">
                         <option value="ALL">Todas las campañas</option>
                         {campaigns.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
@@ -414,7 +414,7 @@ export default function AnalyticsPage() {
                                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all"
                                         style={on
                                             ? { background: m.color + '20', borderColor: m.color + '50', color: m.color }
-                                            : { background: '#0B1B2B', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)' }}>
+                                            : { background: '#212e38', borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)' }}>
                                         <span style={{ width: 7, height: 7, borderRadius: '50%', background: on ? m.color : 'rgba(255,255,255,0.2)', display: 'inline-block', flexShrink: 0 }} />
                                         {m.label}
                                     </button>

@@ -69,7 +69,7 @@ function ResetForm() {
       <div className="w-full max-w-[340px] relative z-10">
 
         <div className="flex flex-col items-center mb-7">
-          <div style={{ padding: '14px 24px', borderRadius: 22, background: 'linear-gradient(135deg, #0B1B2B 0%, #081624 100%)', boxShadow: '0 18px 40px -14px rgba(8,22,36,0.5)' }}>
+          <div style={{ padding: '14px 24px', borderRadius: 22, background: 'linear-gradient(135deg, #212e38 0%, #273842 100%)', boxShadow: '0 18px 40px -14px rgba(8,22,36,0.5)' }}>
             <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ width: 140, height: 'auto', display: 'block' }} />
           </div>
         </div>
@@ -87,7 +87,7 @@ function ResetForm() {
                 href="/login"
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98]"
                 style={{
-                  background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
+                  background: 'linear-gradient(135deg, #12303a, #00E5D0)',
                   color: '#fff',
                   border: '1px solid rgba(255,255,255,0.12)',
                   boxShadow: '0 4px 20px rgba(0,229,208,0.25)',
@@ -152,7 +152,7 @@ function ResetForm() {
                   disabled={loading}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-60 mt-1"
                   style={{
-                    background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
+                    background: 'linear-gradient(135deg, #12303a, #00E5D0)',
                     color: '#fff',
                     border: '1px solid rgba(255,255,255,0.12)',
                     boxShadow: '0 4px 20px rgba(0,229,208,0.25)',

@@ -300,11 +300,11 @@ function WizardContent() {
     const plat = selectedPlatform ? PLATFORM_LABELS[selectedPlatform] : null
 
     return (
-        <div className="px-4 md:px-6 xl:px-8 pt-6 max-w-3xl xl:max-w-4xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #081624 0%, #050B14 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 xl:px-8 pt-6 max-w-3xl xl:max-w-4xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Overlay animado al crear el anuncio (antes de ir al editor) */}
             {creating && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050B14]/90 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1a262f]/90 backdrop-blur-sm">
                     <AiThinking messages={[
                         'Creando tu anuncio…',
                         'Preparando los creativos…',
@@ -690,7 +690,7 @@ function WizardContent() {
                                             return (
                                                 <div key={strategy.id}
                                                     className={`rounded-2xl border transition-all ${isSelected ? 'border-white/10 shadow-[0_0_24px_rgba(183,53,184,0.22)]' : 'border-white/12 hover:border-white/10'}`}
-                                                    style={{ background: isSelected ? 'linear-gradient(160deg, rgba(183,53,184,0.16), rgba(37,99,235,0.06))' : 'linear-gradient(160deg, rgba(255,255,255,0.055), #0B1B2B)' }}>
+                                                    style={{ background: isSelected ? 'linear-gradient(160deg, rgba(183,53,184,0.16), rgba(37,99,235,0.06))' : 'linear-gradient(160deg, rgba(255,255,255,0.055), #212e38)' }}>
 
                                                     <div className="p-4">
                                                         <div className="flex items-start gap-3">
@@ -743,7 +743,7 @@ function WizardContent() {
                                                                     <input
                                                                         value={editForm.name || ''}
                                                                         onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
-                                                                        className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10"
+                                                                        className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10"
                                                                     />
                                                                 </div>
                                                                 <div>
@@ -752,14 +752,14 @@ function WizardContent() {
                                                                         value={editForm.description || ''}
                                                                         onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
                                                                         rows={2}
-                                                                        className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 resize-none"
+                                                                        className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 resize-none"
                                                                     />
                                                                 </div>
                                                                 <div className="grid grid-cols-2 gap-3">
                                                                     <div>
                                                                         <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest block mb-1">Objetivo</label>
                                                                         <select value={editForm.objective || ''} onChange={e => setEditForm(f => ({ ...f, objective: e.target.value }))}
-                                                                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]">
+                                                                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]">
                                                                             <option value="conversions">Ventas</option>
                                                                             <option value="leads">Clientes potenciales</option>
                                                                             <option value="traffic">Tráfico</option>
@@ -771,7 +771,7 @@ function WizardContent() {
                                                                     <div>
                                                                         <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest block mb-1">Destino</label>
                                                                         <select value={editForm.destination || ''} onChange={e => setEditForm(f => ({ ...f, destination: e.target.value }))}
-                                                                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]">
+                                                                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]">
                                                                             <option value="whatsapp">WhatsApp</option>
                                                                             <option value="instagram">Instagram</option>
                                                                             <option value="website">Sitio web</option>
@@ -781,7 +781,7 @@ function WizardContent() {
                                                                     <div>
                                                                         <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest block mb-1">Tipo media</label>
                                                                         <select value={editForm.mediaType || ''} onChange={e => setEditForm(f => ({ ...f, mediaType: e.target.value }))}
-                                                                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]">
+                                                                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]">
                                                                             <option value="image">Imagen</option>
                                                                             <option value="video">Video</option>
                                                                             <option value="carousel">Carrusel</option>
@@ -792,7 +792,7 @@ function WizardContent() {
                                                                         <input type="number" min={1} max={20}
                                                                             value={editForm.mediaCount || 5}
                                                                             onChange={e => setEditForm(f => ({ ...f, mediaCount: parseInt(e.target.value) || 5 }))}
-                                                                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10"
+                                                                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10"
                                                                         />
                                                                     </div>
                                                                     <div className="col-span-2">
@@ -800,7 +800,7 @@ function WizardContent() {
                                                                         <input type="number" min={1}
                                                                             value={editForm.minBudgetUSD || 5}
                                                                             onChange={e => setEditForm(f => ({ ...f, minBudgetUSD: parseFloat(e.target.value) || 5 }))}
-                                                                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10"
+                                                                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-white/10"
                                                                         />
                                                                     </div>
                                                                 </div>

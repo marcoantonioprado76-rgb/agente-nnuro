@@ -77,7 +77,7 @@ function CommissionsContent() {
         {/* Total */}
         <div className="relative rounded-2xl p-6 overflow-hidden"
           style={{
-            background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+            background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
             border: '1px solid rgba(255,255,255,0.1)',
             boxShadow: '0 0 30px rgba(0,255,136,0.06)'
           }}>
@@ -100,7 +100,7 @@ function CommissionsContent() {
         {/* Bono de Patrocinio */}
         <div className="relative rounded-2xl p-6 overflow-hidden transition-all duration-300 hover:scale-[1.02]"
           style={{
-            background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+            background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -121,7 +121,7 @@ function CommissionsContent() {
         {/* Bono Directo */}
         <div className="relative rounded-2xl p-6 overflow-hidden transition-all duration-300 hover:scale-[1.02]"
           style={{
-            background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+            background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
             border: '1px solid rgba(255,255,255,0.1)',
           }}>
           <div className="absolute top-0 left-0 right-0 h-px"
@@ -140,7 +140,7 @@ function CommissionsContent() {
 
       {/* Historial */}
       <div className="relative rounded-2xl overflow-hidden"
-        style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+        style={{ border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
         <div className="absolute top-0 left-0 right-0 h-px"
           style={{ background: 'linear-gradient(90deg, transparent, #00FF8840, #C9A7FF30, transparent)' }} />
 

@@ -64,7 +64,7 @@ export default function LibrosPage() {
         {visibles.map(t => (
           <Link key={t.id} href={`/dashboard/recursos/libros/${t.id}`}
             className="group rounded-2xl overflow-hidden border border-white/10 hover:border-[#0a95a8]/40 transition-all active:scale-[0.98]"
-            style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+            style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
             <div className="relative w-full bg-black/30 flex items-center justify-center" style={{ aspectRatio: '3 / 4' }}>
               {t.portadaUrl
                 // eslint-disable-next-line @next/next/no-img-element

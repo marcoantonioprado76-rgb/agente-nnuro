@@ -13,7 +13,7 @@ const FEATURES = [
 
 export default function GoogleAdsPage() {
     return (
-        <div className="px-4 md:px-6 xl:px-10 pt-6 pb-28 max-w-screen-lg mx-auto text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #081624 0%, #050B14 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 xl:px-10 pt-6 pb-28 max-w-screen-lg mx-auto text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Header */}
             <div className="flex items-center gap-4 mb-8">
@@ -63,7 +63,7 @@ export default function GoogleAdsPage() {
                         const Icon = f.icon
                         return (
                             <div key={i} className="flex items-start gap-3 p-4 rounded-2xl"
-                                style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.06)' }}>
+                                style={{ background: '#212e38', border: '1px solid rgba(255,255,255,0.06)' }}>
                                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
                                     style={{ background: 'rgba(66,133,244,0.1)', border: '1px solid rgba(66,133,244,0.2)' }}>
                                     <Icon size={15} style={{ color: '#4285F4' }} />
@@ -80,7 +80,7 @@ export default function GoogleAdsPage() {
 
             {/* Status */}
             <div className="rounded-2xl p-5"
-                style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.07)' }}>
+                style={{ background: '#212e38', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <p className="text-[10px] font-black uppercase tracking-widest text-[#64748B] mb-4">Estado de integración</p>
                 <div className="space-y-3">
                     {[

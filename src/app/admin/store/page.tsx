@@ -411,7 +411,7 @@ export default function AdminStorePage() {
       {/* ═══ ITEM MODAL ═══ */}
       {itemModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.10)', zIndex: 50, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', overflowY: 'auto', padding: '40px 16px' }}>
-          <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 18, width: '100%', maxWidth: 560, padding: 28 }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 18, width: '100%', maxWidth: 560, padding: 28 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{editingItem ? 'Editar producto' : 'Nuevo producto'}</h2>
               <button onClick={() => setItemModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}><X size={18} /></button>
@@ -425,7 +425,7 @@ export default function AdminStorePage() {
               <div>
                 <label className={LABEL}>Categoría</label>
                 <select className={INPUT} value={form.category} onChange={e => setF('category', e.target.value)} style={{ cursor: 'pointer' }}>
-                  {CATEGORIES.map(c => <option key={c} value={c} style={{ background: '#0d1117' }}>{c}</option>)}
+                  {CATEGORIES.map(c => <option key={c} value={c} style={{ background: '#1a262f' }}>{c}</option>)}
                 </select>
                 {form.category === 'Otra' && (
                   <input className={INPUT} style={{ marginTop: 6 }} value={form.customCategory} onChange={e => setF('customCategory', e.target.value)} placeholder="Escribe la categoría..." />
@@ -516,7 +516,7 @@ export default function AdminStorePage() {
       {/* ═══ DELETE CONFIRM ═══ */}
       {deleteConfirm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.10)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 360, width: '100%' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 360, width: '100%' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 8 }}>¿Eliminar producto?</p>
             <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>Esta acción no se puede deshacer.</p>
             <div style={{ display: 'flex', gap: 10 }}>
@@ -530,7 +530,7 @@ export default function AdminStorePage() {
       {/* ═══ REJECT MODAL ═══ */}
       {rejectModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.10)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#0d1117', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 380, width: '100%' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 16, padding: 28, maxWidth: 380, width: '100%' }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Rechazar pedido</p>
             <label style={{ fontSize: 12, color: '#6B7280', display: 'block', marginBottom: 6 }}>Motivo (opcional)</label>
             <textarea value={rejectNotes} onChange={e => setRejectNotes(e.target.value)}

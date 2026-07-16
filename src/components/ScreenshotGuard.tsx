@@ -54,7 +54,7 @@ export default function ScreenshotGuard() {
     >
       <div
         className="relative w-full max-w-sm rounded-2xl overflow-hidden"
-        style={{ background: '#0D0F1E', border: '1px solid rgba(239,68,68,0.3)' }}
+        style={{ background: '#1a262f', border: '1px solid rgba(239,68,68,0.3)' }}
       >
         {/* Top accent */}
         <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(239,68,68,0.9) 50%, transparent)' }} />

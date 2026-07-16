@@ -212,7 +212,7 @@ export default function NotificationBell() {
           ...(dropdownPos.top !== undefined ? { top: dropdownPos.top } : { bottom: dropdownPos.bottom }),
           left: dropdownPos.left,
           width: Math.min(300, window.innerWidth - 24),
-          background: '#0D0F1E',
+          background: '#1a262f',
           border: '1px solid rgba(255,255,255,0.08)',
           borderRadius: '14px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.6)',

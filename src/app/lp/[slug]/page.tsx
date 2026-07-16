@@ -45,7 +45,7 @@ export default async function PublicLandingPage({
 
     // Block-based pages: normal renderer + lead form + footer
     return (
-        <main className="min-h-screen bg-[#050505] text-white selection:bg-[#9B00FF] selection:text-white">
+        <main className="min-h-screen bg-[#1a262f] text-white selection:bg-[#9B00FF] selection:text-white">
             <BlocksRenderer blocks={sections} />
 
             {/* Lead Capture Section - Floating or at the end */}

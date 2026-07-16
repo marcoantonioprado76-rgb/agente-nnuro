@@ -78,7 +78,7 @@ export default function MyOrdersPage() {
           {orders.map(order => {
             const st = STATUS[order.status] ?? STATUS['PENDING']
             return (
-              <div key={order.id} style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, overflow: 'hidden' }}>
+              <div key={order.id} style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, overflow: 'hidden' }}>
                 {/* Header */}
                 <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                   <div>

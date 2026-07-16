@@ -87,7 +87,7 @@ export default function AdminRecursosPage() {
               <div className="relative w-full bg-[#F0F3F7]" style={{ aspectRatio: `${t.ancho} / ${t.alto}` }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={t.thumbUrl || t.fondoUrl} alt={t.nombre} className="w-full h-full object-cover" loading="lazy" />
-                {!t.activo && <span className="absolute top-2 left-2 text-[9px] font-black px-2 py-0.5 rounded-full bg-[#0B1B2B]/80 text-white">OCULTA</span>}
+                {!t.activo && <span className="absolute top-2 left-2 text-[9px] font-black px-2 py-0.5 rounded-full bg-[#212e38]/80 text-white">OCULTA</span>}
               </div>
               <div className="p-2.5">
                 <p className="text-xs font-bold text-[#111827] truncate">{t.nombre}</p>

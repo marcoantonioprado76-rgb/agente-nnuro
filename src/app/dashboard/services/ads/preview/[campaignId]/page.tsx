@@ -94,7 +94,7 @@ export default function PreviewPage() {
     const isPublished = campaign.status === 'PUBLISHED'
 
     return (
-        <div className="px-4 md:px-6 pt-6 max-w-screen-xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #081624 0%, #050B14 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 pt-6 max-w-screen-xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
             {/* Header */}
             <div className="flex items-center gap-4 mb-6">
                 <Link href="/dashboard/services/ads/meta" className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
@@ -188,7 +188,7 @@ export default function PreviewPage() {
                         </div>
 
                         {/* Instagram/Facebook feed mockup */}
-                        <div className="bg-[#18191a] rounded-2xl overflow-hidden border border-white/10">
+                        <div className="bg-[#1a262f] rounded-2xl overflow-hidden border border-white/10">
                             {/* Post header */}
                             <div className="flex items-center gap-3 p-3 border-b border-white/5">
                                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1fb8bb] via-[#147e95] to-[#233B8F] flex items-center justify-center text-xs font-black">
@@ -290,20 +290,20 @@ export default function PreviewPage() {
                                             value={creative.primaryText}
                                             onChange={e => setCreatives(prev => prev.map((c, j) => j === i ? { ...c, primaryText: e.target.value } : c))}
                                             rows={4}
-                                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white resize-none focus:outline-none focus:border-white/10 leading-relaxed"
+                                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white resize-none focus:outline-none focus:border-white/10 leading-relaxed"
                                         />
                                         <div className="grid grid-cols-2 gap-2">
                                             <input
                                                 value={creative.headline}
                                                 onChange={e => setCreatives(prev => prev.map((c, j) => j === i ? { ...c, headline: e.target.value } : c))}
                                                 placeholder="Titular"
-                                                className="bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10 placeholder:text-white/30"
+                                                className="bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10 placeholder:text-white/30"
                                             />
                                             <input
                                                 value={creative.description || ''}
                                                 onChange={e => setCreatives(prev => prev.map((c, j) => j === i ? { ...c, description: e.target.value } : c))}
                                                 placeholder="Descripción"
-                                                className="bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10 placeholder:text-white/30"
+                                                className="bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10 placeholder:text-white/30"
                                             />
                                         </div>
                                         <div className="flex gap-2">

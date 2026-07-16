@@ -276,7 +276,7 @@ export default function CreditsPage() {
       {/* Credits Balance Card — USD */}
       <div className="relative rounded-2xl p-6 overflow-hidden"
         style={{
-          background: '#081624',
+          background: '#273842',
           border: '1px solid rgba(255,255,255,0.1)',
           backdropFilter: 'blur(16px)',
         }}>

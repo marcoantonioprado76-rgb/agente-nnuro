@@ -48,7 +48,7 @@ interface SuccessData { fullName: string; username: string; password: string }
 export default function RegisterPage() {
   return (
     <Suspense fallback={
-      <div style={{background:'linear-gradient(140deg, #0B1B2B 0%, #0A1320 52%, #050B14 100%)',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center">
+      <div style={{background:'linear-gradient(140deg, #212e38 0%, #1a262f 52%, #1a262f 100%)',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#0a95a8]/30 border-t-[#0a95a8] rounded-full animate-spin" />
       </div>
     }>
@@ -203,7 +203,7 @@ function RegisterForm() {
               onClick={() => { router.refresh(); router.push('/dashboard') }}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-[0.18em] transition-all active:scale-[0.97] hover:brightness-110"
               style={{
-                background: 'linear-gradient(135deg, #0D1E79, #00E5D0)',
+                background: 'linear-gradient(135deg, #12303a, #00E5D0)',
                 color: '#fff',
                 border: '1px solid #E4E9F0',
                 boxShadow: '0 6px 24px rgba(0,229,208,0.30)',
@@ -219,7 +219,7 @@ function RegisterForm() {
   }
 
   return (
-    <div style={{backgroundImage:'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)',backgroundColor:'#0A1320',backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
+    <div style={{backgroundImage:'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)',backgroundColor:'#1a262f',backgroundSize:'cover',backgroundPosition:'center',backgroundRepeat:'no-repeat',minHeight:'100vh',color:'#111827'}} className="font-ui min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-purple-600/20 blur-[120px]" />
         <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#0a95a8]/16 blur-[120px]" />

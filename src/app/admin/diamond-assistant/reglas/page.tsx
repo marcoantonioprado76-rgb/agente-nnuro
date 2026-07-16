@@ -48,7 +48,7 @@ interface RuleForm {
 const TYPE_META: Record<RuleType, { label: string; color: string; tint: string; icon: LucideIcon }> = {
   FORBID: { label: 'Prohibido', color: '#DC2626', tint: 'rgba(220,38,38,0.10)', icon: Ban },
   ESCALATE: { label: 'Escalar', color: '#D97706', tint: 'rgba(217,119,6,0.12)', icon: ArrowUpRight },
-  REQUIRE_APPROVAL: { label: 'Requiere aprobación', color: '#7C3AED', tint: 'rgba(124,58,237,0.12)', icon: ShieldCheck },
+  REQUIRE_APPROVAL: { label: 'Requiere aprobación', color: '#147e95', tint: 'rgba(0,229,208,0.12)', icon: ShieldCheck },
 }
 
 const TYPE_OPTIONS: { value: RuleType; label: string; hint: string }[] = [

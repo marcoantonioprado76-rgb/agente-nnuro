@@ -19,8 +19,8 @@ interface TicketInfo {
 }
 
 const BG: Record<ResultType, string> = {
-  idle: '#07080F',
-  loading: '#07080F',
+  idle: '#1a262f',
+  loading: '#1a262f',
   valid: '#052010',
   checked_in: '#052010',
   already_used: '#1a0505',
@@ -224,7 +224,7 @@ export default function ValidarPage() {
           <button
             onClick={() => lookup()}
             disabled={!code.trim()}
-            style={{ marginTop: 16, width: '100%', padding: '16px 0', borderRadius: 14, background: code.trim() ? 'linear-gradient(135deg,#00E5D0,#0D1E79)' : '#F0F3F7', color: code.trim() ? '#fff' : '#9CA3AF', fontWeight: 900, fontSize: 16, border: 'none', cursor: code.trim() ? 'pointer' : 'default', letterSpacing: 2, textTransform: 'uppercase', transition: 'all 0.2s' }}
+            style={{ marginTop: 16, width: '100%', padding: '16px 0', borderRadius: 14, background: code.trim() ? 'linear-gradient(135deg,#00E5D0,#12303a)' : '#F0F3F7', color: code.trim() ? '#fff' : '#9CA3AF', fontWeight: 900, fontSize: 16, border: 'none', cursor: code.trim() ? 'pointer' : 'default', letterSpacing: 2, textTransform: 'uppercase', transition: 'all 0.2s' }}
           >
             Verificar código
           </button>

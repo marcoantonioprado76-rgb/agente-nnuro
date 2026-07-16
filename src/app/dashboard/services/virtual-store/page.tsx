@@ -722,7 +722,7 @@ export default function VirtualStorePage() {
             ) : stores.length === 0 ? (
                 <div className="rounded-3xl p-16 text-center max-w-2xl mx-auto"
                     style={{
-                        background: 'radial-gradient(120% 75% at 50% -10%, rgba(34,183,255,0.12), rgba(255,255,255,0) 60%), linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+                        background: 'radial-gradient(120% 75% at 50% -10%, rgba(34,183,255,0.12), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
                         border: '1px solid rgba(255,255,255,0.07)',
                         boxShadow: '0 22px 50px -22px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.04)',
                     }}>
@@ -752,7 +752,7 @@ export default function VirtualStorePage() {
                             <div key={store.id}
                                 className="relative rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1"
                                 style={{
-                                    background: `radial-gradient(120% 80% at 50% -10%, ${p.accent}1c, rgba(255,255,255,0) 60%), radial-gradient(80% 80% at 100% 100%, ${p.accent}10, rgba(255,255,255,0) 62%), linear-gradient(180deg, #0B1B2B 0%, #081624 100%)`,
+                                    background: `radial-gradient(120% 80% at 50% -10%, ${p.accent}1c, rgba(255,255,255,0) 60%), radial-gradient(80% 80% at 100% 100%, ${p.accent}10, rgba(255,255,255,0) 62%), linear-gradient(180deg, #212e38 0%, #273842 100%)`,
                                     border: '1px solid rgba(255,255,255,0.08)',
                                     boxShadow: `0 22px 44px -22px rgba(0,0,0,0.78), 0 0 24px -14px ${p.accent}30, inset 0 1px 0 rgba(255,255,255,0.06)`,
                                 }}

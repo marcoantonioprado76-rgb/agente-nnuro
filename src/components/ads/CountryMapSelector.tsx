@@ -322,8 +322,8 @@ export default function CountryMapSelector({ selected, onChange }: Props) {
                                             onMouseEnter={() => setTooltip(info?.name || null)}
                                             onMouseLeave={() => setTooltip(null)}
                                             style={{
-                                                default: { fill: isSel ? '#147e95' : '#0B1B2B', stroke: '#050B14', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
-                                                hover: { fill: isSel ? '#147e95' : '#102A55', stroke: '#050B14', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
+                                                default: { fill: isSel ? '#147e95' : '#212e38', stroke: '#1a262f', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
+                                                hover: { fill: isSel ? '#147e95' : '#102A55', stroke: '#1a262f', strokeWidth: 0.4, outline: 'none', cursor: info ? 'pointer' : 'default' },
                                                 pressed: { fill: '#5b21b6', outline: 'none' }
                                             }}
                                         />
@@ -355,7 +355,7 @@ export default function CountryMapSelector({ selected, onChange }: Props) {
                                     <circle
                                         r={dotR}
                                         fill={isSel ? '#4C97D8' : countrySelected ? '#147e95' : '#64748b'}
-                                        stroke={isSel ? '#4C97D8' : '#081624'}
+                                        stroke={isSel ? '#4C97D8' : '#273842'}
                                         strokeWidth={isSel ? 1.5 : 0.8}
                                         style={{ pointerEvents: 'none', transition: 'all 0.15s' }}
                                     />

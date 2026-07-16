@@ -61,7 +61,7 @@ const TIERS: Record<TicketTier, {
   },
   GUEST: {
     label: 'INVITADO',
-    metal: [[0, '#1C1C1E'], [0.22, '#3A3A3C'], [0.42, '#2C2C2E'], [0.58, '#4A4A4D'], [0.78, '#232325'], [1, '#141416']],
+    metal: [[0, '#1C1C1E'], [0.22, '#3A3A3C'], [0.42, '#2C2C2E'], [0.58, '#4A4A4D'], [0.78, '#232325'], [1, '#1a262f']],
     stub: [[0, '#0E0E10'], [0.5, '#242426'], [1, '#0E0E10']],
     ink: '#F5D77A', inkSoft: 'rgba(245,215,122,0.72)', edge: '#8A6D2F', stubInk: '#F5D77A',
   },
@@ -100,7 +100,7 @@ export async function renderTicketPng(data: TicketImageData): Promise<Buffer | n
     const ctx = canvas.getContext('2d')
 
     // Fondo (por si el PNG se ve sobre algo transparente).
-    ctx.fillStyle = '#0B0F1A'
+    ctx.fillStyle = '#1a262f'
     ctx.fillRect(0, 0, W, H)
 
     // ── Cuerpo metálico ──────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ export async function renderTicketPng(data: TicketImageData): Promise<Buffer | n
 
     const qrDataUrl = await QRCode.toDataURL(data.code, {
       width: QR, margin: 1, errorCorrectionLevel: 'M',
-      color: { dark: '#0D1E79', light: '#FFFFFF' },
+      color: { dark: '#12303a', light: '#FFFFFF' },
     })
     const qrImg = await loadImage(qrDataUrl)
     ctx.drawImage(qrImg, qrX, qrY, QR, QR)

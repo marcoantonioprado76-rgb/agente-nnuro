@@ -59,7 +59,7 @@ export function ConfirmHost() {
   const confirmText = p.opts.confirmText ?? 'Aceptar'
   const cancelText = p.opts.cancelText ?? 'Cancelar'
 
-  const accent = danger ? '#ef4444' : '#6366f1'
+  const accent = danger ? '#ef4444' : '#1fb8bb'
   const accentGlow = danger ? 'rgba(239,68,68,.35)' : 'rgba(99,102,241,.35)'
 
   return (

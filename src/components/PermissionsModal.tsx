@@ -103,7 +103,7 @@ export default function PermissionsModal() {
                 disabled={requesting}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-black uppercase tracking-[0.12em] transition-all active:scale-[0.98] disabled:opacity-60"
                 style={{
-                  background: 'linear-gradient(135deg, #00E5D0, #0D1E79)',
+                  background: 'linear-gradient(135deg, #00E5D0, #12303a)',
                   color: '#fff',
                   border: '1px solid rgba(255,255,255,0.1)',
                   boxShadow: '0 8px 32px rgba(0,229,208,0.25)',

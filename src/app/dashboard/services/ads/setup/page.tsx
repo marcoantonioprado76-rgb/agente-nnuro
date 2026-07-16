@@ -74,7 +74,7 @@ export default function SetupPage() {
     }
 
     return (
-        <div className="px-4 md:px-6 pt-6 max-w-3xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #081624 0%, #050B14 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 pt-6 max-w-3xl mx-auto pb-24 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-7">
@@ -198,7 +198,7 @@ export default function SetupPage() {
                                     value={apiKey}
                                     onChange={e => setApiKey(e.target.value)}
                                     placeholder="sk-proj-..."
-                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-4 py-3 text-sm font-mono text-white pr-12 focus:outline-none focus:border-white/10 placeholder:text-white/30 transition-colors"
+                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-4 py-3 text-sm font-mono text-white pr-12 focus:outline-none focus:border-white/10 placeholder:text-white/30 transition-colors"
                                 />
                                 <button type="button" onClick={() => setShowKey(!showKey)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
@@ -210,7 +210,7 @@ export default function SetupPage() {
                         <div>
                             <label className="text-[11px] font-bold text-white/40 uppercase tracking-widest block mb-2">Modelo de IA</label>
                             <select value={model} onChange={e => setModel(e.target.value)}
-                                className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/10 transition-colors [&>option]:bg-[#0B1B2B]">
+                                className="w-full bg-[#212e38] border border-white/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/10 transition-colors [&>option]:bg-[#212e38]">
                                 <option value="gpt-5.2">GPT-5.2 ⚡ Última generación — ⚠ Mayor costo</option>
                                 <option value="gpt-5.1">GPT-5.1 ⚡ Más inteligente — ⚠ Mayor costo</option>
                                 <option value="gpt-4.1">GPT-4.1 — Alta calidad</option>

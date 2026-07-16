@@ -57,7 +57,7 @@ function DetailModal({ node, onClose }: { node: TreeNode; onClose: () => void })
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
         className="relative w-full max-w-sm rounded-2xl overflow-hidden z-10 border border-white/10"
-        style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}
+        style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}
         onClick={e => e.stopPropagation()}
       >
         <div className="px-5 pt-5 pb-4 flex items-center gap-4">
@@ -115,7 +115,7 @@ function RecursiveNode({ node, onDetail }: { node: TreeNode; onDetail: (n: TreeN
           onClick={() => onDetail(node)}
         >
           {node.fullName.charAt(0).toUpperCase()}
-          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#081624] border border-white/10 flex items-center justify-center text-[8px] font-bold text-white/55">
+          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#273842] border border-white/10 flex items-center justify-center text-[8px] font-bold text-white/55">
             {node.level}
           </span>
         </div>

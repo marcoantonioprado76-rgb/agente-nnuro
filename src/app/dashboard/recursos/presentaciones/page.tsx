@@ -64,14 +64,14 @@ export default function PresentacionesPage() {
         {visibles.map(t => (
           <Link key={t.id} href={`/dashboard/recursos/presentaciones/${t.id}`}
             className="group rounded-2xl overflow-hidden border border-white/10 hover:border-[#147e95]/40 transition-all active:scale-[0.98]"
-            style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+            style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
             <div className="relative w-full bg-black/30 flex items-center justify-center" style={{ aspectRatio: '3 / 4' }}>
               {t.portadaUrl
                 // eslint-disable-next-line @next/next/no-img-element
                 ? <img src={t.portadaUrl} alt={t.titulo} className="w-full h-full object-cover" loading="lazy" />
                 : <i className="fa-solid fa-file-pdf text-4xl text-white/20"></i>}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-3">
-                <span className="text-xs font-black text-white px-3 py-1.5 rounded-full" style={{ background: 'linear-gradient(135deg,#0D1E79,#147e95)' }}>
+                <span className="text-xs font-black text-white px-3 py-1.5 rounded-full" style={{ background: 'linear-gradient(135deg,#12303a,#147e95)' }}>
                   <i className="fa-solid fa-eye mr-1"></i> Ver
                 </span>
               </div>

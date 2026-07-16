@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
                 globalStyles: {
                     colors: {
                         primary: '#00F0FF',
-                        background: '#050505',
+                        background: '#1a262f',
                         text: '#FFFFFF'
                     },
                     fonts: {

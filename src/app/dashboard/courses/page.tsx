@@ -156,7 +156,7 @@ export default function CoursesPage() {
           style={{
             width: '100%', paddingLeft: 36, paddingRight: 16, paddingTop: 10, paddingBottom: 10,
             borderRadius: 12, fontSize: 13, color: '#fff', outline: 'none',
-            background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)',
+            background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)',
             boxSizing: 'border-box',
           }}
           onFocus={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)')}
@@ -183,7 +183,7 @@ export default function CoursesPage() {
                 style={{
                   fontSize: 12, fontWeight: 700, padding: '7px 14px', borderRadius: 999,
                   color: active ? '#fff' : 'rgba(255,255,255,0.6)',
-                  background: active ? 'linear-gradient(135deg, #147e95, #FF2DF7)' : 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+                  background: active ? 'linear-gradient(135deg, #147e95, #FF2DF7)' : 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
                   border: `1px solid ${active ? 'transparent' : 'rgba(255,255,255,0.1)'}`,
                 }}>
                 {cat}
@@ -222,7 +222,7 @@ export default function CoursesPage() {
                 style={{
                   borderRadius: 16,
                   overflow: 'hidden',
-                  background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+                  background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
                   border: `1px solid ${isLocked ? 'rgba(183,53,184,0.18)' : 'rgba(255,255,255,0.1)'}`,
                   opacity: isLocked ? 0.7 : 1,
                   cursor: isLocked ? 'default' : 'pointer',

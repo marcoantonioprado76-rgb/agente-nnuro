@@ -232,7 +232,7 @@ export default function BotReportsPage() {
           { label: 'Ventas hoy', value: stats.salesToday, color: '#F5A623' },
           { label: 'Conversión', value: `${stats.conversionRate}%`, color: '#FF2DF7' },
         ].map(s => (
-          <div key={s.label} style={{ borderRadius: 14, padding: '14px 16px', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <div key={s.label} style={{ borderRadius: 14, padding: '14px 16px', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{s.label}</p>
             <p style={{ fontSize: 26, fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</p>
           </div>
@@ -240,7 +240,7 @@ export default function BotReportsPage() {
       </div>
 
       {/* Chart section */}
-      <div style={{ borderRadius: 16, padding: '20px', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', marginBottom: 24 }}>
+      <div style={{ borderRadius: 16, padding: '20px', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
           <p style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>Últimos 30 días</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -261,7 +261,7 @@ export default function BotReportsPage() {
       </div>
 
       {/* Recent sales */}
-      <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+      <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
         <div style={{ padding: '14px 18px', background: 'rgba(0,255,136,0.04)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <p style={{ fontSize: 13, fontWeight: 700, color: '#fff', margin: 0 }}>
             Ventas recientes

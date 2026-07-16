@@ -175,7 +175,7 @@ export default function AdminPodcastsPage() {
       {/* Delete confirm */}
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}>
-          <div style={{ background: '#0d0d15', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360 }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360 }}>
             <p style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 8 }}>¿Eliminar episodio?</p>
             <p style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>Esta acción no se puede deshacer.</p>
             <div style={{ display: 'flex', gap: 10 }}>
@@ -192,7 +192,7 @@ export default function AdminPodcastsPage() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
           onClick={e => { if (e.target === e.currentTarget) setModal(null) }}>
-          <div style={{ background: '#0d0d15', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24, width: '100%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24, width: '100%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: 0 }}>{modal.mode === 'create' ? 'Nuevo episodio' : 'Editar episodio'}</h3>
               <button onClick={() => setModal(null)} style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 18 }}><X size={18} /></button>

@@ -250,7 +250,7 @@ export default function UserEditor({ templateId }: { templateId: string }) {
     'Playfair Display', 'Merriweather', 'Georgia', 'Lobster', 'Pacifico',
     'Dancing Script', 'Caveat', 'Righteous', 'Permanent Marker', 'Roboto Mono',
   ]
-  const SWATCHES = ['#ffffff', '#000000', '#147e95', '#0D1E79', '#00FF9D', '#FFD500', '#FF2D55']
+  const SWATCHES = ['#ffffff', '#000000', '#147e95', '#12303a', '#00FF9D', '#FFD500', '#FF2D55']
   const renderTextToolbar = () => {
     if (!textSel) return null
     return (

@@ -94,7 +94,7 @@ export default function AdminVerifyPage() {
 
   return (
   <div className="dm-page font-ui">
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#07080F' }}>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#1a262f' }}>
 
       {/* Glows */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -114,7 +114,7 @@ export default function AdminVerifyPage() {
         </div>
 
         {/* Card */}
-        <div className="relative rounded-2xl overflow-hidden" style={{ background: '#0D0F1E', border: '1px solid rgba(255,255,255,0.07)' }}>
+        <div className="relative rounded-2xl overflow-hidden" style={{ background: '#1a262f', border: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(239,68,68,0.8) 50%, transparent)' }} />
 
           <div className="p-6">

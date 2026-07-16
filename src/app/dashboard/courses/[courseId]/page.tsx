@@ -418,7 +418,7 @@ export default function CourseDetailPage() {
 
       {/* Locked — no plan */}
       {isLocked && (
-        <div style={{ padding: '16px 18px', borderRadius: 14, marginBottom: 20, background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
+        <div style={{ padding: '16px 18px', borderRadius: 14, marginBottom: 20, background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
           <p style={{ fontSize: 22, marginBottom: 8 }}>🔒</p>
           <p style={{ fontSize: 14, color: '#fff', fontWeight: 700, marginBottom: 6 }}>Curso no disponible</p>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>Necesitas un plan activo para acceder a los cursos.</p>
@@ -500,7 +500,7 @@ export default function CourseDetailPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, minWidth: 0 }}>
           {/* Player activo */}
           {selectedVideo && (
-            <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+            <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
               {/* Título del video activo */}
               <div style={{ background: 'rgba(255,255,255,0.04)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: '#0a95a8', background: 'rgba(0,229,208,0.12)', border: '1px solid rgba(0,229,208,0.25)', padding: '2px 8px', borderRadius: 6 }}>
@@ -560,7 +560,7 @@ export default function CourseDetailPage() {
           {selectedVideo && (
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button onClick={() => prevVideo && selectVideo(prevVideo)} disabled={!prevVideo}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: 'linear-gradient(180deg, #0B1B2B 0%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', color: prevVideo ? 'rgba(255,255,255,0.78)' : 'rgba(255,255,255,0.42)', cursor: prevVideo ? 'pointer' : 'default' }}>
+                style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: 'linear-gradient(180deg, #212e38 0%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', color: prevVideo ? 'rgba(255,255,255,0.78)' : 'rgba(255,255,255,0.42)', cursor: prevVideo ? 'pointer' : 'default' }}>
                 ← Anterior
               </button>
               {isApproved && !isVideoDone(selectedVideo) && (
@@ -570,7 +570,7 @@ export default function CourseDetailPage() {
                 </button>
               )}
               <button onClick={() => nextVideo && nextVideo.unlocked && selectVideo(nextVideo)} disabled={!nextVideo || !nextVideo.unlocked}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: (nextVideo && nextVideo.unlocked) ? 'linear-gradient(90deg,#1fb8bb,#147e95,#12303a)' : 'linear-gradient(180deg, #0B1B2B 0%, #050B14 100%)', border: (nextVideo && nextVideo.unlocked) ? 'none' : '1px solid rgba(255,255,255,0.1)', color: (nextVideo && nextVideo.unlocked) ? '#fff' : 'rgba(255,255,255,0.42)', cursor: (nextVideo && nextVideo.unlocked) ? 'pointer' : 'default' }}>
+                style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 12, fontWeight: 700, background: (nextVideo && nextVideo.unlocked) ? 'linear-gradient(90deg,#1fb8bb,#147e95,#12303a)' : 'linear-gradient(180deg, #212e38 0%, #1a262f 100%)', border: (nextVideo && nextVideo.unlocked) ? 'none' : '1px solid rgba(255,255,255,0.1)', color: (nextVideo && nextVideo.unlocked) ? '#fff' : 'rgba(255,255,255,0.42)', cursor: (nextVideo && nextVideo.unlocked) ? 'pointer' : 'default' }}>
                 {nextVideo && !nextVideo.unlocked ? '🔒 Siguiente' : 'Siguiente →'}
               </button>
             </div>
@@ -578,7 +578,7 @@ export default function CourseDetailPage() {
 
           {/* Notas + recursos descargables de la lección */}
           {selectedVideo && (selectedVideo.descripcion || (selectedVideo.recursos && selectedVideo.recursos.length > 0)) && (
-            <div style={{ borderRadius: 14, border: '1px solid rgba(255,255,255,0.1)', padding: '14px 16px', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+            <div style={{ borderRadius: 14, border: '1px solid rgba(255,255,255,0.1)', padding: '14px 16px', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
               {selectedVideo.descripcion && (
                 <div style={{ marginBottom: (selectedVideo.recursos && selectedVideo.recursos.length) ? 14 : 0 }}>
                   <p style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 6px' }}>Notas</p>
@@ -603,7 +603,7 @@ export default function CourseDetailPage() {
             </div>{/* cierra columna izquierda */}
 
           {/* Playlist (columna derecha) */}
-          <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }} className="lg:sticky lg:top-4">
+          <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }} className="lg:sticky lg:top-4">
             <div style={{ background: 'linear-gradient(135deg, rgba(255,45,149,0.16) 0%, rgba(183,53,184,0.16) 50%, rgba(35,59,143,0.16) 100%)', padding: '10px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Contenido del curso
@@ -687,7 +687,7 @@ export default function CourseDetailPage() {
       )}
 
       {!isApproved && !isPending && !isPendingVerification && !isRejected && !isLocked && (
-        <div style={{ padding: '24px', borderRadius: 14, textAlign: 'center', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <div style={{ padding: '24px', borderRadius: 14, textAlign: 'center', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>Los videos están disponibles después de verificar tu pago.</p>
         </div>
       )}
@@ -698,7 +698,7 @@ export default function CourseDetailPage() {
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '0 16px' }}
           onClick={e => { if (e.target === e.currentTarget) closeModal() }}
         >
-          <div style={{ background: '#0d0d15', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24, width: '100%', maxWidth: 460, maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ background: '#1a262f', border: '1px solid #E4E9F0', borderRadius: 20, padding: 24, width: '100%', maxWidth: 460, maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', margin: 0 }}>Comprar curso</h3>
               <button onClick={closeModal} style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 18 }}>✕</button>

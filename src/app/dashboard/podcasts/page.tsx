@@ -107,19 +107,19 @@ export default function PodcastsPage() {
         {selected && (
           <div ref={heroRef} style={{
             position: 'relative', overflow: 'hidden', borderRadius: 26, marginBottom: 24, padding: 22,
-            background: 'radial-gradient(900px 320px at 88% -25%, rgba(168,85,247,0.28), transparent 55%), linear-gradient(150deg,#171e46 0%,#0f1332 52%,#0a0e24 100%)',
+            background: 'radial-gradient(900px 320px at 88% -25%, rgba(0,229,208,0.28), transparent 55%), linear-gradient(150deg,#171e46 0%,#0f1332 52%,#1a262f 100%)',
             border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 44px 100px -50px rgba(10,14,36,0.95), inset 0 1px 0 rgba(255,255,255,0.05)',
             display: 'flex', gap: 26, flexWrap: 'wrap', alignItems: 'center',
           }}>
             {/* Cover + badge episodio */}
             <div style={{ flex: '0 0 auto', width: 300, maxWidth: '100%', margin: '0 auto', position: 'relative' }}>
-              <div style={{ borderRadius: 18, overflow: 'hidden', aspectRatio: '1 / 1', background: '#0a0e24', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 26px 60px -28px rgba(0,0,0,0.85)' }}>
+              <div style={{ borderRadius: 18, overflow: 'hidden', aspectRatio: '1 / 1', background: '#1a262f', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 26px 60px -28px rgba(0,0,0,0.85)' }}>
                 {selected.coverUrl
                   ? <img src={selected.coverUrl} alt={selected.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   : <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,0.3)' }}><i className="fa-solid fa-microphone" style={{ fontSize: 42 }} /></div>}
               </div>
               {epNum > 0 && (
-                <div style={{ position: 'absolute', bottom: -10, left: -10, background: 'linear-gradient(180deg,#141a3d,#0a0e24)', border: '1px solid rgba(168,85,247,0.45)', borderRadius: 14, padding: '7px 15px', textAlign: 'center', boxShadow: '0 12px 26px -12px rgba(0,0,0,0.8)' }}>
+                <div style={{ position: 'absolute', bottom: -10, left: -10, background: 'linear-gradient(180deg,#141a3d,#1a262f)', border: '1px solid rgba(0,229,208,0.45)', borderRadius: 14, padding: '7px 15px', textAlign: 'center', boxShadow: '0 12px 26px -12px rgba(0,0,0,0.8)' }}>
                   <p style={{ fontSize: 8.5, fontWeight: 800, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)', margin: 0 }}>EPISODIO</p>
                   <p style={{ fontSize: 24, fontWeight: 900, background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0, lineHeight: 1 }}>{String(epNum).padStart(2, '0')}</p>
                 </div>
@@ -220,7 +220,7 @@ export default function PodcastsPage() {
               return (
                 <div key={p.id} onClick={() => choose(p)}
                   style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', cursor: 'pointer', borderTop: i === 0 ? 'none' : '1px solid #F0F2F7', background: active ? 'rgba(183,53,184,0.05)' : 'transparent', transition: 'background .15s' }}>
-                  <div style={{ flex: '0 0 auto', width: 52, height: 52, borderRadius: 12, overflow: 'hidden', background: '#0a0e24', position: 'relative' }}>
+                  <div style={{ flex: '0 0 auto', width: 52, height: 52, borderRadius: 12, overflow: 'hidden', background: '#1a262f', position: 'relative' }}>
                     {p.coverUrl ? <img src={p.coverUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,0.3)' }}><i className="fa-solid fa-microphone" style={{ fontSize: 16 }} /></div>}
                     {active && playing && <div style={{ position: 'absolute', inset: 0, background: 'rgba(183,53,184,0.35)', display: 'grid', placeItems: 'center', color: '#fff' }}><i className="fa-solid fa-volume-high" style={{ fontSize: 14 }} /></div>}
                   </div>

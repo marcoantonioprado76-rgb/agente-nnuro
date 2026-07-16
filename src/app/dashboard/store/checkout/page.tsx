@@ -231,7 +231,7 @@ function CheckoutContent() {
                   : `Recibimos tu comprobante. El equipo revisará tu pago y activará tu ${packInfo.name} en menos de 24 horas.`}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-white/55 bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-xl px-4 py-3">
+        <div className="flex items-center gap-2 text-xs text-white/55 bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-xl px-4 py-3">
           <ShieldCheck size={13} className={isInstant ? 'text-yellow-400' : 'text-green-400'} />
           {isInstant ? 'Plan activo · Verificado on-chain' : 'Tu solicitud está en revisión · Estado: Pendiente'}
         </div>
@@ -265,7 +265,7 @@ function CheckoutContent() {
       </div>
 
       {/* Order summary */}
-      <div className={`rounded-2xl border ${packInfo.border} bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] p-5`}>
+      <div className={`rounded-2xl border ${packInfo.border} bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] p-5`}>
         <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Resumen del pedido</p>
         <div className="flex items-start gap-3 mb-4">
           <div className={`w-10 h-10 rounded-xl border ${packInfo.border} ${packInfo.bg} flex items-center justify-center shrink-0`}>
@@ -312,7 +312,7 @@ function CheckoutContent() {
           <p className="text-xs text-orange-400 font-bold">Los métodos de pago están temporalmente deshabilitados. Contacta al equipo.</p>
         </div>
       ) : (
-        <div className="flex gap-2 bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-1.5 flex-wrap">
+        <div className="flex gap-2 bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-1.5 flex-wrap">
           {cryptoEnabled && (
             <button
               onClick={() => { setPaymentMethod('CRYPTO'); setProofUrl(''); setError('') }}
@@ -342,7 +342,7 @@ function CheckoutContent() {
 
       {/* Pago CRYPTO */}
       {paymentMethod === 'CRYPTO' && cryptoEnabled && price !== null && (
-        <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5">
+        <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5">
           <CryptoBPayment
             startUrl="/api/pack-requests/crypto-start"
             startBody={{ plan }}
@@ -369,7 +369,7 @@ function CheckoutContent() {
       </div>
 
       {/* Step 1: QR de pago */}
-      <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-4">
+      <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] flex items-center justify-center text-[10px] font-black text-white">1</div>
           <p className="text-sm font-black text-white">Escanea el QR y realiza tu pago</p>
@@ -411,7 +411,7 @@ function CheckoutContent() {
       </div>
 
       {/* Step 2: Upload proof */}
-      <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-4">
+      <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5 space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] flex items-center justify-center text-[10px] font-black text-white">2</div>
           <p className="text-sm font-black text-white">Sube tu comprobante de pago</p>
@@ -525,7 +525,7 @@ function CheckoutContent() {
           </div>
 
           {/* Step 1: Comprobante */}
-          <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-4">
+          <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5 space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center text-[10px] font-black text-white">1</div>
               <p className="text-sm font-black text-white">Sube tu comprobante de recompra</p>
@@ -579,7 +579,7 @@ function CheckoutContent() {
           </div>
 
           {/* Step 2: Código de Fase Global */}
-          <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-3">
+          <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5 space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center text-[10px] font-black text-white">2</div>
               <p className="text-sm font-black text-white">Código de Fase Global <span className="text-red-400">*</span></p>
@@ -595,7 +595,7 @@ function CheckoutContent() {
           </div>
 
           {/* Step 3: Mensaje */}
-          <div className="bg-gradient-to-b from-[#0B1B2B] via-[#081624] to-[#050B14] border border-white/10 rounded-2xl p-5 space-y-3">
+          <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5 space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black text-white">3</div>
               <p className="text-sm font-black text-white">Mensaje / Nota <span className="text-white/40 text-xs font-normal">(opcional)</span></p>

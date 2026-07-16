@@ -401,7 +401,7 @@ export default function AdminClippingPage() {
           <button key={key} onClick={() => setTab(key as typeof tab)}
             className="px-4 py-2 rounded-lg text-xs font-semibold transition-all"
             style={tab === key
-              ? { background: 'rgba(147,51,234,0.2)', color: '#a855f7', border: '1px solid rgba(147,51,234,0.3)' }
+              ? { background: 'rgba(0,229,208,0.2)', color: '#1fb8bb', border: '1px solid rgba(0,229,208,0.3)' }
               : { color: '#6B7280' }}>
             {label}
           </button>
@@ -414,7 +414,7 @@ export default function AdminClippingPage() {
           <div className="flex justify-end">
             <button onClick={openCreate}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-              style={{ background: 'rgba(147,51,234,0.15)', border: '1px solid rgba(147,51,234,0.3)', color: '#a855f7' }}>
+              style={{ background: 'rgba(0,229,208,0.15)', border: '1px solid rgba(0,229,208,0.3)', color: '#1fb8bb' }}>
               <Plus size={14} /> Nueva campaña
             </button>
           </div>
@@ -493,7 +493,7 @@ export default function AdminClippingPage() {
               <button key={s} onClick={() => setStatusFilter(s)}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={statusFilter === s
-                  ? { background: 'rgba(147,51,234,0.2)', color: '#a855f7', border: '1px solid rgba(147,51,234,0.3)' }
+                  ? { background: 'rgba(0,229,208,0.2)', color: '#1fb8bb', border: '1px solid rgba(0,229,208,0.3)' }
                   : { background: 'rgba(255,255,255,0.04)', color: '#6B7280', border: '1px solid rgba(255,255,255,0.06)' }}>
                 {s === 'ALL' ? 'Todos' : STATUS_CONFIG[s].label}
               </button>
@@ -554,7 +554,7 @@ export default function AdminClippingPage() {
                         { Icon: TrendingUp, label: 'Actuales', value: sub.currentViews, color: '#6B7280' },
                         { Icon: Play, label: 'Nuevas', value: sub.deltaViews, color: '#00E5D0' },
                         { Icon: Heart, label: 'Likes', value: sub.likes ?? 0, color: '#FF3388' },
-                        { Icon: MessageCircle, label: 'Comentarios', value: sub.comments ?? 0, color: '#a855f7' },
+                        { Icon: MessageCircle, label: 'Comentarios', value: sub.comments ?? 0, color: '#1fb8bb' },
                       ].map(({ Icon, label, value, color }) => (
                         <span key={label} className="flex items-center gap-1 text-[11px]" style={{ color }}>
                           <Icon size={11} />
@@ -604,7 +604,7 @@ export default function AdminClippingPage() {
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto"
-            style={{ background: '#0d0d15', border: '1px solid rgba(255,255,255,0.08)' }}>
+            style={{ background: '#1a262f', border: '1px solid rgba(255,255,255,0.08)' }}>
 
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-black uppercase tracking-widest text-[#111827]/80">
@@ -757,7 +757,7 @@ export default function AdminClippingPage() {
               </button>
               <button onClick={saveCampaign} disabled={saving}
                 className="flex-1 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
-                style={{ background: 'rgba(147,51,234,0.2)', border: '1px solid rgba(147,51,234,0.35)', color: '#a855f7' }}>
+                style={{ background: 'rgba(0,229,208,0.2)', border: '1px solid rgba(0,229,208,0.35)', color: '#1fb8bb' }}>
                 {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
@@ -770,7 +770,7 @@ export default function AdminClippingPage() {
       {rejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl p-6 space-y-4"
-            style={{ background: '#0d0d15', border: '1px solid rgba(255,51,102,0.2)' }}>
+            style={{ background: '#1a262f', border: '1px solid rgba(255,51,102,0.2)' }}>
             <h2 className="text-sm font-black uppercase tracking-widest text-red-400">Rechazar submission</h2>
             <div>
               <label className="text-[11px] font-semibold text-[#111827]/40 uppercase tracking-widest block mb-1.5">

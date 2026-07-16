@@ -54,8 +54,8 @@ const COLOR_PALETTES = [
         desc: 'Tecnológico y moderno',
         primary: '#00FF88',
         secondary: '#00E5D0',
-        bg: '#07080F',
-        preview: ['#00FF88', '#00E5D0', '#07080F'],
+        bg: '#1a262f',
+        preview: ['#00FF88', '#00E5D0', '#1a262f'],
     },
     {
         id: 'cyber-blue',
@@ -326,7 +326,7 @@ export default function CreateLandingPage() {
 
     // ─── Loading screen ──────────────────────────────────────────────────────
     if (loading) return (
-        <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+        <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
             <div className="w-20 h-20 rounded-full border-4 border-[#00FF88]/20 border-t-[#00FF88] animate-spin mb-8" />
             <p className="text-[#00FF88] font-black text-lg tracking-widest uppercase text-center">{LOADING_MSGS[loadingIdx]}</p>
             <p className="text-white/40 text-sm mt-3">Esto puede tardar 30-60 segundos</p>
@@ -352,7 +352,7 @@ export default function CreateLandingPage() {
                     <button
                         onClick={() => setMode('html')}
                         className="group border border-white/10 hover:border-white/20 rounded-3xl p-8 text-left transition-all hover:shadow-[0_0_40px_rgba(8,22,36,0.4)]"
-                        style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}
+                        style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}
                     >
                         <div className="w-12 h-12 rounded-2xl bg-[#C9A7FF]/10 border border-[#C9A7FF]/20 flex items-center justify-center mb-5 group-hover:bg-[#C9A7FF]/20 transition-colors">
                             <Code size={22} className="text-[#C9A7FF]" />
@@ -367,7 +367,7 @@ export default function CreateLandingPage() {
                     <button
                         onClick={() => setMode('ai')}
                         className="group border border-white/10 hover:border-[#00FF88]/50 rounded-3xl p-8 text-left transition-all hover:shadow-[0_0_40px_rgba(0,255,136,0.12)]"
-                        style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}
+                        style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}
                     >
                         <div className="w-12 h-12 rounded-2xl bg-[#00FF88]/10 border border-[#00FF88]/20 flex items-center justify-center mb-5 group-hover:bg-[#00FF88]/20 transition-colors">
                             <Sparkles size={22} className="text-[#00FF88]" />
@@ -411,7 +411,7 @@ export default function CreateLandingPage() {
             <textarea
                 value={htmlCode}
                 onChange={e => setHtmlCode(e.target.value)}
-                className="flex-1 bg-[#050B14] text-[#7DD3FC] font-mono text-sm p-6 outline-none resize-none border-none"
+                className="flex-1 bg-[#1a262f] text-[#7DD3FC] font-mono text-sm p-6 outline-none resize-none border-none"
                 placeholder="<!-- Pega aquí tu código HTML completo -->"
                 spellCheck={false}
                 style={{ minHeight: 'calc(100vh - 200px)' }}
@@ -762,7 +762,7 @@ export default function CreateLandingPage() {
 
             {/* Content */}
             <main className="pt-28 sm:pt-36 pb-32 px-4 sm:px-8 max-w-4xl mx-auto">
-                <div className="border border-white/10 rounded-3xl p-6 sm:p-10 shadow-[0_24px_56px_rgba(8,22,36,0.30)]" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                <div className="border border-white/10 rounded-3xl p-6 sm:p-10 shadow-[0_24px_56px_rgba(8,22,36,0.30)]" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                     {renderStep()}
                 </div>
             </main>

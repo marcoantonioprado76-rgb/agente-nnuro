@@ -297,7 +297,7 @@ export default function AdminPurchasesPage() {
       {rejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setRejectModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#E4E9F0] rounded-2xl p-5 w-full max-w-sm z-10">
+          <div className="relative bg-[#1a262f] border border-[#E4E9F0] rounded-2xl p-5 w-full max-w-sm z-10">
             <h3 className="text-sm font-black mb-3 text-red-400">Rechazar solicitud</h3>
             <textarea
               placeholder="Motivo del rechazo (el usuario lo verá)..."

@@ -105,7 +105,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 28 }} className="sm:grid-cols-2">
         {/* Images */}
         <div>
-          <div style={{ aspectRatio: '1/1', borderRadius: 16, overflow: 'hidden', background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
+          <div style={{ aspectRatio: '1/1', borderRadius: 16, overflow: 'hidden', background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
             {images.length > 0 ? (
               <img src={images[activeImg]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
@@ -132,7 +132,7 @@ export default function StoreItemPage({ params }: { params: { itemId: string } }
         </div>
 
         {/* Info */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 24, borderRadius: 16, background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 24, borderRadius: 16, background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)' }}>
           <div>
             <span style={{ fontSize: 11, fontWeight: 600, color: '#00E5D0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{item.category}</span>
             <h1 style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: '#fff', margin: '6px 0 8px', lineHeight: 1.2 }}>{item.title}</h1>

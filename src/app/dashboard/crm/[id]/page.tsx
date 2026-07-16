@@ -497,7 +497,7 @@ export default function CrmCampaignDetailPage() {
                             { label: 'Enviados', value: sent, color: 'text-green-400', icon: <CheckCircle2 size={14} /> },
                             { label: 'Fallidos', value: failed, color: 'text-red-400', icon: <XCircle size={14} /> },
                         ].map(s => (
-                            <div key={s.label} className="border border-white/10 rounded-2xl p-4 text-center" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                            <div key={s.label} className="border border-white/10 rounded-2xl p-4 text-center" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                                 <div className={`flex items-center justify-center gap-1.5 mb-1 ${s.color}`}>{s.icon}</div>
                                 <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
                                 <p className="text-[10px] text-white/40 uppercase">{s.label}</p>
@@ -507,7 +507,7 @@ export default function CrmCampaignDetailPage() {
 
                     {/* Progress */}
                     {total > 0 && (
-                        <div className="border border-white/10 rounded-2xl p-5" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                        <div className="border border-white/10 rounded-2xl p-5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                             <div className="flex justify-between text-xs text-white/55 mb-2 font-bold">
                                 <span>Progreso del envío</span>
                                 <span>{progress}%</span>
@@ -526,7 +526,7 @@ export default function CrmCampaignDetailPage() {
                     )}
 
                     {/* Prompt */}
-                    <div className="border border-white/10 rounded-2xl p-5" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl p-5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <p className="text-xs font-black uppercase tracking-widest text-white/40 mb-2">Prompt de la IA</p>
                         {isEditing ? (
                             <textarea
@@ -542,7 +542,7 @@ export default function CrmCampaignDetailPage() {
                     </div>
 
                     {/* Contacts list */}
-                    <div className="border border-white/10 rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <div className="p-4 border-b border-white/10 flex items-center justify-between">
                             <p className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-2">
                                 <Users size={11} /> Contactos
@@ -672,7 +672,7 @@ export default function CrmCampaignDetailPage() {
                 <div className="space-y-5">
 
                     {/* WhatsApp connection panel */}
-                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <p className="text-xs font-black uppercase tracking-widest text-white/40 flex items-center gap-2">
                             <Smartphone size={12} /> WhatsApp
                         </p>
@@ -782,7 +782,7 @@ export default function CrmCampaignDetailPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <p className="text-xs font-black uppercase tracking-widest text-white/40">Acciones</p>
 
                         {campaign.status === 'RUNNING' ? (
@@ -838,7 +838,7 @@ export default function CrmCampaignDetailPage() {
                     </div>
 
                     {/* Remarketing recurrente */}
-                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <div className="flex items-center gap-2">
                             <RefreshCw size={13} className="text-[#0a95a8]" />
                             <p className="text-xs font-black uppercase tracking-widest text-white/40">Remarketing recurrente</p>
@@ -898,7 +898,7 @@ export default function CrmCampaignDetailPage() {
                     </div>
 
                     {/* Config */}
-                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl p-5 space-y-3" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <p className="text-xs font-black uppercase tracking-widest text-white/40">Configuración</p>
                         {isEditing ? (
                             <div className="space-y-3">
@@ -953,7 +953,7 @@ export default function CrmCampaignDetailPage() {
                     </div>
 
                     {/* Imágenes / videos */}
-                    <div className="border border-white/10 rounded-2xl p-5" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="border border-white/10 rounded-2xl p-5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <p className="text-xs font-black uppercase tracking-widest text-white/40 mb-3 flex items-center gap-2">
                             <ImageIcon size={12} /> Multimedia ({visualFiles.length})
                         </p>
@@ -1028,7 +1028,7 @@ export default function CrmCampaignDetailPage() {
 
                     {/* Logs recientes */}
                     {campaign.logs?.length > 0 && (
-                        <div className="border border-white/10 rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                        <div className="border border-white/10 rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                             <div className="p-4 border-b border-white/10">
                                 <p className="text-xs font-black uppercase tracking-widest text-white/40">Últimos mensajes enviados</p>
                             </div>

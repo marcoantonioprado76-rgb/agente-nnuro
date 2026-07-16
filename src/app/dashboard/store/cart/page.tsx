@@ -32,7 +32,7 @@ const INPUT_STYLE: React.CSSProperties = {
   borderRadius: 8, padding: '10px 12px', color: '#fff', fontSize: 14, outline: 'none',
 }
 
-const NAVY_CARD = 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)'
+const NAVY_CARD = 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)'
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([])

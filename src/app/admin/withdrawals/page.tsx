@@ -225,7 +225,7 @@ export default function AdminWithdrawalsPage() {
       {rejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setRejectModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#E4E9F0] rounded-2xl p-5 w-full max-w-sm z-10">
+          <div className="relative bg-[#1a262f] border border-[#E4E9F0] rounded-2xl p-5 w-full max-w-sm z-10">
             <h3 className="text-sm font-black mb-3 text-red-400">Rechazar retiro</h3>
             <textarea
               placeholder="Motivo del rechazo (opcional)..."
@@ -251,7 +251,7 @@ export default function AdminWithdrawalsPage() {
       {proofModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setProofModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#E4E9F0] rounded-2xl p-5 w-full max-w-sm z-10">
+          <div className="relative bg-[#1a262f] border border-[#E4E9F0] rounded-2xl p-5 w-full max-w-sm z-10">
             <h3 className="text-sm font-black mb-1">Subir comprobante de pago</h3>
             <p className="text-xs text-[#111827]/30 mb-4">El retiro se marcará como PAGADO automáticamente.</p>
             <input

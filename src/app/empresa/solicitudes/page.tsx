@@ -45,14 +45,14 @@ export default function SolicitudesPage() {
     finally { setBusy(false); setApprove(null); load() }
   }
 
-  if (!guardOk) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#0B1B2B', color: '#fff' }}><p style={{ opacity: 0.7 }}>Cargando…</p></div>
+  if (!guardOk) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#212e38', color: '#fff' }}><p style={{ opacity: 0.7 }}>Cargando…</p></div>
 
   const shown = reqs.filter(r => filter === 'ALL' || r.status === 'PENDING')
   const pendCount = reqs.filter(r => r.status === 'PENDING').length
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB,#EEF1F8)', color: '#0B1B2B' }}>
-      <header style={{ background: 'linear-gradient(135deg,#0B1B2B,#050B14)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB,#EEF1F8)', color: '#212e38' }}>
+      <header style={{ background: 'linear-gradient(135deg,#212e38,#1a262f)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ height: 32 }} />
           <p style={{ fontWeight: 800, fontSize: 15 }}>Solicitudes de pago</p>

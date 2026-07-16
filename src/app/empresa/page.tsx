@@ -121,7 +121,7 @@ export default function EmpresaPage() {
 
   if (!guardOk) {
     return (
-      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#0B1B2B', color: '#fff' }}>
+      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#212e38', color: '#fff' }}>
         <p style={{ opacity: 0.7 }}>Cargando…</p>
       </div>
     )
@@ -130,9 +130,9 @@ export default function EmpresaPage() {
   const full = org && org.maxUsers > 0 && org.memberCount >= org.maxUsers
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB 0%,#EEF1F8 100%)', color: '#0B1B2B' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB 0%,#EEF1F8 100%)', color: '#212e38' }}>
       {/* Top bar — chrome propio del panel de empresa */}
-      <header style={{ background: 'linear-gradient(135deg,#0B1B2B,#050B14)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 6px 24px rgba(5,11,20,0.35)' }}>
+      <header style={{ background: 'linear-gradient(135deg,#212e38,#1a262f)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 6px 24px rgba(5,11,20,0.35)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ height: 34, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.5))' }} />
           <div>

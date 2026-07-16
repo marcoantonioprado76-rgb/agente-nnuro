@@ -25,11 +25,11 @@ export default function ReportesPage() {
     }).catch(() => { window.location.href = '/dashboard' })
   }, [])
 
-  if (!guardOk) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#0B1B2B', color: '#fff' }}><p style={{ opacity: 0.7 }}>Cargando…</p></div>
+  if (!guardOk) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#212e38', color: '#fff' }}><p style={{ opacity: 0.7 }}>Cargando…</p></div>
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB,#EEF1F8)', color: '#0B1B2B' }}>
-      <header style={{ background: 'linear-gradient(135deg,#0B1B2B,#050B14)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg,#F5F7FB,#EEF1F8)', color: '#212e38' }}>
+      <header style={{ background: 'linear-gradient(135deg,#212e38,#1a262f)', color: '#fff', padding: '14px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/logo-oficial-mydiamond.png" alt="MY DIAMOND" style={{ height: 32 }} />
           <p style={{ fontWeight: 800, fontSize: 15 }}>Reportes</p>
@@ -91,7 +91,7 @@ function Stat({ label, value, icon, color, gradient }: { label: string; value: n
         <i className={`fa-solid ${icon}`} style={{ color: color || '#147e95', fontSize: 14 }} />
         <span style={{ fontSize: 12, fontWeight: 700, color: '#9AA3B2', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
       </div>
-      <p style={{ fontSize: 26, fontWeight: 900, ...(gradient ? { background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: color || '#0B1B2B' }) }}>{value}</p>
+      <p style={{ fontSize: 26, fontWeight: 900, ...(gradient ? { background: DG, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: color || '#212e38' }) }}>{value}</p>
     </div>
   )
 }

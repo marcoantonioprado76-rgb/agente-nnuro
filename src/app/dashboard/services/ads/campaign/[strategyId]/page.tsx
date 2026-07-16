@@ -102,7 +102,7 @@ function PublishProgress({ active, failed }: { active: boolean; failed: boolean 
     const stage = Math.min(PUBLISH_STAGES.length - 1, Math.floor(pct / (100 / PUBLISH_STAGES.length)))
     const launched = pct >= 100
     return (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#050B14]/72 backdrop-blur-lg px-6">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#1a262f]/72 backdrop-blur-lg px-6">
             {/* Sin cuadro: la escena flota sobre el fondo difuminado */}
             <div className="relative w-full max-w-sm flex flex-col items-center gap-6">
                 {/* Halo navy detrás del contenido → legibilidad sobre fondos claros */}
@@ -934,7 +934,7 @@ function CampaignPageInner() {
     // ── Render ──────────────────────────────────────────────────────────────
 
     return (
-        <div className="px-4 md:px-6 xl:px-10 pt-6 max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-36 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #081624 0%, #050B14 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
+        <div className="px-4 md:px-6 xl:px-10 pt-6 max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto pb-36 text-white" style={{ background: 'radial-gradient(120% 55% at 50% -5%, rgba(183,53,184,0.12), rgba(255,255,255,0) 55%), radial-gradient(90% 55% at 100% 108%, rgba(106,53,217,0.10), rgba(255,255,255,0) 60%), linear-gradient(180deg, #273842 0%, #1a262f 100%)', minHeight: 'calc(100vh - 2rem)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px -30px rgba(8,22,36,0.5)' }}>
 
             {/* Overlay de publicación: cohete + barra de progreso */}
             <PublishProgress active={publishing} failed={!!error} />
@@ -1014,7 +1014,7 @@ function CampaignPageInner() {
                 SECCIÓN 1 — CONFIGURACIÓN
             ══════════════════════════════════════════════ */}
             <div className={`mb-4 rounded-3xl border transition-all overflow-hidden ${tab !== 'config' ? 'hidden' : ''} ${configSaved ? 'border-[#22C55E]/20' : 'border-white/8'}`}
-                style={{ background: configSaved ? 'rgba(16,185,129,0.02)' : '#0B1B2B' }}>
+                style={{ background: configSaved ? 'rgba(16,185,129,0.02)' : '#212e38' }}>
 
                 {/* Section header */}
                 <div className="flex items-center gap-3 px-5 pt-5 pb-4 border-b border-white/5">
@@ -1035,7 +1035,7 @@ function CampaignPageInner() {
                         <input
                             value={form.name}
                             onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                            className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 transition-colors"
+                            className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 transition-colors"
                         />
                     </div>
 
@@ -1051,7 +1051,7 @@ function CampaignPageInner() {
                                         setForm(f => ({ ...f, providerAccountId: e.target.value, providerAccountName: sel?.displayName || '', pixelId: '' }))
                                         if (strategy?.platform === 'META') fetchPixels(e.target.value)
                                     }}
-                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]"
+                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]"
                                 >
                                     {accounts.map((a: any) => (
                                         <option key={a.providerAccountId} value={a.providerAccountId}>{a.displayName}</option>
@@ -1075,7 +1075,7 @@ function CampaignPageInner() {
                                         const saved = pid ? getWaPrefs()[pid] : ''
                                         setForm(f => ({ ...f, pageId: pid, whatsappNumber: selectedPage?.whatsappNumber || saved || '' }))
                                     }}
-                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]"
+                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]"
                                 >
                                     <option value="">Seleccionar página...</option>
                                     {pages.map((p: any) => (
@@ -1131,7 +1131,7 @@ function CampaignPageInner() {
                                         onChange={e => setForm(f => ({ ...f, whatsappNumber: e.target.value }))}
                                         onBlur={e => { if (form.pageId && e.target.value) saveWaPref(form.pageId, e.target.value) }}
                                         placeholder="+573001234567"
-                                        className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#22C55E]/50 placeholder:text-white/20"
+                                        className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#22C55E]/50 placeholder:text-white/20"
                                     />
                                 </div>
                             )}
@@ -1159,7 +1159,7 @@ function CampaignPageInner() {
                                     placeholder="Ej: ¡Hola! ¿Cómo podemos ayudarte? 👋"
                                     rows={2}
                                     maxLength={180}
-                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#22C55E]/50 placeholder:text-white/20 resize-none"
+                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#22C55E]/50 placeholder:text-white/20 resize-none"
                                 />
                                 <p className="text-[9px] text-white/15 mt-1">{180 - form.welcomeMessage.length} caracteres restantes</p>
                             </div>
@@ -1178,7 +1178,7 @@ function CampaignPageInner() {
                                     onChange={e => setForm(f => ({ ...f, whatsappQuestion: e.target.value.slice(0, 160) }))}
                                     placeholder="Ej: Quiero más información"
                                     maxLength={160}
-                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#22C55E]/50 placeholder:text-white/20"
+                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#22C55E]/50 placeholder:text-white/20"
                                 />
                                 <p className="text-[9px] text-white/15 mt-1">{160 - form.whatsappQuestion.length} caracteres restantes</p>
                             </div>
@@ -1207,7 +1207,7 @@ function CampaignPageInner() {
                         <div>
                             <label className="text-[10px] font-bold text-white/35 uppercase tracking-widest block mb-1.5">Pixel de seguimiento <span className="text-[#147e95]/50 normal-case font-normal">· señal de conversión</span></label>
                             <select value={form.pixelId} onChange={e => setForm(f => ({ ...f, pixelId: e.target.value }))}
-                                className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#0B1B2B]">
+                                className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 [&>option]:bg-[#212e38]">
                                 <option value="">Sin pixel</option>
                                 {pixels.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
                             </select>
@@ -1227,7 +1227,7 @@ function CampaignPageInner() {
                             <label className="text-[10px] font-bold text-white/35 uppercase tracking-widest block mb-1.5">URL de destino</label>
                             <input value={form.destinationUrl} onChange={e => setForm(f => ({ ...f, destinationUrl: e.target.value }))}
                                 placeholder="https://tusitio.com"
-                                className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 placeholder:text-white/20" />
+                                className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-white/10 placeholder:text-white/20" />
                         </div>
                     )}
 
@@ -1247,7 +1247,7 @@ function CampaignPageInner() {
                                         inputMode="decimal"
                                         value={form.dailyBudgetUSD}
                                         onChange={e => setForm(f => ({ ...f, dailyBudgetUSD: e.target.value }))}
-                                        className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl pl-7 pr-20 py-2.5 text-xl font-black text-white focus:outline-none focus:border-white/10"
+                                        className="w-full bg-[#212e38] border border-white/20 rounded-xl pl-7 pr-20 py-2.5 text-xl font-black text-white focus:outline-none focus:border-white/10"
                                     />
                                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/25 pointer-events-none">USD/día</span>
                                 </div>
@@ -1354,7 +1354,7 @@ function CampaignPageInner() {
                                             <span className="text-xs text-white/40">$</span>
                                             <input type="number" value={bidCapAmount} onChange={e => setBidCapAmount(e.target.value)}
                                                 placeholder="5.00" min="0.5" step="0.5"
-                                                className="w-20 bg-[#0B1B2B] border border-white/20 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-white/10" />
+                                                className="w-20 bg-[#212e38] border border-white/20 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-white/10" />
                                             <span className="text-xs text-white/25">USD</span>
                                         </div>
                                     </div>
@@ -1365,7 +1365,7 @@ function CampaignPageInner() {
                                         <div className="flex items-center gap-1">
                                             <input type="number" value={minRoasTarget} onChange={e => setMinRoasTarget(e.target.value)}
                                                 placeholder="2.0" min="1" step="0.1"
-                                                className="w-20 bg-[#0B1B2B] border border-white/20 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-white/10" />
+                                                className="w-20 bg-[#212e38] border border-white/20 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:border-white/10" />
                                             <span className="text-xs text-white/25">x retorno</span>
                                         </div>
                                     </div>
@@ -1392,7 +1392,7 @@ function CampaignPageInner() {
                 SECCIÓN 2 — CREATIVOS & TEXTOS
             ══════════════════════════════════════════════ */}
             <div ref={creativesRef} className={`mb-4 rounded-3xl border transition-all overflow-hidden relative ${tab !== 'creativos' ? 'hidden' : ''} ${!configSaved ? 'border-white/5' : 'border-white/8'}`}
-                style={{ background: '#0B1B2B' }}>
+                style={{ background: '#212e38' }}>
 
                 {!configSaved && (
                     <div className="absolute inset-0 z-10 flex items-center justify-center rounded-3xl">
@@ -1500,7 +1500,7 @@ function CampaignPageInner() {
                                                     </div>
                                                     <textarea value={bulkUserPrompt} onChange={e => setBulkUserPrompt(e.target.value)}
                                                         rows={3} placeholder="Escribí qué imagen querés (se manda tal cual a gpt-image-2 con tu foto)."
-                                                        className="w-full bg-[#0B1B2B] border border-white/12 rounded-xl px-3 py-2 text-[10px] text-white/80 resize-none focus:outline-none focus:border-white/10 leading-relaxed placeholder:text-white/15" />
+                                                        className="w-full bg-[#212e38] border border-white/12 rounded-xl px-3 py-2 text-[10px] text-white/80 resize-none focus:outline-none focus:border-white/10 leading-relaxed placeholder:text-white/15" />
                                                 </div>
                                             )}
                                         </div>
@@ -1697,11 +1697,11 @@ function CampaignPageInner() {
                                                     onChange={e => setCreatives(prev => prev.map((c, j) => j === i ? { ...c, primaryText: e.target.value } : c))}
                                                     rows={4}
                                                     placeholder={copiesGenerated ? '' : 'Genera los textos con IA o escribe manualmente...'}
-                                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white resize-none focus:outline-none focus:border-white/10 leading-relaxed placeholder:text-white/20"
+                                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white resize-none focus:outline-none focus:border-white/10 leading-relaxed placeholder:text-white/20"
                                                 />
                                                 {/* Suggestions dropdown */}
                                                 {activeSuggestionKey === `${i}-primaryText` && suggestions[`${i}-primaryText`] && (
-                                                    <div className="mt-1.5 rounded-xl border border-white/10 bg-[#050B14] overflow-hidden">
+                                                    <div className="mt-1.5 rounded-xl border border-white/10 bg-[#1a262f] overflow-hidden">
                                                         <div className="flex items-center justify-between px-3 py-2 border-b border-white/5">
                                                             <p className="text-[9px] font-bold text-[#147e95] uppercase">3 opciones — elige una</p>
                                                             <button onClick={() => setActiveSuggestionKey(null)} className="text-white/20 hover:text-white"><X size={10} /></button>
@@ -1731,9 +1731,9 @@ function CampaignPageInner() {
                                                     </div>
                                                     <input value={creative.headline || ''}
                                                         onChange={e => setCreatives(prev => prev.map((c, j) => j === i ? { ...c, headline: e.target.value } : c))}
-                                                        className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10" />
+                                                        className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10" />
                                                     {activeSuggestionKey === `${i}-headline` && suggestions[`${i}-headline`] && (
-                                                        <div className="mt-1 rounded-xl border border-white/10 bg-[#050B14] overflow-hidden">
+                                                        <div className="mt-1 rounded-xl border border-white/10 bg-[#1a262f] overflow-hidden">
                                                             <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-white/5">
                                                                 <p className="text-[9px] font-bold text-[#147e95] uppercase">Opciones</p>
                                                                 <button onClick={() => setActiveSuggestionKey(null)} className="text-white/20 hover:text-white"><X size={9} /></button>
@@ -1760,9 +1760,9 @@ function CampaignPageInner() {
                                                     </div>
                                                     <input value={creative.description || ''}
                                                         onChange={e => setCreatives(prev => prev.map((c, j) => j === i ? { ...c, description: e.target.value } : c))}
-                                                        className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10" />
+                                                        className="w-full bg-[#212e38] border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/10" />
                                                     {activeSuggestionKey === `${i}-description` && suggestions[`${i}-description`] && (
-                                                        <div className="mt-1 rounded-xl border border-white/10 bg-[#050B14] overflow-hidden">
+                                                        <div className="mt-1 rounded-xl border border-white/10 bg-[#1a262f] overflow-hidden">
                                                             <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-white/5">
                                                                 <p className="text-[9px] font-bold text-[#147e95] uppercase">Opciones</p>
                                                                 <button onClick={() => setActiveSuggestionKey(null)} className="text-white/20 hover:text-white"><X size={9} /></button>
@@ -1783,7 +1783,7 @@ function CampaignPageInner() {
 
                                     {/* Per-slot AI image panel */}
                                     {imageGenPanel === i && configSaved && strategy.mediaType !== 'video' && (
-                                        <div className="border-t border-white/5 bg-[#050B14] p-4 space-y-3">
+                                        <div className="border-t border-white/5 bg-[#1a262f] p-4 space-y-3">
                                             <div className="flex items-center justify-between">
                                                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#147e95] flex items-center gap-1.5">
                                                     <Wand2 size={10} /> {creatives.find(c => c.slotIndex === i)?.mediaUrl ? 'Editar imagen con IA' : 'Generar imagen con IA'}
@@ -1842,7 +1842,7 @@ function CampaignPageInner() {
                                                 </div>
                                                 <textarea value={imageCustomPrompts[i] || ''} onChange={e => setImageCustomPrompts(prev => ({ ...prev, [i]: e.target.value }))}
                                                     rows={3} placeholder="Escribí qué imagen querés (como el admin) o tocá 'Generar con IA'. Se manda tal cual a gpt-image-2."
-                                                    className="w-full bg-[#0B1B2B] border border-white/20 rounded-xl px-2.5 py-2 text-[10px] text-white resize-none focus:outline-none focus:border-white/10 leading-relaxed placeholder:text-white/20" />
+                                                    className="w-full bg-[#212e38] border border-white/20 rounded-xl px-2.5 py-2 text-[10px] text-white resize-none focus:outline-none focus:border-white/10 leading-relaxed placeholder:text-white/20" />
                                             </div>
                                             <button onClick={() => generateImage(i)}
                                                 disabled={!(refImageUrls[i] || creatives.find(c => c.slotIndex === i)?.mediaUrl?.startsWith('http'))}

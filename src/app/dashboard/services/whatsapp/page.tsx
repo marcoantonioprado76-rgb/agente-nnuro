@@ -350,7 +350,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
           </p>
           <p style={{ fontSize: 11, color: '#6B7280', margin: '4px 0 0' }}>
             <span style={{ color: '#1D4ED8', fontWeight: 700 }}>{visibleDays.reduce((s, d) => s + d.conversations, 0)}</span> personas ·{' '}
-            <span style={{ color: '#7C3AED', fontWeight: 700 }}>{visibleDays.reduce((s, d) => s + d.sales, 0)}</span> ventas
+            <span style={{ color: '#147e95', fontWeight: 700 }}>{visibleDays.reduce((s, d) => s + d.sales, 0)}</span> ventas
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -359,7 +359,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
             ● Personas
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: '#6B7280' }}>
-            <span style={{ display: 'inline-block', width: 10, height: 3, borderRadius: 99, background: '#7C3AED' }} />
+            <span style={{ display: 'inline-block', width: 10, height: 3, borderRadius: 99, background: '#147e95' }} />
             ✦ Ventas
           </span>
         </div>
@@ -417,12 +417,12 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
           <defs>
             {/* Conversations — cyan */}
             <linearGradient id="gc-conv-area" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor="#0D1E79" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#0D1E79" stopOpacity="0" />
+              <stop offset="0%"   stopColor="#12303a" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#12303a" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="gc-conv-line" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%"   stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#0D1E79" />
+              <stop offset="100%" stopColor="#12303a" />
             </linearGradient>
             {/* Sales — purple */}
             <linearGradient id="gc-sales-area" x1="0" y1="0" x2="0" y2="1">
@@ -467,7 +467,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
           {convArea  && <path d={convArea}  fill="url(#gc-conv-area)" />}
           {convLine  && <path d={convLine}  fill="none" stroke="url(#gc-conv-line)"  strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round" filter="url(#gc-glow-conv)" />}
           {convPoints.map((p, i) => p.val === 0 ? null : (
-            <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#0D1E79" stroke="rgba(15,23,42,0.10)" strokeWidth="1.5" />
+            <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#12303a" stroke="rgba(15,23,42,0.10)" strokeWidth="1.5" />
           ))}
 
           {/* ── Ventas (green) con badges ── */}
@@ -542,14 +542,14 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
           <div
             onClick={e => e.stopPropagation()}
             style={{
-              background: '#0F1117', border: '1px solid rgba(13,30,121,0.2)',
+              background: '#1a262f', border: '1px solid rgba(13,30,121,0.2)',
               borderRadius: 18, padding: 24, width: '100%', maxWidth: 520,
               maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 0 40px rgba(13,30,121,0.1)',
             }}
           >
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#0D1E79' }}>📋 Ventas recientes</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#12303a' }}>📋 Ventas recientes</div>
               <div style={{ display: 'flex', gap: 6 }}>
                 {recentSales.length > 0 && (
                   <button
@@ -601,7 +601,7 @@ function GlobalBotChart({ bots }: { bots: Bot[] }) {
                     {/* Teléfono — línea propia para que no desborde */}
                     <div style={{
                       display: 'inline-block', marginBottom: s.reporte ? 8 : 0,
-                      fontSize: 10, fontWeight: 600, color: '#0D1E79',
+                      fontSize: 10, fontWeight: 600, color: '#12303a',
                       background: 'rgba(13,30,121,0.08)', border: '1px solid rgba(13,30,121,0.2)',
                       borderRadius: 5, padding: '2px 7px',
                       wordBreak: 'break-all',
@@ -651,8 +651,8 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
         marginTop: 30,
         borderRadius: 18,
         background: isActive
-          ? `radial-gradient(120% 80% at 50% -6%, ${accent}2a, rgba(255,255,255,0) 56%), radial-gradient(95% 75% at 100% 108%, rgba(106,53,217,0.22), rgba(255,255,255,0) 60%), linear-gradient(180deg, #0B1B2B 0%, #050B14 100%)`
-          : 'linear-gradient(180deg, #0B1726 0%, #070D17 100%)',
+          ? `radial-gradient(120% 80% at 50% -6%, ${accent}2a, rgba(255,255,255,0) 56%), radial-gradient(95% 75% at 100% 108%, rgba(106,53,217,0.22), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #1a262f 100%)`
+          : 'linear-gradient(180deg, #1a262f 0%, #1a262f 100%)',
         border: `1px solid ${isActive ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)'}`,
         boxShadow: isActive ? '0 18px 38px -22px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.045)' : 'none',
         opacity: isActive ? 1 : 0.62,
@@ -718,7 +718,7 @@ function BotCard({ bot, onSelect }: { bot: Bot; onSelect: (bot: Bot) => void }) 
           </div>
           {isActive && (
             <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center"
-              style={{ background: '#22C55E', borderColor: '#0b0c1a', boxShadow: '0 0 8px #22C55E' }}>
+              style={{ background: '#22C55E', borderColor: '#1a262f', boxShadow: '0 0 8px #22C55E' }}>
               <Wifi className="w-2 h-2 text-black" />
             </span>
           )}
@@ -3375,8 +3375,8 @@ function ChatsTab({ bot }: { bot: Bot }) {
 
   // Colores según el tipo de bot
   const theme = isMeta
-    ? { panelBg: '#18191a', headerBg: '#242526', chatBg: '#0e0e0e', itemHover: '#2f3031', itemSelected: '#3a3b3c', avatarBg: '#0084ff', avatarText: '#fff', outBubble: '#0084ff', outText: '#fff', inBubble: '#3a3b3c', inText: '#e4e6ea', inputBg: '#3a3b3c', inputBorder: '#4a4b4c', sendBtn: '#0084ff', accent: '#0084ff', accentText: '#fff' }
-    : { panelBg: '#111b21', headerBg: '#202c33', chatBg: '#0b141a', itemHover: '#2a3942', itemSelected: '#2a3942', avatarBg: '#00a884', avatarText: '#fff', outBubble: '#005c4b', outText: '#e9edef', inBubble: '#202c33', inText: '#e9edef', inputBg: '#2a3942', inputBorder: '#374045', sendBtn: '#00a884', accent: '#00a884', accentText: '#fff' }
+    ? { panelBg: '#1a262f', headerBg: '#242526', chatBg: '#1a262f', itemHover: '#2f3031', itemSelected: '#3a3b3c', avatarBg: '#0084ff', avatarText: '#fff', outBubble: '#0084ff', outText: '#fff', inBubble: '#3a3b3c', inText: '#e4e6ea', inputBg: '#3a3b3c', inputBorder: '#4a4b4c', sendBtn: '#0084ff', accent: '#0084ff', accentText: '#fff' }
+    : { panelBg: '#1a262f', headerBg: '#202c33', chatBg: '#1a262f', itemHover: '#2a3942', itemSelected: '#2a3942', avatarBg: '#00a884', avatarText: '#fff', outBubble: '#005c4b', outText: '#e9edef', inBubble: '#202c33', inText: '#e9edef', inputBg: '#2a3942', inputBorder: '#374045', sendBtn: '#00a884', accent: '#00a884', accentText: '#fff' }
 
   function initials(name: string | null, phone: string) {
     if (name) return name.slice(0, 2).toUpperCase()
@@ -3626,7 +3626,7 @@ function ChatsTab({ bot }: { bot: Bot }) {
         style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.10)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
         onClick={e => { if (e.target === e.currentTarget) setMarkSoldModal(false) }}
       >
-        <div style={{ background: '#0D0F1E', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 16, padding: 24, width: '100%', maxWidth: 480 }}>
+        <div style={{ background: '#1a262f', border: '1px solid rgba(22,163,74,0.2)', borderRadius: 16, padding: 24, width: '100%', maxWidth: 480 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <ShoppingBag size={18} color="#16A34A" />
@@ -4025,7 +4025,7 @@ export default function WhatsAppPage() {
         <div className="space-y-4">
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2.5">
-            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
+            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}>
                 <Bot className="w-4 h-4 text-white/70" />
               </div>
@@ -4034,7 +4034,7 @@ export default function WhatsAppPage() {
                 <div className="text-[10px] text-white/50 mt-0.5 truncate">Total agentes</div>
               </div>
             </div>
-            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(183,53,184,0.28)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
+            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(183,53,184,0.28)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(183,53,184,0.18)', border: '1px solid rgba(183,53,184,0.4)' }}>
                 <Zap className="w-4 h-4" style={{ color: '#C9A7FF' }} />
               </div>
@@ -4043,7 +4043,7 @@ export default function WhatsAppPage() {
                 <div className="text-[10px] text-white/50 mt-0.5 truncate">Activos ahora</div>
               </div>
             </div>
-            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
+            <div className="px-3 py-2.5 rounded-xl flex items-center gap-2.5" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 14px 32px -22px rgba(8,22,36,0.6)' }}>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(125,211,252,0.14)', border: '1px solid rgba(125,211,252,0.32)' }}>
                 <ShoppingBag className="w-4 h-4" style={{ color: '#7DD3FC' }} />
               </div>
@@ -4088,7 +4088,7 @@ export default function WhatsAppPage() {
           {/* How it works — compact onboarding strip */}
           <div className="rounded-2xl px-4 py-3.5"
             style={{
-              background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)',
+              background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)',
               border: '1px solid rgba(255,255,255,0.08)',
               boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
             }}>
@@ -4111,7 +4111,7 @@ export default function WhatsAppPage() {
                       <step.Icon className="w-3.5 h-3.5" style={{ color: step.c }} />
                     </div>
                     <span className="absolute -top-1 -right-1 text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center"
-                      style={{ background: '#0b0c1a', color: step.c, border: `1px solid ${step.c}55` }}>{i + 1}</span>
+                      style={{ background: '#1a262f', color: step.c, border: `1px solid ${step.c}55` }}>{i + 1}</span>
                   </div>
                   <div className="min-w-0">
                     <div className="text-[11px] font-bold text-white leading-tight truncate" style={{ letterSpacing: '-0.01em' }}>{step.title}</div>

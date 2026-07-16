@@ -39,7 +39,7 @@ export function AiThinking({ messages, className = '', variant = 'full' }:
 
     if (compact) {
         return (
-            <div className={`absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-[#050B14]/85 backdrop-blur-sm px-3 ${className}`}>
+            <div className={`absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-[#1a262f]/85 backdrop-blur-sm px-3 ${className}`}>
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: GRAD, boxShadow: '0 0 22px -2px rgba(183,53,184,0.55)' }}>
                     <Sparkles size={15} className="text-white animate-pulse" />

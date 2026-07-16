@@ -233,7 +233,7 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
                                     value={rawHtml}
                                     onChange={e => setRawHtml(e.target.value)}
                                     spellCheck={false}
-                                    className="w-full bg-[#0A0A0F] text-[#00FF88] font-mono text-sm p-6 outline-none resize-none border-none"
+                                    className="w-full bg-[#1a262f] text-[#00FF88] font-mono text-sm p-6 outline-none resize-none border-none"
                                     style={{ minHeight: 'calc(100vh - 80px)', display: 'block' }}
                                     placeholder="<!-- Escribe o pega tu HTML aquí -->"
                                 />
@@ -251,7 +251,7 @@ export default function LandingEditor({ params }: { params: { id: string } }) {
             {showBlockPicker && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-in fade-in duration-300">
                     <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => setShowBlockPicker(false)} />
-                    <div className="relative w-full max-w-4xl rounded-[40px] p-12 overflow-hidden border border-white/10 shadow-[0_0_100px_rgba(0,255,136,0.1)] text-white" style={{ background: 'linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)' }}>
+                    <div className="relative w-full max-w-4xl rounded-[40px] p-12 overflow-hidden border border-white/10 shadow-[0_0_100px_rgba(0,255,136,0.1)] text-white" style={{ background: 'linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)' }}>
                         <Glow color="#1fb8bb" className="-top-40 -left-40" opacity={0.1} />
                         <h2 className="text-3xl font-black uppercase tracking-tighter mb-12 flex items-center gap-4 text-white">
                             <div className="w-10 h-1 bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#233B8F] rounded-full" />

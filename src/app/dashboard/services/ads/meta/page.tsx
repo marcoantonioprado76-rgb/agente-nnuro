@@ -159,7 +159,7 @@ function AdsDashboardInner() {
 
             {/* ── HEADER ─────────────────────────────── */}
             <div className="relative rounded-3xl overflow-hidden mb-7 p-6 md:p-8"
-                style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), #0B1B2B 58%), linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), #212e38 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)' }}>
 
                 {/* glow orbs */}
                 <div className="pointer-events-none absolute -top-10 -left-10 w-56 h-56 rounded-full blur-[80px]" style={{ background: 'rgba(183,53,184,0.18)' }} />
@@ -252,7 +252,7 @@ function AdsDashboardInner() {
 
                     {/* ── SETUP ───────────────────────────── */}
                     {!allReady && (
-                        <div className="rounded-3xl p-5 md:p-6" style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.07)' }}>
+                        <div className="rounded-3xl p-5 md:p-6" style={{ background: '#212e38', border: '1px solid rgba(255,255,255,0.07)' }}>
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-2.5">
                                     <Rocket size={15} className="text-[#147e95]" />
@@ -299,7 +299,7 @@ function AdsDashboardInner() {
                     {/* ── API KEY (acceso rápido, siempre visible) ── */}
                     <Link href="/dashboard/services/ads/setup"
                         className="flex items-center gap-3 p-3.5 rounded-2xl transition-all hover:bg-white/[0.04] active:scale-[0.995]"
-                        style={{ background: '#0B1B2B', border: `1px solid ${hasOpenAI ? 'rgba(52,211,153,0.2)' : 'rgba(251,146,60,0.28)'}` }}>
+                        style={{ background: '#212e38', border: `1px solid ${hasOpenAI ? 'rgba(52,211,153,0.2)' : 'rgba(251,146,60,0.28)'}` }}>
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                             style={{ background: hasOpenAI ? 'rgba(52,211,153,0.12)' : 'rgba(251,146,60,0.12)' }}>
                             <Brain size={16} className={hasOpenAI ? 'text-[#22C55E]' : 'text-[#FB923C]'} />
@@ -323,10 +323,10 @@ function AdsDashboardInner() {
                     {campaigns.length > 0 && (
                         <div className="grid grid-cols-4 gap-2 sm:gap-3">
                             {[
-                                { label: 'Total', value: campaigns.length, icon: Target, color: 'text-white', accent: '#0B1B2B', border: 'rgba(183,53,184,0.2)', iconColor: 'text-[#147e95]' },
-                                { label: 'Publicadas', value: published, icon: Flame, color: 'text-[#22C55E]', accent: '#0B1B2B', border: 'rgba(52,211,153,0.18)', iconColor: 'text-[#22C55E]' },
-                                { label: 'Borradores', value: drafts, icon: Clock, color: 'text-[#4C97D8]', accent: '#0B1B2B', border: 'rgba(35,59,143,0.18)', iconColor: 'text-[#4C97D8]' },
-                                { label: 'Fallidas', value: failed, icon: XCircle, color: 'text-[#F87171]', accent: '#0B1B2B', border: 'rgba(248,113,113,0.18)', iconColor: 'text-[#F87171]' },
+                                { label: 'Total', value: campaigns.length, icon: Target, color: 'text-white', accent: '#212e38', border: 'rgba(183,53,184,0.2)', iconColor: 'text-[#147e95]' },
+                                { label: 'Publicadas', value: published, icon: Flame, color: 'text-[#22C55E]', accent: '#212e38', border: 'rgba(52,211,153,0.18)', iconColor: 'text-[#22C55E]' },
+                                { label: 'Borradores', value: drafts, icon: Clock, color: 'text-[#4C97D8]', accent: '#212e38', border: 'rgba(35,59,143,0.18)', iconColor: 'text-[#4C97D8]' },
+                                { label: 'Fallidas', value: failed, icon: XCircle, color: 'text-[#F87171]', accent: '#212e38', border: 'rgba(248,113,113,0.18)', iconColor: 'text-[#F87171]' },
                             ].map(stat => {
                                 const Icon = stat.icon
                                 return (
@@ -363,7 +363,7 @@ function AdsDashboardInner() {
                                         <div key={platform.id}
                                             className="relative overflow-hidden rounded-2xl p-3.5"
                                             style={{
-                                                background: platform.comingSoon ? '#0B1B2B' : isConnected ? 'linear-gradient(120deg, #3A5688 0%, #294468 52%, #1E355A 100%)' : '#0B1B2B',
+                                                background: platform.comingSoon ? '#212e38' : isConnected ? 'linear-gradient(120deg, #3A5688 0%, #294468 52%, #1E355A 100%)' : '#212e38',
                                                 border: platform.comingSoon ? '1px dashed rgba(255,255,255,0.05)' : isConnected ? '1px solid rgba(255,255,255,0.14)' : '1px dashed rgba(255,255,255,0.07)',
                                                 opacity: platform.comingSoon ? 0.5 : 1,
                                                 boxShadow: isConnected && !platform.comingSoon ? '0 18px 44px -24px rgba(11,27,43,0.65)' : 'none',
@@ -401,7 +401,7 @@ function AdsDashboardInner() {
 
                                             {platform.comingSoon
                                                 ? <span className="text-[10px] font-bold py-1.5 px-3 rounded-xl shrink-0 cursor-not-allowed"
-                                                    style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.2)' }}>
+                                                    style={{ background: '#212e38', border: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.2)' }}>
                                                     Próximamente
                                                   </span>
                                                 : <button onClick={() => handleConnect(platform.id)}
@@ -471,7 +471,7 @@ function AdsDashboardInner() {
                             {allBriefs.length === 0 ? (
                                 <Link href="/dashboard/services/ads/brief"
                                     className="flex flex-col items-center justify-center rounded-2xl py-10 gap-3 group transition-all"
-                                    style={{ background: '#0B1B2B', border: '1px dashed rgba(255,255,255,0.07)' }}>
+                                    style={{ background: '#212e38', border: '1px dashed rgba(255,255,255,0.07)' }}>
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center"
                                         style={{ background: 'rgba(183,53,184,0.1)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                         <FileText size={16} className="text-[#147e95]" />
@@ -492,7 +492,7 @@ function AdsDashboardInner() {
                                         <div key={b.id}
                                             onClick={() => setSelectedBriefId(sel ? null : b.id)}
                                             className="flex flex-wrap lg:flex-nowrap items-center gap-2 lg:gap-3 rounded-2xl px-3 py-2.5 lg:px-3.5 lg:py-3 group cursor-pointer transition-all"
-                                            style={{ background: sel ? 'rgba(183,53,184,0.14)' : '#0B1B2B', border: sel ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(255,255,255,0.07)' }}>
+                                            style={{ background: sel ? 'rgba(183,53,184,0.14)' : '#212e38', border: sel ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(255,255,255,0.07)' }}>
                                             <div className="flex items-center gap-2 min-w-0 w-full lg:w-auto lg:flex-1">
                                                 <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                                                     style={{ background: sel ? 'rgba(183,53,184,0.25)' : 'rgba(183,53,184,0.12)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -546,7 +546,7 @@ function AdsDashboardInner() {
 
                         {visibleCampaigns.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-20 gap-4 rounded-3xl text-center px-4"
-                                style={{ background: '#0B1B2B', border: '1px dashed rgba(255,255,255,0.07)' }}>
+                                style={{ background: '#212e38', border: '1px dashed rgba(255,255,255,0.07)' }}>
                                 <div className="w-14 h-14 rounded-full flex items-center justify-center"
                                     style={{ background: 'rgba(183,53,184,0.1)', border: '1px solid rgba(255,255,255,0.08)' }}>
                                     <Sparkles className="text-[#147e95]" size={22} />
@@ -569,7 +569,7 @@ function AdsDashboardInner() {
                                     return (
                                         <div key={campaign.id}
                                             className="group rounded-2xl p-3 lg:p-4 flex flex-wrap lg:flex-nowrap items-center gap-2 lg:gap-3 transition-all"
-                                            style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.07)' }}
+                                            style={{ background: '#212e38', border: '1px solid rgba(255,255,255,0.07)' }}
                                             onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)')}
                                             onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)')}>
 
@@ -657,7 +657,7 @@ function AdsDashboardInner() {
 
                                 <Link href="/dashboard/services/ads/history"
                                     className="flex items-center justify-center gap-2 py-3 rounded-2xl text-xs text-white/30 font-bold hover:text-white/60 transition-all"
-                                    style={{ background: '#0B1B2B', border: '1px solid rgba(255,255,255,0.06)' }}>
+                                    style={{ background: '#212e38', border: '1px solid rgba(255,255,255,0.06)' }}>
                                     Ver todas las campañas <ArrowRight size={11} />
                                 </Link>
                             </div>

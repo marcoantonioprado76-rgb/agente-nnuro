@@ -32,7 +32,7 @@ function emailWrapper(content: string, accentColor = '#00E5D0'): string {
             <!-- Cabecera navy con el LOGO -->
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td align="center" style="background:linear-gradient(160deg,#071522 0%,#0B1B2B 55%,#050B14 100%);padding:28px 24px 24px;">
+                <td align="center" style="background:linear-gradient(160deg,#1a262f 0%,#212e38 55%,#1a262f 100%);padding:28px 24px 24px;">
                   <img src="${APP_URL}/logo-oficial-mydiamond.png" alt="MY DIAMOND" width="140"
                        style="display:block;width:140px;max-width:55%;height:auto;border:0;outline:none;margin:0 auto;" />
                 </td>

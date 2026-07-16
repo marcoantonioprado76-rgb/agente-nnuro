@@ -595,7 +595,7 @@ export default function DiamondAssistantGrupos() {
                             {p.repeat !== 'NONE' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10.5, fontWeight: 700, color: '#147e95' }}><Repeat size={10} /> {repeatText(p)}</span>}
                             {p.alsoToPrivate && <span style={{ fontSize: 10.5, fontWeight: 700, color: '#16A34A' }}>💬 privado</span>}
                           </div>
-                          <p style={{ fontSize: 11.5, color: isMotiv ? '#7C3AED' : '#4B5563', margin: 0, lineHeight: 1.35, fontWeight: isMotiv ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <p style={{ fontSize: 11.5, color: isMotiv ? '#147e95' : '#4B5563', margin: 0, lineHeight: 1.35, fontWeight: isMotiv ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {isMotiv ? '🔄 Frase motivacional (rota, nunca repite)' : (p.body || '—')}
                           </p>
                         </div>
@@ -604,8 +604,8 @@ export default function DiamondAssistantGrupos() {
                             <button onClick={() => { setEditPost(p); setSchedulerGroup(g) }} disabled={postBusyId === p.id} title="Editar" style={{ border: 'none', background: 'rgba(35,59,143,0.09)', width: 28, height: 28, borderRadius: 7, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                               <Pencil size={12} style={{ color: '#233B8F' }} />
                             </button>
-                            <button onClick={() => cardTogglePause(p)} disabled={postBusyId === p.id} title={p.status === 'CANCELLED' ? 'Reactivar' : 'Pausar'} style={{ border: 'none', background: 'rgba(124,58,237,0.09)', width: 28, height: 28, borderRadius: 7, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                              {postBusyId === p.id ? <Loader2 size={12} className="animate-spin" style={{ color: '#7C3AED' }} /> : (p.status === 'CANCELLED' ? <Play size={12} style={{ color: '#7C3AED' }} /> : <Pause size={12} style={{ color: '#7C3AED' }} />)}
+                            <button onClick={() => cardTogglePause(p)} disabled={postBusyId === p.id} title={p.status === 'CANCELLED' ? 'Reactivar' : 'Pausar'} style={{ border: 'none', background: 'rgba(0,229,208,0.09)', width: 28, height: 28, borderRadius: 7, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              {postBusyId === p.id ? <Loader2 size={12} className="animate-spin" style={{ color: '#147e95' }} /> : (p.status === 'CANCELLED' ? <Play size={12} style={{ color: '#147e95' }} /> : <Pause size={12} style={{ color: '#147e95' }} />)}
                             </button>
                           </>
                         )}
@@ -1382,7 +1382,7 @@ function SchedulerModal({
                         </div>
                         {p.body && (
                           p.body.trim().startsWith('[MOTIVACIÓN DIARIA') ? (
-                            <p style={{ fontSize: 12.5, color: '#7C3AED', margin: 0, lineHeight: 1.45, fontWeight: 600 }}>
+                            <p style={{ fontSize: 12.5, color: '#147e95', margin: 0, lineHeight: 1.45, fontWeight: 600 }}>
                               🔄 Frase motivacional del día — rota una frase distinta cada vez (nunca repite la misma).
                             </p>
                           ) : (
@@ -1394,8 +1394,8 @@ function SchedulerModal({
                       </div>
                       <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                         {(p.status === 'PENDING' || p.status === 'CANCELLED') && (
-                          <button onClick={() => togglePause(p)} disabled={pausingId === p.id} title={p.status === 'CANCELLED' ? 'Reactivar' : 'Pausar'} style={{ border: 'none', background: 'rgba(124,58,237,0.09)', width: 30, height: 30, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {pausingId === p.id ? <Loader2 size={13} className="animate-spin" style={{ color: '#7C3AED' }} /> : (p.status === 'CANCELLED' ? <Play size={13} style={{ color: '#7C3AED' }} /> : <Pause size={13} style={{ color: '#7C3AED' }} />)}
+                          <button onClick={() => togglePause(p)} disabled={pausingId === p.id} title={p.status === 'CANCELLED' ? 'Reactivar' : 'Pausar'} style={{ border: 'none', background: 'rgba(0,229,208,0.09)', width: 30, height: 30, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {pausingId === p.id ? <Loader2 size={13} className="animate-spin" style={{ color: '#147e95' }} /> : (p.status === 'CANCELLED' ? <Play size={13} style={{ color: '#147e95' }} /> : <Pause size={13} style={{ color: '#147e95' }} />)}
                           </button>
                         )}
                         <button onClick={() => remove(p.id)} disabled={deletingId === p.id} title="Eliminar" style={{ border: 'none', background: 'rgba(220,38,38,0.08)', width: 30, height: 30, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

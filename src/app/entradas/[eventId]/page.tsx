@@ -179,7 +179,7 @@ export default function PublicTicketPage() {
   const tierOf = (tt: TicketType): Tier => {
     if (tt.isGuest) return {
       key: 'GUEST', label: 'INVITADO', icon: '✦',
-      metal: 'linear-gradient(135deg,#1C1C1E 0%,#3A3A3C 22%,#2C2C2E 42%,#4A4A4D 58%,#232325 78%,#141416 100%)',
+      metal: 'linear-gradient(135deg,#1C1C1E 0%,#3A3A3C 22%,#2C2C2E 42%,#4A4A4D 58%,#232325 78%,#1a262f 100%)',
       stub: 'linear-gradient(135deg,#0E0E10 0%,#242426 50%,#0E0E10 100%)',
       ink: '#F5D77A', inkSoft: 'rgba(245,215,122,0.72)', edge: '#8A6D2F',
       stubInk: '#F5D77A', glow: '0 0 0 3px rgba(245,215,122,0.35), 0 16px 34px -14px rgba(0,0,0,0.6)',
@@ -247,18 +247,18 @@ export default function PublicTicketPage() {
       }}>
 
         {/* FLYER completo (proporción natural: no se recorta ni deja espacios) */}
-        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '24.5px 24.5px 0 0', background: '#0C0619', lineHeight: 0 }}>
+        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '24.5px 24.5px 0 0', background: '#1a262f', lineHeight: 0 }}>
           {event.image
             ? <img src={event.image} alt={event.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
             : <div style={{ width: '100%', aspectRatio: '4/3', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 46 }}>🎟️</div>}
-          <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #16092B 100%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #1a262f 100%)', pointerEvents: 'none' }} />
           <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(255,45,149,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
             📍 PRESENCIAL
           </span>
         </div>
 
         {/* CUERPO del ticket (oscuro) — acá va todo el contenido */}
-        <div style={{ position: 'relative', borderRadius: '0 0 24.5px 24.5px', background: 'linear-gradient(180deg, #16092B 0%, #0C0619 58%, #070412 100%)' }}>
+        <div style={{ position: 'relative', borderRadius: '0 0 24.5px 24.5px', background: 'linear-gradient(180deg, #1a262f 0%, #1a262f 58%, #070412 100%)' }}>
 
           {/* Muescas laterales + perforación */}
           <div style={{ position: 'absolute', top: -11, left: -12.5, width: 22, height: 22, borderRadius: '50%', background: '#EEF2F7', pointerEvents: 'none', zIndex: 2 }} />
@@ -424,7 +424,7 @@ export default function PublicTicketPage() {
                 <button
                   onClick={() => setStep('form')}
                   className="w-full py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-[0.98]"
-                  style={{ background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', boxShadow: '0 8px 32px rgba(0,229,208,0.3)' }}
+                  style={{ background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff', boxShadow: '0 8px 32px rgba(0,229,208,0.3)' }}
                 >
                   Comprar entrada →
                 </button>
@@ -464,7 +464,7 @@ export default function PublicTicketPage() {
                   setError(''); setStep('payment')
                 }}
                 className="flex-[2] py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-[0.98]"
-                style={{ background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff' }}
+                style={{ background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff' }}
               >Continuar →</button>
             </div>
           </div>
@@ -586,7 +586,7 @@ export default function PublicTicketPage() {
                   onClick={submit}
                   disabled={submitting || uploading}
                   className="flex-[2] py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg,#00E5D0,#0D1E79)', color: '#fff', boxShadow: '0 8px 32px rgba(0,229,208,0.3)' }}
+                  style={{ background: 'linear-gradient(135deg,#00E5D0,#12303a)', color: '#fff', boxShadow: '0 8px 32px rgba(0,229,208,0.3)' }}
                 >
                   {submitting
                     ? <span className="flex items-center justify-center gap-2"><Loader2 size={15} className="animate-spin" /> Procesando...</span>

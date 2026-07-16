@@ -85,7 +85,7 @@ export default function RetoRegisterPage({ params }: { params: { slug: string } 
       minHeight: '100vh', width: '100%', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center', padding: '32px 16px', boxSizing: 'border-box',
       position: 'relative', overflow: 'hidden',
-      backgroundColor: '#0A1320',
+      backgroundColor: '#1a262f',
       backgroundImage: 'linear-gradient(180deg, rgba(11,27,43,0.66) 0%, rgba(8,16,28,0.80) 46%, rgba(5,11,20,0.93) 100%), url(/auth-bg.jpg)',
       backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
     }}>

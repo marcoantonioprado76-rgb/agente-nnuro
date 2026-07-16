@@ -171,7 +171,7 @@ export default function StorePage() {
             const img = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null
             const outOfStock = item.stock === 0
             return (
-              <div key={item.id} style={{ borderRadius: 14, overflow: 'hidden', background: 'radial-gradient(120% 75% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', opacity: outOfStock ? 0.6 : 1, transition: 'border-color 0.2s', display: 'flex', flexDirection: 'column' }}>
+              <div key={item.id} style={{ borderRadius: 14, overflow: 'hidden', background: 'radial-gradient(120% 75% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 60%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 18px 40px -24px rgba(8,22,36,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', opacity: outOfStock ? 0.6 : 1, transition: 'border-color 0.2s', display: 'flex', flexDirection: 'column' }}>
                 {/* Image — click goes to detail */}
                 <Link href={`/dashboard/store/${item.id}`} style={{ textDecoration: 'none', display: 'block' }}>
                   <div style={{ aspectRatio: '1/1', background: 'rgba(0,229,208,0.04)', position: 'relative', overflow: 'hidden' }}>
@@ -285,7 +285,7 @@ export default function StorePage() {
                           ancho exacto: no se recorta NADA y no queda ningún espacio
                           sobrante alrededor. La tarjeta toma la altura del flyer.
                           Abajo se funde con un degradado hacia el cuerpo del ticket. */}
-                      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '22.5px 22.5px 0 0', background: '#0C0619', lineHeight: 0 }}>
+                      <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '22.5px 22.5px 0 0', background: '#1a262f', lineHeight: 0 }}>
                         {ev.image ? (
                           <img
                             src={ev.image}
@@ -297,7 +297,7 @@ export default function StorePage() {
                         )}
 
                         {/* Degradado inferior: funde el flyer con el cuerpo del ticket */}
-                        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #16092B 100%)', pointerEvents: 'none' }} />
+                        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: 'linear-gradient(180deg, rgba(22,9,43,0) 0%, rgba(22,9,43,0.75) 60%, #1a262f 100%)', pointerEvents: 'none' }} />
 
                         {/* Chip PRESENCIAL (NO es virtual) */}
                         <span style={{ position: 'absolute', top: 12, right: 12, display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: 'rgba(7,4,18,0.68)', border: '1px solid rgba(255,45,149,0.55)', backdropFilter: 'blur(6px)', color: '#FF6FB5', fontSize: 10, fontWeight: 900, letterSpacing: '0.09em' }}>
@@ -312,7 +312,7 @@ export default function StorePage() {
                       </div>
 
                       {/* ── Cuerpo del ticket (debajo del flyer) ────────────────── */}
-                      <div style={{ position: 'relative', borderRadius: '0 0 22.5px 22.5px', background: 'linear-gradient(180deg, #16092B 0%, #0C0619 58%, #070412 100%)' }}>
+                      <div style={{ position: 'relative', borderRadius: '0 0 22.5px 22.5px', background: 'linear-gradient(180deg, #1a262f 0%, #1a262f 58%, #070412 100%)' }}>
 
                         {/* Muescas laterales: se ubican solas en la unión flyer/cuerpo */}
                         <div style={{ position: 'absolute', top: -NOTCH / 2, left: -NOTCH / 2 - PAD, width: NOTCH, height: NOTCH, borderRadius: '50%', background: '#EEF2F7', pointerEvents: 'none', zIndex: 2 }} />
@@ -396,7 +396,7 @@ export default function StorePage() {
       {quickItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,11,20,0.55)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
           onClick={() => setQuickItem(null)}>
-          <div style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #0B1B2B 0%, #081624 60%, #050B14 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 60px -24px rgba(8,22,36,0.7), inset 0 1px 0 rgba(255,255,255,0.05)', borderRadius: 18, width: '100%', maxWidth: 360, padding: 24 }}
+          <div style={{ background: 'radial-gradient(120% 80% at 50% -10%, rgba(183,53,184,0.16), rgba(255,255,255,0) 58%), linear-gradient(180deg, #212e38 0%, #273842 60%, #1a262f 100%)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 60px -24px rgba(8,22,36,0.7), inset 0 1px 0 rgba(255,255,255,0.05)', borderRadius: 18, width: '100%', maxWidth: 360, padding: 24 }}
             onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', gap: 14, marginBottom: 18 }}>
               {quickItem.images[0] && (

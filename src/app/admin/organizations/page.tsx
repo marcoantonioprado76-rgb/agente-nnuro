@@ -356,7 +356,7 @@ export default function AdminOrganizationsPage() {
       {createOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => !creating && setCreateOpen(false)} />
-          <div className="relative bg-[#13131f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#1a262f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
 
@@ -445,7 +445,7 @@ export default function AdminOrganizationsPage() {
       {quotaModal && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => updating !== quotaModal.id && setQuotaModal(null)} />
-          <div className="relative bg-[#13131f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-xs z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#1a262f] border border-[#147e95]/20 rounded-2xl p-6 w-full max-w-xs z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(183,53,184,0.7), transparent)' }} />
 
@@ -499,7 +499,7 @@ export default function AdminOrganizationsPage() {
       {assignModal && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => !assigning && setAssignModal(null)} />
-          <div className="relative bg-[#13131f] border border-cyan-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#1a262f] border border-cyan-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(34,211,238,0.7), transparent)' }} />
 
@@ -564,7 +564,7 @@ export default function AdminOrganizationsPage() {
       {deleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={() => !deleting && setDeleteModal(null)} />
-          <div className="relative bg-[#13131f] border border-red-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
+          <div className="relative bg-[#1a262f] border border-red-500/20 rounded-2xl p-6 w-full max-w-sm z-10 shadow-2xl shadow-black/60">
             <div className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
               style={{ background: 'linear-gradient(90deg, transparent, rgba(239,68,68,0.7), transparent)' }} />
 

@@ -246,8 +246,8 @@ export default function AdminEditor() {
               className="col-span-2 bg-white border border-[#E4E9F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] placeholder-[#9CA3AF] outline-none focus:border-[#147e95]/40" />
             <select value={categoria} onChange={e => setCategoria(e.target.value)}
               className="col-span-2 bg-white border border-[#E4E9F0] rounded-xl px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#147e95]/40">
-              <option value="" className="bg-[#0d0d15] text-white">Elegí un área…</option>
-              {(areas.length ? areas : (CATEGORIAS_RECURSOS as readonly string[])).map(c => <option key={c} value={c} className="bg-[#0d0d15] text-white">{c}</option>)}
+              <option value="" className="bg-[#1a262f] text-white">Elegí un área…</option>
+              {(areas.length ? areas : (CATEGORIAS_RECURSOS as readonly string[])).map(c => <option key={c} value={c} className="bg-[#1a262f] text-white">{c}</option>)}
             </select>
           </div>
 

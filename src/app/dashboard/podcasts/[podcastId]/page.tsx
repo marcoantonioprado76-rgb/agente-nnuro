@@ -87,7 +87,7 @@ export default function PodcastDetailPage() {
         {/* Card premium */}
         <div style={{
           position: 'relative', borderRadius: 26, overflow: 'hidden',
-          background: 'radial-gradient(1200px 400px at 85% -10%, rgba(168,85,247,0.22), transparent 55%), linear-gradient(150deg,#161d42 0%,#0f1332 52%,#0a0e24 100%)',
+          background: 'radial-gradient(1200px 400px at 85% -10%, rgba(0,229,208,0.22), transparent 55%), linear-gradient(150deg,#161d42 0%,#0f1332 52%,#1a262f 100%)',
           border: '1px solid rgba(255,255,255,0.08)',
           boxShadow: '0 40px 90px -40px rgba(10,14,36,0.9), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}>
@@ -97,7 +97,7 @@ export default function PodcastDetailPage() {
           <div style={{ position: 'relative', display: 'flex', flexWrap: 'wrap', gap: 26, padding: 26, alignItems: 'center' }}>
             {/* Portada */}
             <div style={{ flex: '0 0 auto', width: 260, maxWidth: '100%', margin: '0 auto' }}>
-              <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 24px 60px -24px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04)', aspectRatio: '1 / 1', background: '#0a0e24' }}>
+              <div style={{ borderRadius: 20, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 24px 60px -24px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04)', aspectRatio: '1 / 1', background: '#1a262f' }}>
                 {podcast.coverUrl
                   ? <img src={podcast.coverUrl} alt={podcast.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   : <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', color: 'rgba(255,255,255,0.25)' }}><i className="fa-solid fa-microphone" style={{ fontSize: 44 }} /></div>}
