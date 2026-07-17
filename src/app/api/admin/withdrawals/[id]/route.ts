@@ -44,14 +44,20 @@ export async function PATCH(
       },
     })
   } else if (action === 'reject') {
-    await prisma.withdrawalRequest.update({
-      where: { id: params.id },
-      data: {
-        status: 'REJECTED',
-        notes: notes ?? null,
-        reviewedBy: admin.id,
-        reviewedAt: new Date(),
-      },
+    // Rechazar reintegra el saldo reservado al solicitar (solo si no estaba ya
+    // rechazado/pagado, para no reintegrar dos veces).
+    if (withdrawal.status === 'REJECTED' || withdrawal.status === 'PAID') {
+      return NextResponse.json({ error: 'Esta solicitud ya fue procesada.' }, { status: 400 })
+    }
+    await prisma.$transaction(async (tx) => {
+      await tx.withdrawalRequest.update({
+        where: { id: params.id },
+        data: { status: 'REJECTED', notes: notes ?? null, reviewedBy: admin.id, reviewedAt: new Date() },
+      })
+      await tx.$executeRaw`UPDATE users SET ai_balance_usd = ai_balance_usd + ${Number(withdrawal.amount)} WHERE id = ${withdrawal.userId}::uuid`
+      await tx.auditLog.create({
+        data: { userId: withdrawal.userId, actorUserId: admin.id, action: 'WITHDRAWAL_REJECTED', entityType: 'WithdrawalRequest', entityId: params.id, payload: { refunded: Number(withdrawal.amount) } },
+      })
     })
   } else {
     return NextResponse.json({ error: 'Acción inválida' }, { status: 400 })

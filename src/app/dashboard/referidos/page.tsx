@@ -19,7 +19,10 @@ export default function ReferidosPage() {
 
   useEffect(() => {
     fetch('/api/referrals/me')
-      .then(r => r.json())
+      .then(r => {
+        if (r.status === 401) { window.location.href = '/login'; return null }
+        return r.json()
+      })
       .then(d => { if (d?.code) setData(d) })
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -48,11 +51,16 @@ export default function ReferidosPage() {
   return (
     <main className="d-main font-ui" style={{ background: 'radial-gradient(circle at top right, rgba(0,229,208,0.06), transparent 28%), linear-gradient(135deg, #DDE4EC 0%, #E6ECF3 45%, #D6DEE9 100%)', color: '#111827', minHeight: '100vh', gap: 24 }}>
 
-      <div>
-        <h1 className="font-display" style={{ fontSize: 28, fontWeight: 600, color: '#111827', margin: 0 }}>Refiere y gana</h1>
-        <p style={{ fontSize: 13.5, color: '#6B7280', margin: '4px 0 0' }}>
-          Invita con tu código. Cuando tu referido paga su plan, ganas el <b style={{ color: '#0a95a8' }}>{data.percent}%</b> en saldo NÜRO (para tu plan o créditos).
-        </p>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+        <div>
+          <h1 className="font-display" style={{ fontSize: 28, fontWeight: 600, color: '#111827', margin: 0 }}>Refiere y gana</h1>
+          <p style={{ fontSize: 13.5, color: '#6B7280', margin: '4px 0 0' }}>
+            Invita con tu código. Cuando tu referido paga su plan, ganas el <b style={{ color: '#0a95a8' }}>{data.percent}%</b> en saldo NÜRO — úsalo para tu plan, créditos, o retíralo.
+          </p>
+        </div>
+        <a href="/dashboard/retiros" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 18px', borderRadius: 14, border: '1px solid #D7DEE8', background: '#fff', color: '#0a95a8', fontSize: 13.5, fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap', boxShadow: '0 6px 14px rgba(15,23,42,0.08)' }}>
+          <i className="fa-solid fa-money-bill-wave" /> Retirar saldo
+        </a>
       </div>
 
       {/* Tarjeta del código — oscura con ondas */}

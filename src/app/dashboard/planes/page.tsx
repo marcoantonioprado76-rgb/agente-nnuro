@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Lock, Zap, Sparkles, Crown, X, Layers, MessageCircle, Store, Megaphone, FileText, Users, Video, CheckCircle2, Clock, Timer, RefreshCw, Phone, BookOpen, Play, Share2, Send, GraduationCap } from 'lucide-react'
+import { Check, Lock, Zap, Sparkles, Crown, X, Layers, MessageCircle, Store, Megaphone, FileText, Users, Video, CheckCircle2, Clock, Timer, RefreshCw, Phone, BookOpen, Play, Share2, Send, GraduationCap, Wallet } from 'lucide-react'
 
 const PACKS = [
   {
@@ -264,6 +264,8 @@ export default function PlanesPage() {
   const [planExpiresAt, setPlanExpiresAt] = useState<string | null>(null)
   const [pendingPlan, setPendingPlan] = useState<string | null>(null)
   const [isFaseGlobal, setIsFaseGlobal] = useState(false)
+  const [balance, setBalance] = useState(0)         // saldo interno (ai_balance_usd)
+  const [payingBalance, setPayingBalance] = useState(false)
   const [enabledPlans, setEnabledPlans] = useState<Record<string, boolean> | null>(null)
   const [credits, setCredits] = useState<Record<string, number>>(PLAN_CREDIT_DEFAULTS)
   const [bots, setBots] = useState<Record<string, number>>(PLAN_BOTS_DEFAULTS)
@@ -296,6 +298,11 @@ export default function PlanesPage() {
     fetch('/api/empresa/pago')
       .then(r => r.json())
       .then(d => { if (d.payment) setOrgPay(d.payment) })
+      .catch(() => {})
+    // Saldo interno disponible (para pagar el plan con saldo).
+    fetch('/api/credits')
+      .then(r => r.json())
+      .then(d => { if (d?.aiBalanceUsd != null) setBalance(Number(d.aiBalanceUsd)) })
       .catch(() => {})
     // Cargar disponibilidad de planes
     fetch('/api/settings')
@@ -407,6 +414,20 @@ export default function PlanesPage() {
         </div>
       </div>
     )
+  }
+
+  // Pagar el plan usando el saldo interno (instantáneo, sin admin).
+  const payWithBalance = async (plan: string, price: number) => {
+    if (payingBalance) return
+    if (!confirm(`¿Pagar el plan ${plan} con tu saldo? Se descontarán $${price.toFixed(2)} de tu saldo interno.`)) return
+    setPayingBalance(true)
+    try {
+      const res = await fetch('/api/plan/pay-with-balance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan }) })
+      const j = await res.json()
+      if (!res.ok) { alert(j.error || 'No se pudo pagar con saldo.'); return }
+      alert('¡Plan activado con tu saldo! 🎉')
+      window.location.reload()
+    } catch { alert('Error de conexión.') } finally { setPayingBalance(false) }
   }
 
   return (
@@ -641,6 +662,17 @@ export default function PlanesPage() {
                     </button>
                   )
                 })()}
+
+                {/* Pagar con saldo interno — si alcanza y el plan no es inferior */}
+                {!pack.locked && !isFaseGlobal && !pendingPlan && PLAN_RANK[currentPlan] <= PLAN_RANK[pack.planId] && balance >= (prices[pack.planId] ?? pack.price) && (
+                  <button
+                    onClick={() => payWithBalance(pack.planId, prices[pack.planId] ?? pack.price)}
+                    disabled={payingBalance}
+                    className="w-full mt-2 py-2.5 rounded-2xl text-xs font-black border border-cyan-500/40 text-[#0a95a8] bg-cyan-500/10 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    <Wallet size={13} /> Pagar con mi saldo (${balance.toFixed(2)})
+                  </button>
+                )}
               </div>
             </div>
           )
