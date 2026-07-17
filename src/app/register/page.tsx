@@ -76,6 +76,8 @@ function RegisterForm() {
 
   // Pack Empresarial: registro por link de invitación (?empresa=slug)
   const empresaSlug = searchParams.get('empresa') || ''
+  // Referido: si viene de un link ?ref=<código>, se envía para vincular al referidor.
+  const refCode = searchParams.get('ref') || ''
   const [empresaName, setEmpresaName] = useState<string | null>(null)
   useEffect(() => {
     if (!empresaSlug) return
@@ -121,7 +123,7 @@ function RegisterForm() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, turnstileToken, empresa: empresaSlug || undefined }),
+        body: JSON.stringify({ ...form, turnstileToken, empresa: empresaSlug || undefined, ref: refCode || undefined }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error); return }

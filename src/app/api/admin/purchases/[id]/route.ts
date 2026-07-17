@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { sendPlanPurchaseConfirmedEmail } from '@/lib/email'
 import { reactivateUserAssetsAfterPlanRenewal } from '@/lib/plan-lifecycle'
 import { getPlanCredits } from '@/lib/plan-config'
+import { payReferralCommission } from '@/lib/referrals'
 
 const PLAN_RANK: Record<string, number> = { NONE: 0, BASIC: 1, PRO: 2, ELITE: 3 }
 
@@ -118,6 +119,13 @@ export async function PATCH(
           }
         }
 
+        // 4.6 Comisión de referido (1 nivel): si este usuario fue referido y su
+        //     Referral sigue PENDING, se acredita saldo al referidor (una sola vez,
+        //     % del precio pagado). Fase Global no paga comisión.
+        if (!isFaseGlobal) {
+          await payReferralCommission(tx, purchaseRequest.userId, Number(purchaseRequest.price))
+        }
+
         // 4.5 Reactivar tiendas/bots que el cron expirePlans haya pausado
         //     en períodos vencidos anteriores. Idempotente: si no hay nada
         //     que reactivar, no hace nada.
@@ -138,7 +146,7 @@ export async function PATCH(
             },
           },
         })
-      })
+      }, { maxWait: 10000, timeout: 20000 })
     } catch (err: any) {
       if (err.message === 'ALREADY_PROCESSED') {
         return NextResponse.json({ error: 'Esta solicitud ya fue procesada.' }, { status: 409 })

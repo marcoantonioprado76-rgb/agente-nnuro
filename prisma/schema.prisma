@@ -85,7 +85,37 @@ model User {
   creditPurchaseRequests CreditPurchaseRequest[]
   aiUsageLogs          AIUsageLog[]
 
+  /// Programa de referidos (1 nivel + recompensa en saldo interno).
+  referralCode         String?     @unique @map("referral_code")
+  referralCount        Int         @default(0) @map("referral_count")
+  referralsMade        Referral[]  @relation("ReferrerRefs")
+  referralGot          Referral?   @relation("ReferredRef")
+
   @@map("users")
+}
+
+/// Un evento de referido: quién trajo a quién y la comisión pagada.
+/// referredId es @unique → cada usuario cuenta una sola vez (idempotencia natural).
+model Referral {
+  id          String         @id @default(uuid()) @db.Uuid
+  referrerId  String         @map("referrer_id") @db.Uuid
+  referredId  String         @unique @map("referred_id") @db.Uuid
+  status      ReferralStatus @default(PENDING)
+  rewardUsd   Decimal        @default(0) @db.Decimal(10, 2) @map("reward_usd")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  completedAt DateTime?      @map("completed_at")
+  referrer    User           @relation("ReferrerRefs", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred    User           @relation("ReferredRef", fields: [referredId], references: [id], onDelete: Cascade)
+
+  @@index([referrerId])
+  @@index([status])
+  @@map("referrals")
+}
+
+enum ReferralStatus {
+  PENDING
+  COMPLETED
+  REJECTED
 }
 
 

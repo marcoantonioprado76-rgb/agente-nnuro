@@ -137,6 +137,11 @@ export default function Navbar() {
                 : <span className="nav-item__dot"></span>}
             </a>
           )}
+          <Link href="/dashboard/referidos" className={`nav-item ${pathname.startsWith('/dashboard/referidos') ? 'nav-item--active' : ''}`}>
+            <span className="nav-item__icon"><i className="fa-solid fa-gift"></i></span>
+            <span className="nav-item__label">Referidos</span>
+            <span className="nav-item__dot"></span>
+          </Link>
           <Link href="/dashboard/settings" className={`nav-item ${pathname === '/dashboard/settings' ? 'nav-item--active' : ''}`}>
             <span className="nav-item__icon"><i className="fa-solid fa-gear"></i></span>
             <span className="nav-item__label">Configuración</span>

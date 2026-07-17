@@ -5,6 +5,7 @@ import { hashPassword, generateToken } from '@/lib/auth'
 import { sendWelcomeEmail } from '@/lib/email'
 import { rateLimit, getClientIp, RATE_LIMITS } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/turnstile'
+import { attachReferralOnSignup } from '@/lib/referrals'
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request)
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
     const {
       username, email, password, confirmPassword,
       fullName, country, city, identityDocument,
-      dateOfBirth, acceptTerms, turnstileToken, empresa
+      dateOfBirth, acceptTerms, turnstileToken, empresa, ref
     } = body
 
     // Turnstile anti-bot (solo en producción)
@@ -101,9 +102,13 @@ export async function POST(request: NextRequest) {
         city,
         identityDocument,
         dateOfBirth: new Date(dateOfBirth),
+        referralCode: username, // su código de referido = su username (backfill idéntico)
         ...orgFields,
       }
     })
+
+    // Referido (1 nivel): si llegó con ?ref=<código>, se registra como referido directo.
+    await attachReferralOnSignup(prisma, newUser.id, ref)
 
     await sendWelcomeEmail(email, fullName)
 
