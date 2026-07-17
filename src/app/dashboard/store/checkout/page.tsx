@@ -70,9 +70,11 @@ function CheckoutContent() {
   const [cryptoEnabled, setCryptoEnabled] = useState(true)
   const [manualEnabled, setManualEnabled] = useState(true)
 
-  const [paymentMethod, setPaymentMethod] = useState<'MANUAL' | 'CRYPTO' | 'FASE_GLOBAL'>('CRYPTO')
+  const [paymentMethod, setPaymentMethod] = useState<'MANUAL' | 'CRYPTO' | 'FASE_GLOBAL' | 'SALDO'>('CRYPTO')
   const [cryptoStatus, setCryptoStatus] = useState<'approved' | 'pending_verification' | null>(null)
   const [faseGlobalEnabled, setFaseGlobalEnabled] = useState(false)
+  const [balance, setBalance] = useState(0)          // saldo interno disponible
+  const [payingSaldo, setPayingSaldo] = useState(false)
 
   const [proofUrl, setProofUrl] = useState('')
   const [uploading, setUploading] = useState(false)
@@ -86,6 +88,23 @@ function CheckoutContent() {
   const faseProofInputRef = useRef<HTMLInputElement>(null)
 
   const proofInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    fetch('/api/credits').then(r => r.json()).then(d => { if (d?.aiBalanceUsd != null) setBalance(Number(d.aiBalanceUsd)) }).catch(() => {})
+  }, [])
+
+  const payWithSaldo = async () => {
+    if (payingSaldo) return
+    setError('')
+    setPayingSaldo(true)
+    try {
+      const res = await fetch('/api/plan/pay-with-balance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan }) })
+      const j = await res.json()
+      if (!res.ok) { setError(j.error || 'No se pudo pagar con saldo.'); return }
+      setSuccess(true)
+      setTimeout(() => router.push('/dashboard/planes'), 1500)
+    } catch { setError('Error de conexión.') } finally { setPayingSaldo(false) }
+  }
 
   useEffect(() => {
     fetch('/api/settings')
@@ -337,6 +356,31 @@ function CheckoutContent() {
               🌐 Fase Global
             </button>
           )}
+          {price !== null && balance >= price && (
+            <button
+              onClick={() => { setPaymentMethod('SALDO'); setProofUrl(''); setError('') }}
+              className={`flex-1 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${paymentMethod === 'SALDO' ? 'bg-gradient-to-r from-[#1fb8bb] to-[#147e95] text-white' : 'text-white/55 hover:text-white/80'}`}
+            >
+              💰 Mi saldo
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Pago con SALDO interno */}
+      {paymentMethod === 'SALDO' && price !== null && (
+        <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-6 text-center">
+          <p className="text-xs font-black uppercase tracking-widest text-white/45">Tu saldo disponible</p>
+          <p className="text-4xl font-black text-white mt-2">${balance.toFixed(2)}</p>
+          <p className="text-sm text-white/55 mt-3">Se descontarán <b className="text-[#35d0c8]">${price.toFixed(2)}</b> de tu saldo y tu plan se activa al instante.</p>
+          {error && <p className="text-sm text-red-400 mt-3">{error}</p>}
+          <button
+            onClick={payWithSaldo}
+            disabled={payingSaldo || balance < price}
+            className="w-full mt-5 py-3.5 rounded-2xl text-sm font-black bg-gradient-to-r from-[#1fb8bb] via-[#147e95] to-[#0d7688] text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {payingSaldo ? 'Procesando…' : `Pagar $${price.toFixed(2)} con mi saldo`}
+          </button>
         </div>
       )}
 

@@ -28,10 +28,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
     }
 
-    // Precio del plan (config o default)
-    const priceSetting = await prisma.appSetting.findUnique({ where: { key: `PRICE_${plan}` } })
-    const price = priceSetting ? parseFloat(priceSetting.value) : (DEFAULT_PRICES[plan] ?? 0)
-    if (!(price > 0)) return NextResponse.json({ error: 'Precio no configurado' }, { status: 400 })
+    // Precios de config (mismo criterio que el checkout): renovación fija vs nuevo.
+    const [renewalSetting, baseSetting] = await Promise.all([
+      prisma.appSetting.findUnique({ where: { key: 'PRICE_RENEWAL' } }),
+      prisma.appSetting.findUnique({ where: { key: `PRICE_${plan}` } }),
+    ])
+    const renewalPrice = renewalSetting ? parseFloat(renewalSetting.value) : 19
+    const basePrice = baseSetting ? parseFloat(baseSetting.value) : (DEFAULT_PRICES[plan] ?? 0)
 
     const result = await prisma.$transaction(async (tx) => {
       // Lock del usuario: plan actual + saldo
@@ -44,9 +47,11 @@ export async function POST(request: NextRequest) {
       const newRank = PLAN_RANK[plan] ?? 0
 
       if (newRank < currentRank) throw new Error('PLAN_DOWNGRADE')
-      if (balance < price) throw new Error(`INSUFFICIENT_BALANCE:${balance.toFixed(2)}`)
 
       const isRenewal = newRank === currentRank && currentRank > 0
+      const price = isRenewal ? renewalPrice : basePrice
+      if (!(price > 0)) throw new Error('PRICE_NOT_SET')
+      if (balance < price) throw new Error(`INSUFFICIENT_BALANCE:${balance.toFixed(2)}`)
 
       // 1. Descontar el precio del saldo
       await tx.$executeRaw`UPDATE users SET ai_balance_usd = ai_balance_usd - ${price} WHERE id = ${user.id}::uuid`
@@ -97,6 +102,9 @@ export async function POST(request: NextRequest) {
     }
     if (err?.message === 'PLAN_DOWNGRADE') {
       return NextResponse.json({ error: 'No puedes bajar de plan.' }, { status: 400 })
+    }
+    if (err?.message === 'PRICE_NOT_SET') {
+      return NextResponse.json({ error: 'Precio no configurado.' }, { status: 400 })
     }
     console.error('[POST /api/plan/pay-with-balance]', err)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })
