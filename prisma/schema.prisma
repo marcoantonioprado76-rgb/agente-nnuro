@@ -89,6 +89,8 @@ model User {
   referralCode         String?     @unique @map("referral_code")
   referralCount        Int         @default(0) @map("referral_count")
   registrationIp       String?     @map("registration_ip") // antifraude: IP del registro
+  expiryReminderSentAt DateTime?   @map("expiry_reminder_sent_at") // dedup recordatorio "vence pronto"
+  winbackSentAt        DateTime?   @map("winback_sent_at")         // dedup correo win-back
   referralsMade        Referral[]  @relation("ReferrerRefs")
   referralGot          Referral?   @relation("ReferredRef")
 

@@ -467,6 +467,96 @@ export async function sendPlanPurchaseConfirmedEmail(
   }
 }
 
+const PLAN_LABELS: Record<string, string> = { BASIC: 'Pack Básico', PRO: 'Pack Pro', ELITE: 'Pack Elite' }
+
+/**
+ * Recordatorio: al usuario le faltan pocos días para que venza su plan.
+ * Lo invita a renovar (mensual/trimestral/anual).
+ */
+export async function sendPlanExpiringEmail(
+  email: string,
+  fullName: string,
+  info: { plan: string; daysLeft: number },
+): Promise<boolean> {
+  const planName = PLAN_LABELS[info.plan] ?? info.plan
+  const dias = info.daysLeft === 1 ? '1 día' : `${info.daysLeft} días`
+  const content = `
+    <p style="color:#F59E0B;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">Tu plan está por vencer</p>
+    <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 10px;letter-spacing:-0.3px;line-height:1.3;">
+      Hola ${fullName}, faltan ${dias} para que se acabe tu plan
+    </h1>
+    <p style="color:#6B7280;font-size:13px;margin:0 0 24px;line-height:1.8;">
+      Tu <span style="color:#374151;font-weight:600;">${planName}</span> vence en <strong>${dias}</strong>.
+      Renuévalo ahora para no perder tus agentes, tiendas y campañas activas.
+      Si pagas <strong>3 meses o 1 año</strong>, obtienes <strong>descuento</strong> y créditos IA extra.
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;"><tr><td style="height:1px;background:#F7F9FC;"></td></tr></table>
+    <table cellpadding="0" cellspacing="0"><tr>
+      <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
+        <a href="${APP_URL}/dashboard/planes" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 30px;border-radius:10px;letter-spacing:0.5px;">Renovar mi plan &rarr;</a>
+      </td>
+    </tr></table>
+  `
+  try {
+    await transporter.sendMail({
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: `⏳ Tu ${planName} vence en ${dias} — renuévalo`,
+      html: emailWrapper(content, '#F59E0B'),
+    })
+    console.log(`[EMAIL] Plan expiring sent to ${email} (${info.plan}, ${info.daysLeft}d)`)
+    return true
+  } catch (err) {
+    console.error('[EMAIL] Plan expiring error:', err)
+    return false
+  }
+}
+
+/**
+ * Win-back: al usuario se le venció el plan y no renovó. Se le ofrece volver
+ * con una oferta (descuento por período) para reactivar.
+ */
+export async function sendPlanWinbackEmail(
+  email: string,
+  fullName: string,
+  info: { plan: string },
+): Promise<boolean> {
+  const planName = PLAN_LABELS[info.plan] ?? 'plan'
+  const content = `
+    <p style="color:#00E5D0;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0 0 16px;">Te extrañamos en NÜRO</p>
+    <h1 style="color:#111827;font-size:22px;font-weight:800;margin:0 0 10px;letter-spacing:-0.3px;line-height:1.3;">
+      ${fullName}, vuelve a activar tu ${planName}
+    </h1>
+    <p style="color:#6B7280;font-size:13px;margin:0 0 20px;line-height:1.8;">
+      Tu plan se venció y tus agentes de venta están en pausa. Vuelve hoy y sigue vendiendo por WhatsApp con IA.
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+      <tr><td style="background:#F0FBFA;border:1px solid #CDEFEC;border-radius:12px;padding:16px 18px;">
+        <p style="margin:0 0 4px;color:#0a95a8;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Oferta para volver</p>
+        <p style="margin:0;color:#374151;font-size:14px;line-height:1.6;">Paga <strong>3 meses (−10%)</strong> o <strong>1 año (−20%)</strong> y recibe <strong>créditos IA extra</strong>. Reactiva tus agentes, tiendas y campañas al instante.</p>
+      </td></tr>
+    </table>
+    <table cellpadding="0" cellspacing="0"><tr>
+      <td style="border-radius:10px;background:linear-gradient(135deg,#1fb8bb 0%,#147e95 48%,#233B8F 100%);">
+        <a href="${APP_URL}/dashboard/planes" style="display:inline-block;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 30px;border-radius:10px;letter-spacing:0.5px;">Reactivar con oferta &rarr;</a>
+      </td>
+    </tr></table>
+  `
+  try {
+    await transporter.sendMail({
+      from: `"NÜRO" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: `🎁 ${fullName}, vuelve a NÜRO con una oferta especial`,
+      html: emailWrapper(content, '#00E5D0'),
+    })
+    console.log(`[EMAIL] Winback sent to ${email}`)
+    return true
+  } catch (err) {
+    console.error('[EMAIL] Winback error:', err)
+    return false
+  }
+}
+
 /**
  * Email del admin de notificación. Se puede sobrescribir vía env ADMIN_NOTIFICATION_EMAIL,
  * sino usa el default acordado.
