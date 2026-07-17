@@ -16,8 +16,27 @@ import type { Prisma, PrismaClient } from '@prisma/client'
 /** Cliente Prisma o cliente de transacción — ambos sirven. */
 type Db = PrismaClient | Prisma.TransactionClient
 
-/** % del pago del referido que gana el referidor (configurable por env). */
+/** Default del % (fallback si no hay config en el panel ni env). */
 export const REFERRAL_PERCENT = Math.max(0, Math.min(100, Number(process.env.REFERRAL_COMMISSION_PERCENT ?? 20)))
+
+/**
+ * Config del programa de referidos, editable desde el panel admin
+ * (appSetting REFERRAL_PERCENT / REFERRAL_CAP). Fallback a env/default.
+ * @returns { percent (0-100), cap (0 = sin tope mensual por usuario) }
+ */
+export async function getReferralConfig(db: Db): Promise<{ percent: number; cap: number }> {
+  try {
+    const [p, c] = await Promise.all([
+      db.appSetting.findUnique({ where: { key: 'REFERRAL_PERCENT' } }),
+      db.appSetting.findUnique({ where: { key: 'REFERRAL_CAP' } }),
+    ])
+    const percent = p?.value != null && p.value !== '' ? Math.max(0, Math.min(100, parseFloat(p.value))) : REFERRAL_PERCENT
+    const cap = c?.value != null && c.value !== '' ? Math.max(0, parseFloat(c.value)) : 0
+    return { percent: isNaN(percent) ? REFERRAL_PERCENT : percent, cap: isNaN(cap) ? 0 : cap }
+  } catch {
+    return { percent: REFERRAL_PERCENT, cap: 0 }
+  }
+}
 
 /** Busca al referidor por su código (o username), sin distinguir mayúsculas. */
 export async function resolveReferrer(db: Db, code: string) {
@@ -38,11 +57,26 @@ export async function resolveReferrer(db: Db, code: string) {
  * Al registrarse un usuario con un código de referido: valida, evita el
  * auto-referido y crea el registro PENDING. Nunca lanza.
  */
-export async function attachReferralOnSignup(db: Db, newUserId: string, code?: string | null) {
+export async function attachReferralOnSignup(db: Db, newUserId: string, code?: string | null, signupIp?: string | null) {
   try {
     if (!code) return
-    const referrer = await resolveReferrer(db, code)
+    const norm = String(code || '').trim()
+    if (!norm) return
+    const referrer = await db.user.findFirst({
+      where: {
+        OR: [
+          { referralCode: { equals: norm, mode: 'insensitive' } },
+          { username: { equals: norm, mode: 'insensitive' } },
+        ],
+      },
+      select: { id: true, registrationIp: true },
+    })
     if (!referrer || referrer.id === newUserId) return // no existe o se refirió a sí mismo
+    // Antifraude: misma IP de registro que el referidor → probable auto-referido.
+    if (signupIp && signupIp !== 'unknown' && referrer.registrationIp && referrer.registrationIp === signupIp) {
+      console.warn('[referrals] auto-referido bloqueado por IP:', signupIp)
+      return
+    }
     // referredId es @unique → si por alguna razón ya existe, no duplica.
     await db.referral.create({ data: { referrerId: referrer.id, referredId: newUserId } }).catch(() => {})
     await db.user.update({ where: { id: referrer.id }, data: { referralCount: { increment: 1 } } }).catch(() => {})
@@ -64,9 +98,22 @@ export async function payReferralCommission(db: Db, payingUserId: string, amount
   })
   if (!ref) return null
 
-  const reward = Math.round((Number(amountUsd) || 0) * REFERRAL_PERCENT) / 100
+  const { percent, cap } = await getReferralConfig(db)
+  let reward = Math.round((Number(amountUsd) || 0) * percent) / 100
+
+  // Tope mensual por referidor (antifraude): no exceder el cap en el mes.
+  if (cap > 0 && reward > 0) {
+    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0)
+    const agg = await db.referral.aggregate({
+      _sum: { rewardUsd: true },
+      where: { referrerId: ref.referrerId, status: 'COMPLETED', completedAt: { gte: monthStart } },
+    })
+    const earnedThisMonth = Number(agg._sum.rewardUsd ?? 0)
+    reward = Math.max(0, Math.min(reward, cap - earnedThisMonth))
+  }
+
   if (reward <= 0) {
-    // Igual cerramos el referido para no re-evaluarlo, pero sin acreditar.
+    // Cerrar el referido para no re-evaluarlo, sin acreditar (tope alcanzado o %=0).
     await db.referral.update({ where: { id: ref.id }, data: { status: 'COMPLETED', completedAt: new Date() } })
     return null
   }

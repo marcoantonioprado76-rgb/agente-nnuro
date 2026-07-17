@@ -313,6 +313,30 @@ export default function AdminSettingsPage() {
         </div>
       ) : (
         <>
+          {/* ── Programa de Referidos ───────────────────── */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 mb-1">
+              <DollarSign size={13} className="text-[#111827]/40" />
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#111827]/40">Programa de Referidos</p>
+            </div>
+            <div className="rounded-2xl border border-[#E4E9F0] p-5 space-y-4" style={{ background: 'rgba(255,255,255,0.015)' }}>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold">Comisión por referido (%)</p>
+                  <p className="text-[11px] text-[#111827]/40">% del pago del referido que gana quien lo trajo, en saldo interno.</p>
+                </div>
+                <PlanNumberInput settingKey="REFERRAL_PERCENT" fallback="20" placeholder="20" />
+              </div>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold">Tope mensual por usuario</p>
+                  <p className="text-[11px] text-[#111827]/40">Máx. comisión que un referidor gana al mes (antifraude). 0 = sin tope.</p>
+                </div>
+                <PlanNumberInput settingKey="REFERRAL_CAP" fallback="0" prefix="$" placeholder="0" />
+              </div>
+            </div>
+          </section>
+
           {/* ── Plan Prices ─────────────────────────────── */}
           <section className="space-y-3">
             <div className="flex items-center gap-2 mb-1">

@@ -103,12 +103,13 @@ export async function POST(request: NextRequest) {
         identityDocument,
         dateOfBirth: new Date(dateOfBirth),
         referralCode: username, // su código de referido = su username (backfill idéntico)
+        registrationIp: ip,     // antifraude de referidos
         ...orgFields,
       }
     })
 
     // Referido (1 nivel): si llegó con ?ref=<código>, se registra como referido directo.
-    await attachReferralOnSignup(prisma, newUser.id, ref)
+    await attachReferralOnSignup(prisma, newUser.id, ref, ip)
 
     await sendWelcomeEmail(email, fullName)
 

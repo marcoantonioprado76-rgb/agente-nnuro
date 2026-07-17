@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { REFERRAL_PERCENT } from '@/lib/referrals'
+import { getReferralConfig } from '@/lib/referrals'
 
 export async function GET() {
   try {
@@ -27,11 +27,12 @@ export async function GET() {
     const totalEarned = completed.reduce((s, r) => s + Number(r.rewardUsd), 0)
 
     const base = process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL || 'https://agentenuro.com'
+    const { percent } = await getReferralConfig(prisma)
 
     return NextResponse.json({
       code,
       link: `${base.replace(/\/$/, '')}/register?ref=${encodeURIComponent(code)}`,
-      percent: REFERRAL_PERCENT,
+      percent,
       stats: {
         total: referrals.length,
         activos: completed.length,

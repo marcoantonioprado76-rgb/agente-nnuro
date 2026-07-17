@@ -88,6 +88,7 @@ model User {
   /// Programa de referidos (1 nivel + recompensa en saldo interno).
   referralCode         String?     @unique @map("referral_code")
   referralCount        Int         @default(0) @map("referral_count")
+  registrationIp       String?     @map("registration_ip") // antifraude: IP del registro
   referralsMade        Referral[]  @relation("ReferrerRefs")
   referralGot          Referral?   @relation("ReferredRef")
 
