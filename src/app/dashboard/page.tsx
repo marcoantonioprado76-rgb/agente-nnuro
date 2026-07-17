@@ -114,7 +114,7 @@ export default function DashboardPage() {
       {/* ═══════════════════════════════════════════════════════════
            MOBILE VIEW
       ═══════════════════════════════════════════════════════════ */}
-      <div className="lg:hidden flex flex-col min-h-screen w-full font-ui" style={{ position: 'relative', background: 'radial-gradient(circle at top right, rgba(0,229,208,0.08), transparent 30%), radial-gradient(circle at bottom left, rgba(35,59,143,0.08), transparent 32%), linear-gradient(135deg, #EEF2F7 0%, #F5F7FA 45%, #E9EEF5 100%)', color: '#111827' }}>
+      <div className="lg:hidden flex flex-col min-h-screen w-full font-ui" style={{ position: 'relative', background: 'radial-gradient(circle at top right, rgba(0,229,208,0.06), transparent 30%), radial-gradient(circle at bottom left, rgba(35,59,143,0.06), transparent 32%), linear-gradient(135deg, #DDE4EC 0%, #E6ECF3 45%, #D6DEE9 100%)', color: '#111827' }}>
 
         {/* Cover Photo */}
         <div className="cover" id="cover">
