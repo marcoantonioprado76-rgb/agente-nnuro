@@ -61,6 +61,7 @@ function CheckoutContent() {
   const router = useRouter()
   const plan = (searchParams.get('plan') ?? '').toUpperCase()
   const isRenewal = searchParams.get('renewal') === 'true'
+  const months = [1, 3, 12].includes(Number(searchParams.get('months'))) ? Number(searchParams.get('months')) : 1
   const faseGlobalOnly = searchParams.get('faseGlobalOnly') === 'true'
   const packInfo = PACK_INFO[plan]
 
@@ -93,12 +94,21 @@ function CheckoutContent() {
     fetch('/api/credits').then(r => r.json()).then(d => { if (d?.aiBalanceUsd != null) setBalance(Number(d.aiBalanceUsd)) }).catch(() => {})
   }, [])
 
+  // Para períodos >1 mes, el precio es el del período (con descuento).
+  useEffect(() => {
+    if (months <= 1) return
+    fetch('/api/plan/pricing')
+      .then(r => r.json())
+      .then(d => { const p = d?.pricing?.[plan]?.[months]?.price; if (p != null) setPrice(p) })
+      .catch(() => {})
+  }, [plan, months])
+
   const payWithSaldo = async () => {
     if (payingSaldo) return
     setError('')
     setPayingSaldo(true)
     try {
-      const res = await fetch('/api/plan/pay-with-balance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan }) })
+      const res = await fetch('/api/plan/pay-with-balance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan, months }) })
       const j = await res.json()
       if (!res.ok) { setError(j.error || 'No se pudo pagar con saldo.'); return }
       setSuccess(true)
@@ -173,7 +183,7 @@ function CheckoutContent() {
       const res = await fetch('/api/pack-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, paymentProofUrl: proofUrl }),
+        body: JSON.stringify({ plan, paymentProofUrl: proofUrl, months }),
       })
       const data = await res.json()
       if (res.ok) {
@@ -389,7 +399,7 @@ function CheckoutContent() {
         <div className="bg-gradient-to-b from-[#212e38] via-[#273842] to-[#1a262f] border border-white/10 rounded-2xl p-5">
           <CryptoBPayment
             startUrl="/api/pack-requests/crypto-start"
-            startBody={{ plan }}
+            startBody={{ plan, months }}
             checkUrlBase="/api/pack-requests/crypto-check"
             cancelUrl="/api/pack-requests/crypto-cancel"
             onApproved={() => setCryptoStatus('approved')}

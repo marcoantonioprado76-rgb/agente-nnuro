@@ -266,6 +266,9 @@ export default function PlanesPage() {
   const [isFaseGlobal, setIsFaseGlobal] = useState(false)
   const [balance, setBalance] = useState(0)         // saldo interno (ai_balance_usd)
   const [payingBalance, setPayingBalance] = useState(false)
+  const [months, setMonths] = useState(1)           // período: 1=mensual, 3=trimestral, 12=anual
+  const [pricing, setPricing] = useState<Record<string, Record<number, { price: number; discount: number; saved: number }>>>({})
+  const [periods, setPeriods] = useState<{ months: number; label: string }[]>([])
   const [enabledPlans, setEnabledPlans] = useState<Record<string, boolean> | null>(null)
   const [credits, setCredits] = useState<Record<string, number>>(PLAN_CREDIT_DEFAULTS)
   const [bots, setBots] = useState<Record<string, number>>(PLAN_BOTS_DEFAULTS)
@@ -303,6 +306,11 @@ export default function PlanesPage() {
     fetch('/api/credits')
       .then(r => r.json())
       .then(d => { if (d?.aiBalanceUsd != null) setBalance(Number(d.aiBalanceUsd)) })
+      .catch(() => {})
+    // Precios por período (mensual/trimestral/anual) para el selector de promoción.
+    fetch('/api/plan/pricing')
+      .then(r => r.json())
+      .then(d => { if (d?.pricing) { setPricing(d.pricing); setPeriods(d.periods ?? []) } })
       .catch(() => {})
     // Cargar disponibilidad de planes
     fetch('/api/settings')
@@ -417,12 +425,12 @@ export default function PlanesPage() {
   }
 
   // Pagar el plan usando el saldo interno (instantáneo, sin admin).
-  const payWithBalance = async (plan: string, price: number) => {
+  const payWithBalance = async (plan: string, price: number, mths: number = 1) => {
     if (payingBalance) return
-    if (!confirm(`¿Pagar el plan ${plan} con tu saldo? Se descontarán $${price.toFixed(2)} de tu saldo interno.`)) return
+    if (!confirm(`¿Pagar el plan ${plan} (${mths === 1 ? '1 mes' : mths + ' meses'}) con tu saldo? Se descontarán ${price.toFixed(2)}.`)) return
     setPayingBalance(true)
     try {
-      const res = await fetch('/api/plan/pay-with-balance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan }) })
+      const res = await fetch('/api/plan/pay-with-balance', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan, months: mths }) })
       const j = await res.json()
       if (!res.ok) { alert(j.error || 'No se pudo pagar con saldo.'); return }
       alert('¡Plan activado con tu saldo! 🎉')
@@ -500,6 +508,30 @@ export default function PlanesPage() {
           <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#147e95', borderTopColor: 'transparent' }} />
         </div>
       ) : (
+      <>
+      {/* Selector de período (promociones) */}
+      {periods.length > 0 && (
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex gap-1 p-1.5 rounded-2xl border border-[#E4E9F0] bg-white shadow-sm">
+            {periods.map(p => {
+              const off = p.months > 1 ? (pricing?.ELITE?.[p.months]?.discount ?? 0) : 0
+              const active = months === p.months
+              return (
+                <button
+                  key={p.months}
+                  onClick={() => setMonths(p.months)}
+                  className={`relative px-4 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap ${active ? 'bg-gradient-to-r from-[#1fb8bb] to-[#147e95] text-white shadow' : 'text-[#6B7280] hover:text-[#111827]'}`}
+                >
+                  {p.label}
+                  {off > 0 && (
+                    <span className={`ml-1.5 text-[9px] font-black px-1.5 py-0.5 rounded-full ${active ? 'bg-white/25 text-white' : 'bg-[#00E5D0]/15 text-[#0a95a8]'}`}>-{off}%</span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
         {PACKS.filter(pack => enabledPlans[pack.planId]).map((pack) => {
           const Icon = pack.icon
@@ -544,19 +576,30 @@ export default function PlanesPage() {
 
                 <p className="text-[11px] text-[#6B7280] leading-relaxed mb-4">{pack.pitch.replace('{bots}', String(bots[pack.planId] ?? ''))}</p>
 
-                <div className="mb-5">
-                  <div className="flex items-end gap-1">
-                    <span className="text-[40px] font-black leading-none">${prices[pack.planId] ?? pack.price}</span>
-                    <span className="text-sm text-[#6B7280] mb-1">USD</span>
-                  </div>
-                  <p className="text-[10px] text-[#9CA3AF] mt-0.5">30 días de acceso · renovable</p>
-                  {!pack.locked && (credits[pack.planId] ?? 0) > 0 && (
-                    <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.25)' }}>
-                      <Sparkles size={11} className="text-[#147e95]" />
-                      <span className="text-[10px] font-black text-[#147e95]">+ ${credits[pack.planId]} en créditos IA incluidos</span>
+                {(() => {
+                  const per = pricing?.[pack.planId]?.[months]
+                  const shownPrice = per?.price ?? prices[pack.planId] ?? pack.price
+                  const saved = per?.saved ?? 0
+                  const monthCredits = credits[pack.planId] ?? 0
+                  const totalCredits = monthCredits * months
+                  return (
+                    <div className="mb-5">
+                      <div className="flex items-end gap-1">
+                        <span className="text-[40px] font-black leading-none">${shownPrice}</span>
+                        <span className="text-sm text-[#6B7280] mb-1">USD</span>
+                      </div>
+                      <p className="text-[10px] text-[#9CA3AF] mt-0.5">
+                        {months === 1 ? '30 días de acceso · renovable' : `${months} meses de acceso${saved > 0 ? ` · ahorras $${saved}` : ''}`}
+                      </p>
+                      {!pack.locked && totalCredits > 0 && (
+                        <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,229,208,0.10)', border: '1px solid rgba(0,229,208,0.25)' }}>
+                          <Sparkles size={11} className="text-[#147e95]" />
+                          <span className="text-[10px] font-black text-[#147e95]">+ ${totalCredits} en créditos IA incluidos</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  )
+                })()}
 
                 <div className={`h-px mb-5 ${pack.accent.featured ? 'bg-cyan-500/20' : 'bg-[#F4F6FA]'}`} />
 
@@ -630,7 +673,7 @@ export default function PlanesPage() {
                     }
                     return (
                       <button
-                        onClick={() => router.push(`/dashboard/store/checkout?plan=${pack.planId}&renewal=true`)}
+                        onClick={() => router.push(`/dashboard/store/checkout?plan=${pack.planId}&renewal=true&months=${months}`)}
                         disabled={!!pendingPlan}
                         className="w-full py-3 rounded-2xl text-sm font-black bg-[#147e95]/10 border border-[#147e95]/30 text-[#147e95] hover:bg-[#147e95]/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -654,7 +697,7 @@ export default function PlanesPage() {
                   }
                   return (
                     <button
-                      onClick={() => router.push(`/dashboard/store/checkout?plan=${pack.planId}`)}
+                      onClick={() => router.push(`/dashboard/store/checkout?plan=${pack.planId}&months=${months}`)}
                       disabled={!!pendingPlan}
                       className={`w-full py-3 rounded-2xl text-sm transition-all ${pack.accent.btn} flex items-center justify-center gap-2`}
                     >
@@ -664,9 +707,9 @@ export default function PlanesPage() {
                 })()}
 
                 {/* Pagar con saldo interno — si alcanza y el plan no es inferior */}
-                {!pack.locked && !isFaseGlobal && !pendingPlan && PLAN_RANK[currentPlan] <= PLAN_RANK[pack.planId] && balance >= (prices[pack.planId] ?? pack.price) && (
+                {!pack.locked && !isFaseGlobal && !pendingPlan && PLAN_RANK[currentPlan] <= PLAN_RANK[pack.planId] && balance >= (pricing?.[pack.planId]?.[months]?.price ?? prices[pack.planId] ?? pack.price) && (
                   <button
-                    onClick={() => payWithBalance(pack.planId, prices[pack.planId] ?? pack.price)}
+                    onClick={() => payWithBalance(pack.planId, pricing?.[pack.planId]?.[months]?.price ?? prices[pack.planId] ?? pack.price, months)}
                     disabled={payingBalance}
                     className="w-full mt-2 py-2.5 rounded-2xl text-xs font-black border border-cyan-500/40 text-[#0a95a8] bg-cyan-500/10 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
@@ -678,6 +721,7 @@ export default function PlanesPage() {
           )
         })}
       </div>
+      </>
       )}
 
       {/* Empresarial card */}

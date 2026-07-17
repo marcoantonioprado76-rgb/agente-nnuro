@@ -848,6 +848,7 @@ model PackPurchaseRequest {
   userId          String        @map("user_id") @db.Uuid
   plan            UserPlan
   price           Decimal       @db.Decimal(10, 2)
+  billingMonths   Int           @default(1) @map("billing_months") // 1=mensual, 3=trimestral, 12=anual
   paymentProofUrl String?       @map("payment_proof_url")
   paymentMethod   PaymentMethod @default(MANUAL) @map("payment_method")
   txHash          String?       @unique @map("tx_hash")

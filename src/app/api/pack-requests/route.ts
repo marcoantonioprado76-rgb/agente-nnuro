@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { verifyBscTransaction } from '@/lib/blockchain'
 import { sendAdminNewPlanRequestEmail, sendAdminPlanAutoActivatedEmail } from '@/lib/email'
 import { reactivateUserAssetsAfterPlanRenewal } from '@/lib/plan-lifecycle'
+import { normalizeMonths, getPeriodPricing } from '@/lib/plan-pricing'
 
 /**
  * Dispara la notificación al admin (fire-and-forget) cuando se crea una solicitud PENDING.
@@ -86,6 +87,7 @@ export async function POST(request: NextRequest) {
     const txHash = (body.txHash as string) ?? null
     const faseGlobalCode = (body.faseGlobalCode as string)?.trim() ?? null
     const faseGlobalNote = (body.faseGlobalNote as string)?.trim() ?? null
+    const months = normalizeMonths(body.months ?? 1) // 1=mensual, 3=trimestral, 12=anual
 
     // Fase Global siempre activa BASIC
     if (paymentMethod === 'FASE_GLOBAL') {
@@ -205,6 +207,12 @@ export async function POST(request: NextRequest) {
       effectivePrice = currentPrice > 0 ? Math.max(price - currentPrice, 1) : price
     }
 
+    // Promoción por período (3/12 meses): precio del período con descuento.
+    // El mensual (1) conserva la lógica de renovación/upgrade de arriba.
+    if (months > 1) {
+      effectivePrice = (await getPeriodPricing(prisma, plan, months)).price
+    }
+
     // --- Para CRYPTO: verificar on-chain ---
     if (paymentMethod === 'CRYPTO' && txHash) {
       const verification = await verifyBscTransaction(txHash, effectivePrice)
@@ -217,6 +225,7 @@ export async function POST(request: NextRequest) {
               userId: user.id,
               plan: plan as any,
               price: effectivePrice,
+              billingMonths: months,
               paymentMethod: 'CRYPTO',
               txHash,
               blockNumber: verification.blockNumber ?? null,
@@ -226,11 +235,12 @@ export async function POST(request: NextRequest) {
             },
           })
 
+          const cryptoDays = months * 30
           if (isRenewal) {
             await tx.$executeRaw`
               UPDATE users
               SET is_active = true,
-                  plan_expires_at = GREATEST(COALESCE(plan_expires_at, NOW()), NOW()) + INTERVAL '30 days'
+                  plan_expires_at = GREATEST(COALESCE(plan_expires_at, NOW()), NOW()) + (${cryptoDays} || ' days')::interval
               WHERE id = ${user.id}::uuid
             `
           } else {
@@ -238,7 +248,7 @@ export async function POST(request: NextRequest) {
               UPDATE users
               SET plan = ${plan}::\"UserPlan\",
                   is_active = true,
-                  plan_expires_at = NOW() + INTERVAL '30 days'
+                  plan_expires_at = NOW() + (${cryptoDays} || ' days')::interval
               WHERE id = ${user.id}::uuid
             `
           }
@@ -303,6 +313,7 @@ export async function POST(request: NextRequest) {
           userId: user.id,
           plan: plan as any,
           price: effectivePrice,
+          billingMonths: months,
           paymentMethod: 'CRYPTO',
           txHash,
           status: 'PENDING_VERIFICATION',
@@ -369,6 +380,7 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         plan: plan as any,
         price: effectivePrice,
+        billingMonths: months,
         paymentProofUrl,
         paymentMethod: 'MANUAL',
         status: 'PENDING',

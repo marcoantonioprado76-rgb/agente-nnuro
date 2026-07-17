@@ -337,6 +337,30 @@ export default function AdminSettingsPage() {
             </div>
           </section>
 
+          {/* ── Promociones por período ─────────────────── */}
+          <section className="space-y-3">
+            <div className="flex items-center gap-2 mb-1">
+              <RefreshCw size={13} className="text-[#111827]/40" />
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#111827]/40">Promociones por Período</p>
+            </div>
+            <div className="rounded-2xl border border-[#E4E9F0] p-5 space-y-4" style={{ background: 'rgba(255,255,255,0.015)' }}>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold">Descuento Trimestral (3 meses)</p>
+                  <p className="text-[11px] text-[#111827]/40">% de descuento al pagar 3 meses juntos. Def. 10%.</p>
+                </div>
+                <PlanNumberInput settingKey="DISCOUNT_3M" fallback="10" placeholder="10" />
+              </div>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold">Descuento Anual (12 meses)</p>
+                  <p className="text-[11px] text-[#111827]/40">% de descuento al pagar el año completo. Def. 20%.</p>
+                </div>
+                <PlanNumberInput settingKey="DISCOUNT_12M" fallback="20" placeholder="20" />
+              </div>
+            </div>
+          </section>
+
           {/* ── Plan Prices ─────────────────────────────── */}
           <section className="space-y-3">
             <div className="flex items-center gap-2 mb-1">

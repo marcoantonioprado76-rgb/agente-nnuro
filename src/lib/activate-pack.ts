@@ -45,12 +45,14 @@ export async function activatePackPurchase(
     })
     if (upd.count !== 1) return // otra pasada ya lo procesó
 
+    // Duración según el período comprado (1/3/12 meses × 30 días).
+    const days = ((req as any).billingMonths ?? 1) * 30
     // Setear o renovar el plan (mismo SQL/guardas que el cron de MY-DIAMOND).
     if (isRenewal) {
       await tx.$executeRaw`
         UPDATE users
         SET is_active = true,
-            plan_expires_at = GREATEST(COALESCE(plan_expires_at, NOW()), NOW()) + INTERVAL '30 days'
+            plan_expires_at = GREATEST(COALESCE(plan_expires_at, NOW()), NOW()) + (${days} || ' days')::interval
         WHERE id = ${req.userId}::uuid
       `
     } else if (newRank > currentRank) {
@@ -60,7 +62,7 @@ export async function activatePackPurchase(
         UPDATE users
         SET plan = ${plan}::"UserPlan",
             is_active = true,
-            plan_expires_at = NOW() + INTERVAL '30 days'
+            plan_expires_at = NOW() + (${days} || ' days')::interval
         WHERE id = ${req.userId}::uuid
       `
     }

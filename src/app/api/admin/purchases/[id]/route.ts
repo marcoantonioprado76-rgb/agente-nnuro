@@ -87,30 +87,34 @@ export async function PATCH(
           },
         })
 
+        // Duración según el período comprado (1/3/12 meses × 30 días).
+        const billingMonths = (purchaseRequest as any).billingMonths ?? 1
+        const days = billingMonths * 30
+
         // 4. Activar o renovar plan
         if (isRenewal) {
-          // Mantiene el plan, solo extiende +30 días sobre la fecha más reciente
+          // Mantiene el plan, extiende la duración del período sobre la fecha más reciente
           await tx.$executeRaw`
             UPDATE users
             SET is_active = true,
-                plan_expires_at = GREATEST(COALESCE(plan_expires_at, NOW()), NOW()) + INTERVAL '30 days'
+                plan_expires_at = GREATEST(COALESCE(plan_expires_at, NOW()), NOW()) + (${days} || ' days')::interval
             WHERE id = ${purchaseRequest.userId}::uuid
           `
         } else {
-          // Cambia o fuerza el plan con expiración NOW+30
+          // Cambia o fuerza el plan con expiración NOW + duración del período
           await tx.$executeRaw`
             UPDATE users
             SET plan = ${newPlan}::"UserPlan",
                 is_active = true,
-                plan_expires_at = NOW() + INTERVAL '30 days'
+                plan_expires_at = NOW() + (${days} || ' days')::interval
             WHERE id = ${purchaseRequest.userId}::uuid
           `
         }
 
-        // 4.4 Créditos IA incluidos en el plan (saldo USD). Fase Global NO recibe.
-        //     Se otorgan en cada activación/renovación (el usuario paga el precio completo).
+        // 4.4 Créditos IA incluidos (saldo USD), proporcionales al período (beneficio).
+        //     Fase Global NO recibe.
         if (!isFaseGlobal) {
-          const credits = await getPlanCredits(newPlan, tx)
+          const credits = (await getPlanCredits(newPlan, tx)) * billingMonths
           if (credits > 0) {
             await tx.$executeRaw`
               UPDATE users SET ai_balance_usd = ai_balance_usd + ${credits}

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { withUniqueCryptoAmount } from '@/lib/crypto-pay'
+import { normalizeMonths, getPeriodPricing } from '@/lib/plan-pricing'
 
 const RECEIVER = process.env.PAYMENT_RECEIVER || ''
 const PLAN_RANK: Record<string, number> = { NONE: 0, BASIC: 1, PRO: 2, ELITE: 3 }
@@ -19,7 +20,9 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   if (!RECEIVER) return NextResponse.json({ error: 'Dirección de pago no configurada por el admin.' }, { status: 503 })
 
-  const plan = String((await req.json().catch(() => ({})))?.plan || '').toUpperCase()
+  const body = await req.json().catch(() => ({}))
+  const plan = String(body?.plan || '').toUpperCase()
+  const months = normalizeMonths(body?.months ?? 1)
   if (!['BASIC', 'PRO', 'ELITE'].includes(plan)) return NextResponse.json({ error: 'Plan inválido' }, { status: 400 })
 
   // Si ya hay una solicitud pendiente → REANUDAR la cripto no vencida (evita quedar "trabado").
@@ -65,9 +68,12 @@ export async function POST(req: NextRequest) {
     effectivePrice = currentPrice > 0 ? Math.max(basePrice - currentPrice, 1) : basePrice
   }
 
+  // Promoción por período (3/12 meses): el monto a pagar es el precio del período.
+  if (months > 1) effectivePrice = (await getPeriodPricing(prisma, plan, months)).price
+
   const { request, amount, expiresAt } = await withUniqueCryptoAmount(effectivePrice, async (amount, expiresAt, tx) => {
     const request = await tx.packPurchaseRequest.create({
-      data: { userId: user.id, plan: plan as any, price: effectivePrice, expectedAmount: amount, expiresAt, paymentMethod: 'CRYPTO', status: 'PENDING' },
+      data: { userId: user.id, plan: plan as any, price: effectivePrice, billingMonths: months, expectedAmount: amount, expiresAt, paymentMethod: 'CRYPTO', status: 'PENDING' },
     })
     return { request, amount, expiresAt }
   })
