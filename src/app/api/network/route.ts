@@ -11,18 +11,21 @@ export async function GET() {
     const planLabel = (user as any).plan && (user as any).plan !== 'NONE' ? (user as any).plan : undefined
 
     // Métricas reales del negocio (tarjeta de perfil del Inicio).
-    // leads = conversaciones; ventas = conversaciones marcadas como vendidas;
-    // ingresos = suma de pedidos de la tienda. Si algo falla → 0 (nunca rompe).
+    //  - leads    = conversaciones (gente que escribió a sus bots).
+    //  - ventas   = conversaciones vendidas + pedidos de tienda pagados.
+    //  - ingresos = suma de pedidos de tienda PAGADOS (aprobado/enviado/entregado).
+    // Si algo falla → 0 (nunca rompe).
     let leads = 0, ventas = 0, ingresos = 0
     try {
-      const [leadCount, soldCount, orderSum] = await Promise.all([
+      const PAID: any[] = ['APPROVED', 'SHIPPED', 'DELIVERED']
+      const [leadCount, soldConvos, paidOrders] = await Promise.all([
         prisma.conversation.count({ where: { bot: { userId: user.id } } }),
         prisma.conversation.count({ where: { bot: { userId: user.id }, sold: true } }),
-        prisma.storeOrder.aggregate({ _sum: { totalPrice: true }, where: { userId: user.id } }),
+        prisma.storeOrder.aggregate({ _sum: { totalPrice: true }, _count: true, where: { userId: user.id, status: { in: PAID } } }),
       ])
       leads = leadCount
-      ventas = soldCount
-      ingresos = Number(orderSum._sum.totalPrice ?? 0)
+      ventas = soldConvos + (paidOrders._count ?? 0)
+      ingresos = Number(paidOrders._sum.totalPrice ?? 0)
     } catch (e) {
       console.error('[network] métricas negocio:', e instanceof Error ? e.message : e)
     }
